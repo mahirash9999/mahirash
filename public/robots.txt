@@ -1,0 +1,71 @@
+# ==========================================================
+# PASOJA - robots.txt
+# https://pasoja.in
+# ==========================================================
+
+User-agent: *
+
+# Allow all public pages
+Allow: /
+
+# ===========================================
+# Block Admin & Private Routes
+# ===========================================
+
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /checkout/
+Disallow: /cart/
+Disallow: /wishlist/
+Disallow: /account/
+Disallow: /profile/
+Disallow: /my-orders/
+Disallow: /payment/
+Disallow: /api/
+Disallow: /storage/private/
+Disallow: /vendor/
+Disallow: /node_modules/
+Disallow: /.env
+Disallow: /.git/
+
+# ===========================================
+# Block Search Parameters (Optional)
+# ===========================================
+
+Disallow: /*?sort=
+Disallow: /*?page=
+Disallow: /*?filter=
+Disallow: /*?price=
+Disallow: /*?color=
+Disallow: /*?size=
+Disallow: /*?brand=
+Disallow: /*?search=
+Disallow: /*?q=
+Disallow: /*&sort=
+Disallow: /*&page=
+Disallow: /*&filter=
+
+# ===========================================
+# Allow Static Assets
+# ===========================================
+
+Allow: /images/
+Allow: /uploads/
+Allow: /assets/
+Allow: /storage/
+
+# ===========================================
+# Crawl Delay (Ignored by Google, used by some bots)
+# ===========================================
+
+Crawl-delay: 2
+
+# ===========================================
+# Sitemap
+# ===========================================
+
+Sitemap: https://pasoja.in/sitemap.xml

@@ -1,0 +1,139 @@
+{
+    "shop_by_category": [
+        {
+            "id": "cat_sbc_1",
+            "name": "EXTRAIT DE PARFUM",
+            "title": "EXTRAIT DE PARFUM",
+            "slug": "extrait-de-parfum",
+            "image": "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800&auto=format&fit=crop",
+            "link": "/shop?category=Extrait+de+Parfum",
+            "sort_order": 1,
+            "is_active": true
+        },
+        {
+            "id": "cat_sbc_2",
+            "name": "EAU DE PARFUM",
+            "title": "EAU DE PARFUM",
+            "slug": "eau-de-parfum",
+            "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop",
+            "link": "/shop?category=Eau+de+Parfum",
+            "sort_order": 2,
+            "is_active": true
+        },
+        {
+            "id": "cat_sbc_3",
+            "name": "ROYAL OUD RESERVE",
+            "title": "ROYAL OUD RESERVE",
+            "slug": "royal-oud-reserve",
+            "image": "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800&auto=format&fit=crop",
+            "link": "/shop?category=Oud+Collection",
+            "sort_order": 3,
+            "is_active": true
+        },
+        {
+            "id": "cat_sbc_4",
+            "name": "AMBER & WOODS",
+            "title": "AMBER & WOODS",
+            "slug": "amber-and-woods",
+            "image": "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800&auto=format&fit=crop",
+            "link": "/shop?category=Woody+%26+Amber",
+            "sort_order": 4,
+            "is_active": true
+        }
+    ],
+    "home_shop_by_scents": [
+        {
+            "id": "scent_woody",
+            "name": "WOODY & OUD",
+            "title": "WOODY & OUD",
+            "description": "Royal Cambodian Oud, Cedarwood & Warm Amber",
+            "badge": "WARM & RICH",
+            "image": "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800&auto=format&fit=crop",
+            "link": "/shop?scent=Woody",
+            "sort_order": 1,
+            "is_active": true
+        },
+        {
+            "id": "scent_citrus",
+            "name": "CITRUS & SPICE",
+            "title": "CITRUS & SPICE",
+            "description": "Calabrian Bergamot, Zesty Lime & Cardamom",
+            "badge": "FRESH & VIBRANT",
+            "image": "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800&auto=format&fit=crop",
+            "link": "/shop?scent=Citrus",
+            "sort_order": 2,
+            "is_active": true
+        },
+        {
+            "id": "scent_floral",
+            "name": "FLORAL EXTRAITS",
+            "title": "FLORAL EXTRAITS",
+            "description": "Damask Rose, Grasse Jasmine & Velvet Blossom",
+            "badge": "ELEGANT BLOOMS",
+            "image": "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800&auto=format&fit=crop",
+            "link": "/shop?scent=Floral",
+            "sort_order": 3,
+            "is_active": true
+        },
+        {
+            "id": "scent_aromatic",
+            "name": "AROMATIC ATELIER",
+            "title": "AROMATIC ATELIER",
+            "description": "French Lavender, Mint & Crisp Vetiver",
+            "badge": "CLEAN & CRISP",
+            "image": "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800&auto=format&fit=crop",
+            "link": "/shop?scent=Aromatic",
+            "sort_order": 4,
+            "is_active": true
+        }
+    ],
+    "gender_banners": [
+        {
+            "id": "mens",
+            "title": "FOR HIM",
+            "buttonText": "EXPLORE FRAGRANCES",
+            "image": "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=1000&auto=format&fit=crop&q=80",
+            "path": "/shop?category=Men",
+            "sort_order": 1,
+            "is_active": true
+        },
+        {
+            "id": "womens",
+            "title": "FOR HER",
+            "buttonText": "EXPLORE FRAGRANCES",
+            "image": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=1000&auto=format&fit=crop&q=80",
+            "path": "/shop?category=Women",
+            "sort_order": 2,
+            "is_active": true
+        }
+    ],
+    "benefits_strip": [
+        {
+            "icon": "Truck",
+            "text": "COMPLIMENTARY SHIPPING OVER ₹1999",
+            "sort_order": 1,
+            "is_active": true
+        },
+        {
+            "icon": "ShieldCheck",
+            "text": "100% AUTHENTIC PARFUMERIE",
+            "sort_order": 2,
+            "is_active": true
+        },
+        {
+            "icon": "Package",
+            "text": "LUXURY ATELIER PACKAGING",
+            "sort_order": 3,
+            "is_active": true
+        },
+        {
+            "icon": "RotateCcw",
+            "text": "EASY 7-DAY RETURNS",
+            "sort_order": 4,
+            "is_active": true
+        }
+    ],
+    "settings_about_page": {
+        "content": "<h2>The Origin</h2><p>Every legendary creation begins with a whisper. For Mahirash Parfumerie, that whisper came from the ancient spice routes and the royal courts of perfume history.</p><h2>Our Process</h2><p>Crafted with extreme attention to detail and patience.</p>"
+    }
+}

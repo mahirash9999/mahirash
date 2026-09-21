@@ -1,0 +1,162 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isSuperAdmin() {
+      return request.auth != null && (request.auth.token.email == 'mahirash9999@gmail.com');
+    }
+
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Products rules: everyone can read, super admin manages items
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /product_reviews/{reviewId} {
+      allow read: if true;
+      allow write: if isSuperAdmin() || request.auth != null;
+    }
+    
+    // Users rules: allow listing/get (query checks for register lookup), restrict sub-collections to owners
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId);
+      
+      match /{allSubcollections=**} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+    
+    // Orders rules: Strict authentication-based access to prevent arbitrary read/writes.
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read: if isSuperAdmin() || (request.auth != null && (request.auth.uid == resource.data.userId || request.auth.token.email == resource.data.userEmail));
+      allow update: if isSuperAdmin();
+      allow delete: if isSuperAdmin();
+    }
+    
+    // Coupons rules: everyone can read (to apply at checkout), only admin can write
+    match /coupons/{couponId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    // Customers collection: Strict profile isolation
+    match /customers/{customerId} {
+      allow read, update: if isSuperAdmin() || (request.auth != null && (request.auth.token.email == customerId || request.auth.uid == customerId));
+      allow create: if true; // allow initial account creation
+      allow delete: if isSuperAdmin();
+    }
+
+    // CMS & Storefront Dynamic Content Collections: everyone can read, only super admin can write
+    match /hero_slides/{slideId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /shop_by_category/{categoryId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /mobile_categories/{catId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /benefits_strip/{benefitId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /explore_banner/{bannerId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /global_alerts/{alertId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /explore_banner/{bannerId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /promo_popup_settings/{settingId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /community_settings/{settingId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /community_images/{imageId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /community_stats/{statId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /categories/{catId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /subcategories/{subcatId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /collections/{colId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /attributes/{attrId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /pages/{pageId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    // Returns & Refunds
+    match /returns/{returnId} {
+      allow create: if true;
+      allow read, update, delete: if isSuperAdmin();
+    }
+
+    // Admin Profile & System Logs
+    match /admin_profile/{profileId} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    match /activity_logs/{logId} {
+      allow read, write: if isSuperAdmin();
+    }
+
+    // Global fallback for any other collections
+    match /{document=**} {
+      allow read, write: if isSuperAdmin();
+    }
+  }
+}
