@@ -5,39 +5,45 @@ import {
   signOut,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signInWithCustomToken,
   updateProfile,
   updatePassword,
   GoogleAuthProvider,
   signInWithPopup
 } from "firebase/auth";
-import { doc, setDoc, getDoc, serverTimestamp, collection, getDocs, query, where } from "firebase/firestore";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { AuthContext } from "./useAuth";
+
+export const linkGuestOrdersForUser = async (firebaseUser) => {
+  if (!firebaseUser) return 0;
+  try {
+    const token = await firebaseUser.getIdToken();
+    const res = await fetch("/api/link-guest-orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      console.log(`[Order Linking] Linked ${data.linkedCount || 0} guest order(s) for ${firebaseUser.email}`);
+      return data.linkedCount || 0;
+    }
+  } catch (err) {
+    console.warn("Guest order linking notice:", err.message);
+  }
+  return 0;
+};
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Initial check: check if custom user session is in localStorage
-    const savedCustomUser = localStorage.getItem("pasoja_custom_user");
-    if (savedCustomUser) {
-      try {
-        setUser(JSON.parse(savedCustomUser));
-        setLoading(false);
-      } catch (err) {
-        console.error("Error parsing custom user session:", err);
-      }
-    }
-
     const unsub = onAuthStateChanged(auth, async (u) => {
-      const customUserSession = localStorage.getItem("pasoja_custom_user");
-      // If we have an active custom session, don't overwrite it with Firebase's null user state
-      if (customUserSession) {
-        return;
-      }
-
-      // If the email is the superadmin, and customer flow did not explicitly authenticate them, ignore it for customer pages!
-      if (u && u.email === "mahirsh9999@gmail.com" && localStorage.getItem("pasoja_customer_logged_in") !== "true") {
+      // If superadmin without customer flow, ignore for storefront customer sessions
+      if (u && (u.email === "mahirsh9999@gmail.com" || u.email === "admin@mahirash.com") && localStorage.getItem("pasoja_customer_logged_in") !== "true") {
         setUser(null);
         setLoading(false);
         return;
@@ -47,142 +53,138 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
 
       if (u) {
+        // Sync user doc
+        const cleanEmail = u.email ? u.email.toLowerCase().trim() : "";
         const userDoc = doc(db, "users", u.uid);
-        const snap = await getDoc(userDoc);
-        if (!snap.exists()) {
-          await setDoc(userDoc, {
-            email: u.email || "",
-            displayName: u.displayName || "",
-            createdAt: serverTimestamp(),
-          });
+        try {
+          const snap = await getDoc(userDoc);
+          if (!snap.exists()) {
+            await setDoc(userDoc, {
+              uid: u.uid,
+              email: cleanEmail,
+              displayName: u.displayName || "",
+              createdAt: serverTimestamp(),
+            });
+          }
+        } catch (_) { }
+
+        // Also sync profile in customers collection for fast lookup
+        if (cleanEmail) {
+          const customerDocId = cleanEmail.replace(/[^a-z0-9]/g, "_");
+          try {
+            const customerRef = doc(db, "customers", customerDocId);
+            await setDoc(customerRef, {
+              uid: u.uid,
+              email: cleanEmail,
+              name: u.displayName || cleanEmail.split("@")[0],
+              updatedAt: serverTimestamp()
+            }, { merge: true });
+          } catch (_) { }
         }
+
+        // Link any matching guest orders automatically
+        linkGuestOrdersForUser(u);
       }
     });
+
     return () => unsub();
   }, []);
 
+  /**
+   * Authenticate with server-issued custom token (OTP Flow)
+   */
+  const loginWithCustomToken = async (customToken) => {
+    localStorage.setItem("pasoja_customer_logged_in", "true");
+    const cred = await signInWithCustomToken(auth, customToken);
+    await linkGuestOrdersForUser(cred.user);
+    return cred;
+  };
+
+  /**
+   * Email and password login via Firebase Authentication
+   */
   const login = async (email, password) => {
     const formattedEmail = email.toLowerCase().trim();
     localStorage.setItem("pasoja_customer_logged_in", "true");
 
-    // 1. Check if user document exists in Firestore and has custom password stored
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", formattedEmail));
-    const querySnap = await getDocs(q);
-
-    if (!querySnap.empty) {
-      const userDoc = querySnap.docs[0];
-      const userData = userDoc.data();
-
-      if (userData.password) {
-        if (userData.password === password) {
-          // If password matches Firestore, sign into Firebase Auth using bypass key
-          const bypassPassword = "PasojaSecureBypassKey2026_" + formattedEmail;
-          try {
-            const cred = await signInWithEmailAndPassword(auth, formattedEmail, bypassPassword);
-            return cred;
-          } catch (bypassErr) {
-            // Custom auth fallback for users whose Firebase Auth password isn't updated yet
-            const customUser = {
-              uid: userDoc.id,
-              email: formattedEmail,
-              displayName: userData.displayName || "",
-              isCustomAuth: true
-            };
-            localStorage.setItem("pasoja_custom_user", JSON.stringify(customUser));
-            setUser(customUser);
-            return { user: customUser };
-          }
-        } else {
-          throw new Error("auth/wrong-password");
-        }
-      }
-    }
-
-    // 2. Fallback: try standard login (for older accounts not yet migrated)
-    try {
-      const cred = await signInWithEmailAndPassword(auth, formattedEmail, password);
-      // Migrate user to bypass key
-      const userDocRef = doc(db, "users", cred.user.uid);
-      await setDoc(userDocRef, {
-        email: formattedEmail,
-        password: password,
-      }, { merge: true });
-
-      try {
-        await updatePassword(cred.user, "PasojaSecureBypassKey2026_" + formattedEmail);
-      } catch (err) {
-        console.error("Migration password update failed:", err);
-      }
-
-      return cred;
-    } catch (err) {
-      throw err;
-    }
-  };
-
-  const signup = async (email, password, displayName) => {
-    const formattedEmail = email.toLowerCase().trim();
-    localStorage.setItem("pasoja_customer_logged_in", "true");
-    const bypassPassword = "PasojaSecureBypassKey2026_" + formattedEmail;
-
-    const cred = await createUserWithEmailAndPassword(auth, formattedEmail, bypassPassword);
-    await updateProfile(cred.user, { displayName });
-
-    const userDoc = doc(db, "users", cred.user.uid);
-    await setDoc(userDoc, {
-      email: formattedEmail,
-      displayName: displayName || "",
-      password: password,
-      createdAt: serverTimestamp(),
-    });
+    const cred = await signInWithEmailAndPassword(auth, formattedEmail, password);
+    await linkGuestOrdersForUser(cred.user);
     return cred;
   };
 
+  /**
+   * Account registration with email and password via Firebase Authentication
+   */
+  const signup = async (email, password, displayName) => {
+    const formattedEmail = email.toLowerCase().trim();
+    localStorage.setItem("pasoja_customer_logged_in", "true");
+
+    const cred = await createUserWithEmailAndPassword(auth, formattedEmail, password);
+    if (displayName) {
+      await updateProfile(cred.user, { displayName });
+    }
+
+    const userDoc = doc(db, "users", cred.user.uid);
+    await setDoc(userDoc, {
+      uid: cred.user.uid,
+      email: formattedEmail,
+      displayName: displayName || "",
+      createdAt: serverTimestamp(),
+    });
+
+    const customerDocId = formattedEmail.replace(/[^a-z0-9]/g, "_");
+    await setDoc(doc(db, "customers", customerDocId), {
+      uid: cred.user.uid,
+      email: formattedEmail,
+      name: displayName || formattedEmail.split("@")[0],
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+
+    await linkGuestOrdersForUser(cred.user);
+    return cred;
+  };
+
+  /**
+   * Set or change password for current authenticated user
+   */
+  const setPassword = async (newPassword) => {
+    if (!auth.currentUser) throw new Error("No authenticated user session found");
+    await updatePassword(auth.currentUser, newPassword);
+  };
+
+  /**
+   * Google OAuth Sign-in
+   */
   const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     localStorage.setItem("pasoja_customer_logged_in", "true");
-    try {
-      const cred = await signInWithPopup(auth, provider);
-      const userDoc = doc(db, "users", cred.user.uid);
-      const snap = await getDoc(userDoc);
-      if (!snap.exists()) {
-        await setDoc(userDoc, {
-          email: cred.user.email?.toLowerCase().trim() || "",
-          displayName: cred.user.displayName || "",
-          createdAt: serverTimestamp(),
-        });
-      }
-      return cred;
-    } catch (err) {
-      console.error("Google authentication failed:", err);
-      throw err;
-    }
+    const cred = await signInWithPopup(auth, provider);
+    await linkGuestOrdersForUser(cred.user);
+    return cred;
   };
 
+  /**
+   * Sign out and clear sessions
+   */
   const logout = async () => {
-    localStorage.removeItem("pasoja_custom_user");
+    localStorage.removeItem("pasoja_customer_session");
     localStorage.removeItem("pasoja_customer_logged_in");
     setUser(null);
     await signOut(auth);
   };
 
-  const resetPassword = async (email, newPassword) => {
-    const formattedEmail = email.toLowerCase().trim();
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", formattedEmail));
-    const querySnap = await getDocs(q);
-
-    if (querySnap.empty) {
-      throw new Error("auth/user-not-found");
-    }
-
-    const userDoc = querySnap.docs[0];
-    const userDocRef = doc(db, "users", userDoc.id);
-    await setDoc(userDocRef, { password: newPassword }, { merge: true });
+  const value = {
+    user,
+    loading,
+    login,
+    signup,
+    loginWithCustomToken,
+    setPassword,
+    loginWithGoogle,
+    logout
   };
 
-  const value = { user, loading, login, signup, loginWithGoogle, logout, resetPassword };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 

@@ -1,28 +1,193 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Heart, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from './StoreProvider';
 import OptimizedCloudinaryImage from './OptimizedCloudinaryImage';
 
-const ProductCard = ({ product, triggerToast, idx }) => {
+export const parseMlValue = (str) => {
+    if (!str) return null;
+    const match = String(str).toLowerCase().match(/(\d+(?:\.\d+)?)\s*(ml)?/);
+    if (match) return parseFloat(match[1]);
+    return null;
+};
+
+// Select the appropriate variant for a product given preferredSize or filters and sortBy
+export const resolveProductVariant = (product, preferredSize = null, sortBy = null) => {
+    const variants = Array.isArray(product?.size_prices) ? product.size_prices : [];
+    if (!variants || variants.length === 0) return null;
+
+    // Helper matcher
+    const matchSize = (v, target) => {
+        if (!v || !v.size) return false;
+        const vStr = String(v.size).toLowerCase().replace(/\s+/g, '');
+        const tStr = String(target).toLowerCase().replace(/\s+/g, '');
+        if (vStr === tStr) return true;
+        
+        const vMl = parseMlValue(v.size);
+        const tMl = parseMlValue(target);
+        if (vMl !== null && tMl !== null && vMl === tMl) return true;
+        return false;
+    };
+
+    // Helper to find extreme (lowest or highest) priced variant
+    const findExtremeVariant = (list, mode = 'low') => {
+        if (!list || list.length === 0) return null;
+        const validList = list.filter(v => v && v.price != null && !isNaN(Number(v.price)) && Number(v.price) > 0);
+        const candidates = validList.length > 0 ? validList : list;
+        return candidates.reduce((best, curr) => {
+            if (!best) return curr;
+            const bestP = Number(best.price) || 0;
+            const currP = Number(curr.price) || 0;
+            if (mode === 'low') {
+                if (currP < bestP) return curr;
+                if (currP === bestP) {
+                    const currMl = parseMlValue(curr.size) || 9999;
+                    const bestMl = parseMlValue(best.size) || 9999;
+                    return currMl < bestMl ? curr : best;
+                }
+                return best;
+            } else {
+                if (currP > bestP) return curr;
+                if (currP === bestP) {
+                    const currMl = parseMlValue(curr.size) || 0;
+                    const bestMl = parseMlValue(best.size) || 0;
+                    return currMl > bestMl ? curr : best;
+                }
+                return best;
+            }
+        }, null);
+    };
+
+    // Helper to filter variants matching preferredSize (single or array)
+    const getMatchingVariants = (pref) => {
+        if (!pref) return [];
+        if (Array.isArray(pref)) {
+            return variants.filter(v => {
+                return pref.some(p => {
+                    if (p === "1-10ML") {
+                        const ml = parseMlValue(v.size);
+                        return ml !== null && ml >= 1 && ml <= 10;
+                    } else if (p === "10-20ML") {
+                        const ml = parseMlValue(v.size);
+                        return ml !== null && ml > 10 && ml <= 20;
+                    } else if (p === "20-50ML") {
+                        const ml = parseMlValue(v.size);
+                        return ml !== null && ml > 20 && ml <= 50;
+                    } else if (p === "50-100ML") {
+                        const ml = parseMlValue(v.size);
+                        return ml !== null && ml > 50 && ml <= 100;
+                    } else if (p === ">100ML") {
+                        const ml = parseMlValue(v.size);
+                        return ml !== null && ml > 100;
+                    } else {
+                        return matchSize(v, p);
+                    }
+                });
+            });
+        }
+        if (pref === 'miniature') {
+            return variants.filter(v => {
+                const ml = parseMlValue(v.size);
+                return ml !== null && ml <= 10;
+            });
+        }
+        if (pref === "1-10ML") {
+            return variants.filter(v => {
+                const ml = parseMlValue(v.size);
+                return ml !== null && ml >= 1 && ml <= 10;
+            });
+        }
+        if (pref === "10-20ML") {
+            return variants.filter(v => {
+                const ml = parseMlValue(v.size);
+                return ml !== null && ml > 10 && ml <= 20;
+            });
+        }
+        if (pref === "20-50ML") {
+            return variants.filter(v => {
+                const ml = parseMlValue(v.size);
+                return ml !== null && ml > 20 && ml <= 50;
+            });
+        }
+        if (pref === "50-100ML") {
+            return variants.filter(v => {
+                const ml = parseMlValue(v.size);
+                return ml !== null && ml > 50 && ml <= 100;
+            });
+        }
+        if (pref === ">100ML") {
+            return variants.filter(v => {
+                const ml = parseMlValue(v.size);
+                return ml !== null && ml > 100;
+            });
+        }
+        return variants.filter(v => matchSize(v, pref));
+    };
+
+    // 1. If preferredSize is provided (e.g. from size filter)
+    if (preferredSize && (!Array.isArray(preferredSize) || preferredSize.length > 0)) {
+        const matches = getMatchingVariants(preferredSize);
+        if (matches.length > 0) {
+            if (sortBy === 'price-low') {
+                return findExtremeVariant(matches, 'low');
+            } else if (sortBy === 'price-high') {
+                return findExtremeVariant(matches, 'high');
+            }
+            return matches[0];
+        }
+    }
+
+    // 2. If NO preferredSize is active, check sortBy
+    if (sortBy === 'price-low') {
+        const lowest = findExtremeVariant(variants, 'low');
+        if (lowest) return lowest;
+    } else if (sortBy === 'price-high') {
+        const highest = findExtremeVariant(variants, 'high');
+        if (highest) return highest;
+    }
+
+    // 3. Default: Look for 50ml first
+    const fiftyMlVariant = variants.find(v => {
+        const ml = parseMlValue(v.size);
+        return ml === 50 || String(v.size).toLowerCase().includes('50ml');
+    });
+    if (fiftyMlVariant) return fiftyMlVariant;
+
+    // 4. Fallback: Base variant (first variant in list)
+    return variants[0];
+};
+
+const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
     const navigate = useNavigate();
     const { addToCart, addToWishlist, removeFromWishlist, wishlist, cart } = useStore();
     const isWishlisted = wishlist.some(item => item.id === product.id);
     const [isHovered, setIsHovered] = useState(false);
 
-    // Default to 50ml variant if available, otherwise base variant
-    const defaultSize = product.size_prices && product.size_prices.length > 0
-        ? (product.size_prices.find(s => s.size?.toLowerCase()?.trim() === '50ml') || product.size_prices[0])
-        : null;
+    const variants = Array.isArray(product?.size_prices) ? product.size_prices : [];
 
-    const displayPrice = defaultSize ? defaultSize.price : product.price;
-    const originalPrice = defaultSize?.original_price || product.original_price || Math.round((displayPrice || 999) * 1.25);
+    // Compute active variant based on preferredSize and sortBy, defaulting to 50ml or base variant
+    const resolvedDefaultVariant = useMemo(() => {
+        return resolveProductVariant(product, preferredSize, sortBy);
+    }, [product, preferredSize, sortBy]);
+
+    // Local user selected variant (if user clicks on variant buttons directly on card)
+    const [selectedVariant, setSelectedVariant] = useState(null);
+
+    // Sync selectedVariant when resolvedDefaultVariant changes (e.g. filter or sort changes)
+    useEffect(() => {
+        setSelectedVariant(resolvedDefaultVariant);
+    }, [resolvedDefaultVariant]);
+
+    const activeVariant = selectedVariant || resolvedDefaultVariant;
+
+    const displayPrice = activeVariant ? (activeVariant.price ?? product.price) : product.price;
+    const originalPrice = activeVariant?.original_price || product.original_price || Math.round((displayPrice || 999) * 1.25);
     const savingsPercent = displayPrice && originalPrice > displayPrice ? Math.round(((originalPrice - displayPrice) / originalPrice) * 100) : 0;
 
-    const cartItemId = defaultSize ? `${product.id}-${defaultSize.size}` : product.id;
+    const cartItemId = activeVariant ? `${product.id}-${activeVariant.size}` : product.id;
     const isInCart = cart.some(item => (item.cartId || item.id) === cartItemId);
-    const isPreOrder = Boolean(defaultSize?.is_preorder);
-    const isOutOfStock = !isPreOrder && ((defaultSize ? defaultSize.stock === 0 : product.stock === 0) || product.stock_status === 'Out of Stock');
+    const isPreOrder = Boolean(activeVariant?.is_preorder);
+    const isOutOfStock = !isPreOrder && ((activeVariant ? activeVariant.stock === 0 : product.stock === 0) || product.stock_status === 'Out of Stock');
 
     const rawTags = Array.isArray(product.tags) && product.tags.length > 0 ? product.tags : (product.tag ? [product.tag] : []);
     const tagsToDisplay = Array.from(new Map(rawTags.map(t => [typeof t === "object" ? t.label : t, t])).values());
@@ -32,7 +197,7 @@ const ProductCard = ({ product, triggerToast, idx }) => {
         e.stopPropagation();
         if (type === 'cart') {
             if (isInCart) return;
-            await addToCart(product, defaultSize);
+            await addToCart(product, activeVariant);
             triggerToast(isPreOrder ? 'Pre-order added to bag' : 'Added to bag');
         } else {
             if (isWishlisted) {
@@ -47,7 +212,7 @@ const ProductCard = ({ product, triggerToast, idx }) => {
 
     const displayedImage = isHovered && product.images && product.images.length > 1
         ? product.images[1]
-        : (defaultSize?.image || product.image || product.images?.[0] || 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800');
+        : (activeVariant?.image || product.image || product.images?.[0] || 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800');
 
     return (
         <div
@@ -144,6 +309,34 @@ const ProductCard = ({ product, triggerToast, idx }) => {
                     {product.name}
                 </h3>
 
+                {/* Available Variant Options Pills */}
+                {variants.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
+                        {variants.map((v, vIdx) => {
+                            const isCurrent = activeVariant && activeVariant.size === v.size;
+                            return (
+                                <button
+                                    key={vIdx}
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setSelectedVariant(v);
+                                    }}
+                                    className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase transition-all cursor-pointer ${
+                                        isCurrent
+                                            ? 'bg-black text-white border border-black shadow-xs'
+                                            : 'bg-zinc-50 text-zinc-600 border border-zinc-200 hover:border-black hover:text-black'
+                                    }`}
+                                    title={`${v.size} - ₹${Number(v.price).toLocaleString('en-IN')}`}
+                                >
+                                    {v.size}
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
+
                 {/* Prices */}
                 <div className="flex items-baseline gap-2.5">
                     <span className="text-[13px] text-zinc-400 line-through font-light">
@@ -154,6 +347,11 @@ const ProductCard = ({ product, triggerToast, idx }) => {
                     </span>
                     {savingsPercent > 0 && (
                         <span className="text-[11px] font-bold text-[#e53e3e]">-{savingsPercent}%</span>
+                    )}
+                    {activeVariant?.size && (
+                        <span className="text-[10px] font-medium text-zinc-400 ml-auto">
+                            ({activeVariant.size})
+                        </span>
                     )}
                 </div>
             </div>

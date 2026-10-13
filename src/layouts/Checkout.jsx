@@ -7,6 +7,7 @@ import {
 } from "firebase/firestore";
 
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../components/useAuth";
 import {
   MapPin, User, Phone, Mail, CheckCircle, X,
   ShieldCheck, ChevronRight, Plus, Check, Lock, Tag,
@@ -120,30 +121,26 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
           </div>
         </div>
 
-        {/* Auto Generated Account Box */}
-        {finalDetails.tempPassword && (
-          <div className="mb-8 p-4 bg-zinc-50 border border-zinc-200 rounded-xl relative overflow-hidden">
-            <div className="absolute top-0 bottom-0 left-0 w-1 bg-zinc-905" />
-            <div className="flex gap-3">
-              <User size={18} className="text-zinc-700 mt-0.5 shrink-0" />
-              <div>
-                <h4 className="text-[14px] font-bold uppercase tracking-wider text-zinc-900">
-                  Account Created Successfully
+        {/* Guest Order Account Link Prompt */}
+        {finalDetails.isGuest && (
+          <div className="mb-8 p-4 bg-zinc-50 border border-zinc-200/90 rounded-xl relative overflow-hidden text-left">
+            <div className="absolute top-0 bottom-0 left-0 w-1 bg-[#c9a962]" />
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <h4 className="text-[12px] font-bold uppercase tracking-wider text-zinc-900 flex items-center gap-1.5">
+                  <ShieldCheck size={15} className="text-[#c9a962]" />
+                  Track Your Fragrance Journey
                 </h4>
-                <p className="text-[11px] text-zinc-500 font-light mt-1 leading-relaxed">
-                  We've automatically generated an account for you using your email to help you track shipments and view receipts.
+                <p className="text-[11px] text-zinc-500 font-light leading-relaxed max-w-md">
+                  Create an account or sign in with <strong className="text-zinc-800">{finalDetails.shipping?.email}</strong> via Email OTP to view real-time delivery timelines and manage your order history.
                 </p>
-                <div className="mt-2.5 flex flex-wrap gap-4 text-[14px] font-mono bg-white border border-zinc-200/80 p-2.5 rounded-lg">
-                  <div>
-                    <span className="text-zinc-400">Email:</span>{" "}
-                    <span className="text-zinc-800 font-semibold">{finalDetails.shipping?.email}</span>
-                  </div>
-                  <div>
-                    <span className="text-zinc-400">Password:</span>{" "}
-                    <span className="text-zinc-850 font-semibold select-all font-mono">{finalDetails.tempPassword}</span>
-                  </div>
-                </div>
               </div>
+              <Link
+                to={`/login?redirect=orders`}
+                className="shrink-0 px-4 py-2.5 bg-black hover:bg-zinc-800 text-white text-[10px] uppercase font-bold tracking-widest rounded-lg transition-all"
+              >
+                Access Account →
+              </Link>
             </div>
           </div>
         )}
@@ -287,6 +284,7 @@ const OrderFailed = ({ onRetry }) => (
 /* ─── Main Checkout Component ────────────────────────────────────────────── */
 const Checkout = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState([]);
@@ -295,6 +293,17 @@ const Checkout = () => {
     name: "", email: "", phone: "", address: "", city: "", state: "", pincode: "",
     paymentMethod: "online",
   });
+
+  // Prefill email and name if authenticated user is present
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        email: prev.email || user.email || "",
+        name: prev.name || user.displayName || ""
+      }));
+    }
+  }, [user]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderStatus, setOrderStatus] = useState(null);
   const [toast, setToast] = useState(null);
@@ -519,7 +528,9 @@ const Checkout = () => {
   const saveOrder = async (paymentId = "COD", status = "confirmed", paymentStatus = "captured", tempPassword = "") => {
     try {
       const finalEmail = formData.email.toLowerCase().trim();
-      const finalUid = "GUEST_" + Math.random().toString(36).substr(2, 9);
+      const finalUid = user ? user.uid : null;
+      const isGuest = !user;
+      const orderNumber = "MHR-" + Math.floor(100000 + Math.random() * 900000);
 
       const orderRef = doc(collection(db, "orders"));
 
@@ -585,18 +596,41 @@ const Checkout = () => {
       }
 
       await setDoc(orderRef, {
+        orderId: orderRef.id,
+        orderNumber,
         userId: finalUid,
-        userEmail: finalEmail,
+        isGuest,
+        customerEmail: finalEmail,
+        customerName: formData.name || "",
+        customerPhone: formData.phone || "",
+        userEmail: finalEmail, // keep backward compatibility
         items,
         total: Math.max(0, total - couponDiscount),
+        subtotal: total,
         shipping: formData,
+        shippingCost: 0,
+        discount: couponDiscount,
         paymentMethod: formData.paymentMethod,
         paymentId,
         status,
+        orderStatus: status,
         paymentStatus,
         appliedCoupon: appliedCoupon ? appliedCoupon.code : null,
         couponDiscount,
+        shippingAddress: {
+          name: formData.name,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode
+        },
+        emailStatus: {
+          customer: "pending",
+          admin: "pending"
+        },
         createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
         // Insert shiprocket properties securely from the start
         shipmentId: shiprocketData?.shipment_id || "",
         awbCode: shiprocketData?.awb_code || "",
@@ -670,6 +704,8 @@ const Checkout = () => {
 
         setCreatedOrderDetails({
           id: orderRef.id,
+          orderNumber,
+          isGuest,
           total: Math.max(0, total - couponDiscount),
           shipping: { ...formData, email: finalEmail },
           items: items,
@@ -682,7 +718,32 @@ const Checkout = () => {
         });
 
         await clearCart();
-        await sendOrderConfirmationEmail(finalEmail, formData.name, orderRef.id, Math.max(0, total - couponDiscount), "");
+
+        // Non-blocking server-side email notifications (Customer Confirmation + Admin Alert)
+        try {
+          fetch("/api/send-order-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId: orderRef.id,
+              order: {
+                id: orderRef.id,
+                orderNumber,
+                customerEmail: finalEmail,
+                customerName: formData.name,
+                customerPhone: formData.phone,
+                items,
+                subtotal: total,
+                total: Math.max(0, total - couponDiscount),
+                discount: couponDiscount,
+                paymentMethod: formData.paymentMethod,
+                paymentStatus,
+                shipping: formData,
+                isGuest
+              }
+            })
+          }).catch(err => console.warn("Background email notification error:", err));
+        } catch (_) { }
 
         // ── Auto-set customer session so user doesn't need to login after checkout ──
         try {

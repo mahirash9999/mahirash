@@ -4,14 +4,19 @@ service cloud.firestore {
     
     // Helper functions
     function isSuperAdmin() {
-      return request.auth != null && (request.auth.token.email == 'mahirash9999@gmail.com');
+      return request.auth != null && (request.auth.token.email == 'mahirash9999@gmail.com' || request.auth.token.email == 'admin@mahirash.com');
     }
 
     function isOwner(userId) {
       return request.auth != null && request.auth.uid == userId;
     }
 
-    // Products rules: everyone can read, super admin manages items
+    // OTP Verification security: STRICTLY NO CLIENT ACCESS (handled exclusively by server API)
+    match /_otp_verifications/{docId} {
+      allow read, write: if false;
+    }
+
+    // Products rules: public read, super admin write
     match /products/{productId} {
       allow read: if true;
       allow write: if isSuperAdmin();
@@ -22,25 +27,39 @@ service cloud.firestore {
       allow write: if isSuperAdmin() || request.auth != null;
     }
     
-    // Users rules: allow listing/get (query checks for register lookup), restrict sub-collections to owners
+    // Users rules: sub-collections restricted to authenticated owner
     match /users/{userId} {
       allow read: if true;
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) || isSuperAdmin();
       
       match /{allSubcollections=**} {
-        allow read, write: if isOwner(userId);
+        allow read, write: if isOwner(userId) || isSuperAdmin();
       }
     }
     
     // Orders rules: Strict authentication-based access to prevent arbitrary read/writes.
+    // Order creation permitted for checkout (guest & authenticated)
+    // Order modification restricted exclusively to super admin / server API
     match /orders/{orderId} {
       allow create: if true;
-      allow read: if isSuperAdmin() || (request.auth != null && (request.auth.uid == resource.data.userId || request.auth.token.email == resource.data.userEmail));
-      allow update: if isSuperAdmin();
+      allow read: if isSuperAdmin() || (
+        request.auth != null && (
+          request.auth.uid == resource.data.userId || 
+          request.auth.token.email == resource.data.userEmail ||
+          request.auth.token.email == resource.data.customerEmail
+        )
+      );
+      allow update: if isSuperAdmin() || (
+        request.auth != null && 
+        (resource.data.isGuest == true || resource.data.userId == null || resource.data.userId == '') &&
+        (request.auth.token.email == resource.data.customerEmail || request.auth.token.email == resource.data.userEmail) &&
+        request.resource.data.userId == request.auth.uid &&
+        request.resource.data.isGuest == false
+      );
       allow delete: if isSuperAdmin();
     }
     
-    // Coupons rules: everyone can read (to apply at checkout), only admin can write
+    // Coupons rules: public read for checkout, super admin write
     match /coupons/{couponId} {
       allow read: if true;
       allow write: if isSuperAdmin();
@@ -48,12 +67,22 @@ service cloud.firestore {
 
     // Customers collection: Strict profile isolation
     match /customers/{customerId} {
-      allow read, update: if isSuperAdmin() || (request.auth != null && (request.auth.token.email == customerId || request.auth.uid == customerId));
-      allow create: if true; // allow initial account creation
+      allow read, update: if isSuperAdmin() || (
+        request.auth != null && (
+          request.auth.token.email == resource.data.email || 
+          request.auth.uid == customerId ||
+          request.auth.uid == resource.data.uid
+        )
+      );
+      allow create: if true; // allow initial profile creation
       allow delete: if isSuperAdmin();
+
+      match /{allSubcollections=**} {
+        allow read, write: if isSuperAdmin() || (request.auth != null && request.auth.uid == customerId);
+      }
     }
 
-    // CMS & Storefront Dynamic Content Collections: everyone can read, only super admin can write
+    // CMS & Storefront Dynamic Content Collections: public read, super admin write
     match /hero_slides/{slideId} {
       allow read: if true;
       allow write: if isSuperAdmin();
@@ -80,11 +109,6 @@ service cloud.firestore {
     }
 
     match /global_alerts/{alertId} {
-      allow read: if true;
-      allow write: if isSuperAdmin();
-    }
-
-    match /explore_banner/{bannerId} {
       allow read: if true;
       allow write: if isSuperAdmin();
     }

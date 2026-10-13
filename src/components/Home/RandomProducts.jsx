@@ -7,7 +7,58 @@ import { collection, getDocs } from 'firebase/firestore';
 import { useStore } from '../StoreProvider';
 import OptimizedCloudinaryImage from '../OptimizedCloudinaryImage';
 
-const DEFAULT_PRODUCTS = [];
+const parseMl = (str) => {
+  if (!str) return null;
+  const match = String(str).toLowerCase().match(/(\d+(?:\.\d+)?)\s*(ml)/);
+  if (match) return parseFloat(match[1]);
+  return null;
+};
+
+// Check if product is a miniature (<= 10 ml)
+const isMiniatureProduct = (product) => {
+  if (!product) return false;
+
+  // Check product name for explicit discovery/miniature/tester mentions
+  const nameLower = (product.name || '').toLowerCase();
+  if (nameLower.includes('sample') || nameLower.includes('miniature') || nameLower.includes('discovery') || nameLower.includes('travel set') || nameLower.includes('tester')) {
+    return true;
+  }
+
+  // Check sizes string (e.g. "5ml, 10ml" or "10ml")
+  if (product.sizes) {
+    const parts = String(product.sizes).split(',');
+    for (const part of parts) {
+      const ml = parseMl(part);
+      if (ml !== null && ml <= 10) return true;
+    }
+  }
+
+  // Check size_prices array
+  if (Array.isArray(product.size_prices) && product.size_prices.length > 0) {
+    const hasMiniatureVariant = product.size_prices.some(sp => {
+      const ml = parseMl(sp?.size);
+      return ml !== null && ml <= 10;
+    });
+    if (hasMiniatureVariant) return true;
+  }
+
+  // Check single size / volume attribute
+  if (product.volume || product.size) {
+    const ml = parseMl(product.volume || product.size);
+    if (ml !== null && ml <= 10) return true;
+  }
+
+  return false;
+};
+
+const shuffleArray = (array) => {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+};
 
 import ProductCard from '../ProductCard';
 
@@ -42,14 +93,20 @@ const RandomProducts = () => {
           const list = snap.docs
             .map(d => ({ id: d.id, ...d.data() }))
             .filter(item => item.is_active !== false);
-          setAllRawProducts(list);
-          setRandomizedProducts(shuffleArray(list));
+
+          // Filter for miniature products (<= 10ml)
+          const miniatureProducts = list.filter(isMiniatureProduct);
+          // Fallback to list if no <= 10ml products found so section doesn't stay empty
+          const displayList = miniatureProducts.length > 0 ? miniatureProducts : list;
+
+          setAllRawProducts(displayList);
+          setRandomizedProducts(shuffleArray(displayList));
         } else {
           setAllRawProducts([]);
           setRandomizedProducts([]);
         }
       } catch (err) {
-        console.warn('Error fetching random products:', err);
+        console.warn('Error fetching miniature products:', err);
         setAllRawProducts([]);
         setRandomizedProducts([]);
       } finally {
@@ -122,13 +179,13 @@ const RandomProducts = () => {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <p className="text-[10px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase font-bold flex items-center gap-2">
-                  <span>CURATED DISCOVERIES</span>
+                  <span>POCKET LUXURY</span>
                   <span>•</span>
-                  <span>BESPOKE SELECTIONS</span>
+                  <span>DISCOVERY ESSENTIALS</span>
                 </p>
               </div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight tracking-[0.15em] text-[#0D0D0D] uppercase whitespace-nowrap">
-                EXPLORE ALL EXTRAITS & STYLES
+                EXPLORE OUR MINIATURES
               </h2>
             </div>
             <div className="hidden md:block flex-1 h-[1px] bg-gradient-to-r from-[#B8860B]/40 via-zinc-300 to-transparent mb-3" />
@@ -165,6 +222,7 @@ const RandomProducts = () => {
                 key={product.id}
                 product={product}
                 idx={idx}
+                preferredSize="miniature"
                 triggerToast={triggerToast}
               />
             ))}
@@ -174,10 +232,10 @@ const RandomProducts = () => {
         {/* View All CTA */}
         <div className="mt-14 md:mt-18 flex justify-center">
           <Link
-            to="/shop"
+            to="/shop?size=1-10ML"
             className="group inline-flex items-center gap-3 px-10 py-4 border border-[#0D0D0D] bg-[#0D0D0D] text-white text-[11px] font-extrabold uppercase tracking-[0.28em] transition-all duration-300 hover:bg-[#B8860B] hover:border-[#B8860B] rounded-full shadow-lg"
           >
-            <span>View Full Catalogue</span>
+            <span>Explore All Miniatures</span>
             <ArrowRight size={15} className="transform group-hover:translate-x-1.5 transition-transform duration-300" />
           </Link>
         </div>

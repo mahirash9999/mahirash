@@ -1297,7 +1297,7 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const [dbFragranceFamilies, setDbFragranceFamilies] = useState([]);
 
-  // Stats / executive summary
+  const [productsLoading, setProductsLoading] = useState(true);
   const [statsSummary, setStatsSummary] = useState({
     revenue: 0,
     orders: 0,
@@ -1310,37 +1310,82 @@ const Admin = () => {
 
   const loadData = async () => {
     setLoading(true);
-    try {
-      const famSnap = await getDocs(collection(db, "fragrance_families"));
-      if (!famSnap.empty) {
-        setDbFragranceFamilies(famSnap.docs.map(doc => doc.data().name).filter(Boolean));
-      } else {
+    setProductsLoading(true);
+
+    // 1. Fetch Products IMMEDIATELY without waiting for users/orders
+    const fetchProductsPromise = (async () => {
+      try {
+        const prodSnap = await getDocs(collection(db, "products"));
+        const prodList = prodSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        prodList.sort((a, b) => {
+          const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0));
+          const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0));
+          return timeB - timeA;
+        });
+        setProducts(prodList);
+        setProductsLoading(false);
+        return prodList;
+      } catch (prodErr) {
+        console.error("Error loading products:", prodErr);
+        setProductsLoading(false);
+        return [];
+      }
+    })();
+
+    // 2. Fetch Fragrance Families in parallel
+    const fetchFamiliesPromise = (async () => {
+      try {
+        const famSnap = await getDocs(collection(db, "fragrance_families"));
+        if (!famSnap.empty) {
+          setDbFragranceFamilies(famSnap.docs.map(doc => doc.data().name).filter(Boolean));
+        } else {
+          setDbFragranceFamilies(["Aromatic", "Citrus", "Floral", "Fougere", "Fruity", "Leather", "Woody", "Warm & Spicy"]);
+        }
+      } catch (famErr) {
         setDbFragranceFamilies(["Aromatic", "Citrus", "Floral", "Fougere", "Fruity", "Leather", "Woody", "Warm & Spicy"]);
       }
+    })();
 
-      const prodSnap = await getDocs(collection(db, "products"));
-      const prodList = prodSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      prodList.sort((a, b) => {
-        const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
-        const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
-        return timeB - timeA;
-      });
-      setProducts(prodList);
+    // 3. Fetch Users in parallel
+    const fetchUsersPromise = (async () => {
+      try {
+        const userSnap = await getDocs(query(collection(db, "users")));
+        const userList = userSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        setUsers(userList);
+        return userList;
+      } catch (userErr) {
+        console.warn("Notice loading users:", userErr);
+        return [];
+      }
+    })();
 
-      const userSnap = await getDocs(query(collection(db, "users")));
-      const userList = userSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      setUsers(userList);
+    // 4. Fetch Orders in parallel
+    const fetchOrdersPromise = (async () => {
+      try {
+        const orderSnap = await getDocs(collection(db, "orders"));
+        const orderList = orderSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        orderList.sort((a, b) => {
+          const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0));
+          const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0));
+          return timeB - timeA;
+        });
+        setOrders(orderList);
+        return orderList;
+      } catch (orderErr) {
+        console.warn("Notice loading orders:", orderErr);
+        return [];
+      }
+    })();
 
-      const orderSnap = await getDocs(collection(db, "orders"));
-      const orderList = orderSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-      orderList.sort((a, b) => {
-        const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
-        const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
-        return timeB - timeA;
-      });
-      setOrders(orderList);
+    try {
+      const [prodList, , userList, orderList] = await Promise.all([
+        fetchProductsPromise,
+        fetchFamiliesPromise,
+        fetchUsersPromise,
+        fetchOrdersPromise
+      ]);
 
-      // Aggregate revenue & calculate changes
+      // Aggregate revenue & calculate changes for metrics cards
       const now = new Date();
       const currentMonth = now.getMonth();
       const currentYear = now.getFullYear();
@@ -1390,9 +1435,10 @@ const Admin = () => {
         custChange
       });
     } catch (error) {
-      console.log("Error loading dashboard metrics, using fallback metrics:", error);
+      console.error("Error loading dashboard metrics:", error);
     } finally {
       setLoading(false);
+      setProductsLoading(false);
     }
   };
 
@@ -1632,6 +1678,7 @@ const Admin = () => {
           <>
             <ProductsTable
               products={filteredProducts}
+              loading={productsLoading}
               onEdit={handleEditClick}
               onDelete={handleDeleteProduct}
               onImportSuccess={loadData}

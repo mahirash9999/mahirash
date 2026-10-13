@@ -28,7 +28,7 @@ export const parseMl = (str) => {
   return null;
 };
 
-import ProductCard from "../components/ProductCard";
+import ProductCard, { resolveProductVariant } from "../components/ProductCard";
 
 const INITIAL_FILTERS = {
   brand: "All",
@@ -186,7 +186,18 @@ const Shop = () => {
   // Dynamically compute unique values from products
   const maxPriceLimit = useMemo(() => {
     if (!products.length) return 25000;
-    const max = Math.max(...products.map(p => p.price || 0));
+    const max = Math.max(
+      ...products.map(p => {
+        let pMax = Number(p.price) || 0;
+        if (Array.isArray(p.size_prices)) {
+          p.size_prices.forEach(v => {
+            const vp = Number(v.price) || 0;
+            if (vp > pMax) pMax = vp;
+          });
+        }
+        return pMax;
+      })
+    );
     return Math.max(5000, Math.ceil(max / 1000) * 1000);
   }, [products]);
 
@@ -370,9 +381,10 @@ const Shop = () => {
           return false;
         }
 
-        // Price range
-        const price = p.price || 0;
-        if (price < filters.minPrice || price > filters.maxPrice) {
+        // Price range (evaluated on the active displayed variant given active filter & sort)
+        const activeVariant = resolveProductVariant(p, filters.sizes.length > 0 ? filters.sizes : null, sortBy);
+        const effectivePrice = activeVariant ? (activeVariant.price ?? p.price ?? 0) : (p.price ?? 0);
+        if (effectivePrice < filters.minPrice || effectivePrice > filters.maxPrice) {
           return false;
         }
 
@@ -425,7 +437,8 @@ const Shop = () => {
 
         // On Sale Only
         if (filters.onSaleOnly) {
-          if (!p.original_price || p.original_price <= (p.price || 0)) return false;
+          const origPrice = activeVariant?.original_price || p.original_price;
+          if (!origPrice || origPrice <= effectivePrice) return false;
         }
 
         // Rating
@@ -436,8 +449,13 @@ const Shop = () => {
         return true;
       })
       .sort((a, b) => {
-        if (sortBy === "price-low") return (a.price || 0) - (b.price || 0);
-        if (sortBy === "price-high") return (b.price || 0) - (a.price || 0);
+        if (sortBy === "price-low" || sortBy === "price-high") {
+          const vA = resolveProductVariant(a, filters.sizes.length > 0 ? filters.sizes : null, sortBy);
+          const priceA = vA ? (vA.price ?? a.price ?? 0) : (a.price ?? 0);
+          const vB = resolveProductVariant(b, filters.sizes.length > 0 ? filters.sizes : null, sortBy);
+          const priceB = vB ? (vB.price ?? b.price ?? 0) : (b.price ?? 0);
+          return sortBy === "price-low" ? priceA - priceB : priceB - priceA;
+        }
         if (sortBy === "name") return (a.name || "").localeCompare(b.name || "");
         return 0;
       });
@@ -760,6 +778,8 @@ const Shop = () => {
                       key={product.id}
                       product={product}
                       idx={idx}
+                      preferredSize={filters.sizes.length > 0 ? filters.sizes : null}
+                      sortBy={sortBy}
                       triggerToast={triggerToast}
                     />
                   ))}

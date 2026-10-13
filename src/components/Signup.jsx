@@ -257,6 +257,15 @@ const Signup = () => {
               </svg>
               <span>Sign up with Google</span>
             </button>
+
+            <div className="pt-4 text-center">
+              <Link
+                to={`/login?redirect=${encodeURIComponent(redirectPath)}`}
+                className="text-[11px] text-zinc-600 hover:text-black underline font-medium"
+              >
+                Prefer passwordless? Continue with Email OTP →
+              </Link>
+            </div>
           </div>
 
           {/* Sign In redirect */}

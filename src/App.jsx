@@ -12,6 +12,7 @@ import Preloader from "./pages/Preloader";
 // Lazy loaded page components
 const Home = lazy(() => import("./components/Homepage/Home"));
 const Admin = lazy(() => import("./pages/Admin/Admin"));
+const AdminSignup = lazy(() => import("./pages/AdminSignup"));
 const Login = lazy(() => import("./components/Login"));
 const Signup = lazy(() => import("./components/Signup"));
 const ForgotPassword = lazy(() => import("./components/ForgotPassword"));
@@ -57,8 +58,8 @@ const AppRoutes = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<Admin />} />
-            <Route path="/admin-signup" element={<Admin />} />
-            <Route path="/admin/signup" element={<Admin />} />
+            <Route path="/admin-signup" element={<AdminSignup />} />
+            <Route path="/admin/signup" element={<AdminSignup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />

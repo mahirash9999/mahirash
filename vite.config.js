@@ -4,8 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import fs from 'fs'
 import path from 'path'
 
-// Small plugin to run Vercel /api routes locally in Vite
-const vercelApiPlugin = () => ({
+const vercelApiPlugin = (mode = 'development') => ({
   name: 'vercel-api-plugin',
   configureServer(server) {
     server.middlewares.use(async (req, res, next) => {
@@ -21,6 +20,10 @@ const vercelApiPlugin = () => ({
 
           req.on('end', async () => {
             try {
+              // Dynamically reload .env to ensure fresh SMTP credentials without manual server restarts
+              const freshEnv = loadEnv(mode || process.env.NODE_ENV || 'development', process.cwd(), '');
+              Object.assign(process.env, freshEnv);
+
               if (body && req.headers['content-type']?.includes('application/json')) {
                 req.body = JSON.parse(body);
               }
@@ -73,7 +76,7 @@ export default defineConfig(({ mode }) => {
   Object.assign(process.env, env);
 
   return {
-    plugins: [react(), tailwindcss(), vercelApiPlugin()],
+    plugins: [react(), tailwindcss(), vercelApiPlugin(mode)],
     define: {
       'import.meta.env.VITE_CLOUDINARY_CLOUD_NAME': JSON.stringify(env.VITE_CLOUDINARY_CLOUD_NAME || env.CLOUDINARY_CLOUD_NAME),
       'import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET': JSON.stringify(env.VITE_CLOUDINARY_UPLOAD_PRESET || env.CLOUDINARY_UPLOAD_PRESET),

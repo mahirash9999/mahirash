@@ -48,9 +48,52 @@ const Orders = () => {
     }
     const fetchOrders = async () => {
       try {
-        const q = query(collection(db, "orders"), where("userId", "==", user.uid));
-        const snap = await getDocs(q);
-        const ordersList = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        // Link any eligible guest orders in background
+        try {
+          const token = await user.getIdToken();
+          await fetch("/api/link-guest-orders", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+          });
+        } catch (_) { }
+
+        const cleanEmail = (user.email || "").toLowerCase().trim();
+        const ordersRef = collection(db, "orders");
+
+        // Primary query: orders owned by authenticated user UID
+        const qUid = query(ordersRef, where("userId", "==", user.uid));
+        const snapUid = await getDocs(qUid);
+
+        const ordersMap = new Map();
+        snapUid.docs.forEach(docSnap => {
+          ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
+        });
+
+        // Secondary fallback query: orders matching verified email
+        if (cleanEmail) {
+          try {
+            const qEmail = query(ordersRef, where("customerEmail", "==", cleanEmail));
+            const snapEmail = await getDocs(qEmail);
+            snapEmail.docs.forEach(docSnap => {
+              if (!ordersMap.has(docSnap.id)) {
+                ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
+              }
+            });
+
+            const qUserEmail = query(ordersRef, where("userEmail", "==", cleanEmail));
+            const snapUserEmail = await getDocs(qUserEmail);
+            snapUserEmail.docs.forEach(docSnap => {
+              if (!ordersMap.has(docSnap.id)) {
+                ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
+              }
+            });
+          } catch (_) { }
+        }
+
+        const ordersList = Array.from(ordersMap.values());
         ordersList.sort((a, b) => {
           const timeA = a.createdAt?.toMillis
             ? a.createdAt.toMillis()
