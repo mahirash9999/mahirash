@@ -292,8 +292,9 @@ const OrderFailed = ({ onRetry }) => (
 const Checkout = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { customer } = useCustomerAuth ? useCustomerAuth() : { customer: null };
-  const store = useStore ? useStore() : null;
+  const customerAuth = useCustomerAuth();
+  const customer = customerAuth?.customer;
+  const store = useStore();
   const storeCart = store?.cart || [];
   const storeClearCart = store?.clearCart;
   const [items, setItems] = useState([]);

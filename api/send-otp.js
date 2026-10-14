@@ -19,8 +19,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Please provide a valid email format" });
   }
 
-  // Prevent customer OTP flow from interfering with hardcoded super-admin accounts
-  const restrictedAdmins = ["mahirsh9999@gmail.com", "admin@mahirash.com"];
+  // Prevent customer OTP flow from interfering with administrative accounts
+  const restrictedAdmins = [
+    process.env.ADMIN_EMAIL ? normalizeEmail(process.env.ADMIN_EMAIL) : null,
+    process.env.SMTP_USER ? normalizeEmail(process.env.SMTP_USER) : null
+  ].filter(Boolean);
   if (restrictedAdmins.includes(cleanEmail)) {
     return res.status(403).json({
       error: "This address is reserved for administrative access. Please log in at /admin."

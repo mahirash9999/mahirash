@@ -1,3 +1,4 @@
+import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
 import { normalizeEmail, verifyClientIdentity } from "./lib/firebaseAdmin.js";
 import { getFirestoreDb } from "./lib/firestoreClient.js";
 
@@ -35,7 +36,6 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Database service temporarily unavailable" });
     }
 
-    const { collection, query, where, getDocs, doc, updateDoc } = await import("firebase/firestore");
     const ordersRef = collection(db, "orders");
     const ordersMap = new Map();
 

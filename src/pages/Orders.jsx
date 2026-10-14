@@ -13,7 +13,7 @@ import MiniLoader from '../components/MiniLoader';
 
 const Orders = () => {
   const { user } = useAuth();
-  const customerAuth = useCustomerAuth ? useCustomerAuth() : null;
+  const customerAuth = useCustomerAuth();
   const customer = customerAuth?.customer;
   const activeEmail = (customer?.email || user?.email || "").toLowerCase().trim();
   const activeUid = user?.uid || customer?.uid || customer?.id || "";

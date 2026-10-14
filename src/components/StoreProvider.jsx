@@ -10,7 +10,7 @@ export const useStore = () => useContext(StoreContext);
 
 export const StoreProvider = ({ children }) => {
   const { user, loading: authLoading } = useAuth();
-  const customerAuth = useCustomerAuth ? useCustomerAuth() : null;
+  const customerAuth = useCustomerAuth();
   const customer = customerAuth?.customer;
   const activeUid = user?.uid || customer?.uid;
 
