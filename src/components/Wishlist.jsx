@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Heart, ShoppingBag, ArrowRight, X } from "lucide-react";
+import { Heart, ShoppingBag, ArrowRight, X, Bell, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PageHeader from "./Home/PageHeader";
 import { useStore } from "./StoreProvider";
@@ -23,9 +23,13 @@ const Wishlist = () => {
           const docSnap = await getDoc(doc(db, "products", item.id));
           if (docSnap.exists()) {
             const data = docSnap.data();
+            const hasPreorder = Boolean(data.is_preorder) ||
+              String(data.stock_status || '').toLowerCase().includes('preorder') ||
+              (Array.isArray(data.size_prices) && data.size_prices.some(sp => sp.is_preorder));
             stocksMap[item.id] = {
               stock: data.stock !== undefined ? data.stock : 10,
-              stock_status: data.stock_status || "In Stock"
+              stock_status: data.stock_status || "In Stock",
+              is_preorder: hasPreorder,
             };
           }
         }
@@ -45,10 +49,29 @@ const Wishlist = () => {
   };
 
   const handleMoveToCart = async (product) => {
+    const stockInfo = productStocks[product.id] || {};
+    const isPreOrder = Boolean(product.is_preorder) || Boolean(stockInfo.is_preorder) ||
+      String(product.stock_status || '').toLowerCase().includes('preorder') ||
+      String(stockInfo.stock_status || '').toLowerCase().includes('preorder');
+    const isOutOfStock = !isPreOrder && (stockInfo.stock === 0 || stockInfo.stock_status === "Out of Stock");
+
+    if (isOutOfStock) {
+      triggerToast("This item is currently out of stock.");
+      return;
+    }
+    if (isPreOrder) {
+      navigate(`/product/${product.id}`);
+      return;
+    }
+
     const defaultSize = product.size_prices && product.size_prices.length > 0
-      ? (product.size_prices.find(s => s.size?.toUpperCase() === 'L') || product.size_prices[0])
+      ? (product.size_prices.find(s => s.size?.toUpperCase() === 'L' || s.size?.includes('50')) || product.size_prices[0])
       : null;
-    await addToCart(product, defaultSize);
+    const res = await addToCart(product, defaultSize);
+    if (res && res.success === false) {
+      triggerToast(res.message || "Cannot add to bag.");
+      return;
+    }
     await removeFromWishlist(product.id);
     triggerToast("Moved to your bag!");
   };
@@ -58,7 +81,7 @@ const Wishlist = () => {
       <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border border-zinc-300 border-t-black rounded-full animate-spin" />
-          <p className="text-[10px]   uppercase tracking-[0.25em] text-zinc-500">Loading wishlist...</p>
+          <p className="text-[10px] uppercase tracking-[0.25em] text-zinc-500">Loading wishlist...</p>
         </div>
       </div>
     );
@@ -115,7 +138,10 @@ const Wishlist = () => {
                   {
                     (() => {
                       const stockInfo = productStocks[item.id] || { stock: 999, stock_status: "In Stock" };
-                      const isOutOfStock = stockInfo.stock === 0 || stockInfo.stock_status === "Out of Stock";
+                      const isPreOrder = Boolean(item.is_preorder) || Boolean(stockInfo.is_preorder) ||
+                        String(item.stock_status || '').toLowerCase().includes('preorder') ||
+                        String(stockInfo.stock_status || '').toLowerCase().includes('preorder');
+                      const isOutOfStock = !isPreOrder && (stockInfo.stock === 0 || stockInfo.stock_status === "Out of Stock");
 
                       return (
                         <>
@@ -123,8 +149,15 @@ const Wishlist = () => {
                             <OptimizedCloudinaryImage src={item.image} alt={item.name} preset="product-card" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                             {isOutOfStock && (
                               <div className="absolute inset-0 z-20 bg-black/60 flex items-center justify-center">
-                                <span className="bg-white text-black font-black uppercase text-[10px] tracking-widest px-3 py-1.5">
+                                <span className="bg-white text-black font-black uppercase text-[9px] tracking-widest px-3 py-1.5 shadow-sm">
                                   Out of Stock
+                                </span>
+                              </div>
+                            )}
+                            {isPreOrder && !isOutOfStock && (
+                              <div className="absolute top-3 left-3 z-20">
+                                <span className="bg-[#b8860b] text-white font-black uppercase text-[8px] tracking-[0.2em] px-2.5 py-1 shadow-sm">
+                                  PRE-ORDER
                                 </span>
                               </div>
                             )}
@@ -138,18 +171,38 @@ const Wishlist = () => {
                             <h3 onClick={() => navigate(`/product/${item.id}`)}
                               className="text-[13px] sm:text-sm font-semibold text-zinc-900 leading-snug mb-2 group-hover:text-[#b8860b] transition-colors cursor-pointer line-clamp-2"
                             >{item.name}</h3>
-                            <div className="flex items-center justify-between mt-auto pt-2 border-t border-zinc-200">
-                              <span className="text-sm   text-zinc-900">₹{Number(item.price).toLocaleString("en-IN")}</span>
-                              <button
-                                onClick={() => !isOutOfStock && handleMoveToCart(item)}
-                                disabled={isOutOfStock}
-                                className={`w-9 h-9 flex items-center justify-center transition-all ${isOutOfStock
-                                  ? 'bg-zinc-100 text-zinc-300 border border-zinc-200 cursor-not-allowed'
-                                  : 'bg-black text-white hover:bg-zinc-800'
-                                  }`}
-                              >
-                                <ShoppingBag size={14} strokeWidth={2} />
-                              </button>
+                            <div className="flex items-center justify-between mt-auto pt-2 border-t border-zinc-200 gap-2">
+                              <span className="text-sm font-bold text-zinc-900">₹{Number(item.price).toLocaleString("en-IN")}</span>
+                              {isOutOfStock ? (
+                                <button
+                                  type="button"
+                                  onClick={() => triggerToast("We will notify you when back in stock!")}
+                                  className="h-8 px-2.5 bg-[#0D0D0D] hover:bg-[#b8860b] text-white text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                                  title="Notify me when available"
+                                >
+                                  <Bell size={12} />
+                                  <span>Notify Me</span>
+                                </button>
+                              ) : isPreOrder ? (
+                                <button
+                                  type="button"
+                                  onClick={() => navigate(`/product/${item.id}`)}
+                                  className="h-8 px-2.5 bg-[#b8860b] hover:bg-black text-white text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                                  title="Pre-order this item"
+                                >
+                                  <Clock size={12} />
+                                  <span>Pre-Order</span>
+                                </button>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => handleMoveToCart(item)}
+                                  className="w-8 h-8 flex items-center justify-center bg-black text-white hover:bg-zinc-800 transition-all shadow-xs cursor-pointer"
+                                  title="Move to bag"
+                                >
+                                  <ShoppingBag size={14} strokeWidth={2} />
+                                </button>
+                              )}
                             </div>
                           </div>
                         </>

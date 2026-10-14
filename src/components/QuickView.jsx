@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { X, ShoppingBag, Heart, Truck, Sparkles } from "lucide-react";
+import { X, ShoppingBag, Heart, Truck, Sparkles, Bell, Clock } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import OptimizedCloudinaryImage from './OptimizedCloudinaryImage';
 import { useStore } from './StoreProvider';
+
+import { resolveProductVariant } from './ProductCard';
 
 const QuickView = ({ product, onClose }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -14,8 +16,8 @@ const QuickView = ({ product, onClose }) => {
     ? product.size_prices
     : [{ size: '50ml', price: product?.price, stock: product?.stock ?? 10 }];
 
-  const default50ml = sizeOptions.find(s => s.size?.toLowerCase()?.trim() === '50ml');
-  const [selectedSize, setSelectedSize] = useState(default50ml || sizeOptions[0] || null);
+  const initialVariant = resolveProductVariant(product) || sizeOptions[0] || null;
+  const [selectedSize, setSelectedSize] = useState(initialVariant);
 
   const selectedStock = selectedSize
     ? (selectedSize.stock !== undefined ? Number(selectedSize.stock) : Number(product?.stock ?? 10))
@@ -32,8 +34,18 @@ const QuickView = ({ product, onClose }) => {
     setTimeout(() => onClose?.(), 300);
   };
 
-  const handleAddToCart = async () => {
-    if (isOutOfStock || !product) return;
+  const handleAction = async () => {
+    if (!product) return;
+    if (isOutOfStock) {
+      alert("Thank you! We will notify you when this formulation is back in stock.");
+      handleClose();
+      return;
+    }
+    if (isPreOrder) {
+      handleClose();
+      navigate(`/product/${product.id}`);
+      return;
+    }
     for (let i = 0; i < quantity; i++) {
       await addToCart(product, selectedSize);
     }
@@ -201,17 +213,30 @@ const QuickView = ({ product, onClose }) => {
                 {/* Action Buttons */}
                 <div className="flex gap-3">
                   <button
-                    onClick={handleAddToCart}
-                    disabled={isOutOfStock}
+                    onClick={handleAction}
                     className={`flex-1 py-3.5 px-4 text-white text-[11px] font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 cursor-pointer ${isOutOfStock
-                      ? 'opacity-40 cursor-not-allowed bg-zinc-400'
+                      ? 'bg-[#0D0D0D] hover:bg-[#b8860b]'
                       : isPreOrder
                         ? 'bg-[#b8860b] hover:bg-black'
                         : 'bg-black hover:bg-zinc-800'
                       }`}
                   >
-                    <ShoppingBag size={16} />
-                    <span>{isOutOfStock ? 'OUT OF STOCK' : isPreOrder ? 'PRE-ORDER NOW' : 'ADD TO BAG'}</span>
+                    {isOutOfStock ? (
+                      <>
+                        <Bell size={16} />
+                        <span>NOTIFY ME</span>
+                      </>
+                    ) : isPreOrder ? (
+                      <>
+                        <Clock size={16} />
+                        <span>PRE-ORDER NOW</span>
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag size={16} />
+                        <span>ADD TO BAG</span>
+                      </>
+                    )}
                   </button>
 
                   <button

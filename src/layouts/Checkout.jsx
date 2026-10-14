@@ -8,6 +8,7 @@ import {
 
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/useAuth";
+import { useCustomerAuth } from "../components/CustomerAuthProvider";
 import {
   MapPin, User, Phone, Mail, CheckCircle, X,
   ShieldCheck, ChevronRight, Plus, Check, Lock, Tag,
@@ -63,7 +64,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
   const finalDetails = orderDetails || {
     id: "MHR-" + Math.floor(100000 + Math.random() * 900000),
     total: 0,
-    shipping: { name: "", phone: "", address: "", city: "", state: "", pincode: "", paymentMethod: "COD" },
+    shipping: { name: "", phone: "", alternatePhone: "", flat: "", street: "", landmark: "", address: "", city: "", state: "", pincode: "", type: "Home", paymentMethod: "COD" },
     items: [],
     appliedCoupon: null,
     couponDiscount: 0,
@@ -152,9 +153,14 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
               <MapPin size={12} className="text-zinc-500" /> Shipping Details
             </h3>
             <p className="font-bold text-zinc-900 text-sm font-serif">{finalDetails.shipping?.name}</p>
-            <p className="text-zinc-500 font-light">{finalDetails.shipping?.address}</p>
-            <p className="text-zinc-500 font-light">{finalDetails.shipping?.city}, {finalDetails.shipping?.state} – {finalDetails.shipping?.pincode}</p>
-            <p className="text-zinc-800 font-semibold mt-1">Phone: {finalDetails.shipping?.phone}</p>
+            {finalDetails.shipping?.flat && <p className="text-zinc-700 font-medium text-xs">{finalDetails.shipping?.flat}</p>}
+            <p className="text-zinc-500 font-light text-xs">{finalDetails.shipping?.street || finalDetails.shipping?.address}</p>
+            {finalDetails.shipping?.landmark && <p className="text-zinc-400 text-[11px]">Landmark: {finalDetails.shipping?.landmark}</p>}
+            <p className="text-zinc-500 font-light text-xs">{finalDetails.shipping?.city}, {finalDetails.shipping?.state} – {finalDetails.shipping?.pincode}</p>
+            <p className="text-zinc-800 font-semibold mt-1 text-xs">
+              Phone: {finalDetails.shipping?.phone}
+              {finalDetails.shipping?.alternatePhone && <span className="text-zinc-500 font-normal ml-2">Alt: {finalDetails.shipping?.alternatePhone}</span>}
+            </p>
           </div>
 
           {/* Delivery & Tracking Details */}
@@ -285,25 +291,99 @@ const OrderFailed = ({ onRetry }) => (
 const Checkout = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { customer } = useCustomerAuth ? useCustomerAuth() : { customer: null };
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [formData, setFormData] = useState({
-    name: "", email: "", phone: "", address: "", city: "", state: "", pincode: "",
+    name: "",
+    email: "",
+    phone: "",
+    alternatePhone: "",
+    flat: "",
+    street: "",
+    landmark: "",
+    address: "",
+    city: "",
+    state: "",
+    pincode: "",
+    type: "Home",
     paymentMethod: "online",
   });
 
-  // Prefill email and name if authenticated user is present
+  // Prefill email, name, and phone from authenticated customer or Firebase user
   useEffect(() => {
-    if (user) {
+    const activeEmail = customer?.email || user?.email;
+    if (activeEmail || customer?.name || user?.displayName) {
       setFormData(prev => ({
         ...prev,
-        email: prev.email || user.email || "",
-        name: prev.name || user.displayName || ""
+        email: prev.email || activeEmail || "",
+        name: prev.name || customer?.name || user?.displayName || "",
+        phone: prev.phone || customer?.phone || ""
       }));
     }
-  }, [user]);
+  }, [user, customer]);
+
+  // Load saved shipping addresses from customer profile in Firestore
+  useEffect(() => {
+    const activeEmail = customer?.email || user?.email;
+    if (!activeEmail) return;
+
+    const fetchCustomerAddresses = async () => {
+      try {
+        const customerDocId = activeEmail.toLowerCase().replace(/[^a-z0-9]/g, "_");
+        const addrSnap = await getDocs(collection(db, "customers", customerDocId, "addresses"));
+        const addrs = addrSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        const cSnap = await getDoc(doc(db, "customers", customerDocId));
+        if (cSnap.exists()) {
+          const cData = cSnap.data();
+          if (addrs.length === 0 && (cData.address || cData.flat || cData.street)) {
+            addrs.push({
+              id: "root-address",
+              name: cData.name || customer?.name || user?.displayName || "",
+              phone: cData.phone || customer?.phone || "",
+              alternatePhone: cData.alternatePhone || "",
+              flat: cData.flat || "",
+              street: cData.street || cData.address || "",
+              landmark: cData.landmark || "",
+              address: cData.address || "",
+              city: cData.city || "",
+              state: cData.state || "",
+              pincode: cData.pincode || "",
+              type: cData.type || "Home",
+              isDefault: true
+            });
+          }
+        }
+
+        if (addrs.length > 0) {
+          setSavedAddresses(addrs);
+          const defaultAddr = addrs.find(a => a.isDefault) || addrs[0];
+          setSelectedAddressId(defaultAddr.id);
+          setFormData(prev => ({
+            ...prev,
+            name: defaultAddr.name || prev.name,
+            phone: defaultAddr.phone || prev.phone,
+            alternatePhone: defaultAddr.alternatePhone || prev.alternatePhone || "",
+            flat: defaultAddr.flat || "",
+            street: defaultAddr.street || defaultAddr.address || "",
+            landmark: defaultAddr.landmark || "",
+            address: defaultAddr.address || "",
+            city: defaultAddr.city || prev.city,
+            state: defaultAddr.state || prev.state,
+            pincode: defaultAddr.pincode || prev.pincode,
+            type: defaultAddr.type || "Home"
+          }));
+        }
+      } catch (err) {
+        console.warn("Could not fetch saved addresses in checkout:", err);
+      }
+    };
+
+    fetchCustomerAddresses();
+  }, [customer?.email, user?.email]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderStatus, setOrderStatus] = useState(null);
   const [toast, setToast] = useState(null);
@@ -320,6 +400,7 @@ const Checkout = () => {
   const [couponError, setCouponError] = useState("");
   const [couponSuccess, setCouponSuccess] = useState("");
   const [createdOrderDetails, setCreatedOrderDetails] = useState(null);
+  const [invalidCartError, setInvalidCartError] = useState(null);
 
   const showToast = (msg, type = "info") => {
     setToast({ msg, type });
@@ -506,9 +587,49 @@ const Checkout = () => {
     script.async = true;
     document.body.appendChild(script);
 
-    const load = () => {
+    const load = async () => {
       const guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
       setItems(guestCart);
+
+      let hasOut = false;
+      let hasPre = false;
+
+      for (const item of guestCart) {
+        if (item.is_preorder || String(item.stock_status || '').toLowerCase().includes('preorder')) {
+          hasPre = true;
+        }
+        if (item.stock !== undefined && Number(item.stock) <= 0) {
+          hasOut = true;
+        }
+        try {
+          const snap = await getDoc(doc(db, "products", item.id));
+          if (snap.exists()) {
+            const data = snap.data();
+            let vStock = data.stock !== undefined ? Number(data.stock) : 10;
+            let vPre = Boolean(data.is_preorder) || String(data.stock_status || '').toLowerCase().includes('preorder');
+            if (item.size && Array.isArray(data.size_prices)) {
+              const matched = data.size_prices.find(s => s.size?.toLowerCase().trim() === item.size?.toLowerCase().trim());
+              if (matched) {
+                if (matched.stock !== undefined) vStock = Number(matched.stock);
+                if (matched.is_preorder !== undefined) vPre = Boolean(matched.is_preorder);
+              }
+            }
+            if (vPre) hasPre = true;
+            if (vStock <= 0 || data.stock_status === "Out of Stock") hasOut = true;
+          }
+        } catch (e) {
+          console.warn("Stock verification check error:", e);
+        }
+      }
+
+      if (hasOut) {
+        setInvalidCartError("Your bag contains out-of-stock items. Please return to your cart and remove them before checkout.");
+      } else if (hasPre) {
+        setInvalidCartError("Your bag contains pre-order items. Pre-orders cannot be processed through standard cart checkout. Please return to your cart and remove them.");
+      } else {
+        setInvalidCartError(null);
+      }
+
       setLoading(false);
 
       const storedCoupon = localStorage.getItem("applied_coupon_code");
@@ -557,6 +678,12 @@ const Checkout = () => {
             packageLength = 40; packageBreadth = 30; packageHeight = 12;
           }
 
+          const synthesizedAddress = [
+            formData.flat,
+            formData.street,
+            formData.landmark ? `Near ${formData.landmark}` : null
+          ].filter(Boolean).join(", ") || formData.address;
+
           const res = await fetch("/api/shiprocket", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -566,7 +693,8 @@ const Checkout = () => {
               customerName: formData.name,
               email: finalEmail,
               phone: formData.phone,
-              address: formData.address,
+              address: synthesizedAddress,
+              address_2: formData.landmark ? `Landmark: ${formData.landmark}` : (formData.street || ""),
               city: formData.city,
               state: formData.state,
               pincode: formData.pincode,
@@ -595,6 +723,18 @@ const Checkout = () => {
         }
       }
 
+      const synthesizedAddress = [
+        formData.flat,
+        formData.street,
+        formData.landmark ? `Near ${formData.landmark}` : null
+      ].filter(Boolean).join(", ") || formData.address;
+
+      const fullShippingData = {
+        ...formData,
+        address: synthesizedAddress,
+        email: finalEmail
+      };
+
       await setDoc(orderRef, {
         orderId: orderRef.id,
         orderNumber,
@@ -607,7 +747,7 @@ const Checkout = () => {
         items,
         total: Math.max(0, total - couponDiscount),
         subtotal: total,
-        shipping: formData,
+        shipping: fullShippingData,
         shippingCost: 0,
         discount: couponDiscount,
         paymentMethod: formData.paymentMethod,
@@ -620,10 +760,15 @@ const Checkout = () => {
         shippingAddress: {
           name: formData.name,
           phone: formData.phone,
-          address: formData.address,
+          alternatePhone: formData.alternatePhone || "",
+          flat: formData.flat || "",
+          street: formData.street || "",
+          landmark: formData.landmark || "",
+          address: synthesizedAddress,
           city: formData.city,
           state: formData.state,
-          pincode: formData.pincode
+          pincode: formData.pincode,
+          type: formData.type || "Home"
         },
         emailStatus: {
           customer: "pending",
@@ -639,8 +784,6 @@ const Checkout = () => {
       });
 
       // ── Save / Update customer profile in 'customers' collection ────────────
-      // This is the source of truth for OTP-based customer login.
-      // We use email as the document ID so lookups are O(1) and prevent duplicates.
       try {
         const customerEmail = (finalEmail || "").toLowerCase().trim();
         if (customerEmail) {
@@ -650,10 +793,15 @@ const Checkout = () => {
             email: customerEmail,
             name: formData.name || "",
             phone: formData.phone || "",
-            address: formData.address || "",
+            alternatePhone: formData.alternatePhone || "",
+            flat: formData.flat || "",
+            street: formData.street || "",
+            landmark: formData.landmark || "",
+            address: synthesizedAddress,
             city: formData.city || "",
             state: formData.state || "",
             pincode: formData.pincode || "",
+            type: formData.type || "Home",
             updatedAt: serverTimestamp(),
           }, { merge: true });  // merge: true preserves older fields like createdAt on first write
 
@@ -671,36 +819,69 @@ const Checkout = () => {
       if (status === "confirmed") {
         // Automatically deduct per-variant stock in Firestore
         try {
+          const normSize = sz => String(sz || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+          const productDeductions = {};
           for (const item of items) {
-            const itemDocRef = doc(db, "products", item.id);
+            if (!item || !item.id) continue;
+            const pid = String(item.id).trim();
+            if (!productDeductions[pid]) productDeductions[pid] = [];
+            productDeductions[pid].push({
+              size: item.size || "",
+              quantity: Math.max(1, Number(item.quantity) || 1)
+            });
+          }
+
+          for (const [productId, purchases] of Object.entries(productDeductions)) {
+            const itemDocRef = doc(db, "products", productId);
             const pSnap = await getDoc(itemDocRef);
             if (pSnap.exists()) {
               const pData = pSnap.data();
-              let updatedStock = Math.max(0, (Number(pData.stock) || 0) - (Number(item.quantity) || 1));
-              let updatedSizes = pData.size_prices;
+              let sizePrices = Array.isArray(pData.size_prices) ? [...pData.size_prices] : [];
+              let totalStock = Number(pData.stock) || 0;
 
-              if (item.size && Array.isArray(pData.size_prices) && pData.size_prices.length > 0) {
-                updatedSizes = pData.size_prices.map(sp => {
-                  if (sp.size?.toLowerCase().trim() === item.size.toLowerCase().trim()) {
-                    const currentVStock = Number(sp.stock) || 0;
-                    return { ...sp, stock: Math.max(0, currentVStock - (Number(item.quantity) || 1)) };
+              if (sizePrices.length > 0) {
+                for (const purchase of purchases) {
+                  const targetNorm = normSize(purchase.size);
+                  let matched = false;
+                  sizePrices = sizePrices.map(sp => {
+                    if (normSize(sp.size) === targetNorm) {
+                      matched = true;
+                      const currentVStock = Math.max(0, Number(sp.stock) || 0);
+                      return { ...sp, stock: Math.max(0, currentVStock - purchase.quantity) };
+                    }
+                    return sp;
+                  });
+                  if (!matched) {
+                    totalStock = Math.max(0, totalStock - purchase.quantity);
                   }
-                  return sp;
-                });
-                updatedStock = updatedSizes.reduce((sum, sp) => sum + (Number(sp.stock) || 0), 0);
+                }
+                totalStock = sizePrices.reduce((sum, sp) => sum + (Number(sp.stock) || 0), 0);
+              } else {
+                const totalPurchasedQty = purchases.reduce((sum, p) => sum + p.quantity, 0);
+                totalStock = Math.max(0, totalStock - totalPurchasedQty);
               }
 
-              const newStatus = updatedStock === 0 ? "Out of Stock" : updatedStock <= 5 ? "Low Stock" : "In Stock";
+              const newStatus = totalStock === 0 ? "Out of Stock" : totalStock <= 5 ? "Low Stock" : "In Stock";
               await updateDoc(itemDocRef, {
-                stock: updatedStock,
+                stock: totalStock,
                 stock_status: newStatus,
-                size_prices: updatedSizes || []
+                size_prices: sizePrices,
+                updatedAt: new Date().toISOString()
               });
             }
           }
         } catch (stkErr) {
-          console.warn("Per-variant stock deduction warning:", stkErr);
+          console.warn("Direct client stock deduction fallback:", stkErr);
         }
+
+        // Guaranteed server-side stock deduction backup via API
+        try {
+          fetch("/api/deduct-stock", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ items })
+          }).catch(apiErr => console.warn("Server stock deduction API note:", apiErr));
+        } catch (_) { }
 
         setCreatedOrderDetails({
           id: orderRef.id,
@@ -773,6 +954,7 @@ const Checkout = () => {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (items.length === 0) { showToast("Your bag is empty!", "error"); return; }
+    if (invalidCartError) { showToast(invalidCartError, "error"); return; }
 
     const cleanEmail = (formData.email || "").toLowerCase().trim();
     try {
@@ -815,7 +997,8 @@ const Checkout = () => {
       };
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", async (response) => {
-        await saveOrder(buyerUser, response.error.metadata?.payment_id || "FAILED", "failed", "failed", tempPassword);
+        await saveOrder(response.error.metadata?.payment_id || "FAILED", "failed", "failed", tempPassword);
+
         setIsProcessing(false);
       });
       rzp.open();
@@ -860,6 +1043,15 @@ const Checkout = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         <h1 className="text-xl font-bold text-zinc-900 mb-6">Secure Checkout</h1>
 
+        {invalidCartError && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-700 flex items-center justify-between gap-3 mb-6">
+            <span className="font-medium">⚠ {invalidCartError}</span>
+            <Link to="/cart" className="shrink-0 px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider rounded-lg transition-colors">
+              Return to Cart
+            </Link>
+          </div>
+        )}
+
         <form onSubmit={handlePlaceOrder}>
           <div className="flex flex-col lg:flex-row gap-6 items-start">
 
@@ -877,7 +1069,7 @@ const Checkout = () => {
                   {/* Saved addresses */}
                   {savedAddresses.length > 0 && (
                     <div className="space-y-2">
-                      <p className="text-[14px] font-semibold uppercase tracking-wider text-zinc-500">Saved Addresses</p>
+                      <p className="text-[14px] font-semibold uppercase tracking-wider text-zinc-500">Saved Delivery Addresses</p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         {savedAddresses.map((addr) => {
                           const sel = selectedAddressId === addr.id;
@@ -886,26 +1078,60 @@ const Checkout = () => {
                               key={addr.id}
                               onClick={() => {
                                 setSelectedAddressId(addr.id);
-                                setFormData(p => ({ ...p, name: addr.name || p.name, phone: addr.phone || p.phone, address: addr.address || "", city: addr.city || "", state: addr.state || "", pincode: addr.pincode || "" }));
+                                setFormData(p => ({
+                                  ...p,
+                                  name: addr.name || p.name,
+                                  phone: addr.phone || p.phone,
+                                  alternatePhone: addr.alternatePhone || "",
+                                  flat: addr.flat || "",
+                                  street: addr.street || addr.address || "",
+                                  landmark: addr.landmark || "",
+                                  address: addr.address || "",
+                                  city: addr.city || "",
+                                  state: addr.state || "",
+                                  pincode: addr.pincode || "",
+                                  type: addr.type || "Home"
+                                }));
                               }}
                               className={`p-3.5 border-2 rounded-xl cursor-pointer transition-all relative ${sel ? "border-zinc-900 bg-zinc-50" : "border-zinc-200 bg-white hover:border-zinc-400"}`}
                             >
-                              {addr.isDefault && <span className="absolute top-2 right-2 text-[9px] font-bold uppercase tracking-wider bg-zinc-900 text-white px-1.5 py-0.5 rounded">Default</span>}
+                              <div className="flex items-center gap-1.5 absolute top-2 right-2">
+                                <span className="text-[8px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded border border-zinc-200">
+                                  {addr.type || "Home"}
+                                </span>
+                                {addr.isDefault && <span className="text-[8px] font-bold uppercase tracking-wider bg-zinc-900 text-white px-1.5 py-0.5 rounded">Default</span>}
+                              </div>
                               <div className="flex items-start gap-2">
                                 <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center shrink-0 ${sel ? "border-zinc-900 bg-zinc-900" : "border-zinc-300"}`}>
                                   {sel && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                                 </div>
-                                <div className="text-[14px] space-y-0.5 pr-8">
+                                <div className="text-[14px] space-y-0.5 pr-14">
                                   <p className="font-semibold text-zinc-900">{addr.name}</p>
-                                  <p className="text-zinc-500 leading-relaxed">{addr.address}, {addr.city}, {addr.state} – {addr.pincode}</p>
-                                  <p className="text-zinc-700 font-medium">{addr.phone}</p>
+                                  {addr.flat && <p className="text-zinc-700 text-xs">{addr.flat}</p>}
+                                  <p className="text-zinc-500 leading-relaxed text-xs">{addr.street || addr.address}</p>
+                                  {addr.landmark && <p className="text-zinc-400 text-[11px]">Landmark: {addr.landmark}</p>}
+                                  <p className="text-zinc-500 text-xs">{addr.city}, {addr.state} – {addr.pincode}</p>
+                                  <p className="text-zinc-700 font-medium text-xs mt-1">Phone: {addr.phone}</p>
                                 </div>
                               </div>
                             </div>
                           );
                         })}
                         <div
-                          onClick={() => { setSelectedAddressId("custom"); setFormData(p => ({ ...p, address: "", city: "", state: "", pincode: "" })); }}
+                          onClick={() => {
+                            setSelectedAddressId("custom");
+                            setFormData(p => ({
+                              ...p,
+                              flat: "",
+                              street: "",
+                              landmark: "",
+                              address: "",
+                              city: "",
+                              state: "",
+                              pincode: "",
+                              alternatePhone: ""
+                            }));
+                          }}
                           className={`p-3.5 border-2 rounded-xl cursor-pointer flex items-center justify-center gap-2 transition-all ${selectedAddressId === "custom" ? "border-zinc-900 bg-zinc-50" : "border-dashed border-zinc-300 hover:border-zinc-500"}`}
                         >
                           <Plus size={14} className="text-zinc-500" />
@@ -915,7 +1141,28 @@ const Checkout = () => {
                     </div>
                   )}
 
-                  {/* Form fields */}
+                  {/* Address Type Selector */}
+                  <div>
+                    <label className="text-[12px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Address Type</label>
+                    <div className="flex items-center gap-2">
+                      {["Home", "Office", "Other"].map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onClick={() => setFormData(p => ({ ...p, type: t }))}
+                          className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${
+                            formData.type === t
+                              ? "bg-zinc-900 text-white border-zinc-900 shadow-xs"
+                              : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Full Name & Email */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Full Name *</label>
@@ -925,23 +1172,71 @@ const Checkout = () => {
                       </div>
                     </div>
                     <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Email *</label>
+                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Email Address *</label>
                       <div className="relative">
                         <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                         <input type="email" name="email" required value={formData.email} onChange={handleInput} className={`${inputCls} pl-10`} placeholder="email@example.com" />
                       </div>
                     </div>
                   </div>
-                  <div>
-                    <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Phone Number *</label>
-                    <div className="relative">
-                      <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                      <input type="tel" name="phone" required value={formData.phone} onChange={handleInput} className={`${inputCls} pl-10`} placeholder="+91 98765 43210" />
+
+                  {/* Primary Phone & Alternate Phone */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Phone Number *</label>
+                      <div className="relative">
+                        <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                        <input type="tel" name="phone" required value={formData.phone} onChange={handleInput} className={`${inputCls} pl-10`} placeholder="+91 98765 43210" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Alternate Phone (Optional - for courier)</label>
+                      <div className="relative">
+                        <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                        <input type="tel" name="alternatePhone" value={formData.alternatePhone || ""} onChange={handleInput} className={`${inputCls} pl-10`} placeholder="Secondary mobile number" />
+                      </div>
                     </div>
                   </div>
+
+                  {/* Flat / House No / Building & Area / Street / Locality */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Flat, House No., Building, Apartment *</label>
+                      <input
+                        type="text"
+                        name="flat"
+                        required
+                        value={formData.flat || ""}
+                        onChange={handleInput}
+                        className={inputCls}
+                        placeholder="e.g. Flat 402, Royal Residency, Tower B"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Area, Street, Sector, Locality *</label>
+                      <input
+                        type="text"
+                        name="street"
+                        required
+                        value={formData.street || ""}
+                        onChange={handleInput}
+                        className={inputCls}
+                        placeholder="e.g. MG Road, Scheme 54, Vijay Nagar"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Landmark */}
                   <div>
-                    <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Street Address *</label>
-                    <textarea name="address" required rows={2} value={formData.address} onChange={handleInput} className={`${inputCls} resize-none`} placeholder="House no., street, area, landmark" />
+                    <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Landmark (Optional)</label>
+                    <input
+                      type="text"
+                      name="landmark"
+                      value={formData.landmark || ""}
+                      onChange={handleInput}
+                      className={inputCls}
+                      placeholder="e.g. Near Apollo Hospital / Opp. City Center Mall"
+                    />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     <div className="relative">
@@ -1206,11 +1501,13 @@ const Checkout = () => {
               {/* CTA */}
               <button
                 type="submit"
-                disabled={isProcessing || items.length === 0}
-                className={`w-full py-4 text-sm font-bold uppercase tracking-wider rounded-xl flex items-center justify-center gap-2.5 transition-all duration-200 ${isProcessing || items.length === 0 ? "bg-zinc-300 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 hover:bg-black text-white active:scale-[0.98]"}`}
+                disabled={isProcessing || items.length === 0 || Boolean(invalidCartError)}
+                className={`w-full py-4 text-sm font-bold uppercase tracking-wider rounded-xl flex items-center justify-center gap-2.5 transition-all duration-200 ${isProcessing || items.length === 0 || Boolean(invalidCartError) ? "bg-zinc-300 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 hover:bg-black text-white active:scale-[0.98]"}`}
               >
                 {isProcessing ? (
                   <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing…</>
+                ) : invalidCartError ? (
+                  "Cannot Checkout — Check Bag"
                 ) : (
                   <>{formData.paymentMethod === "cod" ? "Place Order" : "Pay Now"} <ArrowRight size={15} /></>
                 )}

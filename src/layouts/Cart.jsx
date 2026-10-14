@@ -46,22 +46,26 @@ const Cart = () => {
           if (docSnap.exists()) {
             const data = docSnap.data();
             let variantStock = data.stock !== undefined ? data.stock : 10;
+            let isPreorder = Boolean(data.is_preorder) || String(data.stock_status || '').toLowerCase().includes('preorder');
 
             if (item.size && Array.isArray(data.size_prices) && data.size_prices.length > 0) {
               const matchedSize = data.size_prices.find(sp => sp.size?.toLowerCase().trim() === item.size.toLowerCase().trim());
-              if (matchedSize && matchedSize.stock !== undefined) {
-                variantStock = Number(matchedSize.stock);
+              if (matchedSize) {
+                if (matchedSize.stock !== undefined) variantStock = Number(matchedSize.stock);
+                if (matchedSize.is_preorder !== undefined) isPreorder = Boolean(matchedSize.is_preorder);
               }
             }
 
             stocksMap[cartKey] = {
               stock: variantStock,
               stock_status: variantStock === 0 ? "Out of Stock" : variantStock <= 5 ? "Low Stock" : (data.stock_status || "In Stock"),
+              is_preorder: isPreorder,
             };
           } else {
             stocksMap[cartKey] = {
               stock: item.stock !== undefined ? item.stock : 10,
-              stock_status: "In Stock"
+              stock_status: "In Stock",
+              is_preorder: Boolean(item.is_preorder)
             };
           }
         }
@@ -73,17 +77,30 @@ const Cart = () => {
     if (cart.length > 0) fetchStocks();
   }, [cart]);
 
-  const hasOutOfStockItem = cart.some((item) => {
-    const stockInfo = productStocks[item.id];
-    if (!stockInfo) return false;
-    return (
-      stockInfo.stock === 0 ||
-      stockInfo.stock_status === "Out of Stock" ||
-      item.quantity > stockInfo.stock
-    );
-  });
+  const isItemPreOrder = (item) => {
+    const cartKey = item.cartId || item.id;
+    const stockInfo = productStocks[cartKey] || {};
+    return Boolean(item.is_preorder) || Boolean(stockInfo.is_preorder) ||
+      String(item.stock_status || '').toLowerCase().includes('preorder') ||
+      String(stockInfo.stock_status || '').toLowerCase().includes('preorder');
+  };
+
+  const isItemOutOfStock = (item) => {
+    if (isItemPreOrder(item)) return false;
+    const cartKey = item.cartId || item.id;
+    const stockInfo = productStocks[cartKey];
+    if (stockInfo) {
+      return stockInfo.stock === 0 || stockInfo.stock_status === "Out of Stock" || item.quantity > stockInfo.stock;
+    }
+    return (item.stock !== undefined && item.stock <= 0) || item.stock_status === "Out of Stock";
+  };
+
+  const hasOutOfStockItem = cart.some(isItemOutOfStock);
+  const hasPreOrderItem = cart.some(isItemPreOrder);
+  const cannotCheckout = hasOutOfStockItem || hasPreOrderItem;
 
   const handleCheckout = () => {
+    if (cannotCheckout) return;
     navigate("/checkout");
   };
 
@@ -197,11 +214,9 @@ const Cart = () => {
                   stock: item.stock !== undefined ? item.stock : 999,
                   stock_status: "In Stock",
                 };
-                const isOutOfStock =
-                  stockInfo.stock === 0 ||
-                  stockInfo.stock_status === "Out of Stock";
-                const isLowStock =
-                  !isOutOfStock && item.quantity > stockInfo.stock;
+                const isItemOut = isItemOutOfStock(item);
+                const isItemPre = isItemPreOrder(item);
+                const isLowStock = !isItemOut && !isItemPre && item.quantity > stockInfo.stock;
 
                 return (
                   <motion.div
@@ -214,11 +229,50 @@ const Cart = () => {
                     className="bg-white rounded-xl border border-zinc-200 overflow-hidden"
                   >
                     {/* Out-of-stock banner */}
-                    {isOutOfStock && (
-                      <div className="bg-red-50 border-b border-red-100 px-4 py-2">
-                        <span className="text-[14px] font-semibold text-red-600 uppercase tracking-wider">
+                    {isItemOut && (
+                      <div className="bg-red-50 border-b border-red-100 px-4 py-2.5 flex items-center justify-between gap-3 flex-wrap">
+                        <span className="text-[12px] font-bold text-red-600 uppercase tracking-wider">
                           ⚠ Out of Stock — Please remove to continue
                         </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            alert(`You will be notified when ${item.name} is restocked! It has been removed from your bag.`);
+                            removeFromCart(item.cartId || item.id);
+                          }}
+                          className="text-[11px] font-extrabold uppercase tracking-wider text-zinc-900 hover:text-[#b8860b] underline cursor-pointer"
+                        >
+                          Notify Me & Remove
+                        </button>
+                      </div>
+                    )}
+                    {/* Pre-order banner */}
+                    {isItemPre && (
+                      <div className="bg-amber-50 border-b border-amber-200 px-4 py-2.5 flex items-center justify-between gap-3 flex-wrap">
+                        <span className="text-[12px] font-bold text-amber-800 uppercase tracking-wider">
+                          ✦ Pre-Order Item — Cannot checkout in regular bag
+                        </span>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const num = "9584826112";
+                              const msg = `Hello Mahirash! I would like to pre-order ${item.name} (${item.size || ''}).`;
+                              window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, "_blank");
+                              removeFromCart(item.cartId || item.id);
+                            }}
+                            className="text-[11px] font-extrabold uppercase tracking-wider text-[#b8860b] hover:text-black underline cursor-pointer"
+                          >
+                            Pre-Order on WhatsApp
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeFromCart(item.cartId || item.id)}
+                            className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 hover:text-red-600 underline cursor-pointer"
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
                     )}
                     {isLowStock && (
@@ -285,7 +339,7 @@ const Cart = () => {
                             <button
                               type="button"
                               onClick={(e) => { e.stopPropagation(); if (item.quantity < stockInfo.stock) updateQuantity(item.cartId || item.id, 1); }}
-                              disabled={isOutOfStock || item.quantity >= stockInfo.stock}
+                              disabled={isItemOut || isItemPre || item.quantity >= stockInfo.stock}
                               aria-label="Increase"
                               className="w-9 h-9 flex items-center justify-center text-zinc-600 hover:bg-zinc-100 transition-colors font-bold text-base disabled:opacity-30 disabled:cursor-not-allowed"
                             >
@@ -437,17 +491,19 @@ const Cart = () => {
               {/* CTA */}
               <div className="px-5 py-4">
                 <button
-                  onClick={() => !hasOutOfStockItem && handleCheckout()}
-                  disabled={hasOutOfStockItem}
-                  className={`w-full py-4 text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 rounded-lg transition-all duration-200 ${hasOutOfStockItem
+                  onClick={() => !cannotCheckout && handleCheckout()}
+                  disabled={cannotCheckout}
+                  className={`w-full py-4 text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 rounded-lg transition-all duration-200 ${cannotCheckout
                     ? "bg-zinc-200 text-zinc-400 cursor-not-allowed"
                     : "bg-zinc-900 hover:bg-black text-white active:scale-[0.98]"
                     }`}
                 >
                   {hasOutOfStockItem
                     ? "Remove Out of Stock Items"
-                    : "Place Order"}
-                  {!hasOutOfStockItem && <ArrowRight size={16} />}
+                    : hasPreOrderItem
+                      ? "Remove Pre-Order Items to Checkout"
+                      : "Place Order"}
+                  {!cannotCheckout && <ArrowRight size={16} />}
                 </button>
 
                 <div className="flex items-center justify-center gap-1.5 mt-3">

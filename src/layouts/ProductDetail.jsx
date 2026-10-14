@@ -4,7 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { db } from '../components/Firebase';
 import { doc, getDoc, collection, getDocs, query, limit } from 'firebase/firestore';
 import { useAuth } from '../components/useAuth';
-import { Heart, ShoppingBag, Minus, Plus, ChevronRight, ChevronLeft, Star, Truck, Ruler, Sparkles, Share2, Tag, Copy, X, ThumbsUp, Check, ShieldCheck, RefreshCw, ZoomIn, Clock } from 'lucide-react';
+import { Heart, ShoppingBag, Minus, Plus, ChevronRight, ChevronLeft, Star, Truck, Ruler, Sparkles, Share2, Tag, Copy, X, ThumbsUp, Check, ShieldCheck, RefreshCw, ZoomIn, Clock, Bell } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from "../components/StoreProvider";
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -14,6 +14,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import SEOHead from '../components/SEOHead';
 import OptimizedCloudinaryImage from '../components/OptimizedCloudinaryImage';
+import { resolveProductVariant } from '../components/ProductCard';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -65,8 +66,7 @@ const ProductDetail = () => {
           } else {
             setProduct(data);
             if (data.size_prices && data.size_prices.length > 0) {
-              const v50 = data.size_prices.find(s => s.size?.toLowerCase()?.trim() === '50ml');
-              const defaultVariant = v50 || data.size_prices[0];
+              const defaultVariant = resolveProductVariant(data) || data.size_prices[0];
               setSelectedSize(defaultVariant);
               if (defaultVariant?.image) {
                 // If main image list has variant image, switch to it
@@ -102,8 +102,12 @@ const ProductDetail = () => {
 
   const addToCollection = async (type) => {
     if (!product) return;
+    if (type === 'notify') {
+      triggerToast("We will notify you when this formulation is back in stock!");
+      return;
+    }
     if (type === 'cart') {
-      const isPreOrder = Boolean(selectedSize?.is_preorder);
+      const isPreOrder = Boolean(selectedSize?.is_preorder === true || selectedSize?.is_preorder === 'true');
       if (isPreOrder) {
         const productUrl = `${window.location.origin}/product/${product.id}`;
         const priceVal = selectedSize?.price || product.price || 0;
@@ -113,10 +117,24 @@ const ProductDetail = () => {
         return;
       }
 
+      const currentVariantStock = selectedSize
+        ? (selectedSize.stock !== undefined ? Number(selectedSize.stock) : Number(product?.stock ?? 10))
+        : Number(product?.stock ?? 10);
+      const isCurrentVariantOut = !isPreOrder && (currentVariantStock <= 0 || product?.stock_status === 'Out of Stock');
+      if (isCurrentVariantOut) {
+        triggerToast("This formulation is out of stock. Click 'Notify Me' to get alerted!");
+        return;
+      }
 
       const cartItemId = selectedSize ? `${product.id}-${selectedSize.size}` : product.id;
       if (cart.some(item => item.cartId === cartItemId)) { navigate('/cart'); return; }
-      for (let i = 0; i < quantity; i++) await addToCart(product, selectedSize);
+      for (let i = 0; i < quantity; i++) {
+        const res = await addToCart(product, selectedSize);
+        if (res && res.success === false) {
+          triggerToast(res.message || "Cannot add item to bag");
+          return;
+        }
+      }
       triggerToast(`${quantity} ${quantity > 1 ? 'items' : 'item'} added to your bag!`);
     } else {
       if (isWishlisted) { await removeFromWishlist(product.id); triggerToast("Removed from wishlist!"); }
@@ -442,7 +460,7 @@ const ProductDetail = () => {
           <div className="lg:col-span-5 flex flex-col space-y-6">
             {/* Title & Price Header */}
             <div>
-              {selectedSize?.is_preorder && (
+              {Boolean(selectedSize?.is_preorder === true || selectedSize?.is_preorder === 'true') && (
                 <div className="mb-2">
                   <span className="inline-flex items-center gap-1.5 bg-[#b8860b] text-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest shadow-xs">
                     <Clock size={12} /> PRE-ORDER VARIANT
@@ -553,7 +571,8 @@ const ProductDetail = () => {
                   : [{ size: '50ml', price: product.price }, { size: '100ml', price: (product.price || 3000) * 1.5 }, { size: 'Sample Set', price: 999 }]
                 ).map((sp, idx) => {
                   const spStock = sp.stock !== undefined ? Number(sp.stock) : Number(product?.stock ?? 10);
-                  const isSpOut = spStock <= 0;
+                  const isSpPre = Boolean(sp.is_preorder === true || sp.is_preorder === 'true');
+                  const isSpOut = !isSpPre && (spStock <= 0 || product?.stock_status === 'Out of Stock');
                   const isSelected = selectedSize?.size === sp.size;
 
                   return (
@@ -574,7 +593,9 @@ const ProductDetail = () => {
                         ? 'border-black bg-black text-white shadow-xl scale-[1.02]'
                         : isSpOut
                           ? 'border-red-200 bg-red-50/40 text-zinc-400 hover:border-red-400'
-                          : 'border-zinc-300 bg-white text-zinc-800 hover:border-black hover:bg-zinc-50'
+                          : isSpPre
+                            ? 'border-amber-300 bg-amber-50/40 text-amber-900 hover:border-[#b8860b]'
+                            : 'border-zinc-300 bg-white text-zinc-800 hover:border-black hover:bg-zinc-50'
                         }`}
                     >
                       <span className={`text-[13px] font-black uppercase tracking-wider ${isSpOut && !isSelected ? 'line-through' : ''}`}>
@@ -588,6 +609,10 @@ const ProductDetail = () => {
                       {isSpOut ? (
                         <span className={`text-[8.5px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-red-300' : 'text-red-600'}`}>
                           Out of stock
+                        </span>
+                      ) : isSpPre ? (
+                        <span className={`text-[8.5px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-amber-300' : 'text-amber-600'}`}>
+                          Pre-Order
                         </span>
                       ) : spStock <= 5 ? (
                         <span className={`text-[8.5px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-amber-300' : 'text-amber-600'}`}>
@@ -606,33 +631,43 @@ const ProductDetail = () => {
                 const currentVariantStock = selectedSize
                   ? (selectedSize.stock !== undefined ? Number(selectedSize.stock) : Number(product?.stock ?? 10))
                   : Number(product?.stock ?? 10);
-                const isPreOrder = Boolean(selectedSize?.is_preorder);
+                const isPreOrder = Boolean(selectedSize?.is_preorder === true || selectedSize?.is_preorder === 'true');
                 const isCurrentVariantOut = !isPreOrder && (currentVariantStock <= 0 || product?.stock_status === 'Out of Stock');
 
                 return (
                   <div className="space-y-3">
                     <button
                       type="button"
-                      onClick={() => !isCurrentVariantOut && addToCollection('cart')}
-                      disabled={isCurrentVariantOut}
+                      onClick={() => {
+                        if (isCurrentVariantOut) {
+                          addToCollection('notify');
+                        } else {
+                          addToCollection('cart');
+                        }
+                      }}
                       className={`w-full h-13 text-[14px] font-black uppercase tracking-[0.22em] transition-all duration-300 cursor-pointer shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 ${isCurrentVariantOut
-                        ? 'opacity-40 cursor-not-allowed bg-zinc-400 text-white'
+                        ? 'bg-[#0D0D0D] hover:bg-[#b8860b] text-white'
                         : isPreOrder
                           ? 'bg-[#b8860b] hover:bg-black text-white'
                           : 'bg-black hover:bg-zinc-900 text-white'
                         }`}
                     >
-                      <ShoppingBag size={18} />
-                      <span>
-                        {isCurrentVariantOut
-                          ? `${selectedSize?.size ? selectedSize.size.toUpperCase() + ' — ' : ''}OUT OF STOCK`
-                          : isInCart
-                            ? 'VIEW IN BAG'
-                            : isPreOrder
-                              ? 'PRE-ORDER NOW'
-                              : 'ADD TO BAG'
-                        }
-                      </span>
+                      {isCurrentVariantOut ? (
+                        <>
+                          <Bell size={18} />
+                          <span>{selectedSize?.size ? `${selectedSize.size.toUpperCase()} — ` : ''}NOTIFY ME</span>
+                        </>
+                      ) : isPreOrder ? (
+                        <>
+                          <Clock size={18} />
+                          <span>PRE-ORDER NOW</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShoppingBag size={18} />
+                          <span>{isInCart ? 'VIEW IN BAG' : 'ADD TO BAG'}</span>
+                        </>
+                      )}
                     </button>
 
                     {isPreOrder && (
@@ -1010,22 +1045,39 @@ const ProductDetail = () => {
           const currentVariantStock = selectedSize
             ? (selectedSize.stock !== undefined ? Number(selectedSize.stock) : Number(product?.stock ?? 10))
             : Number(product?.stock ?? 10);
-          const isPreOrder = Boolean(selectedSize?.is_preorder);
+          const isPreOrder = Boolean(selectedSize?.is_preorder === true || selectedSize?.is_preorder === 'true');
           const isCurrentVariantOut = !isPreOrder && (currentVariantStock <= 0 || product?.stock_status === 'Out of Stock');
 
           return (
             <button
               type="button"
-              onClick={() => !isCurrentVariantOut && addToCollection('cart')}
-              disabled={isCurrentVariantOut}
-              className={`flex-1 h-12 text-[14px] font-extrabold uppercase tracking-[0.2em] flex items-center justify-center transition-all cursor-pointer ${isCurrentVariantOut
-                ? 'opacity-40 cursor-not-allowed bg-zinc-400 text-white'
+              onClick={() => {
+                if (isCurrentVariantOut) {
+                  addToCollection('notify');
+                } else {
+                  addToCollection('cart');
+                }
+              }}
+              className={`flex-1 h-12 text-[14px] font-extrabold uppercase tracking-[0.2em] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${isCurrentVariantOut
+                ? 'bg-[#0D0D0D] active:bg-[#b8860b] text-white'
                 : isPreOrder
                   ? 'bg-[#b8860b] active:bg-black text-white'
                   : 'bg-black active:bg-zinc-800 text-white'
                 }`}
             >
-              {isCurrentVariantOut ? 'OUT OF STOCK' : isInCart ? 'VIEW BAG' : isPreOrder ? 'PRE-ORDER NOW' : 'ADD TO BAG'}
+              {isCurrentVariantOut ? (
+                <>
+                  <Bell size={16} />
+                  <span>NOTIFY ME</span>
+                </>
+              ) : isPreOrder ? (
+                <>
+                  <Clock size={16} />
+                  <span>PRE-ORDER</span>
+                </>
+              ) : (
+                <span>{isInCart ? 'VIEW BAG' : 'ADD TO BAG'}</span>
+              )}
             </button>
           );
         })()}

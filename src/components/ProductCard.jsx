@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Heart, ArrowRight } from 'lucide-react';
+import { Heart, ArrowRight, Bell, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from './StoreProvider';
 import OptimizedCloudinaryImage from './OptimizedCloudinaryImage';
@@ -9,6 +9,29 @@ export const parseMlValue = (str) => {
     const match = String(str).toLowerCase().match(/(\d+(?:\.\d+)?)\s*(ml)?/);
     if (match) return parseFloat(match[1]);
     return null;
+};
+
+// Helper to determine if a variant is pre-order (strictly if marked from product form)
+export const isVariantPreOrder = (v) => {
+    if (!v) return false;
+    return Boolean(v.is_preorder === true || v.is_preorder === 'true');
+};
+
+// Helper to determine if a variant is out of stock: if stock is 0 and NOT marked preorder
+export const isVariantOutOfStock = (v, product = null) => {
+    if (!v) return false;
+    if (isVariantPreOrder(v)) return false;
+    const vStock = v.stock !== undefined && v.stock !== null && v.stock !== '' ? Number(v.stock) : (product?.stock !== undefined ? Number(product.stock) : 10);
+    if (vStock <= 0) return true;
+    if (String(v.stock_status || '').toLowerCase() === 'out of stock') return true;
+    if (product && product.stock_status === 'Out of Stock') return true;
+    return false;
+};
+
+// Helper to determine if a variant is available (in stock and ready to ship)
+export const isVariantAvailable = (v, product = null) => {
+    if (!v) return false;
+    return !isVariantPreOrder(v) && !isVariantOutOfStock(v, product);
 };
 
 // Select the appropriate variant for a product given preferredSize or filters and sortBy
@@ -124,26 +147,58 @@ export const resolveProductVariant = (product, preferredSize = null, sortBy = nu
         return variants.filter(v => matchSize(v, pref));
     };
 
+    // Helper to pick the best alternative variant among candidates
+    const pickBestAlternative = (candidateList) => {
+        if (!candidateList || candidateList.length === 0) return null;
+        const sorted = [...candidateList].sort((a, b) => {
+            const aMl = parseMlValue(a.size);
+            const bMl = parseMlValue(b.size);
+            if (aMl === 100 && bMl !== 100) return -1;
+            if (bMl === 100 && aMl !== 100) return 1;
+            const diffA = aMl !== null ? Math.abs(aMl - 50) : 999;
+            const diffB = bMl !== null ? Math.abs(bMl - 50) : 999;
+            return diffA - diffB;
+        });
+        return sorted[0];
+    };
+
     // 1. If preferredSize is provided (e.g. from size filter)
     if (preferredSize && (!Array.isArray(preferredSize) || preferredSize.length > 0)) {
         const matches = getMatchingVariants(preferredSize);
         if (matches.length > 0) {
+            const availableMatches = matches.filter(v => isVariantAvailable(v, product));
+            const candidatePool = availableMatches.length > 0 ? availableMatches : matches;
+
             if (sortBy === 'price-low') {
-                return findExtremeVariant(matches, 'low');
+                return findExtremeVariant(candidatePool, 'low');
             } else if (sortBy === 'price-high') {
-                return findExtremeVariant(matches, 'high');
+                return findExtremeVariant(candidatePool, 'high');
             }
-            return matches[0];
+            return candidatePool[0];
         }
     }
 
     // 2. If NO preferredSize is active, check sortBy
     if (sortBy === 'price-low') {
-        const lowest = findExtremeVariant(variants, 'low');
-        if (lowest) return lowest;
+        const availableVariants = variants.filter(v => isVariantAvailable(v, product));
+        if (availableVariants.length > 0) {
+            return findExtremeVariant(availableVariants, 'low');
+        }
+        const preorderVariants = variants.filter(v => isVariantPreOrder(v));
+        if (preorderVariants.length > 0) {
+            return findExtremeVariant(preorderVariants, 'low');
+        }
+        return findExtremeVariant(variants, 'low');
     } else if (sortBy === 'price-high') {
-        const highest = findExtremeVariant(variants, 'high');
-        if (highest) return highest;
+        const availableVariants = variants.filter(v => isVariantAvailable(v, product));
+        if (availableVariants.length > 0) {
+            return findExtremeVariant(availableVariants, 'high');
+        }
+        const preorderVariants = variants.filter(v => isVariantPreOrder(v));
+        if (preorderVariants.length > 0) {
+            return findExtremeVariant(preorderVariants, 'high');
+        }
+        return findExtremeVariant(variants, 'high');
     }
 
     // 3. Default: Look for 50ml first
@@ -151,6 +206,37 @@ export const resolveProductVariant = (product, preferredSize = null, sortBy = nu
         const ml = parseMlValue(v.size);
         return ml === 50 || String(v.size).toLowerCase().includes('50ml');
     });
+
+    // If 50ml exists and is in stock (NOT out of stock, NOT preorder), display it!
+    if (fiftyMlVariant && isVariantAvailable(fiftyMlVariant, product)) {
+        return fiftyMlVariant;
+    }
+
+    // If 50ml or default size / base size is out of stock or preorder:
+    // Show another variant that IS available in stock
+    const otherAvailableVariants = variants.filter(v => {
+        if (fiftyMlVariant && v.size === fiftyMlVariant.size) return false;
+        return isVariantAvailable(v, product);
+    });
+
+    if (otherAvailableVariants.length > 0) {
+        return pickBestAlternative(otherAvailableVariants);
+    }
+
+    // If no variants are in stock, check if any variant is PRE-ORDER
+    const otherPreorderVariants = variants.filter(v => {
+        if (fiftyMlVariant && v.size === fiftyMlVariant.size) return false;
+        return isVariantPreOrder(v);
+    });
+
+    if (otherPreorderVariants.length > 0) {
+        if (fiftyMlVariant && isVariantPreOrder(fiftyMlVariant)) {
+            return fiftyMlVariant;
+        }
+        return pickBestAlternative(otherPreorderVariants);
+    }
+
+    // If 50ml exists (even though out of stock), return it
     if (fiftyMlVariant) return fiftyMlVariant;
 
     // 4. Fallback: Base variant (first variant in list)
@@ -186,8 +272,8 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
 
     const cartItemId = activeVariant ? `${product.id}-${activeVariant.size}` : product.id;
     const isInCart = cart.some(item => (item.cartId || item.id) === cartItemId);
-    const isPreOrder = Boolean(activeVariant?.is_preorder);
-    const isOutOfStock = !isPreOrder && ((activeVariant ? activeVariant.stock === 0 : product.stock === 0) || product.stock_status === 'Out of Stock');
+    const isPreOrder = isVariantPreOrder(activeVariant);
+    const isOutOfStock = isVariantOutOfStock(activeVariant, product);
 
     const rawTags = Array.isArray(product.tags) && product.tags.length > 0 ? product.tags : (product.tag ? [product.tag] : []);
     const tagsToDisplay = Array.from(new Map(rawTags.map(t => [typeof t === "object" ? t.label : t, t])).values());
@@ -195,10 +281,30 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
     const handleAction = async (e, type) => {
         e.preventDefault();
         e.stopPropagation();
+        if (type === 'notify') {
+            triggerToast('We will notify you when back in stock!');
+            return;
+        }
+        if (type === 'preorder') {
+            navigate(`/product/${product.id}`);
+            return;
+        }
         if (type === 'cart') {
+            if (isOutOfStock) {
+                triggerToast('This formulation is currently out of stock.');
+                return;
+            }
+            if (isPreOrder) {
+                navigate(`/product/${product.id}`);
+                return;
+            }
             if (isInCart) return;
-            await addToCart(product, activeVariant);
-            triggerToast(isPreOrder ? 'Pre-order added to bag' : 'Added to bag');
+            const res = await addToCart(product, activeVariant);
+            if (res && res.success === false) {
+                triggerToast(res.message || 'Cannot add to bag');
+                return;
+            }
+            triggerToast('Added to bag');
         } else {
             if (isWishlisted) {
                 await removeFromWishlist(product.id);
@@ -283,20 +389,36 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                     />
                 </button>
 
-                {/* Hover Slide-up ADD TO CART overlay */}
-                {!isOutOfStock && (
-                    <div className="absolute bottom-0 inset-x-0 z-20 overflow-hidden h-11 pointer-events-auto">
+                {/* Hover Slide-up Actions */}
+                <div className="absolute bottom-0 inset-x-0 z-20 overflow-hidden h-11 pointer-events-auto">
+                    {isOutOfStock ? (
                         <button
-                            onClick={(e) => handleAction(e, 'cart')}
-                            className={`w-full h-full text-[10px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center ${isPreOrder
-                                ? 'bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#B8860B] text-white hover:brightness-110'
-                                : 'bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg'
-                                } ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
+                            type="button"
+                            onClick={(e) => handleAction(e, 'notify')}
+                            className={`w-full h-full text-[10px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
                         >
-                            {isInCart ? 'IN BAG' : isPreOrder ? 'PRE-ORDER NOW' : 'ADD TO CART'}
+                            <Bell size={13} />
+                            NOTIFY ME
                         </button>
-                    </div>
-                )}
+                    ) : isPreOrder ? (
+                        <button
+                            type="button"
+                            onClick={(e) => handleAction(e, 'preorder')}
+                            className={`w-full h-full text-[10px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#B8860B] text-white hover:brightness-110 shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
+                        >
+                            <Clock size={13} />
+                            PRE-ORDER NOW
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={(e) => handleAction(e, 'cart')}
+                            className={`w-full h-full text-[10px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
+                        >
+                            {isInCart ? 'IN BAG' : 'ADD TO CART'}
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Info Area */}
@@ -314,6 +436,8 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                     <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
                         {variants.map((v, vIdx) => {
                             const isCurrent = activeVariant && activeVariant.size === v.size;
+                            const vOut = isVariantOutOfStock(v, product);
+                            const vPre = isVariantPreOrder(v);
                             return (
                                 <button
                                     key={vIdx}
@@ -326,9 +450,13 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                                     className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase transition-all cursor-pointer ${
                                         isCurrent
                                             ? 'bg-black text-white border border-black shadow-xs'
-                                            : 'bg-zinc-50 text-zinc-600 border border-zinc-200 hover:border-black hover:text-black'
+                                            : vOut
+                                                ? 'bg-zinc-100 text-zinc-400 border border-zinc-200 line-through opacity-75 hover:border-zinc-400 hover:text-zinc-600'
+                                                : vPre
+                                                    ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:border-amber-400'
+                                                    : 'bg-zinc-50 text-zinc-600 border border-zinc-200 hover:border-black hover:text-black'
                                     }`}
-                                    title={`${v.size} - ₹${Number(v.price).toLocaleString('en-IN')}`}
+                                    title={`${v.size} - ₹${Number(v.price).toLocaleString('en-IN')}${vOut ? ' (Out of Stock)' : vPre ? ' (Pre-Order)' : ''}`}
                                 >
                                     {v.size}
                                 </button>

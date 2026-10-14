@@ -41,7 +41,17 @@ export default async function handler(req, res) {
   let customerEmailSuccess = false;
   let adminEmailSuccess = false;
 
-  // 1. Send Customer Order Confirmation Email
+  // 1. Authoritative Server-side Stock Deduction in Firestore
+  try {
+    const { deductOrderStock } = await import("./lib/stockManager.js");
+    if (Array.isArray(authoritativeOrder.items) && authoritativeOrder.items.length > 0) {
+      await deductOrderStock(authoritativeOrder.items);
+    }
+  } catch (stkErr) {
+    console.error("Server stock deduction error:", stkErr.message);
+  }
+
+  // 2. Send Customer Order Confirmation Email
   try {
     const customerHtml = renderOrderConfirmationEmail({ order: authoritativeOrder });
     await sendEmail({

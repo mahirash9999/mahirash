@@ -20,6 +20,13 @@ export const exportToCSV = (data, keys, headers, fileName) => {
                 }
                 val = val[part];
             }
+            if (typeof val === 'object' && val !== null) {
+                try {
+                    val = JSON.stringify(val);
+                } catch (_) {
+                    val = '';
+                }
+            }
             const valStr = val === undefined || val === null ? '' : String(val);
             // Escape double quotes by doubling them
             return `"${valStr.replace(/"/g, '""')}"`;

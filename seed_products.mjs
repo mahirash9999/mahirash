@@ -1,6 +1,6 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, collection, setDoc, doc } from 'firebase/firestore';
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, collection, getDocs, deleteDoc, doc, setDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAoaTJWd20mb_09ADUKZ4JjkSskdtaDVy4",
@@ -18,381 +18,24 @@ const db = getFirestore(app);
 
 const PRODUCTS_SEED = [
   {
-    id: "versace-pour-homme-edt",
-    name: "VERSACE Pour Homme EDT",
-    category: "Eau de Toilette",
-    gender: "Men",
-    tag: "OUTLET",
-    price: 5000,
-    original_price: 6000,
-    stock: 27,
-    stock_status: "In Stock",
-    size_prices: [
-      {
-        size: "50ml",
-        price: 5000,
-        original_price: 6000,
-        stock: 15,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
-          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800"
-        ]
-      },
-      {
-        size: "100ml",
-        price: 8500,
-        original_price: 10000,
-        stock: 12,
-        is_preorder: true,
-        image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
-          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800"
-        ]
-      }
-    ],
-    sizes: "50ml, 100ml",
-    rating: 4.8,
-    top_notes: "Lemon, Neroli, Bergamot, Rose de Mai",
-    heart_notes: "Hyacinth, Clary Sage, Cedar, Geranium",
-    base_notes: "Tonka Bean, Musk, Amber",
-    longevity: "8-10 Hours",
-    sillage: "Moderate to Heavy",
-    description: "Versace Pour Homme has been created from essential ingredients of Mediterranean origin with the potential to convey through aromatic notes the character of today’s man."
-  },
-  {
-    id: "versace-bright-crystal-absolu",
-    name: "VERSACE Bright Crystal Absolu",
-    category: "Extrait de Parfum",
-    gender: "Women",
-    tag: "BESTSELLER",
-    price: 7000,
-    original_price: 10000,
-    stock: 30,
-    stock_status: "In Stock",
-    size_prices: [
-      {
-        size: "10ml",
-        price: 2500,
-        original_price: 3500,
-        stock: 20,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
-          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800"
-        ]
-      },
-      {
-        size: "50ml",
-        price: 7000,
-        original_price: 10000,
-        stock: 10,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
-          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800"
-        ]
-      }
-    ],
-    sizes: "10ml, 50ml",
-    rating: 4.9,
-    top_notes: "Yuzu, Pomegranate, Ice Accord",
-    heart_notes: "Raspberry, Lotus, Peony, Magnolia",
-    base_notes: "Acajou Wood, Amber, Musk",
-    longevity: "12+ Hours",
-    sillage: "Intense Sillage",
-    description: "An intense version of the beloved Bright Crystal fragrance. Enhanced concentration for absolute longevity and vibrant floral luxury."
-  },
-  {
-    id: "ysl-libre-edp",
-    name: "YVES SAINT LAURENT Libre EDP",
-    category: "Eau de Parfum",
-    gender: "Women",
-    tag: "NEW",
-    price: 6000,
-    original_price: 7000,
-    stock: 26,
-    stock_status: "In Stock",
-    size_prices: [
-      {
-        size: "50ml",
-        price: 6000,
-        original_price: 7000,
-        stock: 18,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800",
-          "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800"
-        ]
-      },
-      {
-        size: "100ml",
-        price: 9999,
-        original_price: 11500,
-        stock: 8,
-        is_preorder: true,
-        image: "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800",
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800"
-        ]
-      }
-    ],
-    sizes: "50ml, 100ml",
-    rating: 4.9,
-    top_notes: "Lavender Essence, Mandarin Orange, Blackcurrant",
-    heart_notes: "Lavender, Orange Blossom, Jasmine",
-    base_notes: "Madagascar Vanilla, Musk, Cedar, Ambergris",
-    longevity: "10-12 Hours",
-    sillage: "Heavy Sillage",
-    description: "The grand floral fragrance of freedom. Combining burning sensuality of noble French lavender and Moroccan orange blossom."
-  },
-  {
-    id: "giorgio-armani-my-way-edp",
-    name: "GIORGIO ARMANI My Way EDP",
-    category: "Floral & Fresh",
-    gender: "Women",
-    tag: "NEW",
-    price: 5500,
-    original_price: 7000,
-    stock: 23,
-    stock_status: "In Stock",
-    size_prices: [
-      {
-        size: "50ml",
-        price: 5500,
-        original_price: 7000,
-        stock: 14,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800",
-          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800"
-        ]
-      },
-      {
-        size: "90ml",
-        price: 8900,
-        original_price: 11000,
-        stock: 9,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
-          "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800"
-        ]
-      }
-    ],
-    sizes: "50ml, 90ml",
-    rating: 4.8,
-    top_notes: "Bergamot, Egyptian Orange Blossom",
-    heart_notes: "Indian Tuberose, Jasmine",
-    base_notes: "Bourbon Vanilla, Virginia Cedar, White Musk",
-    longevity: "10+ Hours",
-    sillage: "Moderate Sillage",
-    description: "My Way is the scent of discoveries and connections for an open-minded, curious and authentic woman who is ready to broaden her horizons."
-  },
-  {
-    id: "test-crystal-absolu",
-    name: "TEST Crystal Absolu",
-    category: "Extrait de Parfum",
-    gender: "Unisex",
-    tag: "TEST",
-    price: 1000,
-    original_price: 5000,
-    stock: 40,
-    stock_status: "In Stock",
-    size_prices: [
-      {
-        size: "10ml",
-        price: 1000,
-        original_price: 5000,
-        stock: 25,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
-          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800"
-        ]
-      },
-      {
-        size: "50ml",
-        price: 3500,
-        original_price: 7500,
-        stock: 15,
-        is_preorder: true,
-        image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
-          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800"
-        ]
-      }
-    ],
-    sizes: "10ml, 50ml",
-    rating: 4.7,
-    top_notes: "Ocean Mist, Zesty Bergamot",
-    heart_notes: "Blue Lotus, Sea Salt",
-    base_notes: "Driftwood, Clean Musk",
-    longevity: "12 Hours",
-    sillage: "Intense",
-    description: "Exclusive tester edition of Crystal Absolu, showcasing ultra-pure botanical extraits with intense marine fresh notes."
-  },
-  {
-    id: "prada-paradoxe-edp",
-    name: "PRADA Paradoxe EDP",
-    category: "Luxury Perfumes",
-    gender: "Women",
-    tag: "PREMIUM",
-    price: 2999,
-    original_price: 3499,
-    stock: 30,
-    stock_status: "In Stock",
-    size_prices: [
-      {
-        size: "50ml",
-        price: 2999,
-        original_price: 3499,
-        stock: 20,
-        is_preorder: true,
-        image: "https://images.unsplash.com/photo-1583445013765-46c20c4a6772?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1583445013765-46c20c4a6772?q=80&w=800",
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800"
-        ]
-      },
-      {
-        size: "90ml",
-        price: 6499,
-        original_price: 7999,
-        stock: 10,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?q=80&w=800",
-          "https://images.unsplash.com/photo-1583445013765-46c20c4a6772?q=80&w=800"
-        ]
-      }
-    ],
-    sizes: "50ml, 90ml",
-    rating: 4.9,
-    top_notes: "Calabrian Bergamot, Tangerine, Pear",
-    heart_notes: "Neroli, Orange Blossom, Sambac Jasmine",
-    base_notes: "Amber, White Musk, Bourbon Vanilla",
-    longevity: "12+ Hours",
-    sillage: "Heavy Sillage",
-    description: "An avant-garde floral amber fragrance that embraces the paradoxes of iconic ingredients to reveal new scented sensations."
-  },
-  {
-    id: "tom-ford-black-orchid-parfum",
-    name: "TOM FORD Black Orchid Parfum",
-    category: "Woody & Amber",
-    gender: "Unisex",
-    tag: "ROYAL EDITION",
-    price: 8999,
-    original_price: 11999,
-    stock: 19,
-    stock_status: "In Stock",
-    size_prices: [
-      {
-        size: "50ml",
-        price: 8999,
-        original_price: 11999,
-        stock: 12,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
-          "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800"
-        ]
-      },
-      {
-        size: "100ml",
-        price: 14500,
-        original_price: 18000,
-        stock: 7,
-        is_preorder: true,
-        image: "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800",
-          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800"
-        ]
-      }
-    ],
-    sizes: "50ml, 100ml",
-    rating: 5.0,
-    top_notes: "Black Truffle, Ylang-Ylang, Blackcurrant, Bergamot",
-    heart_notes: "Black Orchid, Ylang-Ylang, Rum",
-    base_notes: "Patchouli, Sandalwood, Vanilla, Incense",
-    longevity: "14+ Hours",
-    sillage: "Enormous Sillage",
-    description: "A luxurious and sensual fragrance of rich, dark accords and an alluring potion of black orchids and spice."
-  },
-  {
-    id: "bleu-de-chanel-edp",
-    name: "BLEU DE CHANEL Eau de Parfum",
-    category: "Luxury Perfumes",
-    gender: "Men",
-    tag: "BESTSELLER",
-    price: 9500,
-    original_price: 12000,
-    stock: 25,
-    stock_status: "In Stock",
-    size_prices: [
-      {
-        size: "50ml",
-        price: 6500,
-        original_price: 8000,
-        stock: 15,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800",
-          "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?q=80&w=800"
-        ]
-      },
-      {
-        size: "100ml",
-        price: 9500,
-        original_price: 12000,
-        stock: 10,
-        is_preorder: false,
-        image: "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?q=80&w=800",
-        images: [
-          "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?q=80&w=800",
-          "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800"
-        ]
-      }
-    ],
-    sizes: "50ml, 100ml",
-    rating: 4.9,
-    top_notes: "Grapefruit, Lemon, Mint, Pink Pepper",
-    heart_notes: "Ginger, Nutmeg, Jasmine, Iso E Super",
-    base_notes: "Incense, Vetiver, Cedar, Sandalwood, Patchouli",
-    longevity: "10-12 Hours",
-    sillage: "Strong Sillage",
-    description: "An aromatic-woody fragrance with a captivating trail. A tribute to masculine freedom in a deep night-blue bottle."
-  },
-  {
     id: "dior-sauvage-elixir",
     name: "DIOR Sauvage Elixir",
-    category: "Extrait de Parfum",
+    brand: "DIOR",
+    category: "Extrait De Parfum",
+    subcategory: "Designer Luxury",
+    collection: "Connoisseur Selection",
     gender: "Men",
-    tag: "PRIVATE RESERVE",
+    fragrance_family: "Aromatic Spicy",
+    fragrance_concentration: "Extrait De Parfum (30-40%)",
     price: 11000,
     original_price: 14000,
-    stock: 20,
-    stock_status: "In Stock",
+    sizes: "60ml, 100ml",
     size_prices: [
       {
         size: "60ml",
         price: 11000,
         original_price: 14000,
-        stock: 14,
+        stock: 15,
         is_preorder: false,
         image: "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?q=80&w=800",
         images: [
@@ -404,8 +47,8 @@ const PRODUCTS_SEED = [
         size: "100ml",
         price: 16500,
         original_price: 20000,
-        stock: 6,
-        is_preorder: true,
+        stock: 0,
+        is_preorder: false,
         image: "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800",
         images: [
           "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800",
@@ -413,91 +56,492 @@ const PRODUCTS_SEED = [
         ]
       }
     ],
-    sizes: "60ml, 100ml",
     rating: 5.0,
+    reviews_count: 476,
     top_notes: "Cinnamon, Nutmeg, Cardamom, Grapefruit",
     heart_notes: "Lavender",
-    base_notes: "Licorice, Amber, Patchouli, Vetiver",
+    base_notes: "Licorice, Sandalwood, Amber, Patchouli, Haitian Vetiver",
     longevity: "16+ Hours",
     sillage: "Enormous",
-    description: "An extraordinarily concentrated fragrance steeped in the iconic freshness of Sauvage with an intoxicating heart of spices."
+    tags: ["BESTSELLER", "EXTRAIT"],
+    description: "An extraordinarily concentrated fragrance steeped in the iconic freshness of Sauvage with an intoxicating heart of spices, a 'tailored' lavender essence and a blend of rich woods forming the signature of its powerful trail."
   },
   {
-    id: "mahirash-royal-amber-oud",
-    name: "MAHIRASH Royal Amber Oud Extrait",
-    category: "Oud Collection",
-    gender: "Unisex",
-    tag: "SIGNATURE EXTRAIT",
-    price: 3999,
-    original_price: 5999,
-    stock: 45,
-    stock_status: "In Stock",
+    id: "bleu-de-chanel-parfum",
+    name: "BLEU DE CHANEL Parfum",
+    brand: "CHANEL",
+    category: "Parfum",
+    subcategory: "Designer Luxury",
+    collection: "Private Reserve",
+    gender: "Men",
+    fragrance_family: "Woody Aromatic",
+    fragrance_concentration: "Parfum (20-30%)",
+    price: 9800,
+    original_price: 12000,
+    sizes: "50ml, 100ml",
     size_prices: [
       {
         size: "50ml",
-        price: 3999,
-        original_price: 5999,
-        stock: 25,
+        price: 9800,
+        original_price: 12000,
+        stock: 18,
         is_preorder: false,
-        image: "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800",
+        image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
         images: [
-          "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800",
+          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
+          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800"
+        ]
+      },
+      {
+        size: "100ml",
+        price: 15200,
+        original_price: 18500,
+        stock: 12,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
+          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800"
+        ]
+      }
+    ],
+    rating: 4.9,
+    reviews_count: 389,
+    top_notes: "Lemon Zest, Bergamot, Mint, Artemisia",
+    heart_notes: "Lavender, Pineapple, Geranium, Green Notes",
+    base_notes: "Sandalwood, Cedar, Amberwood, Iso E Super, Tonka Bean",
+    longevity: "12-14 Hours",
+    sillage: "Strong",
+    tags: ["ICONIC", "LUXURY"],
+    description: "The most intense expression of BLEU DE CHANEL. An aromatic, intensely woody fragrance that opens with powerful freshness and lingers with an extraordinary accord of New Caledonian sandalwood."
+  },
+  {
+    id: "baccarat-rouge-540-extrait",
+    name: "BACCARAT ROUGE 540 Extrait",
+    brand: "MAISON FRANCIS KURKDJIAN",
+    category: "Extrait De Parfum",
+    subcategory: "Niche Hauteur",
+    collection: "Royal Vault",
+    gender: "Unisex",
+    fragrance_family: "Amber Floral",
+    fragrance_concentration: "Extrait De Parfum (30-40%)",
+    price: 32000,
+    original_price: 38000,
+    sizes: "70ml, 200ml",
+    size_prices: [
+      {
+        size: "70ml",
+        price: 32000,
+        original_price: 38000,
+        stock: 8,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
+          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800"
+        ]
+      },
+      {
+        size: "200ml",
+        price: 65000,
+        original_price: 75000,
+        stock: 0,
+        is_preorder: true,
+        image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
+          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800"
+        ]
+      }
+    ],
+    rating: 5.0,
+    reviews_count: 512,
+    top_notes: "Bitter Almond, Saffron",
+    heart_notes: "Egyptian Jasmine, Cedarwood",
+    base_notes: "Ambergris, Woody Musks, Cashmeran",
+    longevity: "18+ Hours",
+    sillage: "Enormous",
+    tags: ["ULTRA LUXURY", "SIGNATURE"],
+    description: "The Extrait de parfum augments the strength and radiance of the fragrance's amber woody floral aura. Jasmine blossoms and woody musks engage in an alchemy of the senses."
+  },
+  {
+    id: "tom-ford-tobacco-vanille",
+    name: "TOM FORD Tobacco Vanille",
+    brand: "TOM FORD",
+    category: "Eau de Parfum",
+    subcategory: "Private Blend",
+    collection: "Connoisseur Selection",
+    gender: "Unisex",
+    fragrance_family: "Oriental Spicy",
+    fragrance_concentration: "Eau de Parfum (15-20%)",
+    price: 18500,
+    original_price: 22000,
+    sizes: "50ml, 100ml",
+    size_prices: [
+      {
+        size: "50ml",
+        price: 18500,
+        original_price: 22000,
+        stock: 14,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1563178406-4cdc2923acbc?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1563178406-4cdc2923acbc?q=80&w=800",
+          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800"
+        ]
+      },
+      {
+        size: "100ml",
+        price: 29000,
+        original_price: 34000,
+        stock: 9,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
+          "https://images.unsplash.com/photo-1563178406-4cdc2923acbc?q=80&w=800"
+        ]
+      }
+    ],
+    rating: 4.9,
+    reviews_count: 320,
+    top_notes: "Tobacco Leaf, Spicy Notes",
+    heart_notes: "Vanilla, Cacao, Tonka Bean, Tobacco Blossom",
+    base_notes: "Dried Fruits, Woody Notes",
+    longevity: "14+ Hours",
+    sillage: "Strong",
+    tags: ["BESTSELLER", "PRIVATE BLEND"],
+    description: "Opulent, warm and iconic. Tom Ford's affection for London inspired this scent, reminiscent of an English gentlemen's club, redolent with spice and rich tobacco."
+  },
+  {
+    id: "creed-aventus",
+    name: "CREED Aventus",
+    brand: "CREED",
+    category: "Eau de Parfum",
+    subcategory: "Heritage Niche",
+    collection: "Royal Vault",
+    gender: "Men",
+    fragrance_family: "Chypre Fruity",
+    fragrance_concentration: "Eau de Parfum (15-20%)",
+    price: 24000,
+    original_price: 28000,
+    sizes: "50ml, 100ml",
+    size_prices: [
+      {
+        size: "50ml",
+        price: 24000,
+        original_price: 28000,
+        stock: 12,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?q=80&w=800",
           "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800"
         ]
       },
       {
         size: "100ml",
-        price: 6999,
-        original_price: 9999,
-        stock: 15,
+        price: 36500,
+        original_price: 42000,
+        stock: 6,
         is_preorder: false,
         image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
         images: [
           "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
+          "https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?q=80&w=800"
+        ]
+      }
+    ],
+    rating: 4.9,
+    reviews_count: 615,
+    top_notes: "Pineapple, Bergamot, Black Currant, Apple",
+    heart_notes: "Birch, Patchouli, Moroccan Jasmine, Rose",
+    base_notes: "Musk, Oakmoss, Ambergris, Vanille",
+    longevity: "12-14 Hours",
+    sillage: "Strong & Radiating",
+    tags: ["LEGENDARY", "ROYAL"],
+    description: "The exceptional Aventus was inspired by the dramatic life of a historic emperor, celebrating strength, power and success. Sensory notes of blackcurrant, Italian bergamot and French apples."
+  },
+  {
+    id: "ysl-libre-le-parfum",
+    name: "YVES SAINT LAURENT Libre Le Parfum",
+    brand: "YVES SAINT LAURENT",
+    category: "Extrait De Parfum",
+    subcategory: "Designer Luxury",
+    collection: "Connoisseur Selection",
+    gender: "Women",
+    fragrance_family: "Warm Floral",
+    fragrance_concentration: "Extrait De Parfum (30-40%)",
+    price: 8900,
+    original_price: 10500,
+    sizes: "50ml, 90ml",
+    size_prices: [
+      {
+        size: "50ml",
+        price: 8900,
+        original_price: 10500,
+        stock: 20,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
+          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800"
+        ]
+      },
+      {
+        size: "90ml",
+        price: 13400,
+        original_price: 16000,
+        stock: 15,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
+          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800"
+        ]
+      }
+    ],
+    rating: 4.8,
+    reviews_count: 245,
+    top_notes: "Ginger, Saffron, Mandarin Orange, Bergamot",
+    heart_notes: "Orange Blossom, French Diva Lavender",
+    base_notes: "Bourbon Vanilla, Honey, Tonka Bean, Vetiver",
+    longevity: "12+ Hours",
+    sillage: "Strong",
+    tags: ["BESTSELLER", "HOT"],
+    description: "The most concentrated and long-lasting iteration of Libre. Enriched with saffron accord harvested in the Ourika Community Gardens, blazing with an insolent sensuality."
+  },
+  {
+    id: "parfums-de-marly-layton",
+    name: "PARFUMS DE MARLY Layton",
+    brand: "PARFUMS DE MARLY",
+    category: "Eau de Parfum",
+    subcategory: "Haute Parfumerie",
+    collection: "Royal Vault",
+    gender: "Unisex",
+    fragrance_family: "Oriental Floral",
+    fragrance_concentration: "Eau de Parfum (15-20%)",
+    price: 19500,
+    original_price: 23000,
+    sizes: "75ml, 125ml",
+    size_prices: [
+      {
+        size: "75ml",
+        price: 19500,
+        original_price: 23000,
+        stock: 10,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800",
+          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800"
+        ]
+      },
+      {
+        size: "125ml",
+        price: 26500,
+        original_price: 31000,
+        stock: 7,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
+          "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800"
+        ]
+      }
+    ],
+    rating: 4.9,
+    reviews_count: 288,
+    top_notes: "Apple, Lavender, Bergamot, Mandarin Orange",
+    heart_notes: "Geranium, Violet, Jasmine",
+    base_notes: "Vanilla, Cardamom, Sandalwood, Pepper, Guaiac Wood, Patchouli",
+    longevity: "14+ Hours",
+    sillage: "Enormous",
+    tags: ["ROYAL", "CONNOISSEUR"],
+    description: "An addictive and distinct composition infused with spicy cardamom, decadent vanilla, and crisp apple that asserts noble sophistication fit for the Court of Versailles."
+  },
+  {
+    id: "kilian-angels-share",
+    name: "KILIAN Angels' Share",
+    brand: "KILIAN",
+    category: "Eau de Parfum",
+    subcategory: "The Liquors",
+    collection: "Connoisseur Selection",
+    gender: "Unisex",
+    fragrance_family: "Warm Gourmand",
+    fragrance_concentration: "Eau de Parfum (15-20%)",
+    price: 17500,
+    original_price: 21000,
+    sizes: "50ml, 100ml",
+    size_prices: [
+      {
+        size: "50ml",
+        price: 17500,
+        original_price: 21000,
+        stock: 11,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?q=80&w=800",
           "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800"
         ]
       },
       {
-        size: "200ml",
-        price: 11999,
-        original_price: 15999,
-        stock: 5,
-        is_preorder: true,
-        image: "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800",
+        size: "100ml",
+        price: 28000,
+        original_price: 33500,
+        stock: 8,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800",
         images: [
-          "https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800",
-          "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800"
+          "https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=800",
+          "https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?q=80&w=800"
         ]
       }
     ],
-    sizes: "50ml, 100ml, 200ml",
-    rating: 4.95,
+    rating: 5.0,
+    reviews_count: 360,
+    top_notes: "Cognac Essence",
+    heart_notes: "Cinnamon, Tonka Bean Absolute, Oak Wood",
+    base_notes: "Praline, Vanilla, Creamy Sandalwood",
+    longevity: "15+ Hours",
+    sillage: "Intense",
+    tags: ["GOURMAND", "TRENDING"],
+    description: "Kilian Hennessy's most personal fragrance creation yet, inspired by his eighth-generation inheritance of Hennessy savoir-faire in cognac-making."
+  },
+  {
+    id: "giorgio-armani-acqua-di-gio-parfum",
+    name: "GIORGIO ARMANI Acqua Di Giò Parfum",
+    brand: "GIORGIO ARMANI",
+    category: "Parfum",
+    subcategory: "Designer Luxury",
+    collection: "Signature Edition",
+    gender: "Men",
+    fragrance_family: "Aquatic Woody",
+    fragrance_concentration: "Parfum (20-30%)",
+    price: 6500,
+    original_price: 7800,
+    sizes: "40ml, 75ml, 125ml",
+    size_prices: [
+      {
+        size: "40ml",
+        price: 6500,
+        original_price: 7800,
+        stock: 22,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
+          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800"
+        ]
+      },
+      {
+        size: "75ml",
+        price: 9900,
+        original_price: 12000,
+        stock: 16,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800",
+          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800"
+        ]
+      },
+      {
+        size: "125ml",
+        price: 13500,
+        original_price: 16500,
+        stock: 10,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=800",
+          "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800"
+        ]
+      }
+    ],
+    rating: 4.8,
+    reviews_count: 190,
+    top_notes: "Marine Notes, Bergamot",
+    heart_notes: "Rosemary, Clary Sage, Geranium",
+    base_notes: "Olibanum Incense, Patchouli",
+    longevity: "10-12 Hours",
+    sillage: "Moderate to Heavy",
+    tags: ["FRESH", "AQUATIC"],
+    description: "A deep, intense freshness punctuated by incense notes that add mysterious warmth to Acqua Di Giò's iconic marine facets."
+  },
+  {
+    id: "mahirash-royal-imperial-oud",
+    name: "MAHIRASH Royal Imperial Oud",
+    brand: "MAHIRASH",
+    category: "Extrait De Parfum",
+    subcategory: "Pure Artisanal",
+    collection: "Royal Vault",
+    gender: "Unisex",
+    fragrance_family: "Oriental Woody",
+    fragrance_concentration: "Extrait De Parfum (30-40%)",
+    price: 12500,
+    original_price: 16000,
+    sizes: "50ml, 100ml",
+    size_prices: [
+      {
+        size: "50ml",
+        price: 12500,
+        original_price: 16000,
+        stock: 25,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
+          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800"
+        ]
+      },
+      {
+        size: "100ml",
+        price: 21000,
+        original_price: 27000,
+        stock: 15,
+        is_preorder: false,
+        image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
+        images: [
+          "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800",
+          "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800"
+        ]
+      }
+    ],
+    rating: 5.0,
+    reviews_count: 512,
     top_notes: "Royal Cambodian Oud, Bergamot, Saffron",
     heart_notes: "Amber Resin, Taif Rose, Cinnamon Bark",
     base_notes: "Aged Oud Wood, Madagascar Vanilla, Creamy Sandalwood",
-    longevity: "14+ Hours",
+    longevity: "18+ Hours",
     sillage: "Opulent & Intensely Radiating",
-    description: "The crown jewel of Mahirash Parfumerie. Blended with rare Cambodian Oud and golden amber resin for an unforgettable signature aroma."
+    tags: ["SIGNATURE", "HERITAGE"],
+    description: "The crown jewel of Mahirash Parfumerie. Blended with rare aged Cambodian Oud, Taif rose petals and golden amber resin for an unforgettable royal presence."
   }
 ];
 
 async function seed() {
-  console.log("Signing in as Super Admin...");
+  console.log("Signing in as Admin...");
   try {
-    await signInWithEmailAndPassword(auth, "mahirsh9999@gmail.com", "Super@321.Admin");
+    await signInWithEmailAndPassword(auth, "admin@mahirash.com", "Mahirash@1234");
     console.log("✓ Authenticated successfully!");
   } catch (err) {
     console.warn("Auth note:", err.message);
   }
 
-  console.log("Seeding 10 luxury designer products with per-variant multi-images & pre-orders into Firestore...");
+  console.log("Seeding 10 luxury designer products into Firestore...");
   for (const item of PRODUCTS_SEED) {
     const allVariantImages = item.size_prices.flatMap(sp => sp.images || (sp.image ? [sp.image] : [])).filter(Boolean);
     const primaryImg = item.size_prices[0]?.images?.[0] || item.size_prices[0]?.image || "";
+    const totalStock = item.size_prices.reduce((sum, sp) => sum + (Number(sp.stock) || 0), 0);
+    const autoStatus = totalStock === 0 ? "Out of Stock" : totalStock <= 5 ? "Low Stock" : "In Stock";
 
     const ref = doc(db, "products", item.id);
     await setDoc(ref, {
       ...item,
+      stock: totalStock,
+      stock_status: autoStatus,
       image: primaryImg,
       images: allVariantImages,
       is_active: true,

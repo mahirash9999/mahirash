@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MiniLoader from "../components/MiniLoader";
 import { useAuth } from "../components/useAuth";
 import { useCustomerAuth } from "../components/CustomerAuthProvider";
@@ -18,17 +18,15 @@ import OptimizedCloudinaryImage from "../components/OptimizedCloudinaryImage";
 
 const Account = () => {
   const { customer, customerLogout } = useCustomerAuth();   // OTP-based customer session
+  const { logout: firebaseLogout } = useAuth();              // Firebase Auth sign-out
 
   const activeEmail = customer?.email || null;
-  const activeName = customer?.name || "";
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [userData, setUserData] = useState(null);
   const [recentOrders, setRecentOrders] = useState([]);
   const [stats, setStats] = useState({ cart: 0, wishlist: 0, orders: 0 });
   const [loading, setLoading] = useState(true);
-  const [dataReady, setDataReady] = useState(false);
-  const [showPreloader, setShowPreloader] = useState(true);
   // Tab driven by URL ?tab= query param
   const activeTab = searchParams.get("tab") || "overview";
   const setActiveTab = (tab) => setSearchParams({ tab }, { replace: true });
@@ -51,6 +49,10 @@ const Account = () => {
   const [addressForm, setAddressForm] = useState({
     name: "",
     phone: "",
+    alternatePhone: "",
+    flat: "",
+    street: "",
+    landmark: "",
     address: "",
     city: "",
     state: "",
@@ -80,21 +82,21 @@ const Account = () => {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async (email) => {
+    if (!email) return;
     try {
-      // ── OTP Customer session: fetch from customers collection by email ──
-      const cleanEmail = (customer.email || "").toLowerCase().trim();
+      const cleanEmail = email.toLowerCase().trim();
       const customerDocId = cleanEmail.replace(/[^a-z0-9]/g, "_");
       const customerSnap = await getDoc(doc(db, "customers", customerDocId));
       if (customerSnap.exists()) {
         const d = customerSnap.data();
         setUserData(d);
-        setDisplayName(d.name || customer.name || "");
-        setPhone(d.phone || customer.phone || "");
-        setBio(d.bio || "");
+        setDisplayName(d.name || customer?.name || "");
+        setPhone(d.phone || customer?.phone || "");
+        setBio(d.bio || d.shortBio || "");
       } else {
-        setDisplayName(customer.name || "");
-        setPhone(customer.phone || "");
+        setDisplayName(customer?.name || "");
+        setPhone(customer?.phone || "");
       }
 
       // Fetch orders by email
@@ -116,8 +118,8 @@ const Account = () => {
         if (addrsList.length === 0 && d && d.address) {
           addrsList.push({
             id: 'legacy-root-address',
-            name: d.name || customer.name || "",
-            phone: d.phone || customer.phone || "",
+            name: d.name || customer?.name || "",
+            phone: d.phone || customer?.phone || "",
             address: d.address || "",
             city: d.city || "",
             state: d.state || "",
@@ -141,22 +143,30 @@ const Account = () => {
       console.error("Error loading account data:", error);
     } finally {
       setLoading(false);
-      setDataReady(true);
     }
-  };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Use email string as dep (not customer object) to avoid re-fetch loop on profile saves
   useEffect(() => {
-    if (!customer) { navigate("/login"); return; }
-    fetchData();
-  }, [customer, navigate]);
+    if (!customer?.email) {
+      navigate("/login");
+      return;
+    }
+    fetchData(customer.email);
+  }, [customer?.email, navigate, fetchData]);
 
   const handleLogout = async () => {
     if (window.confirm("Are you sure you want to logout?")) {
       try {
+        // Clear OTP customer session first
         customerLogout();
+        // Also sign out Firebase Auth so CustomerAuthProvider doesn't re-populate customer
+        if (firebaseLogout) await firebaseLogout();
         navigate("/");
       } catch (error) {
         console.error("Logout failed:", error);
+        // Still navigate away even if Firebase signOut fails
+        navigate("/");
       }
     }
   };
@@ -214,6 +224,10 @@ const Account = () => {
     setAddressForm({
       name: "",
       phone: "",
+      alternatePhone: "",
+      flat: "",
+      street: "",
+      landmark: "",
       address: "",
       city: "",
       state: "",
@@ -227,28 +241,39 @@ const Account = () => {
 
   const handleSaveAddress = async (e) => {
     e.preventDefault();
-    if (!addressForm.address || !addressForm.city || !addressForm.pincode || !addressForm.name || !addressForm.phone) {
+    if (!addressForm.name || !addressForm.phone || (!addressForm.flat && !addressForm.address) || !addressForm.city || !addressForm.state || !addressForm.pincode) {
       showToast("Please fill all required address fields");
       return;
     }
+
+    const synthesizedAddress = [
+      addressForm.flat,
+      addressForm.street,
+      addressForm.landmark ? `Near ${addressForm.landmark}` : null
+    ].filter(Boolean).join(", ") || addressForm.address;
+
+    const payload = {
+      ...addressForm,
+      address: synthesizedAddress
+    };
 
     try {
       const addrCollection = collection(db, "customers", (customer.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_"), "addresses");
 
       if (editingAddressId) {
         if (editingAddressId === 'legacy-root-address') {
-          const docRef = await addDoc(addrCollection, addressForm);
-          setAddresses(prev => prev.map(a => a.id === editingAddressId ? { id: docRef.id, ...addressForm } : a));
+          const docRef = await addDoc(addrCollection, payload);
+          setAddresses(prev => prev.map(a => a.id === editingAddressId ? { id: docRef.id, ...payload } : a));
           showToast("Address updated!");
         } else {
           const addrRef = doc(db, "customers", (customer.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_"), "addresses", editingAddressId);
-          await updateDoc(addrRef, addressForm);
-          setAddresses(prev => prev.map(a => a.id === editingAddressId ? { ...a, ...addressForm } : a));
+          await updateDoc(addrRef, payload);
+          setAddresses(prev => prev.map(a => a.id === editingAddressId ? { ...a, ...payload } : a));
           showToast("Address updated!");
         }
       } else {
-        const docRef = await addDoc(addrCollection, addressForm);
-        setAddresses(prev => [...prev, { id: docRef.id, ...addressForm }]);
+        const docRef = await addDoc(addrCollection, payload);
+        setAddresses(prev => [...prev, { id: docRef.id, ...payload }]);
         showToast("New address added!");
       }
       resetAddressForm();
@@ -262,6 +287,10 @@ const Account = () => {
     setAddressForm({
       name: addr.name || "",
       phone: addr.phone || "",
+      alternatePhone: addr.alternatePhone || "",
+      flat: addr.flat || "",
+      street: addr.street || addr.address || "",
+      landmark: addr.landmark || "",
       address: addr.address || "",
       city: addr.city || "",
       state: addr.state || "",
@@ -1021,74 +1050,131 @@ const Account = () => {
                 </div>
 
                 {/* ADDRESS FORM */}
+                {/* ADDRESS FORM */}
                 {showAddressForm && (
-                  <form onSubmit={handleSaveAddress} className="bg-zinc-50 border border-zinc-200 p-6 space-y-4 rounded">
-                    <h4 className="text-[14px]   uppercase tracking-widest text-[#b8860b] mb-2">
-                      {editingAddressId ? "Edit Address" : "New Address Details"}
-                    </h4>
+                  <form onSubmit={handleSaveAddress} className="bg-zinc-50 border border-zinc-200 p-6 space-y-4 rounded-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-zinc-200">
+                      <h4 className="text-[14px] font-bold uppercase tracking-widest text-[#b8860b]">
+                        {editingAddressId ? "Edit Shipping Address" : "New Shipping Address Details"}
+                      </h4>
+                      {/* Address Type Selector */}
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[9px] font-semibold text-zinc-500 uppercase tracking-wider mr-1">Type:</span>
+                        {["Home", "Office", "Other"].map((t) => (
+                          <button
+                            key={t}
+                            type="button"
+                            onClick={() => setAddressForm(p => ({ ...p, type: t }))}
+                            className={`px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded border transition-all cursor-pointer ${
+                              addressForm.type === t
+                                ? "bg-black text-white border-black shadow-xs"
+                                : "bg-white text-zinc-600 border-zinc-300 hover:border-black hover:text-black"
+                            }`}
+                          >
+                            {t}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">Contact Person Name</label>
+                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Contact Person Full Name *</label>
                         <input
                           type="text"
                           value={addressForm.name}
                           onChange={(e) => setAddressForm({ ...addressForm, name: e.target.value })}
                           required
-                          placeholder="John Doe"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
+                          placeholder="e.g. John Doe"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">Contact Phone Number</label>
+                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Primary Mobile Phone *</label>
                         <input
-                          type="text"
+                          type="tel"
                           value={addressForm.phone}
                           onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
                           required
                           placeholder="+91 98765 43210"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">Street Address / House No / Area</label>
-                      <input
-                        type="text"
-                        value={addressForm.address}
-                        onChange={(e) => setAddressForm({ ...addressForm, address: e.target.value })}
-                        required
-                        placeholder="Apartment, Street Name, Landmark"
-                        className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
-                      />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Alternate Phone (Optional - for courier)</label>
+                        <input
+                          type="tel"
+                          value={addressForm.alternatePhone || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, alternatePhone: e.target.value })}
+                          placeholder="Secondary mobile number"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Flat, House No., Building, Apartment *</label>
+                        <input
+                          type="text"
+                          value={addressForm.flat || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, flat: e.target.value })}
+                          required
+                          placeholder="e.g. Flat 402, Royal Residency, Tower B"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                        />
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">City</label>
+                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Area, Street, Sector, Locality *</label>
+                        <input
+                          type="text"
+                          value={addressForm.street || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, street: e.target.value })}
+                          required
+                          placeholder="e.g. MG Road, Scheme 54, Vijay Nagar"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Landmark (Optional)</label>
+                        <input
+                          type="text"
+                          value={addressForm.landmark || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, landmark: e.target.value })}
+                          placeholder="e.g. Near Apollo Hospital / Opp. City Center"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">City / District *</label>
                         <input
                           type="text"
                           value={addressForm.city}
                           onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
                           required
-                          placeholder="City"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
+                          placeholder="e.g. Indore"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">State</label>
+                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">State *</label>
                         <input
                           type="text"
                           value={addressForm.state}
                           onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
                           required
-                          placeholder="State"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
+                          placeholder="e.g. Madhya Pradesh"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">Pincode</label>
+                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Pincode *</label>
                         <input
                           type="text"
                           value={addressForm.pincode}
@@ -1096,7 +1182,7 @@ const Account = () => {
                           required
                           maxLength={6}
                           placeholder="6-digit Pincode"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded font-mono"
                         />
                       </div>
                     </div>
@@ -1114,10 +1200,10 @@ const Account = () => {
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <button type="submit" className="px-5 py-2.5 bg-black text-white text-[9px]   uppercase tracking-wider hover:bg-zinc-800 transition-colors">
+                      <button type="submit" className="px-5 py-2.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider hover:bg-zinc-800 transition-colors rounded">
                         {editingAddressId ? "Update Address" : "Save Address"}
                       </button>
-                      <button type="button" onClick={resetAddressForm} className="px-5 py-2.5 border border-zinc-300 text-zinc-600 text-[9px]   uppercase tracking-wider hover:text-black transition-colors">
+                      <button type="button" onClick={resetAddressForm} className="px-5 py-2.5 border border-zinc-300 text-zinc-600 text-[9px] font-bold uppercase tracking-wider hover:text-black transition-colors rounded">
                         Cancel
                       </button>
                     </div>
@@ -1127,19 +1213,34 @@ const Account = () => {
                 {/* ADDRESS LIST */}
                 <div className="grid md:grid-cols-2 gap-4">
                   {addresses.map((a) => (
-                    <div key={a.id} className={`p-5 bg-zinc-50 border ${a.isDefault ? 'border-[#b8860b]' : 'border-zinc-200'} rounded flex flex-col justify-between space-y-4 relative`}>
-                      {a.isDefault && (
-                        <span className="absolute top-3 right-3 px-2 py-0.5 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[8px]   uppercase tracking-wider">
-                          Default
+                    <div key={a.id} className={`p-5 bg-zinc-50 border ${a.isDefault ? 'border-[#b8860b]' : 'border-zinc-200'} rounded-xl flex flex-col justify-between space-y-4 relative shadow-xs`}>
+                      <div className="flex items-center justify-between">
+                        <span className="px-2.5 py-0.5 bg-zinc-200 text-zinc-800 text-[9px] font-bold uppercase tracking-wider rounded">
+                          {a.type || "Home"}
                         </span>
-                      )}
+                        {a.isDefault && (
+                          <span className="px-2 py-0.5 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[8px] font-bold uppercase tracking-wider rounded">
+                            Default
+                          </span>
+                        )}
+                      </div>
 
-                      <div className="space-y-2 text-[14px]">
-                        <h4 className="  text-zinc-900 tracking-wide uppercase pr-16">{a.name}</h4>
-                        <p className="text-zinc-600 leading-relaxed">{a.address}, {a.city}, {a.state} - {a.pincode}</p>
-                        <p className="text-[10px] text-[#b8860b] font-semibold flex items-center gap-1 pt-1">
-                          <Phone size={10} /> Phone: {a.phone}
-                        </p>
+                      <div className="space-y-1.5 text-[14px]">
+                        <h4 className="font-bold text-zinc-900 tracking-wide uppercase">{a.name}</h4>
+                        {a.flat && <p className="text-zinc-800 font-medium text-xs">{a.flat}</p>}
+                        <p className="text-zinc-600 leading-relaxed text-xs">{a.street || a.address}</p>
+                        {a.landmark && <p className="text-zinc-500 text-[11px]">Landmark: {a.landmark}</p>}
+                        <p className="text-zinc-600 text-xs">{a.city}, {a.state} - <span className="font-mono font-semibold">{a.pincode}</span></p>
+                        <div className="pt-1.5 flex flex-col gap-0.5 text-[11px] text-zinc-700">
+                          <p className="flex items-center gap-1.5 font-semibold text-[#b8860b]">
+                            <Phone size={11} /> {a.phone}
+                          </p>
+                          {a.alternatePhone && (
+                            <p className="text-zinc-500 pl-4 text-[10px]">
+                              Alt: {a.alternatePhone}
+                            </p>
+                          )}
+                        </div>
                       </div>
 
                       <div className="flex items-center justify-between pt-3 border-t border-zinc-200">

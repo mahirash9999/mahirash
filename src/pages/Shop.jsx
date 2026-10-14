@@ -28,7 +28,7 @@ export const parseMl = (str) => {
   return null;
 };
 
-import ProductCard, { resolveProductVariant } from "../components/ProductCard";
+import ProductCard, { resolveProductVariant, isVariantAvailable } from "../components/ProductCard";
 
 const INITIAL_FILTERS = {
   brand: "All",
@@ -432,7 +432,10 @@ const Shop = () => {
 
         // In Stock Only
         if (filters.inStockOnly) {
-          if (p.stock === 0 || p.stock_status === "Out of Stock") return false;
+          const hasInStock = Array.isArray(p.size_prices) && p.size_prices.length > 0
+            ? p.size_prices.some(v => isVariantAvailable(v, p))
+            : (Number(p.stock) > 0 && p.stock_status !== "Out of Stock" && !p.is_preorder);
+          if (!hasInStock) return false;
         }
 
         // On Sale Only

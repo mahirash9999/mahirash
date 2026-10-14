@@ -146,10 +146,24 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
     }
   };
 
+  const PRODUCT_CSV_KEYS = [
+    'id', 'name', 'brand', 'category', 'subcategory', 'collection', 'gender',
+    'fragrance_family', 'fragrance_concentration', 'price', 'original_price',
+    'stock', 'stock_status', 'sizes', 'size_prices', 'rating', 'reviews_count',
+    'top_notes', 'heart_notes', 'base_notes', 'longevity', 'sillage',
+    'tags', 'image', 'images', 'description'
+  ];
+
+  const PRODUCT_CSV_HEADERS = [
+    'Product ID', 'Product Name', 'Brand', 'Category', 'Subcategory', 'Collection', 'Gender',
+    'Fragrance Family', 'Fragrance Concentration', 'Price (INR)', 'Original Price (INR)',
+    'Stock Quantity', 'Stock Status', 'Sizes', 'Size Prices (JSON)', 'Rating', 'Reviews Count',
+    'Top Notes', 'Heart Notes', 'Base Notes', 'Longevity', 'Sillage',
+    'Tags', 'Primary Image URL', 'All Image URLs', 'Description'
+  ];
+
   const handleExport = () => {
-    const keys = ['id', 'name', 'category', 'gender', 'price', 'stock', 'stock_status', 'sizes', 'colors', 'material', 'rating', 'image', 'model_image', 'images', 'description'];
-    const headers = ['Product ID', 'Product Name', 'Category', 'Gender', 'Price (INR)', 'Stock Quantity', 'Stock Status', 'Sizes', 'Colors', 'Material', 'Rating', 'Primary Image URL', 'Model Image URL', 'All Image URLs', 'Description'];
-    exportToCSV(products, keys, headers, 'mahirash_products');
+    exportToCSV(products, PRODUCT_CSV_KEYS, PRODUCT_CSV_HEADERS, 'mahirash_fragrance_catalog');
   };
 
   const handleImportClick = () => {
@@ -164,10 +178,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
     reader.onload = async (evt) => {
       try {
         const text = evt.target.result;
-        const keys = ['id', 'name', 'category', 'gender', 'price', 'stock', 'stock_status', 'sizes', 'colors', 'material', 'rating', 'image', 'model_image', 'images', 'description'];
-        const headers = ['Product ID', 'Product Name', 'Category', 'Gender', 'Price (INR)', 'Stock Quantity', 'Stock Status', 'Sizes', 'Colors', 'Material', 'Rating', 'Primary Image URL', 'Model Image URL', 'All Image URLs', 'Description'];
-
-        const rows = csvToJSON(text, keys, headers);
+        const rows = csvToJSON(text, PRODUCT_CSV_KEYS, PRODUCT_CSV_HEADERS);
         if (!rows || rows.length === 0) {
           alert("No rows found or headers do not match the expected format!");
           return;
@@ -177,23 +188,124 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
         let updateCount = 0;
 
         for (const row of rows) {
-          if (!row.name || !row.price) continue;
+          const name = (row.name || '').trim();
+          if (!name) continue;
+
+          const priceNum = Math.max(0, Number(row.price) || 0);
+          const origPriceNum = Math.max(0, Number(row.original_price) || priceNum);
+          const stockNum = Math.max(0, Number(row.stock) || 0);
+          const ratingNum = row.rating ? Number(row.rating) : 4.8;
+          const reviewsCountNum = row.reviews_count ? Number(row.reviews_count) : 0;
+
+          // Process images
+          let imagesArr = [];
+          if (row.images) {
+            try {
+              const parsedImg = JSON.parse(row.images);
+              if (Array.isArray(parsedImg)) imagesArr = parsedImg;
+              else imagesArr = [String(row.images).trim()];
+            } catch (_) {
+              imagesArr = String(row.images).split(',').map(s => s.trim()).filter(Boolean);
+            }
+          }
+          if (row.image && !imagesArr.includes(row.image)) {
+            imagesArr.unshift(row.image);
+          }
+
+          // Process size_prices
+          let sizePricesArr = [];
+          if (row.size_prices) {
+            try {
+              const parsedSp = JSON.parse(row.size_prices);
+              if (Array.isArray(parsedSp)) sizePricesArr = parsedSp;
+            } catch (_) {}
+          }
+          if (sizePricesArr.length === 0 && row.sizes) {
+            const splitSizes = String(row.sizes).split(',').map(s => s.trim()).filter(Boolean);
+            if (splitSizes.length > 0) {
+              sizePricesArr = splitSizes.map(sz => ({
+                size: sz,
+                price: priceNum,
+                original_price: origPriceNum,
+                stock: stockNum,
+                is_preorder: false,
+                images: imagesArr
+              }));
+            }
+          }
+          if (sizePricesArr.length > 0) {
+            sizePricesArr = sizePricesArr.map(sp => ({
+              size: String(sp.size || '').trim(),
+              price: Math.max(0, Number(sp.price) || priceNum),
+              original_price: Math.max(0, Number(sp.original_price) || origPriceNum),
+              stock: sp.stock !== undefined ? Math.max(0, Number(sp.stock)) : stockNum,
+              is_preorder: Boolean(sp.is_preorder === true || sp.is_preorder === 'true'),
+              images: Array.isArray(sp.images) ? sp.images : (sp.image ? [sp.image] : imagesArr),
+              image: sp.image || (Array.isArray(sp.images) && sp.images[0] ? sp.images[0] : imagesArr[0] || '')
+            }));
+          }
+
+          const sizesStr = row.sizes || (sizePricesArr.length > 0 ? sizePricesArr.map(sp => sp.size).join(', ') : '');
+          const effectiveStock = sizePricesArr.length > 0
+            ? sizePricesArr.reduce((sum, sp) => sum + (Number(sp.stock) || 0), 0)
+            : stockNum;
+          const autoStatus = effectiveStock === 0 ? "Out of Stock" : effectiveStock <= 5 ? "Low Stock" : "In Stock";
+          const stockStatus = row.stock_status || autoStatus;
+
+          let tagsArr = [];
+          if (row.tags) {
+            try {
+              const parsedTags = JSON.parse(row.tags);
+              if (Array.isArray(parsedTags)) tagsArr = parsedTags;
+              else tagsArr = String(row.tags).split(',').map(s => s.trim()).filter(Boolean);
+            } catch (_) {
+              tagsArr = String(row.tags).split(',').map(s => s.trim()).filter(Boolean);
+            }
+          }
+
+          const docData = {
+            name,
+            brand: row.brand || "MAHIRASH",
+            category: row.category || "Extrait De Parfum",
+            subcategory: row.subcategory || "",
+            collection: row.collection || "",
+            gender: row.gender || "Unisex",
+            fragrance_family: row.fragrance_family || "",
+            fragrance_concentration: row.fragrance_concentration || "",
+            price: sizePricesArr.length > 0 ? sizePricesArr[0].price : priceNum,
+            original_price: sizePricesArr.length > 0 ? sizePricesArr[0].original_price : origPriceNum,
+            stock: effectiveStock,
+            stock_status: stockStatus,
+            sizes: sizesStr,
+            size_prices: sizePricesArr,
+            rating: ratingNum,
+            reviews_count: reviewsCountNum,
+            top_notes: row.top_notes || "",
+            heart_notes: row.heart_notes || "",
+            base_notes: row.base_notes || "",
+            longevity: row.longevity || "",
+            sillage: row.sillage || "",
+            tags: tagsArr,
+            image: row.image || imagesArr[0] || "",
+            images: imagesArr,
+            description: row.description || ""
+          };
 
           let finalId = row.id;
           if (finalId) {
             const existingRef = doc(db, "products", finalId);
             const snap = await getDoc(existingRef);
             if (snap.exists()) {
-              await setDoc(existingRef, { ...row, updatedAt: new Date() }, { merge: true });
+              await setDoc(existingRef, { ...docData, updatedAt: new Date() }, { merge: true });
               updateCount++;
             } else {
-              await setDoc(existingRef, { ...row, createdAt: new Date() });
+              await setDoc(existingRef, { ...docData, id: finalId, createdAt: new Date() });
               importCount++;
             }
           } else {
             const newId = doc(collection(db, "products")).id;
             await setDoc(doc(db, "products", newId), {
-              ...row,
+              ...docData,
               id: newId,
               createdAt: new Date()
             });

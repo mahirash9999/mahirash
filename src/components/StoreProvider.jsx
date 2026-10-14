@@ -44,6 +44,32 @@ export const StoreProvider = ({ children }) => {
   }, []);
 
   const addToCart = async (product, selectedSize = null) => {
+    if (!product) return { success: false, reason: "invalid_product" };
+
+    const variantStock = selectedSize?.stock !== undefined
+      ? Number(selectedSize.stock)
+      : (product.stock !== undefined ? Number(product.stock) : 10);
+
+    // Pre-order: ONLY if marked preorder from product form
+    const isPreOrder = Boolean(selectedSize?.is_preorder || product.is_preorder);
+
+    // Out of stock: if stock is 0 and NOT marked preorder from product form
+    const isOutOfStock = !isPreOrder && (
+      variantStock <= 0 ||
+      String(selectedSize?.stock_status || '').toLowerCase() === 'out of stock' ||
+      String(product.stock_status || '').toLowerCase() === 'out of stock'
+    );
+
+    if (isOutOfStock) {
+      console.warn("Out-of-stock items cannot be added to cart.");
+      return { success: false, reason: "out_of_stock", message: "This item is currently out of stock." };
+    }
+
+    if (isPreOrder) {
+      console.warn("Pre-order items cannot be added to cart. Use concierge pre-order booking.");
+      return { success: false, reason: "preorder", message: "Pre-order items cannot be added to cart." };
+    }
+
     const cartId = selectedSize ? `${product.id}-${selectedSize.size}` : product.id;
     const price = selectedSize?.price || product.price;
 
@@ -57,8 +83,8 @@ export const StoreProvider = ({ children }) => {
       category: product.category || "",
       collections: product.collections || (product.collection ? [product.collection] : []),
       size: selectedSize?.size || "",
-      is_preorder: Boolean(selectedSize?.is_preorder),
-      stock: selectedSize?.stock !== undefined ? Number(selectedSize.stock) : Number(product.stock ?? 10),
+      is_preorder: false,
+      stock: variantStock,
       addedAt: new Date().toISOString(),
       quantity: 1,
       shipping: product.shipping || { weight: 0.4, length: 30, breadth: 20, height: 5 }
@@ -72,6 +98,7 @@ export const StoreProvider = ({ children }) => {
       setCart(updated);
     }
     setAddedItem(newItem); // trigger the dialog
+    return { success: true, item: newItem };
   };
 
   const removeFromCart = async (cartId) => {

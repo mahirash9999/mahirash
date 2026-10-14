@@ -56,12 +56,11 @@ export default async function handler(req, res) {
     }
 
     // Default welcome email
-    const BRAND_LOGO_URL = "https://res.cloudinary.com/dcjn4y284/image/upload/v1786029668/p3jd3nuet4vkqbfd5qaz.png";
     const welcomeHtml = `<!DOCTYPE html>
 <html>
 <body style="margin:0;padding:24px;background-color:#ffffff;font-family:sans-serif;">
-  <div style="background-color:#000000;padding:24px 0;text-align:center;">
-    <img src="${BRAND_LOGO_URL}" alt="Mahirash" height="40" style="height:40px;filter:brightness(0) invert(1);" />
+  <div style="background-color:#000000;padding:28px 16px;text-align:center;">
+    <h1 style="margin:0;font-size:24px;font-weight:400;letter-spacing:0.35em;color:#ffffff;text-transform:uppercase;font-family:'Times New Roman',Times,Georgia,serif;">MAHIRASH</h1>
   </div>
   <div style="padding:40px 20px;text-align:center;max-width:600px;margin:0 auto;">
     <h1 style="margin:0 0 16px;font-size:22px;text-transform:uppercase;letter-spacing:2px;">Welcome, ${to_name || "Valued Guest"}</h1>

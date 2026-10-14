@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "./useAuth";
-import { sendOTPEmail, verifyOTPCode } from "./CustomerAuthProvider";
+import { useCustomerAuth } from "./CustomerAuthProvider";
+import { sendOTPEmail, verifyOTPCode, findCustomerByEmail } from "./CustomerAuthProvider";
 import {
   Mail, Lock, ArrowRight, AlertCircle, CheckCircle2,
   RefreshCw, ShieldCheck, Eye, EyeOff, Sparkles, KeyRound
@@ -23,6 +24,7 @@ const STEP = {
 
 const Login = () => {
   const { user, login, signup, loginWithCustomToken, setPassword, loginWithGoogle } = useAuth();
+  const { customerLogin } = useCustomerAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirectPath = searchParams.get("redirect") || "/account";
@@ -108,7 +110,8 @@ const Login = () => {
 
     setLoading(true);
     try {
-      const verifyRes = await verifyOTPCode(email.toLowerCase().trim(), cleanOtp);
+      const cleanEmail = email.toLowerCase().trim();
+      const verifyRes = await verifyOTPCode(cleanEmail, cleanOtp);
       setVerifiedTokenData(verifyRes);
 
       // Authenticate Firebase user session
@@ -116,15 +119,25 @@ const Login = () => {
         await loginWithCustomToken(verifyRes.customToken);
       }
 
-      // If new user: present optional password setup screen
+      // Populate CustomerAuthContext session immediately so Account page works
+      const existingProfile = await findCustomerByEmail(cleanEmail).catch(() => null);
+      const sessionData = {
+        id: verifyRes.user?.uid || existingProfile?.id || cleanEmail.replace(/[^a-z0-9]/g, "_"),
+        uid: verifyRes.user?.uid || existingProfile?.uid || "",
+        email: cleanEmail,
+        name: existingProfile?.name || verifyRes.user?.displayName || cleanEmail.split("@")[0],
+        phone: existingProfile?.phone || "",
+      };
+      customerLogin(sessionData);
+
+      // If new user: present optional name + password setup screen
       if (verifyRes.isNewUser) {
         setStep(STEP.NEW_USER_SETUP);
       } else {
-        // Existing user: direct success & redirect
+        // Existing user: direct success & redirect to account
         setStep(STEP.SUCCESS);
         setTimeout(() => {
-          const final = redirectPath.startsWith("/") ? redirectPath : "/" + redirectPath;
-          navigate(final);
+          navigate("/account");
         }, 1200);
       }
     } catch (err) {
@@ -151,28 +164,32 @@ const Login = () => {
     setLoading(true);
     try {
       const cleanEmail = email.toLowerCase().trim();
+      const finalName = displayName.trim() || cleanEmail.split("@")[0];
 
       // If user is already authenticated via custom token, update password directly
       if (user) {
         await setPassword(password);
       } else {
-        // If bridge was used, create or set password via Firebase Auth
-        await signup(cleanEmail, password, displayName || cleanEmail.split("@")[0]);
+        // Create account with email/password via Firebase Auth
+        await signup(cleanEmail, password, finalName);
       }
 
+      // Ensure customer session reflects the new name
+      customerLogin({
+        id: user?.uid || verifiedTokenData?.user?.uid || cleanEmail.replace(/[^a-z0-9]/g, "_"),
+        uid: user?.uid || verifiedTokenData?.user?.uid || "",
+        email: cleanEmail,
+        name: finalName,
+        phone: "",
+      });
+
       setStep(STEP.SUCCESS);
-      setTimeout(() => {
-        const final = redirectPath.startsWith("/") ? redirectPath : "/" + redirectPath;
-        navigate(final);
-      }, 1200);
+      setTimeout(() => navigate("/account"), 1200);
     } catch (err) {
       console.error("Password setup notice:", err);
-      // If error occurred because account already exists in Firebase Auth, proceed safely
+      // Proceed safely even if Firebase error (e.g. account already exists)
       setStep(STEP.SUCCESS);
-      setTimeout(() => {
-        const final = redirectPath.startsWith("/") ? redirectPath : "/" + redirectPath;
-        navigate(final);
-      }, 1200);
+      setTimeout(() => navigate("/account"), 1200);
     } finally {
       setLoading(false);
     }
@@ -184,23 +201,30 @@ const Login = () => {
     try {
       const cleanEmail = email.toLowerCase().trim();
       const customerDocId = cleanEmail.replace(/[^a-z0-9]/g, "_");
+      const finalName = displayName.trim() || cleanEmail.split("@")[0];
 
       // Save initial customer profile in Firestore
       await setDoc(doc(db, "customers", customerDocId), {
         email: cleanEmail,
-        name: displayName || cleanEmail.split("@")[0],
+        name: finalName,
         uid: user?.uid || verifiedTokenData?.user?.uid || "",
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       }, { merge: true });
 
+      // Populate customer session so Account page works immediately
+      customerLogin({
+        id: user?.uid || verifiedTokenData?.user?.uid || customerDocId,
+        uid: user?.uid || verifiedTokenData?.user?.uid || "",
+        email: cleanEmail,
+        name: finalName,
+        phone: "",
+      });
+
       setStep(STEP.SUCCESS);
-      setTimeout(() => {
-        const final = redirectPath.startsWith("/") ? redirectPath : "/" + redirectPath;
-        navigate(final);
-      }, 1000);
+      setTimeout(() => navigate("/account"), 1000);
     } catch (_) {
-      navigate(redirectPath.startsWith("/") ? redirectPath : "/" + redirectPath);
+      navigate("/account");
     } finally {
       setLoading(false);
     }

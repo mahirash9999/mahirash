@@ -23,7 +23,8 @@ const PromoPopup = () => {
           setPromoConfig(snap.data());
         }
       } catch (err) {
-        console.error(err);
+        // Silently skip if promo popup settings are restricted or unavailable
+        setPromoConfig(null);
       }
     };
     fetchConfig();

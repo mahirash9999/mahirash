@@ -1,7 +1,6 @@
 import nodemailer from "nodemailer";
 
 // Brand Assets
-const BRAND_LOGO_URL = "https://res.cloudinary.com/dcjn4y284/image/upload/v1786029668/p3jd3nuet4vkqbfd5qaz.png";
 const WEBSITE_URL = process.env.WEBSITE_URL || "https://mahirash.com";
 const SUPPORT_EMAIL = process.env.SUPPORT_EMAIL || "help@mahirash.com";
 
@@ -94,9 +93,8 @@ export function renderOtpEmail({ otp, toEmail, name }) {
         <table width="100%" cellpadding="0" cellspacing="0" style="max-width:540px;background-color:#ffffff;border:1px solid #e7e5e4;box-shadow:0 10px 30px rgba(0,0,0,0.04);">
           <!-- Header / Brand -->
           <tr>
-            <td align="center" style="padding:36px 30px 24px;border-bottom:1px solid #f4f4f5;background-color:#000000;">
-              <img src="${BRAND_LOGO_URL}" alt="MAHIRASH" height="38" style="height:38px;display:block;border:0;filter:brightness(0) invert(1);" />
-              <p style="margin:8px 0 0;font-size:9px;text-transform:uppercase;letter-spacing:0.35em;color:#c9a962;font-weight:600;">Haute Parfumerie Atelier</p>
+            <td align="center" style="padding:28px 24px;border-bottom:1px solid #f4f4f5;background-color:#000000;">
+              <h1 style="margin:0;font-size:24px;font-weight:400;letter-spacing:0.35em;color:#ffffff;text-transform:uppercase;font-family:'Times New Roman',Times,Georgia,serif;">MAHIRASH</h1>
             </td>
           </tr>
 
@@ -196,9 +194,8 @@ export function renderOrderConfirmationEmail({ order }) {
         <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;border:1px solid #e7e5e4;box-shadow:0 10px 30px rgba(0,0,0,0.04);">
           <!-- Header -->
           <tr>
-            <td align="center" style="padding:36px 30px 24px;background-color:#000000;">
-              <img src="${BRAND_LOGO_URL}" alt="MAHIRASH" height="40" style="height:40px;display:block;border:0;filter:brightness(0) invert(1);" />
-              <p style="margin:8px 0 0;font-size:9px;text-transform:uppercase;letter-spacing:0.35em;color:#c9a962;font-weight:600;">Haute Parfumerie Atelier</p>
+            <td align="center" style="padding:28px 24px;background-color:#000000;">
+              <h1 style="margin:0;font-size:24px;font-weight:400;letter-spacing:0.35em;color:#ffffff;text-transform:uppercase;font-family:'Times New Roman',Times,Georgia,serif;">MAHIRASH</h1>
             </td>
           </tr>
 
@@ -306,9 +303,9 @@ export function renderOrderConfirmationEmail({ order }) {
           <!-- Footer -->
           <tr>
             <td style="padding:24px 30px;background-color:#000000;color:#ffffff;text-align:center;">
-              <p style="margin:0 0 6px;font-size:10px;text-transform:uppercase;letter-spacing:0.25em;color:#c9a962;">Mahirash Haute Parfumerie</p>
+              <p style="margin:0 0 6px;font-size:11px;font-weight:400;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">Mahirash</p>
               <p style="margin:0;font-size:10px;color:#a8a29e;">
-                Questions regarding your order? Reach our atelier concierge at <a href="mailto:${SUPPORT_EMAIL}" style="color:#ffffff;text-decoration:none;">${SUPPORT_EMAIL}</a>
+                Questions regarding your order? Reach our concierge at <a href="mailto:${SUPPORT_EMAIL}" style="color:#ffffff;text-decoration:none;">${SUPPORT_EMAIL}</a>
               </p>
             </td>
           </tr>
