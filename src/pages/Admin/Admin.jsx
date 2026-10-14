@@ -14,7 +14,8 @@ import {
   updateDoc,
   serverTimestamp,
   where,
-  limit
+  limit,
+  onSnapshot
 } from "firebase/firestore";
 import {
   ResponsiveContainer,
@@ -1444,6 +1445,23 @@ const Admin = () => {
 
   useEffect(() => {
     loadData();
+
+    // Real-time products listener so stock deductions from checkout reflect instantly in Admin
+    const unsubProducts = onSnapshot(collection(db, "products"), (snap) => {
+      const prodList = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      prodList.sort((a, b) => {
+        const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0));
+        const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0));
+        return timeB - timeA;
+      });
+      setProducts(prodList);
+      setProductsLoading(false);
+      setStatsSummary(prev => ({ ...prev, products: prodList.length }));
+    }, (err) => {
+      console.warn("Realtime products listener notice:", err);
+    });
+
+    return () => unsubProducts();
   }, []);
 
   const handleDeleteProduct = async (id) => {

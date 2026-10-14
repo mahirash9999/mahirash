@@ -23,8 +23,10 @@ export async function deductOrderStock(items) {
   // Group purchased quantities by product ID
   const productDeductions = {};
   for (const item of items) {
-    if (!item || !item.id) continue;
-    const pid = String(item.id).trim();
+    if (!item) continue;
+    const pid = String(item.id || item.cartId?.split("-")[0] || "").trim();
+    if (!pid) continue;
+
     if (!productDeductions[pid]) {
       productDeductions[pid] = [];
     }
@@ -64,9 +66,21 @@ export async function deductOrderStock(items) {
             return sp;
           });
 
-          // If size didn't match any specific variant, decrement total stock
+          // If size didn't match any specific variant, deduct from available variant
           if (!matched) {
-            totalStock = Math.max(0, totalStock - purchase.quantity);
+            let deductedVariant = false;
+            sizePrices = sizePrices.map(sp => {
+              if (!deductedVariant && (Number(sp.stock) || 0) > 0) {
+                deductedVariant = true;
+                const cur = Number(sp.stock) || 0;
+                return { ...sp, stock: Math.max(0, cur - purchase.quantity) };
+              }
+              return sp;
+            });
+            if (!deductedVariant && sizePrices.length > 0) {
+              const cur = Number(sizePrices[0].stock) || 0;
+              sizePrices[0] = { ...sizePrices[0], stock: Math.max(0, cur - purchase.quantity) };
+            }
           }
         }
 

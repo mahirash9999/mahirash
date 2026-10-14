@@ -9,6 +9,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../components/useAuth";
 import { useCustomerAuth } from "../components/CustomerAuthProvider";
+import { useStore } from "../components/StoreProvider";
 import {
   MapPin, User, Phone, Mail, CheckCircle, X,
   ShieldCheck, ChevronRight, Plus, Check, Lock, Tag,
@@ -292,6 +293,9 @@ const Checkout = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { customer } = useCustomerAuth ? useCustomerAuth() : { customer: null };
+  const store = useStore ? useStore() : null;
+  const storeCart = store?.cart || [];
+  const storeClearCart = store?.clearCart;
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState([]);
@@ -588,13 +592,28 @@ const Checkout = () => {
     document.body.appendChild(script);
 
     const load = async () => {
-      const guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
-      setItems(guestCart);
+      let activeCart = [];
+      if (Array.isArray(storeCart) && storeCart.length > 0) {
+        activeCart = storeCart;
+      } else if (user?.uid) {
+        try {
+          const userSnap = await getDoc(doc(db, "users", user.uid));
+          if (userSnap.exists() && Array.isArray(userSnap.data()?.cart) && userSnap.data().cart.length > 0) {
+            activeCart = userSnap.data().cart;
+          }
+        } catch (_) {}
+      }
+
+      if (activeCart.length === 0) {
+        activeCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+      }
+
+      setItems(activeCart);
 
       let hasOut = false;
       let hasPre = false;
 
-      for (const item of guestCart) {
+      for (const item of activeCart) {
         if (item.is_preorder || String(item.stock_status || '').toLowerCase().includes('preorder')) {
           hasPre = true;
         }
@@ -641,16 +660,33 @@ const Checkout = () => {
     return () => { if (document.body.contains(script)) document.body.removeChild(script); };
   }, []);
 
+  // Sync items when storeCart loads or updates
+  useEffect(() => {
+    if (Array.isArray(storeCart) && storeCart.length > 0 && items.length === 0) {
+      setItems(storeCart);
+    }
+  }, [storeCart]);
+
   const clearCart = async () => {
-    localStorage.removeItem("guest_cart");
-    localStorage.removeItem("guest_cart");
+    try {
+      if (storeClearCart) {
+        await storeClearCart();
+      }
+    } catch (err) {
+      console.warn("storeClearCart error:", err);
+    }
+    try {
+      localStorage.removeItem("guest_cart");
+      localStorage.removeItem("applied_coupon_code");
+    } catch (_) {}
   };
 
   const saveOrder = async (paymentId = "COD", status = "confirmed", paymentStatus = "captured", tempPassword = "") => {
     try {
-      const finalEmail = formData.email.toLowerCase().trim();
-      const finalUid = user ? user.uid : null;
-      const isGuest = !user;
+      const finalEmail = (formData.email || customer?.email || user?.email || "").toLowerCase().trim();
+      const activeUid = user?.uid || customer?.uid || customer?.id || (customer ? "usr_" + finalEmail.replace(/[^a-z0-9]/g, "_") : null);
+      const isGuest = !(user || customer);
+      const finalUid = activeUid;
       const orderNumber = "MHR-" + Math.floor(100000 + Math.random() * 900000);
 
       const orderRef = doc(collection(db, "orders"));
@@ -805,6 +841,30 @@ const Checkout = () => {
             updatedAt: serverTimestamp(),
           }, { merge: true });  // merge: true preserves older fields like createdAt on first write
 
+          // Save order to customer's orders subcollection
+          try {
+            await setDoc(doc(db, "customers", customerDocId, "orders", orderRef.id), {
+              orderId: orderRef.id,
+              orderNumber,
+              total: Math.max(0, total - couponDiscount),
+              status,
+              createdAt: serverTimestamp()
+            }, { merge: true });
+          } catch (_) {}
+
+          // If authenticated Firebase user, also link in users subcollection
+          if (user?.uid) {
+            try {
+              await setDoc(doc(db, "users", user.uid, "orders", orderRef.id), {
+                orderId: orderRef.id,
+                orderNumber,
+                total: Math.max(0, total - couponDiscount),
+                status,
+                createdAt: serverTimestamp()
+              }, { merge: true });
+            } catch (_) {}
+          }
+
           // Set createdAt only on first write
           const snapCheck = await getDoc(customerRef);
           if (snapCheck.exists() && !snapCheck.data().createdAt) {
@@ -817,6 +877,7 @@ const Checkout = () => {
       }
 
       if (status === "confirmed") {
+        let clientDeductionSucceeded = false;
         // Automatically deduct per-variant stock in Firestore
         try {
           const normSize = sz => String(sz || "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -831,6 +892,7 @@ const Checkout = () => {
             });
           }
 
+          let anySuccess = false;
           for (const [productId, purchases] of Object.entries(productDeductions)) {
             const itemDocRef = doc(db, "products", productId);
             const pSnap = await getDoc(itemDocRef);
@@ -851,8 +913,21 @@ const Checkout = () => {
                     }
                     return sp;
                   });
+                  // If size didn't match any specific variant, deduct from first available variant
                   if (!matched) {
-                    totalStock = Math.max(0, totalStock - purchase.quantity);
+                    let deductedVariant = false;
+                    sizePrices = sizePrices.map(sp => {
+                      if (!deductedVariant && (Number(sp.stock) || 0) > 0) {
+                        deductedVariant = true;
+                        const cur = Number(sp.stock) || 0;
+                        return { ...sp, stock: Math.max(0, cur - purchase.quantity) };
+                      }
+                      return sp;
+                    });
+                    if (!deductedVariant && sizePrices.length > 0) {
+                      const cur = Number(sizePrices[0].stock) || 0;
+                      sizePrices[0] = { ...sizePrices[0], stock: Math.max(0, cur - purchase.quantity) };
+                    }
                   }
                 }
                 totalStock = sizePrices.reduce((sum, sp) => sum + (Number(sp.stock) || 0), 0);
@@ -868,20 +943,30 @@ const Checkout = () => {
                 size_prices: sizePrices,
                 updatedAt: new Date().toISOString()
               });
+              anySuccess = true;
             }
+          }
+          if (anySuccess) {
+            clientDeductionSucceeded = true;
           }
         } catch (stkErr) {
           console.warn("Direct client stock deduction fallback:", stkErr);
         }
 
-        // Guaranteed server-side stock deduction backup via API
-        try {
-          fetch("/api/deduct-stock", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ items })
-          }).catch(apiErr => console.warn("Server stock deduction API note:", apiErr));
-        } catch (_) { }
+        // Guaranteed server-side stock deduction via Superadmin API
+        if (!clientDeductionSucceeded) {
+          try {
+            const deductRes = await fetch("/api/deduct-stock", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ items })
+            });
+            const deductData = await deductRes.json();
+            console.log("Server stock deduction response:", deductData);
+          } catch (apiErr) {
+            console.warn("Server stock deduction API error:", apiErr);
+          }
+        }
 
         setCreatedOrderDetails({
           id: orderRef.id,
@@ -929,7 +1014,8 @@ const Checkout = () => {
         // ── Auto-set customer session so user doesn't need to login after checkout ──
         try {
           const customerSession = {
-            id: (finalEmail || "").replace(/[^a-z0-9]/g, "_"),
+            id: finalUid || (finalEmail || "").replace(/[^a-z0-9]/g, "_"),
+            uid: finalUid || (finalEmail || "").replace(/[^a-z0-9]/g, "_"),
             email: finalEmail,
             name: formData.name || "",
             phone: formData.phone || "",

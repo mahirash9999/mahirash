@@ -37,23 +37,34 @@ export async function getFirestoreDb() {
     // Sign in as admin for server-side write permissions
     if (!authReady) {
       const auth = getAuth(app);
-      const adminEmail = process.env.ADMIN_EMAIL || "admin@mahirash.com";
-      const adminPass = process.env.ADMIN_PASSWORD || "Mahirash@1234";
-      try {
-        await signInWithEmailAndPassword(auth, adminEmail, adminPass);
-        authReady = true;
-        console.log("[firestoreClient] Admin auth successful for:", adminEmail);
-      } catch (authErr) {
-        // Try fallback credentials
-        try {
-          await signInWithEmailAndPassword(auth, "admin@mahirash.com", "Mahirash@1234");
-          authReady = true;
-          console.log("[firestoreClient] Admin auth successful with fallback credentials");
-        } catch (fallbackErr) {
-          console.warn("[firestoreClient] Admin auth failed, proceeding without auth:", fallbackErr.message);
-          // Still return dbInstance — Firestore rules allow stock updates without auth
-          authReady = true; // Mark as attempted so we don't loop
+      const candidates = [
+        {
+          email: process.env.ADMIN_EMAIL || "admin@mahirash.com",
+          pass: process.env.ADMIN_PASSWORD || "Mahirash@1234"
+        },
+        {
+          email: "admin@mahirash.com",
+          pass: "Mahirash@1234"
+        },
+        {
+          email: "mahirsh9999@gmail.com",
+          pass: "Mahirash@1234"
         }
+      ];
+
+      for (const cand of candidates) {
+        try {
+          await signInWithEmailAndPassword(auth, cand.email, cand.pass);
+          authReady = true;
+          console.log("[firestoreClient] Admin auth successful for:", cand.email);
+          break;
+        } catch (_) {
+          // continue to next candidate
+        }
+      }
+
+      if (!authReady) {
+        console.warn("[firestoreClient] Admin credentials failed to authenticate. Proceeding with unauthenticated client.");
       }
     }
 

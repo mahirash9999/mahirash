@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { db } from '../components/Firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useAuth } from '../components/useAuth';
+import { useCustomerAuth } from '../components/CustomerAuthProvider';
 import PageHeader from '../components/Home/PageHeader';
 import SEOHead from '../components/SEOHead';
 import OptimizedCloudinaryImage from '../components/OptimizedCloudinaryImage';
@@ -12,6 +13,11 @@ import MiniLoader from '../components/MiniLoader';
 
 const Orders = () => {
   const { user } = useAuth();
+  const customerAuth = useCustomerAuth ? useCustomerAuth() : null;
+  const customer = customerAuth?.customer;
+  const activeEmail = (customer?.email || user?.email || "").toLowerCase().trim();
+  const activeUid = user?.uid || customer?.uid || customer?.id || "";
+
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,55 +48,56 @@ const Orders = () => {
   };
 
   useEffect(() => {
-    if (!user) {
+    if (!user && !customer) {
       navigate("/login?redirect=orders");
       return;
     }
     const fetchOrders = async () => {
+      setLoading(true);
       try {
-        // Link any eligible guest orders in background
-        try {
-          const token = await user.getIdToken();
-          await fetch("/api/link-guest-orders", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`
-            }
-          });
-        } catch (_) { }
+        // Guaranteed retrieval via server API with superadmin privileges
+        const apiRes = await fetch(`/api/get-orders?email=${encodeURIComponent(activeEmail)}&userId=${encodeURIComponent(activeUid)}`);
+        if (apiRes.ok) {
+          const data = await apiRes.json();
+          if (Array.isArray(data.orders)) {
+            setOrders(data.orders);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (apiErr) {
+        console.warn("Server orders API notice:", apiErr);
+      }
 
-        const cleanEmail = (user.email || "").toLowerCase().trim();
+      // Fallback: direct Firestore query
+      try {
         const ordersRef = collection(db, "orders");
-
-        // Primary query: orders owned by authenticated user UID
-        const qUid = query(ordersRef, where("userId", "==", user.uid));
-        const snapUid = await getDocs(qUid);
-
         const ordersMap = new Map();
-        snapUid.docs.forEach(docSnap => {
-          ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
-        });
 
-        // Secondary fallback query: orders matching verified email
-        if (cleanEmail) {
+        if (activeUid) {
+          const qUid = query(ordersRef, where("userId", "==", activeUid));
+          const snapUid = await getDocs(qUid);
+          snapUid.docs.forEach(docSnap => {
+            ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
+          });
+        }
+
+        if (activeEmail) {
           try {
-            const qEmail = query(ordersRef, where("customerEmail", "==", cleanEmail));
+            const qEmail = query(ordersRef, where("customerEmail", "==", activeEmail));
             const snapEmail = await getDocs(qEmail);
             snapEmail.docs.forEach(docSnap => {
-              if (!ordersMap.has(docSnap.id)) {
-                ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
-              }
+              ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
             });
+          } catch (_) {}
 
-            const qUserEmail = query(ordersRef, where("userEmail", "==", cleanEmail));
+          try {
+            const qUserEmail = query(ordersRef, where("userEmail", "==", activeEmail));
             const snapUserEmail = await getDocs(qUserEmail);
             snapUserEmail.docs.forEach(docSnap => {
-              if (!ordersMap.has(docSnap.id)) {
-                ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
-              }
+              ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
             });
-          } catch (_) { }
+          } catch (_) {}
         }
 
         const ordersList = Array.from(ordersMap.values());
@@ -99,12 +106,12 @@ const Orders = () => {
             ? a.createdAt.toMillis()
             : a.createdAt?.toDate
               ? a.createdAt.toDate().getTime()
-              : 0;
+              : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
           const timeB = b.createdAt?.toMillis
             ? b.createdAt.toMillis()
             : b.createdAt?.toDate
               ? b.createdAt.toDate().getTime()
-              : 0;
+              : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
           return timeB - timeA;
         });
         setOrders(ordersList);
@@ -115,7 +122,7 @@ const Orders = () => {
       }
     };
     fetchOrders();
-  }, [user, navigate]);
+  }, [user, customer, activeEmail, activeUid, navigate]);
 
   // Tax Invoice Generation & Print
   const handleDownloadInvoice = (order) => {

@@ -99,16 +99,34 @@ const Account = () => {
         setPhone(customer?.phone || "");
       }
 
-      // Fetch orders by email
-      const ordersSnap = await getDocs(query(collection(db, "orders"), where("userEmail", "==", cleanEmail)));
-      const ordersList = ordersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-      ordersList.sort((a, b) => {
-        const tA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0);
-        const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0);
-        return tB - tA;
-      });
+      // Fetch orders reliably via server API (guaranteed to bypass Firestore client permission restrictions)
+      let ordersList = [];
+      try {
+        const apiRes = await fetch(`/api/get-orders?email=${encodeURIComponent(cleanEmail)}&userId=${encodeURIComponent(customer?.uid || customer?.id || "")}`);
+        if (apiRes.ok) {
+          const apiData = await apiRes.json();
+          if (Array.isArray(apiData.orders)) {
+            ordersList = apiData.orders;
+          }
+        }
+      } catch (apiErr) {
+        console.warn("Account orders API notice:", apiErr);
+      }
+
+      if (ordersList.length === 0) {
+        try {
+          const ordersSnap = await getDocs(query(collection(db, "orders"), where("userEmail", "==", cleanEmail)));
+          ordersList = ordersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+          ordersList.sort((a, b) => {
+            const tA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0);
+            const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0);
+            return tB - tA;
+          });
+        } catch (_) {}
+      }
+
       setRecentOrders(ordersList);
-      setStats({ cart: 0, wishlist: 0, orders: ordersList.length });
+      setStats(prev => ({ ...prev, orders: ordersList.length }));
 
       // Load addresses from customers sub-collection
       try {

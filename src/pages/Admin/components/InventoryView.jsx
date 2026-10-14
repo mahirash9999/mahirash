@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../../components/Firebase';
-import { collection, getDocs, doc, setDoc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, setDoc, getDoc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { ClipboardCheck, Search, Plus, Minus, Save, AlertTriangle, CheckCircle, Package, Download, Upload } from 'lucide-react';
 import OptimizedCloudinaryImage from '../../../components/OptimizedCloudinaryImage';
 import { exportToCSV, parseCSV, csvToJSON } from '../../../utils/exportUtils';
@@ -209,7 +209,17 @@ const InventoryView = () => {
   };
 
   useEffect(() => {
-    fetchInventory();
+    setLoading(true);
+    const unsub = onSnapshot(collection(db, 'products'), (snap) => {
+      const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setProducts(list);
+      setLoading(false);
+    }, (err) => {
+      console.error("Realtime inventory listener error:", err);
+      setLoading(false);
+    });
+
+    return () => unsub();
   }, []);
 
   const handleStockChange = (id, delta) => {
