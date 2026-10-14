@@ -1,5 +1,5 @@
-import { sendEmail, renderOrderConfirmationEmail, renderAdminNewOrderEmail, getAdminEmail } from "./lib/email.js";
-import { getFirestoreDb } from "./lib/firestoreClient.js";
+import { sendEmail, renderOrderConfirmationEmail, renderAdminNewOrderEmail, getAdminEmail } from "./_lib/email.js";
+import { getFirestoreDb } from "./_lib/firestoreClient.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
 
   // 1. Authoritative Server-side Stock Deduction in Firestore
   try {
-    const { deductOrderStock } = await import("./lib/stockManager.js");
+    const { deductOrderStock } = await import("./_lib/stockManager.js");
     if (Array.isArray(authoritativeOrder.items) && authoritativeOrder.items.length > 0) {
       await deductOrderStock(authoritativeOrder.items);
     }

@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import { normalizeEmail, saveOtpRecord, getCooldownRemaining } from "./lib/firebaseAdmin.js";
-import { sendEmail, renderOtpEmail } from "./lib/email.js";
+import { normalizeEmail, saveOtpRecord, getCooldownRemaining } from "./_lib/firebaseAdmin.js";
+import { sendEmail, renderOtpEmail } from "./_lib/email.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

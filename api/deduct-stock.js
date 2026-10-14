@@ -1,4 +1,4 @@
-import { deductOrderStock } from "./lib/stockManager.js";
+import { deductOrderStock } from "./_lib/stockManager.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
