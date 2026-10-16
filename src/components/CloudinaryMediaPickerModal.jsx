@@ -29,6 +29,7 @@ const CloudinaryMediaPickerModal = ({
         'collections',
         'shop_by_category',
         'shop_the_look',
+        'gender_banners',
         'mobile_categories',
         'hero_slides',
         'community_images',

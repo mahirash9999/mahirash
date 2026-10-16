@@ -1068,7 +1068,7 @@ const Checkout = () => {
         currency: "INR",
         name: "Mahirash",
         description: "Luxury Perfume Order",
-        image: getOptimizedCloudinaryUrl("https://res.cloudinary.com/dcjn4y284/image/upload/v1786029668/p3jd3nuet4vkqbfd5qaz.png", { width: 150 }),
+        image: `${window.location.origin}/logom.webp`,
         handler: async (response) => {
           await saveOrder(response.razorpay_payment_id, "confirmed", "captured", tempPassword);
           setIsProcessing(false);

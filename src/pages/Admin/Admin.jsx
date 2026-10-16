@@ -57,7 +57,6 @@ import BillingSystem from "./components/BillingSystem";
 import AdminProfileSettings from "./components/AdminProfileSettings";
 import HeroVideoManager from "./components/HeroVideoManager";
 import AboutUsManager from "./components/AboutUsManager";
-import PromoPopupManager from "./components/PromoPopupManager";
 import CloudinaryMediaPickerModal from "../../components/CloudinaryMediaPickerModal";
 
 import uploadToCloudinary from "../../utils/cloudinary";
@@ -131,7 +130,8 @@ const DEFAULT_SEED_DATA = {
     { id: 'm_cat_4', name: 'WOODY & AMBER', title: 'WOODY & AMBER', badge: '', image: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?q=80&w=800&auto=format&fit=crop', link: '/shop?category=Woody+%26+Amber', sort_order: 4, is_active: true },
     { id: 'm_cat_5', name: 'FLORAL ESSENCE', title: 'FLORAL ESSENCE', badge: '', image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop', link: '/shop?category=Floral+%26+Fresh', sort_order: 5, is_active: true },
     { id: 'm_cat_6', name: 'DISCOVERY SETS', title: 'DISCOVERY SETS', badge: 'GIFT BOX', image: 'https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800&auto=format&fit=crop', link: '/shop?category=Gift+Sets', sort_order: 6, is_active: true }
-  ]
+  ],
+  
 };
 
 // Generic CMS Manager helper
@@ -370,10 +370,13 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
   };
 
   return (
-    <div className="bg-white border border-zinc-200 rounded-xl p-6 text-zinc-900 shadow-sm">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-lg   text-zinc-900 uppercase tracking-wider">{title}</h2>
-        <div className="flex items-center gap-2">
+    <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 sm:p-6 text-zinc-900 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-base sm:text-lg font-bold text-zinc-900 uppercase tracking-wider">{title}</h2>
+          <p className="text-[12px] text-zinc-500 mt-0.5">Live records with Cloudinary image upload and media management</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
           <input
             type="file"
             ref={fileInputRef}
@@ -384,21 +387,21 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
           <button
             type="button"
             onClick={() => fileInputRef.current.click()}
-            className="flex items-center gap-1.5 px-3 py-2 border border-zinc-200 rounded-lg bg-white hover:bg-zinc-50 text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 border border-zinc-200 rounded-xl bg-white hover:bg-zinc-50 text-[12px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-xs"
           >
-            <Upload size={14} /> Import
+            <Upload size={13} /> Import
           </button>
           <button
             type="button"
             onClick={handleExport}
-            className="flex items-center gap-1.5 px-3 py-2 border border-zinc-200 rounded-lg bg-white hover:bg-zinc-50 text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 border border-zinc-200 rounded-xl bg-white hover:bg-zinc-50 text-[12px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-xs"
           >
-            <Download size={14} /> Export
+            <Download size={13} /> Export
           </button>
           <button
             type="button"
             onClick={handleCreateNew}
-            className="flex items-center gap-2 px-4 py-2 bg-black text-white text-[14px]   rounded-lg hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2 bg-black text-white text-[13px] font-bold rounded-xl hover:bg-zinc-800 transition-all shadow-sm cursor-pointer active:scale-95"
           >
             <Plus size={14} /> Add New
           </button>
@@ -450,8 +453,8 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
       {loading ? (
         <div className="py-8 text-center text-zinc-500 text-[14px]">Loading items...</div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-[14px] border-collapse">
+        <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+          <table className="w-full min-w-[620px] text-left text-[13px] border-collapse">
             <thead>
               <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-widest text-[10px]">
                 <th className="py-3 px-4 w-10">
@@ -536,16 +539,19 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
       )}
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <form onSubmit={handleSubmit} className="bg-white border border-zinc-200 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center border-b border-zinc-200 pb-3">
-              <h3 className="text-sm   uppercase tracking-wider text-zinc-900">{editingItem ? "Edit Item" : "Create Item"}</h3>
-              <button type="button" onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-black p-1 rounded-full hover:bg-zinc-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4">
+          <form onSubmit={handleSubmit} className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col p-4 sm:p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center border-b border-zinc-200 pb-3 mb-3">
+              <div>
+                <h3 className="text-sm sm:text-base font-bold uppercase tracking-wider text-zinc-900">{editingItem ? "Edit Item" : "Create Item"}</h3>
+                <p className="text-[11px] text-zinc-400">Save your changes directly to the cloud</p>
+              </div>
+              <button type="button" onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-black p-1.5 rounded-full hover:bg-zinc-100 transition-colors">
                 <X size={16} />
               </button>
             </div>
 
-            <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
+            <div className="space-y-3.5 overflow-y-auto flex-1 pr-1.5 py-1">
               {fields.map(f => (
                 <div key={f.key} className="space-y-1">
                   <label className="text-[10px]   text-zinc-500 uppercase tracking-wider block">{f.label}</label>
@@ -618,18 +624,18 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
               ))}
             </div>
 
-            <div className="pt-3 border-t border-zinc-200 flex justify-end gap-2">
+            <div className="pt-3.5 mt-2 border-t border-zinc-200/80 flex items-center justify-end gap-2.5">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 border border-zinc-300 text-zinc-700 text-[14px]   rounded-lg hover:bg-zinc-100"
+                className="px-4 py-2 border border-zinc-300 text-zinc-700 text-[13px] font-semibold rounded-xl hover:bg-zinc-100 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={uploading}
-                className="px-5 py-2 bg-black text-white text-[14px]   rounded-lg hover:bg-zinc-800 disabled:opacity-50 shadow-sm cursor-pointer"
+                className="px-5 py-2 bg-black text-white text-[13px] font-bold rounded-xl hover:bg-zinc-800 disabled:opacity-50 shadow-sm transition-all cursor-pointer active:scale-98"
               >
                 {uploading ? "Uploading..." : "Save Changes"}
               </button>
@@ -1817,8 +1823,6 @@ const Admin = () => {
         );
       case "Store Settings":
         return <SiteSettingsManager />;
-      case "Promo Popup":
-        return <PromoPopupManager />;
       case "Coupons / Offers":
         return <CouponsManager />;
       case "Blogs":
@@ -1897,10 +1901,10 @@ const Admin = () => {
         return (
           <GenericCRUDManager
             collectionName="gender_banners"
-            title="Gender Banners CMS (Men & Women Collections)"
+            title="Gender Banners CMS (For Him, For Her & Unisex)"
             fields={[
               { key: 'image', label: 'Banner Editorial Image', type: 'image' },
-              { key: 'title', label: 'Banner Title (e.g. FOR HIM, FOR HER)' },
+              { key: 'title', label: 'Banner Title (e.g. FOR HIM, FOR HER, UNISEX)' },
               { key: 'tag', label: 'Tagline / Eyebrow (e.g. MASCULINE SIGNATURES)' },
               { key: 'subtitle', label: 'Description Text' },
               { key: 'cta', label: 'CTA Button Text (e.g. DISCOVER MEN\'S)' },
@@ -1908,7 +1912,7 @@ const Admin = () => {
               { key: 'sort_order', label: 'Sort Order', type: 'number' },
               { key: 'is_active', label: 'Status', type: 'boolean' }
             ]}
-            defaultItem={{ image: '', title: 'FOR HIM', tag: 'MASCULINE SIGNATURES', subtitle: 'Bold, intense, and magnetic extraits formulated for presence.', cta: 'DISCOVER MEN\'S →', link: '/shop?gender=Men', sort_order: 1, is_active: true }}
+            defaultItem={{ image: '', title: 'UNISEX', tag: 'TIMELESS HARMONY', subtitle: 'Artisanal extraits crafted for all.', cta: 'DISCOVER UNISEX', link: '/shop?gender=Unisex', sort_order: 3, is_active: true }}
           />
         );
       case "Explore Banner":
@@ -2087,21 +2091,21 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#f5f5f5] text-zinc-900 selection:bg-black selection:text-white">
+    <div className="min-h-screen flex bg-[#f8f7f4] text-zinc-900 selection:bg-black selection:text-white relative">
       <AdminSidebar activeItem={activeItem} setActiveItem={setActiveItem} isOpen={isMobileSidebarOpen} onClose={() => setIsMobileSidebarOpen(false)} />
 
-      <main className="flex-1 px-4 py-6 md:px-8 lg:px-12 overflow-auto bg-[#f5f5f5]">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1 min-w-0 w-full px-3 py-4 sm:px-6 md:px-8 lg:px-10 overflow-x-hidden overflow-y-auto bg-[#f8f7f4]">
+        <div className="max-w-7xl mx-auto w-full">
           <AdminHeader activeItem={activeItem} searchVal={searchVal} setSearchVal={setSearchVal} onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
           {activeItem === "Products" && (
-            <div className="flex justify-end mb-6">
+            <div className="flex flex-col sm:flex-row sm:justify-end mb-5">
               <button
                 type="button"
                 onClick={() => setIsProductModalOpen(true)}
-                className="px-6 py-3 rounded-lg bg-black text-white text-[14px]   hover:bg-zinc-800 transition-all flex items-center gap-2 shadow-sm cursor-pointer"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-black text-white text-[13px] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer active:scale-[0.99]"
               >
-                <Plus size={14} /> Add New Product
+                <Plus size={15} /> Add New Product
               </button>
             </div>
           )}
@@ -2111,23 +2115,24 @@ const Admin = () => {
       </main>
 
       {isProductModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white border border-zinc-200 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="px-7 py-5 border-b border-zinc-200 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-2.5 sm:p-4">
+          <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-zinc-200 flex items-center justify-between bg-zinc-50/50">
               <div>
-                <h2 className="text-base font-poppins   text-zinc-900 uppercase tracking-wider">
+                <h2 className="text-sm sm:text-base font-bold text-zinc-900 uppercase tracking-wider">
                   Add New Fragrance Product
                 </h2>
+                <p className="text-[11px] text-zinc-500">Configure formulation, pricing variants, and notes</p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsProductModalOpen(false)}
-                className="p-2 hover:bg-zinc-100 rounded-lg transition-colors text-zinc-500 hover:text-black cursor-pointer"
+                className="p-2 hover:bg-zinc-200/60 rounded-xl transition-colors text-zinc-500 hover:text-black cursor-pointer"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
-            <div className="px-7 py-6">
+            <div className="px-3.5 sm:px-7 py-4 sm:py-6 overflow-y-auto flex-1">
               <ProductForm
                 onSuccess={handleAddProductSubmit}
               />

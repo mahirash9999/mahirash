@@ -39,8 +39,7 @@ export const isCloudinaryUrlOrId = (str) => {
  * Parse a Cloudinary URL into its constituent parts
  */
 export const parseCloudinaryUrl = (urlOrPublicId) => {
-  const defaultCloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  if (!defaultCloudName) console.warn("Missing VITE_CLOUDINARY_CLOUD_NAME config");
+  const defaultCloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || '';
 
   if (!urlOrPublicId || typeof urlOrPublicId !== 'string') {
     return null;

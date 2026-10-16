@@ -334,15 +334,15 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
   return (
     <section className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
       {/* Top Header Controls */}
-      <div className="px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200">
+      <div className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-lg font-poppins font-semibold text-zinc-900 tracking-tight">Fragrance Catalog</h2>
-            <span className="px-3 py-0.5 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-800 text-[13px] font-medium">
+            <h2 className="text-base sm:text-lg font-poppins font-semibold text-zinc-900 tracking-tight">Fragrance Catalog</h2>
+            <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-800 text-[12px] font-medium">
               {products.length} Products
             </span>
           </div>
-          <p className="text-[13px] text-zinc-500 mt-1">
+          <p className="text-[12px] sm:text-[13px] text-zinc-500 mt-1">
             Displaying 10 products per page sorted by most recently uploaded
           </p>
         </div>
@@ -384,7 +384,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
       </div>
 
       {/* Filter & Sort Bar */}
-      <div className="px-6 py-3.5 bg-zinc-50/70 border-b border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="px-4 sm:px-6 py-3 bg-zinc-50/70 border-b border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Table Quick Search */}
         <div className="relative max-w-xs w-full">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
@@ -413,15 +413,15 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
         </div>
 
         {/* Sort Options Dropdown */}
-        <div className="flex items-center gap-2 self-end sm:self-auto">
-          <div className="flex items-center gap-1.5 text-[13px] text-zinc-600 font-medium">
+        <div className="flex items-center gap-2 self-start sm:self-auto w-full sm:w-auto">
+          <div className="flex items-center gap-1.5 text-[13px] text-zinc-600 font-medium whitespace-nowrap">
             <SlidersHorizontal size={14} className="text-zinc-500" />
             <span>Sort by:</span>
           </div>
           <select
             value={sortBy}
             onChange={(e) => handleSortChange(e.target.value)}
-            className="text-[13px] bg-white border border-zinc-300 text-zinc-800 rounded-lg px-3 py-1.5 font-medium focus:outline-none focus:ring-1 focus:ring-black focus:border-black cursor-pointer shadow-sm"
+            className="text-[13px] bg-white border border-zinc-300 text-zinc-800 rounded-lg px-3 py-1.5 font-medium focus:outline-none focus:ring-1 focus:ring-black focus:border-black cursor-pointer shadow-sm w-full sm:w-auto"
           >
             <option value="date-desc">Recently Uploaded (Newest First)</option>
             <option value="date-asc">Date: Oldest First</option>
@@ -437,7 +437,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
 
       {/* Bulk Action Banner */}
       {selectedIds.length > 0 && (
-        <div className="mx-6 my-4 flex flex-col sm:flex-row justify-between items-center bg-zinc-900 text-white p-3.5 rounded-xl gap-3 shadow-md">
+        <div className="mx-3.5 sm:mx-6 my-3 sm:my-4 flex flex-col sm:flex-row justify-between items-center bg-zinc-900 text-white p-3.5 rounded-xl gap-3 shadow-md">
           <div className="text-[13px] font-medium flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
             <span>{selectedIds.length} product(s) selected</span>
@@ -483,8 +483,8 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
       )}
 
       {/* Main Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-left text-sm">
+      <div className="overflow-x-auto scrollbar-thin">
+        <table className="w-full min-w-[860px] text-left text-sm">
           <thead className="bg-zinc-100/80 border-b border-zinc-200">
             <tr className="text-[11px] text-zinc-600 uppercase tracking-wider font-semibold">
               <th className="px-5 py-3.5 w-10">
@@ -687,8 +687,8 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
 
         {/* Pagination Footer */}
         {sortedProducts.length > 0 && (
-          <div className="flex flex-col sm:flex-row justify-between items-center px-6 py-4 border-t border-zinc-200 bg-white gap-3">
-            <span className="text-[13px] text-zinc-500 font-medium">
+          <div className="flex flex-col sm:flex-row justify-between items-center px-4 sm:px-6 py-3.5 border-t border-zinc-200 bg-white gap-3">
+            <span className="text-[12px] sm:text-[13px] text-zinc-500 font-medium text-center sm:text-left">
               Showing <span className="font-semibold text-zinc-800">{(currentPage - 1) * itemsPerPage + 1}</span> to{" "}
               <span className="font-semibold text-zinc-800">
                 {Math.min(currentPage * itemsPerPage, sortedProducts.length)}
@@ -697,19 +697,19 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
               {products.length !== sortedProducts.length && ` (filtered from ${products.length} total)`}
             </span>
 
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-wrap justify-center">
               {/* Previous Button */}
               <button
                 type="button"
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="flex items-center gap-1 px-3 py-1.5 border border-zinc-300 rounded-lg text-[13px] font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm cursor-pointer"
+                className="flex items-center gap-1 px-3 py-1.5 border border-zinc-300 rounded-lg text-[12px] sm:text-[13px] font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm cursor-pointer"
               >
-                <ChevronLeft size={14} /> Previous
+                <ChevronLeft size={14} /> Prev
               </button>
 
-              {/* Numbered Page Buttons */}
-              <div className="flex items-center gap-1">
+              {/* Numbered Page Buttons - Hidden on very small screens to avoid overflow */}
+              <div className="hidden sm:flex items-center gap-1">
                 {Array.from({ length: totalPages }).map((_, idx) => {
                   const pageNum = idx + 1;
                   // If lots of pages, show window around currentPage

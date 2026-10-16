@@ -251,17 +251,17 @@ const OrdersTable = ({ onRefresh }) => {
     <section className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden font-sans">
 
       {/* Table Headers & Controls */}
-      <div className="px-6 py-5 flex flex-col md:flex-row md:items-center justify-between border-b border-zinc-200 gap-4">
+      <div className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col md:flex-row md:items-center justify-between border-b border-zinc-200 gap-4">
         <div>
-          <h2 className="text-lg font-bold font-serif text-zinc-900">Manage Transactions & Shipments</h2>
-          <p className="text-[13px] text-zinc-505 text-zinc-500 mt-0.5">Push orders to Shiprocket and view dynamic tracking stats</p>
+          <h2 className="text-base sm:text-lg font-bold font-serif text-zinc-900">Manage Transactions & Shipments</h2>
+          <p className="text-[12px] sm:text-[13px] text-zinc-500 mt-0.5">Push orders to Shiprocket and view dynamic tracking stats</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={fetchOrders}
-            className="p-2 border border-zinc-300 rounded-lg hover:bg-zinc-50 text-zinc-600 transition"
+            className="p-2 border border-zinc-300 rounded-xl hover:bg-zinc-50 text-zinc-600 transition shadow-xs"
             title="Refresh orders list"
           >
             <RefreshCw size={14} />
@@ -270,7 +270,7 @@ const OrdersTable = ({ onRefresh }) => {
           <button
             type="button"
             onClick={handleExportOrders}
-            className="flex items-center gap-1.5 px-4 py-2 border border-zinc-300 rounded-lg bg-white hover:bg-zinc-50 text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 border border-zinc-300 rounded-xl bg-white hover:bg-zinc-50 text-[12px] sm:text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-xs"
           >
             <Download size={14} /> Export CSV
           </button>
@@ -278,13 +278,13 @@ const OrdersTable = ({ onRefresh }) => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="px-6 py-4 bg-zinc-50/50 border-b border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex gap-2">
+      <div className="px-4 sm:px-6 py-3.5 bg-zinc-50/50 border-b border-zinc-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-wrap gap-1.5">
           {["all", "confirmed", "pending", "failed"].map(status => (
             <button
               key={status}
               onClick={() => { setStatusFilter(status); setCurrentPage(1); }}
-              className={`px-3 py-1.5 rounded-lg text-[14px] font-semibold capitalize transition ${statusFilter === status ? "bg-black text-white" : "bg-white border border-zinc-300 text-zinc-650 hover:bg-zinc-100"}`}
+              className={`px-3 py-1.5 rounded-lg text-[12px] sm:text-[13px] font-semibold capitalize transition cursor-pointer ${statusFilter === status ? "bg-black text-white shadow-xs" : "bg-white border border-zinc-300 text-zinc-700 hover:bg-zinc-100"}`}
             >
               {status}
             </button>
@@ -298,14 +298,14 @@ const OrdersTable = ({ onRefresh }) => {
             placeholder="Search by ID, email, buyer, AWB..."
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-            className="w-full pl-9 pr-4 py-2 border border-zinc-300 rounded-lg text-[14px] bg-white focus:border-zinc-800 outline-none transition"
+            className="w-full pl-9 pr-3 py-1.5 text-[13px] bg-white border border-zinc-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition-all shadow-xs"
           />
         </div>
       </div>
 
       {/* Bulk actions alerts */}
       {selectedIds.length > 0 && (
-        <div className="mx-6 my-4 flex flex-col sm:flex-row justify-between items-center bg-zinc-50 border border-zinc-200 p-4 rounded-xl gap-3 animate-fadeIn">
+        <div className="mx-3.5 sm:mx-6 my-3 sm:my-4 flex flex-col sm:flex-row justify-between items-center bg-zinc-50 border border-zinc-200 p-4 rounded-xl gap-3 animate-fadeIn">
           <div className="text-[13px] font-semibold text-zinc-700">
             {selectedIds.length} order(s) selected
           </div>
@@ -350,8 +350,8 @@ const OrdersTable = ({ onRefresh }) => {
       )}
 
       {/* Orders Table markup */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-left text-sm text-[14px]">
+      <div className="overflow-x-auto scrollbar-thin">
+        <table className="w-full min-w-[840px] text-left text-sm text-[13px]">
           <thead className="bg-[#FAF9F6] border-b border-zinc-200">
             <tr className="text-[11px] text-zinc-700 uppercase tracking-widest">
               <th className="px-6 py-4 w-10">

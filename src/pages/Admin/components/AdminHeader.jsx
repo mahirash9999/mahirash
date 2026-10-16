@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, Search, Bell, Sun, Menu } from 'lucide-react';
+import { Search, Bell, Menu, ExternalLink } from 'lucide-react';
 import OptimizedCloudinaryImage from '../../../components/OptimizedCloudinaryImage';
 
 const AdminHeader = ({ activeItem, searchVal, setSearchVal, onMenuClick }) => {
@@ -23,55 +23,95 @@ const AdminHeader = ({ activeItem, searchVal, setSearchVal, onMenuClick }) => {
   }, []);
 
   return (
-    <header className="flex items-center justify-between pb-5 border-b border-zinc-200 mb-8 bg-[#f5f5f5]">
-      <div className="flex items-center gap-3 md:gap-6 flex-1 max-w-lg">
-        {/* Mobile Hamburger toggle */}
-        <button
-          onClick={onMenuClick}
-          className="lg:hidden p-2 -ml-2 text-zinc-600 hover:text-black rounded-lg hover:bg-zinc-200/60"
-        >
-          <Menu size={18} />
-        </button>
+    <header className="pb-4 sm:pb-6 mb-5 sm:mb-8 border-b border-zinc-200/80">
+      {/* Top Navbar Row */}
+      <div className="flex items-center justify-between gap-3 sm:gap-4">
+        {/* Left: Mobile Menu Trigger & Breadcrumb */}
+        <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+          <button
+            type="button"
+            onClick={onMenuClick}
+            aria-label="Open sidebar menu"
+            className="lg:hidden p-2 rounded-xl bg-white border border-zinc-200 text-zinc-700 hover:text-black hover:border-black shadow-xs transition-all cursor-pointer shrink-0 active:scale-95"
+          >
+            <Menu size={18} />
+          </button>
 
-        {/* Search Bar */}
-        <div className="relative w-full">
-          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-          <input
-            type="text"
-            placeholder="Search products, orders..."
-            value={searchVal || ''}
-            onChange={(e) => setSearchVal?.(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white border border-zinc-300 rounded-lg text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-900 transition-colors shadow-sm"
-          />
+          <div className="min-w-0">
+            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#b8860b] block truncate">
+              ADMIN ATELIER
+            </span>
+            <h1 className="text-base sm:text-xl font-bold font-serif text-zinc-900 tracking-tight truncate leading-tight">
+              {activeItem || "Overview"}
+            </h1>
+          </div>
+        </div>
+
+        {/* Right: Actions, Notifications & Profile */}
+        <div className="flex items-center gap-2 sm:gap-3.5 shrink-0">
+          {/* View Store button */}
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-zinc-300/80 bg-white hover:bg-zinc-50 text-zinc-800 hover:text-black hover:border-black text-[12px] font-bold rounded-xl transition-all shadow-xs"
+          >
+            <span>View Store</span>
+            <ExternalLink size={12} />
+          </a>
+
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View Store"
+            className="sm:hidden p-2 border border-zinc-200 bg-white text-zinc-700 hover:text-black rounded-xl shadow-xs"
+          >
+            <ExternalLink size={15} />
+          </a>
+
+          {/* Notifications */}
+          <button
+            type="button"
+            title="Notifications"
+            className="p-2 text-zinc-600 hover:text-black rounded-xl bg-white border border-zinc-200 hover:border-zinc-300 relative shadow-xs transition-all cursor-pointer"
+          >
+            <Bell size={16} />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+          </button>
+
+          {/* Profile Badge */}
+          <div className="flex items-center gap-2.5 pl-1.5 sm:pl-3 sm:border-l sm:border-zinc-200">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-100 border border-zinc-200 overflow-hidden shadow-xs shrink-0 ring-2 ring-[#d4af37]/20">
+              <OptimizedCloudinaryImage src={profile.image} preset="avatar" className="w-full h-full object-cover" alt="Profile" />
+            </div>
+            <div className="hidden md:block">
+              <p className="text-[13px] font-bold text-zinc-900 leading-none">{profile.name}</p>
+              <p className="text-[9px] text-zinc-400 uppercase tracking-widest mt-1 font-semibold">{profile.role}</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
-        {/* View Store link */}
-        <a
-          href="/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-4 py-1.5 border border-zinc-300 bg-white text-zinc-700 hover:text-black hover:border-black text-[14px] font-semibold rounded-lg transition-all shadow-sm"
-        >
-          View Store &nearr;
-        </a>
-
-        {/* Notifications and Profile */}
-        <button className="p-2 text-zinc-600 hover:text-black rounded-lg hover:bg-zinc-200/60 relative">
-          <Bell size={16} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
-        </button>
-
-        <div className="flex items-center gap-3 pl-3 border-l border-zinc-200">
-          <div className="w-8 h-8 rounded-full bg-zinc-200 border border-zinc-300 flex items-center justify-center text-[14px]   text-zinc-900 uppercase overflow-hidden shadow-sm">
-            <OptimizedCloudinaryImage src={profile.image} preset="avatar" className="w-full h-full object-cover" alt="Profile" />
-          </div>
-          <div className="hidden md:block">
-            <p className="text-[14px]   text-zinc-900 leading-none">{profile.name}</p>
-            <p className="text-[9px] text-zinc-500 uppercase tracking-widest mt-0.5 max-w-[120px] truncate">{profile.role}</p>
-          </div>
-        </div>
+      {/* Global Quick Search Bar */}
+      <div className="mt-3.5 sm:mt-4 relative max-w-xl">
+        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+        <input
+          type="text"
+          placeholder="Search products, SKU, customer orders..."
+          value={searchVal || ''}
+          onChange={(e) => setSearchVal?.(e.target.value)}
+          className="w-full pl-10 pr-9 py-2.5 bg-white border border-zinc-200 rounded-xl text-[13px] text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black shadow-xs transition-all"
+        />
+        {searchVal && (
+          <button
+            type="button"
+            onClick={() => setSearchVal?.('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-black text-xs font-bold"
+          >
+            ✕
+          </button>
+        )}
       </div>
     </header>
   );

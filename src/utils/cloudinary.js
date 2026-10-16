@@ -6,15 +6,21 @@ import {
   getOptimizedCloudinaryUrl,
 } from "./cloudinaryUtils";
 
-export const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-export const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+// Cloudinary configuration strictly from environment variables (.env)
+export const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "";
+export const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "";
 
 export const uploadToCloudinary = async (file, uploadType = "product", onProgress = null) => {
-  if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-    throw new Error("Cloudinary configuration missing in environment variables.");
-  }
+  const activeCloud = CLOUDINARY_CLOUD_NAME;
+  const activePreset = CLOUDINARY_UPLOAD_PRESET;
 
   if (!file) return null;
+
+  if (!activeCloud || !activePreset) {
+    throw new Error(
+      "Cloudinary configuration missing: Please set VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET in your .env file."
+    );
+  }
 
   // Check if file is a video by MIME type, uploadType flag, or file extension
   const isVideo =
@@ -33,49 +39,44 @@ export const uploadToCloudinary = async (file, uploadType = "product", onProgres
   // 2. Browser-side Compression Before Upload (skip for videos)
   const fileToUpload = isVideo ? file : await compressImageBeforeUpload(file, uploadType);
 
-  // Try endpoints: video -> auto -> image (for max compatibility with Cloudinary unsigned upload preset settings)
+  // Try endpoints: image -> auto (or video -> auto for videos)
   const endpointsToTry = isVideo
     ? [
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`,
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`,
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`
+      `https://api.cloudinary.com/v1_1/${activeCloud}/video/upload`,
+      `https://api.cloudinary.com/v1_1/${activeCloud}/auto/upload`
     ]
     : [
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`
+      `https://api.cloudinary.com/v1_1/${activeCloud}/image/upload`,
+      `https://api.cloudinary.com/v1_1/${activeCloud}/auto/upload`
     ];
-
-  const presetsToTry = Array.from(new Set([CLOUDINARY_UPLOAD_PRESET].filter(Boolean)));
 
   let lastErrorMsg = "";
 
   for (const uploadUrl of endpointsToTry) {
-    for (const presetName of presetsToTry) {
-      try {
-        const data = new FormData();
-        data.append("file", fileToUpload);
-        data.append("upload_preset", presetName);
+    try {
+      const data = new FormData();
+      data.append("file", fileToUpload);
+      data.append("upload_preset", activePreset);
 
-        const res = await axios.post(uploadUrl, data, {
-          onUploadProgress: (progressEvent) => {
-            if (onProgress && progressEvent.total) {
-              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-              onProgress(percentCompleted);
-            }
+      const res = await axios.post(uploadUrl, data, {
+        onUploadProgress: (progressEvent) => {
+          if (onProgress && progressEvent.total) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            onProgress(percentCompleted);
           }
-        });
-
-        if (res.data && res.data.secure_url) {
-          const secureUrl = res.data.secure_url;
-          console.log(`Cloudinary Upload Success [${uploadUrl}, preset=${presetName}]:`, secureUrl);
-          await setCachedUploadUrl(file, secureUrl);
-          return secureUrl;
         }
-      } catch (err) {
-        const cloudMsg = err?.response?.data?.error?.message || err?.message;
-        console.warn(`Cloudinary upload attempt failed [${uploadUrl}, preset=${presetName}]:`, cloudMsg);
-        lastErrorMsg = cloudMsg;
+      });
+
+      if (res.data && res.data.secure_url) {
+        const secureUrl = res.data.secure_url;
+        console.log(`Cloudinary Upload Success [${uploadUrl}]:`, secureUrl);
+        await setCachedUploadUrl(file, secureUrl);
+        return secureUrl;
       }
+    } catch (err) {
+      const cloudMsg = err?.response?.data?.error?.message || err?.message;
+      console.warn(`Cloudinary upload attempt failed [${uploadUrl}]:`, cloudMsg);
+      lastErrorMsg = cloudMsg;
     }
   }
 
@@ -84,5 +85,4 @@ export const uploadToCloudinary = async (file, uploadType = "product", onProgres
 
 export { getOptimizedCloudinaryUrl };
 export default uploadToCloudinary;
-
 

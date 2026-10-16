@@ -89,21 +89,33 @@
     ],
     "gender_banners": [
         {
-            "id": "mens",
+            "id": "banner_men",
             "title": "FOR HIM",
-            "buttonText": "EXPLORE FRAGRANCES",
-            "image": "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=1000&auto=format&fit=crop&q=80",
-            "path": "/shop?category=Men",
+            "buttonText": "DISCOVER MEN'S",
+            "image": "https://res.cloudinary.com/djmfxpemz/image/upload/v1792132433/wgbpfdnhmnbe4bpqi1w0.jpg",
+            "path": "/shop?gender=Men",
+            "link": "/shop?gender=Men",
             "sort_order": 1,
             "is_active": true
         },
         {
-            "id": "womens",
+            "id": "banner_women",
             "title": "FOR HER",
-            "buttonText": "EXPLORE FRAGRANCES",
-            "image": "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=1000&auto=format&fit=crop&q=80",
-            "path": "/shop?category=Women",
+            "buttonText": "DISCOVER WOMEN'S",
+            "image": "https://res.cloudinary.com/djmfxpemz/image/upload/v1792132433/m4fvjsmxzeqgkwcx9qem.jpg",
+            "path": "/shop?gender=Women",
+            "link": "/shop?gender=Women",
             "sort_order": 2,
+            "is_active": true
+        },
+        {
+            "id": "banner_unisex",
+            "title": "UNISEX",
+            "buttonText": "DISCOVER UNISEX",
+            "image": "https://res.cloudinary.com/djmfxpemz/image/upload/v1792132434/yx5mbymas6q8k0wpkqz0.jpg",
+            "path": "/shop?gender=Unisex",
+            "link": "/shop?gender=Unisex",
+            "sort_order": 3,
             "is_active": true
         }
     ],

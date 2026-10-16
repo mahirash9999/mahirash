@@ -185,7 +185,7 @@ const RandomProducts = () => {
                 </p>
               </div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight tracking-[0.15em] text-[#0D0D0D] uppercase whitespace-nowrap">
-                EXPLORE OUR MINIATURES
+               SHOP MINIATURES
               </h2>
             </div>
             <div className="hidden md:block flex-1 h-[1px] bg-gradient-to-r from-[#B8860B]/40 via-zinc-300 to-transparent mb-3" />

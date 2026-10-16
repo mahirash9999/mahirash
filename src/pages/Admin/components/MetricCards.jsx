@@ -77,17 +77,17 @@ const MetricCards = () => {
   ];
 
   return (
-    <section className="grid gap-5 md:grid-cols-2 lg:grid-cols-4 mb-10">
+    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5 mb-6 sm:mb-10">
       {metricCards.map((card) => {
         const Icon = card.icon;
         return (
           <article
             key={card.label}
-            className="bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md transition-all duration-300 group"
+            className="bg-white rounded-2xl border border-zinc-200/80 shadow-xs hover:shadow-md transition-all duration-300 group"
           >
-            <div className="p-6">
-              <div className={`w-12 h-12 rounded-xl ${card.bg} ${card.color} flex items-center justify-center mb-4 group-hover:scale-105 transition-transform`}>
-                <Icon size={24} strokeWidth={2} />
+            <div className="p-4 sm:p-6">
+              <div className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl ${card.bg} ${card.color} flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-105 transition-transform`}>
+                <Icon size={22} strokeWidth={2} />
               </div>
               <p className="text-[14px]   tracking-wider text-zinc-500 uppercase mb-1">
                 {card.label}

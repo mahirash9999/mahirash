@@ -138,16 +138,16 @@ const CouponsManager = () => {
     );
 
     return (
-        <div className="bg-white border border-zinc-200 rounded-xl p-6 text-zinc-900 shadow-sm font-['Inter',sans-serif]">
-            <div className="flex justify-between items-center mb-6">
+        <div className="bg-white border border-zinc-200 rounded-2xl p-4 sm:p-6 text-zinc-900 shadow-sm font-['Inter',sans-serif]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h2 className="text-lg font-bold text-zinc-900 uppercase tracking-wider">Coupons & Offers</h2>
-                    <p className="text-[14px] text-zinc-500 mt-1">Manage brand discount campaigns and select eligible products</p>
+                    <h2 className="text-base sm:text-lg font-bold text-zinc-900 uppercase tracking-wider">Coupons & Offers</h2>
+                    <p className="text-[12px] sm:text-[13px] text-zinc-500 mt-1">Manage brand discount campaigns and select eligible products</p>
                 </div>
                 <button
                     type="button"
                     onClick={handleCreateNew}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-black text-white text-[13px] font-bold uppercase tracking-wider rounded-lg hover:bg-zinc-800 transition-all shadow-sm cursor-pointer"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-black text-white text-[13px] font-bold uppercase tracking-wider rounded-xl hover:bg-zinc-800 transition-all shadow-sm cursor-pointer active:scale-95"
                 >
                     <Plus size={14} /> Add New Coupon
                 </button>
@@ -156,8 +156,8 @@ const CouponsManager = () => {
             {loading ? (
                 <div className="py-8 text-center text-zinc-500 text-[14px]">Loading campaigns...</div>
             ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left text-[14px] border-collapse">
+                <div className="overflow-x-auto scrollbar-thin">
+                    <table className="w-full min-w-[720px] text-left text-[13px] border-collapse">
                         <thead>
                             <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-widest text-[10px]">
                                 <th className="py-3 px-4">Coupon Code</th>
@@ -235,16 +235,18 @@ const CouponsManager = () => {
             )}
 
             {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
-                    <form onSubmit={handleSubmit} className="bg-white border border-zinc-200 rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl my-8">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4">
+                    <form onSubmit={handleSubmit} className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl max-w-2xl w-full p-4 sm:p-6 space-y-4 shadow-2xl max-h-[92vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex justify-between items-center border-b border-zinc-200 pb-3">
                             <h3 className="text-sm font-extrabold uppercase tracking-wider text-zinc-900">
                                 {editingCoupon ? `Edit Coupon: ${editingCoupon.code}` : "Create Brand Coupon / Offer"}
                             </h3>
-                            <button type="button" onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-black p-1 rounded-full hover:bg-zinc-100">
+                            <button type="button" onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-black p-1.5 rounded-full hover:bg-zinc-100 transition-colors">
                                 <X size={16} />
                             </button>
                         </div>
+
+                        <div className="overflow-y-auto flex-1 pr-1">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* Info Column */}
@@ -385,18 +387,19 @@ const CouponsManager = () => {
                                 </div>
                             </div>
                         </div>
+                        </div>
 
-                        <div className="pt-3 border-t border-zinc-200 flex justify-end gap-2">
+                        <div className="pt-3.5 mt-2 border-t border-zinc-200/80 flex items-center justify-end gap-2.5">
                             <button
                                 type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="px-4 py-2 border border-zinc-300 text-zinc-700 text-[14px] rounded-lg hover:bg-zinc-100 cursor-pointer"
+                                className="px-4 py-2 border border-zinc-300 text-zinc-700 text-[13px] font-semibold rounded-xl hover:bg-zinc-100 cursor-pointer transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="px-5 py-2 bg-black text-white text-[14px] rounded-lg hover:bg-zinc-800 shadow-sm cursor-pointer"
+                                className="px-5 py-2 bg-black text-white text-[13px] font-bold rounded-xl hover:bg-zinc-800 shadow-sm cursor-pointer transition-all active:scale-98"
                             >
                                 {editingCoupon ? "Save Changes" : "Create Coupon"}
                             </button>

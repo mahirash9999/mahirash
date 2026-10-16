@@ -367,14 +367,14 @@ const InventoryView = () => {
   return (
     <div className="space-y-6 text-zinc-900 font-['Inter',sans-serif]">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-zinc-200 shadow-sm">
         <div>
-          <h2 className="text-xl   font-poppins text-zinc-900 uppercase tracking-wider flex items-center gap-2">
+          <h2 className="text-base sm:text-xl font-poppins text-zinc-900 uppercase tracking-wider flex items-center gap-2">
             <ClipboardCheck className="text-[#b8860b]" size={22} /> Inventory & Stock Control Center
           </h2>
-          <p className="text-[14px] text-zinc-500 mt-1">Live stock levels, inventory valuation, and instant stock update controls.</p>
+          <p className="text-[12px] sm:text-[14px] text-zinc-500 mt-1">Live stock levels, inventory valuation, and instant stock update controls.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <input
             type="file"
             ref={fileInputRef}
@@ -385,16 +385,16 @@ const InventoryView = () => {
           <button
             type="button"
             onClick={() => fileInputRef.current.click()}
-            className="flex items-center gap-1.5 px-4 py-2 border border-zinc-300 rounded-lg bg-white hover:bg-zinc-50 text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 border border-zinc-300 rounded-xl bg-white hover:bg-zinc-50 text-[12px] sm:text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-xs"
           >
-            <Upload size={14} /> Import Inventory
+            <Upload size={14} /> Import
           </button>
           <button
             type="button"
             onClick={handleExportInventory}
-            className="flex items-center gap-1.5 px-4 py-2 border border-zinc-300 rounded-lg bg-white hover:bg-zinc-50 text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 border border-zinc-300 rounded-xl bg-white hover:bg-zinc-50 text-[12px] sm:text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-xs"
           >
-            <Download size={14} /> Export Inventory
+            <Download size={14} /> Export
           </button>
         </div>
       </div>
@@ -510,8 +510,8 @@ const InventoryView = () => {
         {loading ? (
           <div className="py-12 text-center text-[14px] text-zinc-500">Loading live stock data...</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-[14px] border-collapse">
+          <div className="overflow-x-auto scrollbar-thin">
+            <table className="w-full min-w-[800px] text-left text-[13px] border-collapse">
               <thead>
                 <tr className="text-[10px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
                   <th className="py-3 px-3 w-10">
