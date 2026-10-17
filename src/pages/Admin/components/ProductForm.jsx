@@ -41,7 +41,6 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
   const [dbFragranceFamilies, setDbFragranceFamilies] = useState([]);
   const [dbFragranceConcentrations, setDbFragranceConcentrations] = useState([]);
   const [dbAvailabilities, setDbAvailabilities] = useState([]);
-  const [dbGenders, setDbGenders] = useState(["Unisex", "Men", "Women"]);
 
   // Multi-select collection tags state
   const [selectedCollections, setSelectedCollections] = useState(
@@ -51,7 +50,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
   );
   const [selectedTags, setSelectedTags] = useState(normalizeTags(product?.tags || product?.tag));
 
-  // Featured home showcase flags
+  // Featured home showcase flags (Bestseller and New Arrivals)
   const [isBestseller, setIsBestseller] = useState(
     product?.is_bestseller ?? (
       Array.isArray(product?.tags)
@@ -64,13 +63,6 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
       Array.isArray(product?.tags)
         ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase()?.includes('NEW'))
         : (product?.tag?.toUpperCase?.()?.includes('NEW'))
-    )
-  );
-  const [isAtelierEdition, setIsAtelierEdition] = useState(
-    product?.is_atelier_edition ?? (
-      Array.isArray(product?.tags)
-        ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase()?.includes('ATELIER'))
-        : (product?.tag?.toUpperCase?.()?.includes('ATELIER'))
     )
   );
 
@@ -100,10 +92,21 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
           setDbSubcategories(subSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         }
 
-        const colSnap = await getDocs(collection(db, "collections"));
-        if (!colSnap.empty) {
-          setDbCollections(colSnap.docs.map(doc => doc.data().name).filter(Boolean));
+        // Fetch Home Page Collection from gender_banners (the exact "Home Page Collection" table in Admin)
+        const bannerSnap = await getDocs(collection(db, "gender_banners"));
+        const bannerCols = [];
+        if (!bannerSnap.empty) {
+          const sortedBanners = bannerSnap.docs
+            .map(doc => ({ id: doc.id, ...doc.data() }))
+            .filter(item => item.is_active !== false)
+            .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
+
+          sortedBanners.forEach(doc => {
+            const name = (doc.title || doc.name || "").trim();
+            if (name && !bannerCols.includes(name)) bannerCols.push(name);
+          });
         }
+        setDbCollections(bannerCols);
 
         const attrSnap = await getDocs(collection(db, "attributes"));
         if (!attrSnap.empty) {
@@ -123,29 +126,6 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         const availSnap = await getDocs(collection(db, "availabilities"));
         if (!availSnap.empty) {
           setDbAvailabilities(availSnap.docs.map(doc => doc.data().name).filter(Boolean));
-        }
-
-        const genderSnap = await getDocs(collection(db, "gender_banners"));
-        if (!genderSnap.empty) {
-          const bannerGenders = genderSnap.docs
-            .map(doc => {
-              const d = doc.data();
-              let g = d.title || "";
-              if (g.toUpperCase().startsWith("FOR ")) g = g.replace(/FOR /i, "");
-              if (d.link && d.link.includes("gender=")) {
-                try {
-                  const url = new URL(d.link, "http://dummy.com");
-                  const qg = url.searchParams.get("gender");
-                  if (qg) return qg;
-                } catch (e) {}
-              }
-              return g.trim();
-            })
-            .filter(Boolean)
-            .map(g => g.charAt(0).toUpperCase() + g.slice(1).toLowerCase());
-          if (bannerGenders.length > 0) {
-            setDbGenders(Array.from(new Set(["Unisex", "Men", "Women", ...bannerGenders])));
-          }
         }
       } catch (err) {
         console.error("Error fetching catalog data for product form:", err);
@@ -212,20 +192,16 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
       const hasNewArrivalTag = Array.isArray(product.tags)
         ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase()?.includes('NEW'))
         : (product.tag?.toUpperCase?.()?.includes('NEW'));
-      const hasAtelierTag = Array.isArray(product.tags)
-        ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase()?.includes('ATELIER'))
-        : (product.tag?.toUpperCase?.()?.includes('ATELIER'));
 
       setIsBestseller(product.is_bestseller !== undefined ? Boolean(product.is_bestseller) : Boolean(hasBestsellerTag));
       setIsNewArrival(product.is_new_arrival !== undefined ? Boolean(product.is_new_arrival) : Boolean(hasNewArrivalTag));
-      setIsAtelierEdition(product.is_atelier_edition !== undefined ? Boolean(product.is_atelier_edition) : Boolean(hasAtelierTag));
 
       reset({
         name: product.name || "",
         brand: product.brand || "MAHIRASH",
         category: product.category || "",
         subcategory: product.subcategory || "",
-        collection: product.collection || (Array.isArray(product.collections) && product.collections[0]) || "",
+        collection: product.collection || product.home_page_collection || (Array.isArray(product.collections) && product.collections[0]) || "",
         gender: product.gender || "Unisex",
         description: product.description || "",
         price: product.price || 0,
@@ -250,7 +226,6 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
     } else {
       setIsBestseller(false);
       setIsNewArrival(false);
-      setIsAtelierEdition(false);
       setSizePrices([{ size: "", price: 0, original_price: 0, stock: 10, is_preorder: false, images: [] }]);
       reset({
         name: "",
@@ -365,6 +340,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         subcategory: values.subcategory || "",
         collection: values.collection || "",
         collections: values.collection ? [values.collection] : selectedCollections,
+        home_page_collection: values.collection || "",
         gender: values.gender || "Unisex",
         fragrance_family: values.fragrance_family || "",
         fragrance_concentration: values.fragrance_concentration || "",
@@ -386,9 +362,9 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         image: allVariantImages[0] || "",
         is_bestseller: Boolean(isBestseller),
         is_new_arrival: Boolean(isNewArrival),
-        is_atelier_edition: Boolean(isAtelierEdition),
+        is_atelier_edition: false,
         tags: (() => {
-          let tagsToSave = [...selectedTags];
+          let tagsToSave = [...selectedTags].filter(t => t.label?.toUpperCase() !== 'ATELIER EDITION');
           if (isBestseller && !tagsToSave.some(t => t.label?.toUpperCase() === 'BESTSELLER')) {
             tagsToSave.push({ label: 'BESTSELLER', bg: '#dc2626', text: '#ffffff' });
           } else if (!isBestseller) {
@@ -398,11 +374,6 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             tagsToSave.push({ label: 'NEW ARRIVAL', bg: '#b8860b', text: '#ffffff' });
           } else if (!isNewArrival) {
             tagsToSave = tagsToSave.filter(t => t.label?.toUpperCase() !== 'NEW ARRIVAL');
-          }
-          if (isAtelierEdition && !tagsToSave.some(t => t.label?.toUpperCase() === 'ATELIER EDITION')) {
-            tagsToSave.push({ label: 'ATELIER EDITION', bg: '#18181b', text: '#d4af37' });
-          } else if (!isAtelierEdition) {
-            tagsToSave = tagsToSave.filter(t => t.label?.toUpperCase() !== 'ATELIER EDITION');
           }
           return tagsToSave;
         })(),
@@ -472,7 +443,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         </div>
 
         {/* Category */}
-        <div className="space-y-1.5 md:col-span-1 lg:col-span-2">
+        <div className="space-y-1.5 md:col-span-1 lg:col-span-3">
           <label className="text-[14px] text-zinc-600 uppercase tracking-wide">
             Category
           </label>
@@ -488,25 +459,8 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
           </select>
         </div>
 
-        {/* Subcategory */}
-        <div className="space-y-1.5 md:col-span-1 lg:col-span-2">
-          <label className="text-[14px] text-zinc-600 uppercase tracking-wide">
-            Subcategory
-          </label>
-          <select
-            className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:border-[#c9a962] focus:ring-1 focus:ring-[#c9a962] outline-none transition-all text-sm bg-white cursor-pointer"
-            value={watch("subcategory") || ""}
-            onChange={(e) => setValue("subcategory", e.target.value, { shouldValidate: true, shouldDirty: true })}
-          >
-            <option value="">Select Subcategory</option>
-            {filteredSubcategories.map((sub) => (
-              <option key={sub.id || sub.name} value={sub.name}>{sub.name}</option>
-            ))}
-          </select>
-        </div>
-
         {/* Gender */}
-        <div className="space-y-1.5 md:col-span-1 lg:col-span-2">
+        <div className="space-y-1.5 md:col-span-1 lg:col-span-3">
           <label className="text-[14px] text-zinc-600 uppercase tracking-wide">
             Gender
           </label>
@@ -515,14 +469,14 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             value={watch("gender") || "Unisex"}
             onChange={(e) => setValue("gender", e.target.value, { shouldValidate: true, shouldDirty: true })}
           >
-            {dbGenders.map((g) => (
-              <option key={g} value={g}>{g}</option>
-            ))}
+            <option value="Unisex">Unisex</option>
+            <option value="Men">Men</option>
+            <option value="Women">Women</option>
           </select>
         </div>
 
         {/* Fragrance Family */}
-        <div className="space-y-1.5 md:col-span-1 lg:col-span-2">
+        <div className="space-y-1.5 md:col-span-1 lg:col-span-3">
           <label className="text-[14px] text-zinc-600 uppercase tracking-wide">
             Fragrance Family
           </label>
@@ -539,7 +493,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         </div>
 
         {/* Fragrance Concentration */}
-        <div className="space-y-1.5 md:col-span-1 lg:col-span-2">
+        <div className="space-y-1.5 md:col-span-1 lg:col-span-3">
           <label className="text-[14px] text-zinc-600 uppercase tracking-wide">
             Concentration
           </label>
@@ -555,11 +509,11 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
           </select>
         </div>
 
-        {/* Collection Selector */}
+        {/* Home Page Collection Selector */}
         <div className="space-y-1.5 md:col-span-1 lg:col-span-3">
           <label className="text-[14px] text-zinc-600 uppercase tracking-wide flex items-center justify-between">
-            <span>Collection</span>
-            <span className="text-[10px] text-[#b8860b] font-semibold">Select Collection</span>
+            <span>Home Page Collection</span>
+            <span className="text-[10px] text-[#b8860b] font-semibold">Admin Collection</span>
           </label>
           <select
             className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:border-[#c9a962] focus:ring-1 focus:ring-[#c9a962] outline-none transition-all text-sm bg-white cursor-pointer"
@@ -602,7 +556,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
           </select>
         </div>
 
-        {/* Featured Showcase Badges (Bestseller, New Arrivals, Atelier Editions) */}
+        {/* Featured Showcase Badges (Bestseller, New Arrivals) */}
         <div className="space-y-2 md:col-span-2 lg:col-span-6 bg-gradient-to-r from-amber-50/80 via-stone-50 to-amber-50/40 border border-[#E5D5B8] p-4 rounded-xl mt-1 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <label className="text-[13px] font-bold text-zinc-900 uppercase tracking-wide flex items-center gap-2">
@@ -614,7 +568,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
             {/* Bestseller Checkbox */}
             <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
               isBestseller
@@ -657,29 +611,6 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                 </span>
                 <span className="text-[11px] text-zinc-500 mt-0.5">
                   Display in "Recent Arrivals" showcase
-                </span>
-              </div>
-            </label>
-
-            {/* Atelier Editions Checkbox */}
-            <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
-              isAtelierEdition
-                ? 'bg-stone-900 border-zinc-900 text-white shadow-sm ring-1 ring-amber-400/30'
-                : 'bg-white border-zinc-200 hover:border-zinc-300'
-            }`}>
-              <input
-                type="checkbox"
-                checked={isAtelierEdition}
-                onChange={e => setIsAtelierEdition(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded text-zinc-900 focus:ring-zinc-900 accent-zinc-900 cursor-pointer"
-              />
-              <div className="flex flex-col">
-                <span className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${isAtelierEdition ? 'text-amber-300' : 'text-zinc-900'}`}>
-                  Atelier Edition
-                  <span className="text-[9px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">ATELIER</span>
-                </span>
-                <span className={`text-[11px] mt-0.5 ${isAtelierEdition ? 'text-stone-300' : 'text-zinc-500'}`}>
-                  Display in Atelier Editions collection
                 </span>
               </div>
             </label>

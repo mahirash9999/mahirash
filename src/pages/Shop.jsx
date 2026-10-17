@@ -201,18 +201,22 @@ const Shop = () => {
         }
 
         try {
-          const colSnap = await getDocs(collection(db, "collections"));
-          if (!colSnap.empty) {
-            const fetchedCols = colSnap.docs
-              .map(doc => doc.data())
-              .filter(c => c.is_active !== false)
-              .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
-              .map(c => c.name)
-              .filter(Boolean);
-            if (fetchedCols.length > 0) setDbCollections(fetchedCols);
+          const bannerSnap = await getDocs(collection(db, "gender_banners"));
+          const bannerCols = [];
+          if (!bannerSnap.empty) {
+            const sortedBanners = bannerSnap.docs
+              .map(doc => ({ id: doc.id, ...doc.data() }))
+              .filter(item => item.is_active !== false)
+              .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
+
+            sortedBanners.forEach(doc => {
+              const name = (doc.title || doc.name || "").trim();
+              if (name && !bannerCols.includes(name)) bannerCols.push(name);
+            });
           }
+          if (bannerCols.length > 0) setDbCollections(bannerCols);
         } catch (colErr) {
-          console.error("Error fetching collections:", colErr);
+          console.error("Error fetching home page collections:", colErr);
         }
 
         try {
@@ -317,6 +321,7 @@ const Shop = () => {
     const set = new Set(dbCollections);
     products.forEach(p => {
       if (p.collection) set.add(p.collection.trim());
+      if (p.home_page_collection) set.add(p.home_page_collection.trim());
       if (Array.isArray(p.collections)) p.collections.forEach(c => set.add(c.trim()));
     });
     return Array.from(set).filter(Boolean);
@@ -484,22 +489,37 @@ const Shop = () => {
           const normalizeCol = (str) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
           const target = normalizeCol(filters.collection);
           const pCol = normalizeCol(p.collection);
+          const pHpCol = normalizeCol(p.home_page_collection);
           const pCols = Array.isArray(p.collections) ? p.collections.map(normalizeCol) : [];
           const pCat = normalizeCol(p.category);
           const pName = normalizeCol(p.name);
           const pTag = normalizeCol(p.tag);
-          const isMatch = pCol === target || pCols.includes(target) || pCat === target || pName.includes(target) || pTag.includes(target);
+          const isMatch =
+            pCol === target ||
+            pHpCol === target ||
+            pCols.includes(target) ||
+            (pCol && (pCol.includes(target) || target.includes(pCol))) ||
+            (pHpCol && (pHpCol.includes(target) || target.includes(pHpCol))) ||
+            pCat === target ||
+            pName.includes(target) ||
+            pTag.includes(target);
           if (!isMatch) return false;
         }
 
-        // Gender
-        if (
-          filters.gender !== "All" &&
-          p.gender &&
-          p.gender.toLowerCase() !== filters.gender.toLowerCase() &&
-          p.gender !== "Unisex"
-        ) {
-          return false;
+        // Gender matching
+        if (filters.gender && filters.gender !== "All") {
+          const normFilter = filters.gender.toLowerCase().trim();
+          const pGen = (p.gender || "Unisex").toLowerCase().trim();
+          if (pGen !== "unisex") {
+            const isFilterMen = normFilter.startsWith("men") || normFilter === "male" || normFilter === "him";
+            const isFilterWomen = normFilter.startsWith("women") || normFilter === "female" || normFilter === "her";
+            const isProdMen = pGen.startsWith("men") || pGen === "male" || pGen === "him";
+            const isProdWomen = pGen.startsWith("women") || pGen === "female" || pGen === "her";
+
+            if (isFilterMen && !isProdMen) return false;
+            if (isFilterWomen && !isProdWomen) return false;
+            if (!isFilterMen && !isFilterWomen && pGen !== normFilter) return false;
+          }
         }
 
         // Price range (evaluated on the active displayed variant given active filter & sort)
