@@ -15,6 +15,7 @@ import {
 import SEOHead from "../components/SEOHead";
 import uploadToCloudinary from "../utils/cloudinary";
 import OptimizedCloudinaryImage from "../components/OptimizedCloudinaryImage";
+import { cleanPhone, isValidPhone, cleanPincode, isValidPincode, isValidName, sanitizeText } from "../utils/validation";
 
 const Account = () => {
   const { customer, customerLogout } = useCustomerAuth();   // OTP-based customer session
@@ -213,22 +214,34 @@ const Account = () => {
   // Profile fields submit
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
+    const cleanDName = sanitizeText(displayName, 60);
+    if (!cleanDName || !isValidName(cleanDName)) {
+      showToast("Please enter a valid full name (letters only, min 2 characters)", "error");
+      return;
+    }
+
+    const cleanP = cleanPhone(phone);
+    if (cleanP && !isValidPhone(cleanP)) {
+      showToast("Please enter a valid 10-digit mobile number (starts with 6, 7, 8, or 9)", "error");
+      return;
+    }
+
     setSavingProfile(true);
     try {
       if (auth.currentUser) {
-        await updateProfile(auth.currentUser, { displayName });
+        await updateProfile(auth.currentUser, { displayName: cleanDName });
       }
       // OTP customer → write to customers collection
       const docId = (customer.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_");
       await setDoc(doc(db, "customers", docId), {
-        name: displayName, phone, shortBio: bio,
+        name: cleanDName, phone: cleanP, shortBio: sanitizeText(bio, 250),
         email: customer.email,
         updatedAt: new Date()
       }, { merge: true });
       // Also update the local customer session
-      const updated = { ...JSON.parse(localStorage.getItem("pasoja_customer_session") || "{}"), name: displayName, phone };
+      const updated = { ...JSON.parse(localStorage.getItem("pasoja_customer_session") || "{}"), name: cleanDName, phone: cleanP };
       localStorage.setItem("pasoja_customer_session", JSON.stringify(updated));
-      setUserData(prev => ({ ...prev, displayName, name: displayName, phone, bio }));
+      setUserData(prev => ({ ...prev, displayName: cleanDName, name: cleanDName, phone: cleanP, bio }));
       showToast("Profile details updated successfully!");
     } catch (err) {
       showToast("Error saving profile: " + err.message);
@@ -260,7 +273,27 @@ const Account = () => {
   const handleSaveAddress = async (e) => {
     e.preventDefault();
     if (!addressForm.name || !addressForm.phone || (!addressForm.flat && !addressForm.address) || !addressForm.city || !addressForm.state || !addressForm.pincode) {
-      showToast("Please fill all required address fields");
+      showToast("Please fill all required address fields", "error");
+      return;
+    }
+
+    const cleanP = cleanPhone(addressForm.phone);
+    if (!isValidPhone(cleanP)) {
+      showToast("Please enter a valid 10-digit mobile number", "error");
+      return;
+    }
+
+    if (addressForm.alternatePhone) {
+      const cleanAlt = cleanPhone(addressForm.alternatePhone);
+      if (!isValidPhone(cleanAlt)) {
+        showToast("Alternate phone must be a valid 10-digit mobile number", "error");
+        return;
+      }
+    }
+
+    const cleanPin = cleanPincode(addressForm.pincode);
+    if (!isValidPincode(cleanPin)) {
+      showToast("Please enter a valid 6-digit delivery PIN code", "error");
       return;
     }
 
@@ -272,6 +305,9 @@ const Account = () => {
 
     const payload = {
       ...addressForm,
+      phone: cleanP,
+      alternatePhone: cleanPhone(addressForm.alternatePhone),
+      pincode: cleanPin,
       address: synthesizedAddress
     };
 
@@ -911,13 +947,15 @@ const Account = () => {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[12px]   text-zinc-500 uppercase tracking-widest">Contact Phone Number</label>
+                      <label className="text-[12px] text-zinc-500 uppercase tracking-widest">Contact Phone Number (10 digits)</label>
                       <input
-                        type="text"
+                        type="tel"
+                        maxLength={10}
+                        inputMode="numeric"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="+91 98765 43210"
-                        className="w-full px-4 py-3 bg-zinc-50 border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none transition-colors"
+                        onChange={(e) => setPhone(cleanPhone(e.target.value))}
+                        placeholder="10-digit phone number"
+                        className="w-full px-4 py-3 bg-zinc-50 border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none transition-colors font-mono"
                       />
                     </div>
                   </div>
@@ -1107,27 +1145,31 @@ const Account = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Primary Mobile Phone *</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Primary Mobile Phone (10 digits) *</label>
                         <input
                           type="tel"
+                          maxLength={10}
+                          inputMode="numeric"
                           value={addressForm.phone}
-                          onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
+                          onChange={(e) => setAddressForm({ ...addressForm, phone: cleanPhone(e.target.value) })}
                           required
-                          placeholder="+91 98765 43210"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                          placeholder="10-digit mobile number"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded font-mono"
                         />
                       </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Alternate Phone (Optional - for courier)</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Alternate Phone (Optional)</label>
                         <input
                           type="tel"
+                          maxLength={10}
+                          inputMode="numeric"
                           value={addressForm.alternatePhone || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, alternatePhone: e.target.value })}
-                          placeholder="Secondary mobile number"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                          onChange={(e) => setAddressForm({ ...addressForm, alternatePhone: cleanPhone(e.target.value) })}
+                          placeholder="Secondary 10-digit mobile"
+                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded font-mono"
                         />
                       </div>
                       <div className="space-y-1">
@@ -1191,13 +1233,14 @@ const Account = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Pincode *</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Pincode (6 digits) *</label>
                         <input
                           type="text"
                           value={addressForm.pincode}
-                          onChange={(e) => setAddressForm({ ...addressForm, pincode: e.target.value })}
+                          onChange={(e) => setAddressForm({ ...addressForm, pincode: cleanPincode(e.target.value) })}
                           required
                           maxLength={6}
+                          inputMode="numeric"
                           placeholder="6-digit Pincode"
                           className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded font-mono"
                         />

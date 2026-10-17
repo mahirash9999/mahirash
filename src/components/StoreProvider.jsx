@@ -25,7 +25,11 @@ export const StoreProvider = ({ children }) => {
     preorder_message: "Hello Mahirash! I would like to pre-order: ",
     logo_url: "",
     site_icon_url: "",
-    gemini_api_key: ""
+    gemini_api_key: "",
+    instagram_url: "https://www.instagram.com/mahirashparfumerie/",
+    facebook_url: "https://www.facebook.com/mahirashparfumerie/",
+    twitter_url: "https://x.com/MahirashParfum",
+    youtube_url: "https://www.youtube.com/@mahirashparfumerie"
   });
 
   const mergedUidsRef = useRef(new Set());

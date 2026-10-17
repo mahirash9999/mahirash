@@ -12,6 +12,7 @@ import SEOHead from "./SEOHead";
 import OptimizedCloudinaryImage from "./OptimizedCloudinaryImage";
 import { db } from "./Firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { isValidEmail } from "../utils/validation";
 
 // Steps Enum
 const STEP = {
@@ -65,8 +66,8 @@ const Login = () => {
     setError("");
     const cleanEmail = email.toLowerCase().trim();
 
-    if (!cleanEmail) {
-      setError("Please enter your email address.");
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      setError("Please enter a valid email address.");
       return;
     }
 

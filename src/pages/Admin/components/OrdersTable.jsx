@@ -80,9 +80,33 @@ const OrdersTable = ({ onRefresh }) => {
   }, []);
 
   const handleExportOrders = () => {
-    const keys = ['id', 'userEmail', 'total', 'paymentMethod', 'status', 'awbCode', 'courierName', 'shipping.name', 'shipping.phone', 'shipping.address', 'shipping.city', 'shipping.state', 'shipping.pincode'];
-    const headers = ['Order ID', 'Customer Email', 'Total Amount (INR)', 'Payment Method', 'Status', 'AWB Code', 'Courier Partner', 'Shipping Name', 'Shipping Phone', 'Shipping Address', 'Shipping City', 'Shipping State', 'Shipping Pincode'];
-    exportToCSV(orders, keys, headers, 'mahirash_orders');
+    const processedOrders = orders.map(o => {
+      const itemsSummary = Array.isArray(o.items)
+        ? o.items.map(it => `${it.name || 'Product'} (${it.size || ''}) x${it.quantity || 1}`).join('; ')
+        : '';
+      const orderDate = o.createdAt
+        ? new Date(o.createdAt.toDate ? o.createdAt.toDate() : o.createdAt).toLocaleDateString()
+        : '';
+
+      return {
+        ...o,
+        orderNumber: o.orderNumber || o.id,
+        orderDate,
+        customerName: o.shipping?.name || o.customerName || '',
+        customerPhone: o.shipping?.phone || o.customerPhone || '',
+        userEmail: o.userEmail || o.customerEmail || '',
+        shippingAddress: o.shipping?.address || '',
+        city: o.shipping?.city || '',
+        state: o.shipping?.state || '',
+        pincode: o.shipping?.pincode || '',
+        itemsSummary,
+      };
+    });
+
+    const keys = ['orderNumber', 'orderDate', 'customerName', 'userEmail', 'customerPhone', 'total', 'discount', 'paymentMethod', 'paymentStatus', 'status', 'awbCode', 'courierName', 'shippingAddress', 'city', 'state', 'pincode', 'itemsSummary'];
+    const headers = ['Order Number', 'Date', 'Customer Name', 'Email Address', 'Phone Number', 'Total Amount (INR)', 'Discount (INR)', 'Payment Method', 'Payment Status', 'Fulfillment Status', 'AWB Code', 'Courier Partner', 'Shipping Address', 'City', 'State', 'Pincode', 'Ordered Items'];
+
+    exportToCSV(processedOrders, keys, headers, 'mahirash_orders');
   };
 
   const toggleSelectAll = () => {

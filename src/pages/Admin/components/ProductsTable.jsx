@@ -148,22 +148,45 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
 
   const PRODUCT_CSV_KEYS = [
     'id', 'name', 'brand', 'category', 'subcategory', 'collection', 'gender',
-    'fragrance_family', 'fragrance_concentration', 'price', 'original_price',
-    'stock', 'stock_status', 'sizes', 'size_prices', 'rating', 'reviews_count',
-    'top_notes', 'heart_notes', 'base_notes', 'longevity', 'sillage',
-    'tags', 'image', 'images', 'description'
+    'fragrance_family', 'fragrance_concentration', 'availability', 'price', 'original_price',
+    'stock', 'stock_status', 'sizes', 'size_prices', 'is_bestseller', 'is_new_arrival', 'is_miniature',
+    'rating', 'reviews_count', 'top_notes', 'heart_notes', 'base_notes', 'longevity', 'sillage',
+    'tags', 'image', 'images', 'description',
+    'shipping_weight', 'shipping_length', 'shipping_breadth', 'shipping_height'
   ];
 
   const PRODUCT_CSV_HEADERS = [
     'Product ID', 'Product Name', 'Brand', 'Category', 'Subcategory', 'Collection', 'Gender',
-    'Fragrance Family', 'Fragrance Concentration', 'Price (INR)', 'Original Price (INR)',
-    'Stock Quantity', 'Stock Status', 'Sizes', 'Size Prices (JSON)', 'Rating', 'Reviews Count',
-    'Top Notes', 'Heart Notes', 'Base Notes', 'Longevity', 'Sillage',
-    'Tags', 'Primary Image URL', 'All Image URLs', 'Description'
+    'Fragrance Family', 'Fragrance Concentration', 'Availability', 'Price (INR)', 'Original Price (INR)',
+    'Stock Quantity', 'Stock Status', 'Sizes', 'Size Prices (JSON)', 'Is Bestseller', 'Is New Arrival', 'Is Miniature',
+    'Rating', 'Reviews Count', 'Top Notes', 'Heart Notes', 'Base Notes', 'Longevity', 'Sillage',
+    'Tags (JSON)', 'Primary Image URL', 'All Image URLs (JSON)', 'Description',
+    'Shipping Weight (kg)', 'Shipping Length (cm)', 'Shipping Breadth (cm)', 'Shipping Height (cm)'
   ];
 
   const handleExport = () => {
-    exportToCSV(products, PRODUCT_CSV_KEYS, PRODUCT_CSV_HEADERS, 'mahirash_fragrance_catalog');
+    const exportData = products.map(p => {
+      const isBs = Boolean(p.is_bestseller || (Array.isArray(p.tags) && p.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'BESTSELLER')));
+      const isNa = Boolean(p.is_new_arrival || (Array.isArray(p.tags) && p.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'NEW ARRIVAL')));
+      const isMin = Boolean(p.is_miniature || p.isMiniature);
+
+      return {
+        ...p,
+        collection: p.collection || p.home_page_collection || '',
+        availability: p.availability || p.stock_status || (p.stock > 0 ? 'In Stock' : 'Out of Stock'),
+        is_bestseller: isBs ? 'TRUE' : 'FALSE',
+        is_new_arrival: isNa ? 'TRUE' : 'FALSE',
+        is_miniature: isMin ? 'TRUE' : 'FALSE',
+        size_prices: typeof p.size_prices === 'object' ? JSON.stringify(p.size_prices) : (p.size_prices || ''),
+        tags: Array.isArray(p.tags) ? JSON.stringify(p.tags) : (p.tags || ''),
+        images: Array.isArray(p.images) ? JSON.stringify(p.images) : (p.images || ''),
+        shipping_weight: p.shipping?.weight ?? (p.shipping_weight || 0.5),
+        shipping_length: p.shipping?.length ?? (p.shipping_length || 30),
+        shipping_breadth: p.shipping?.breadth ?? (p.shipping_breadth || 20),
+        shipping_height: p.shipping?.height ?? (p.shipping_height || 5),
+      };
+    });
+    exportToCSV(exportData, PRODUCT_CSV_KEYS, PRODUCT_CSV_HEADERS, 'mahirash_fragrance_catalog');
   };
 
   const handleImportClick = () => {
@@ -250,7 +273,12 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
             ? sizePricesArr.reduce((sum, sp) => sum + (Number(sp.stock) || 0), 0)
             : stockNum;
           const autoStatus = effectiveStock === 0 ? "Out of Stock" : effectiveStock <= 5 ? "Low Stock" : "In Stock";
-          const stockStatus = row.stock_status || autoStatus;
+          const chosenAvailability = row.availability || row.stock_status || autoStatus;
+          const chosenCollection = row.collection || row.home_page_collection || "";
+
+          const isBestseller = row.is_bestseller === 'TRUE' || row.is_bestseller === 'true' || row.is_bestseller === true || row.is_bestseller === '1';
+          const isNewArrival = row.is_new_arrival === 'TRUE' || row.is_new_arrival === 'true' || row.is_new_arrival === true || row.is_new_arrival === '1';
+          const isMiniature = row.is_miniature === 'TRUE' || row.is_miniature === 'true' || row.is_miniature === true || row.is_miniature === '1';
 
           let tagsArr = [];
           if (row.tags) {
@@ -263,19 +291,29 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
             }
           }
 
+          if (isBestseller && !tagsArr.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'BESTSELLER')) {
+            tagsArr.push({ label: 'BESTSELLER', bg: '#dc2626', text: '#ffffff' });
+          }
+          if (isNewArrival && !tagsArr.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'NEW ARRIVAL')) {
+            tagsArr.push({ label: 'NEW ARRIVAL', bg: '#b8860b', text: '#ffffff' });
+          }
+
           const docData = {
             name,
             brand: row.brand || "MAHIRASH",
             category: row.category || "Extrait De Parfum",
             subcategory: row.subcategory || "",
-            collection: row.collection || "",
+            collection: chosenCollection,
+            collections: chosenCollection ? [chosenCollection] : [],
+            home_page_collection: chosenCollection,
             gender: row.gender || "Unisex",
             fragrance_family: row.fragrance_family || "",
             fragrance_concentration: row.fragrance_concentration || "",
+            availability: chosenAvailability,
+            stock_status: chosenAvailability,
             price: sizePricesArr.length > 0 ? sizePricesArr[0].price : priceNum,
             original_price: sizePricesArr.length > 0 ? sizePricesArr[0].original_price : origPriceNum,
             stock: effectiveStock,
-            stock_status: stockStatus,
             sizes: sizesStr,
             size_prices: sizePricesArr,
             rating: ratingNum,
@@ -283,12 +321,22 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
             top_notes: row.top_notes || "",
             heart_notes: row.heart_notes || "",
             base_notes: row.base_notes || "",
-            longevity: row.longevity || "",
-            sillage: row.sillage || "",
+            longevity: row.longevity || "8-12 Hours",
+            sillage: row.sillage || "Intense",
+            is_bestseller: isBestseller,
+            is_new_arrival: isNewArrival,
+            is_miniature: isMiniature,
+            is_atelier_edition: false,
             tags: tagsArr,
             image: row.image || imagesArr[0] || "",
             images: imagesArr,
-            description: row.description || ""
+            description: row.description || "",
+            shipping: {
+              weight: Math.max(0, Number(row.shipping_weight) || 0.5),
+              length: Math.max(0, Number(row.shipping_length) || 30),
+              breadth: Math.max(0, Number(row.shipping_breadth) || 20),
+              height: Math.max(0, Number(row.shipping_height) || 5)
+            }
           };
 
           let finalId = row.id;

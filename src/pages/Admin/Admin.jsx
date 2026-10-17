@@ -310,7 +310,16 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
   const handleExport = () => {
     const keys = ["id", ...fields.map(f => f.key)];
     const headers = ["ID", ...fields.map(f => f.label)];
-    exportToCSV(items, keys, headers, `mahirash_${collectionName}`);
+    const processedItems = items.map(item => {
+      const copy = { ...item };
+      fields.forEach(f => {
+        if (f.type === 'boolean') {
+          copy[f.key] = copy[f.key] === true ? 'TRUE' : 'FALSE';
+        }
+      });
+      return copy;
+    });
+    exportToCSV(processedItems, keys, headers, `mahirash_${collectionName}`);
   };
 
   const handleImport = async (e) => {

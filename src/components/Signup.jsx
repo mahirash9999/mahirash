@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import SEOHead from "./SEOHead";
 import OptimizedCloudinaryImage from "./OptimizedCloudinaryImage";
+import { isValidEmail, isValidName, sanitizeText } from "../utils/validation";
 
 const Signup = () => {
   const { user, signup, loginWithGoogle } = useAuth();
@@ -51,17 +52,34 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
-      setLoading(false);
+    const cleanName = sanitizeText(displayName, 60);
+    if (!cleanName || !isValidName(cleanName)) {
+      setError("Please enter a valid full name (letters only, min 2 characters).");
       return;
     }
 
+    const cleanEmail = email.toLowerCase().trim();
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (password.length > 64) {
+      setError("Password cannot exceed 64 characters.");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      await signup(email, password, displayName);
-      await sendWelcomeEmail(email, displayName);
+      await signup(cleanEmail, password, cleanName);
+      await sendWelcomeEmail(cleanEmail, cleanName);
       const finalPath = redirectPath.startsWith("/") ? redirectPath : "/" + redirectPath;
       navigate(finalPath);
     } catch (err) {

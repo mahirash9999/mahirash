@@ -4,6 +4,7 @@ import { auth, db } from "../components/Firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Mail, Lock, User, ArrowRight, AlertCircle, CheckCircle2, ShieldCheck, Eye, EyeOff, Sparkles } from "lucide-react";
+import { isValidEmail, isValidName, sanitizeText } from "../utils/validation";
 
 const AdminSignup = () => {
   const navigate = useNavigate();
@@ -20,10 +21,15 @@ const AdminSignup = () => {
     e.preventDefault();
     setError("");
 
-    const cleanEmail = email.toLowerCase().trim();
+    const cleanName = sanitizeText(name, 60);
+    if (!cleanName || !isValidName(cleanName)) {
+      setError("Please enter a valid admin full name (letters only, min 2 characters).");
+      return;
+    }
 
-    if (!name.trim()) {
-      setError("Please enter your admin full name.");
+    const cleanEmail = email.toLowerCase().trim();
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      setError("Please enter a valid email address.");
       return;
     }
 

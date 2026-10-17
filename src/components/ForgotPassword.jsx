@@ -8,6 +8,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from "./useAuth";
 import SEOHead from "./SEOHead";
 import OptimizedCloudinaryImage from "./OptimizedCloudinaryImage";
+import { isValidEmail } from "../utils/validation";
 
 const ForgotPassword = () => {
     const { resetPassword, login } = useAuth();
@@ -48,9 +49,14 @@ const ForgotPassword = () => {
     const handleSendOtp = async (e) => {
         e.preventDefault();
         setError("");
-        setLoading(true);
 
         const formattedEmail = email.toLowerCase().trim();
+        if (!formattedEmail || !isValidEmail(formattedEmail)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
+
+        setLoading(true);
 
         try {
             // 1. Verify if user email exists in Firestore

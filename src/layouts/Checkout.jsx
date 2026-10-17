@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SEOHead from "../components/SEOHead";
 import OptimizedCloudinaryImage from "../components/OptimizedCloudinaryImage";
 import { getOptimizedCloudinaryUrl } from "../utils/cloudinaryUtils";
+import { cleanPhone, isValidPhone, cleanPincode, isValidPincode, isValidEmail, isValidName, sanitizeText } from "../utils/validation";
 
 /* ─── Payment method icons (inline SVG logos) ───────────────────────────── */
 const UPIIcon = () => (
@@ -1044,7 +1045,67 @@ const Checkout = () => {
     if (items.length === 0) { showToast("Your bag is empty!", "error"); return; }
     if (invalidCartError) { showToast(invalidCartError, "error"); return; }
 
+    // 1. Validate Full Name
+    const cleanName = (formData.name || "").trim();
+    if (!cleanName || !isValidName(cleanName)) {
+      showToast("Please enter a valid full name (letters only, 2-60 characters).", "error");
+      return;
+    }
+
+    // 2. Validate Email Address
     const cleanEmail = (formData.email || "").toLowerCase().trim();
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      showToast("Please enter a valid email address.", "error");
+      return;
+    }
+
+    // 3. Validate Mobile Phone (Strict 10 digits Indian mobile)
+    const phoneVal = cleanPhone(formData.phone);
+    if (!phoneVal || !isValidPhone(phoneVal)) {
+      showToast("Please enter a valid 10-digit mobile number (starts with 6, 7, 8, or 9).", "error");
+      return;
+    }
+
+    // 4. Validate Alternate Phone (if provided)
+    if (formData.alternatePhone) {
+      const altPhoneVal = cleanPhone(formData.alternatePhone);
+      if (!isValidPhone(altPhoneVal)) {
+        showToast("Alternate phone must be a valid 10-digit mobile number.", "error");
+        return;
+      }
+    }
+
+    // 5. Validate House / Building / Flat
+    const cleanFlat = (formData.flat || "").trim();
+    if (!cleanFlat || cleanFlat.length < 2) {
+      showToast("Please provide your flat, house number, or building name.", "error");
+      return;
+    }
+
+    // 6. Validate Street / Locality
+    const cleanStreet = (formData.street || "").trim();
+    if (!cleanStreet || cleanStreet.length < 3) {
+      showToast("Please provide your street, area, or locality.", "error");
+      return;
+    }
+
+    // 7. Validate City & State
+    if (!formData.city || formData.city.trim().length < 2) {
+      showToast("Please enter your delivery city.", "error");
+      return;
+    }
+    if (!formData.state || formData.state.trim().length < 2) {
+      showToast("Please enter your delivery state.", "error");
+      return;
+    }
+
+    // 8. Validate PIN Code (Strict 6 digits)
+    const cleanPin = cleanPincode(formData.pincode);
+    if (!cleanPin || !isValidPincode(cleanPin)) {
+      showToast("Please enter a valid 6-digit delivery PIN code.", "error");
+      return;
+    }
+
     try {
       const hardcodedAdmins = ["mahirsh9999@gmail.com", "admin@mahirash.com"];
       if (hardcodedAdmins.includes(cleanEmail)) {
@@ -1052,8 +1113,8 @@ const Checkout = () => {
         return;
       }
 
-      const usersSnap = await getDocs(query(collection(db, "users"), where("email", "==", cleanEmail)));
-      const adminsSnap = await getDocs(query(collection(db, "admins"), where("email", "==", cleanEmail)));
+      await getDocs(query(collection(db, "users"), where("email", "==", cleanEmail)));
+      await getDocs(query(collection(db, "admins"), where("email", "==", cleanEmail)));
     } catch (err) {
       console.error("Email verification failed", err);
     }
@@ -1074,7 +1135,7 @@ const Checkout = () => {
           await saveOrder(response.razorpay_payment_id, "confirmed", "captured", tempPassword);
           setIsProcessing(false);
         },
-        prefill: { name: formData.name, email: formData.email, contact: formData.phone },
+        prefill: { name: cleanName, email: cleanEmail, contact: phoneVal },
         theme: { color: "#111111" },
         modal: {
           ondismiss: async () => {
@@ -1096,7 +1157,24 @@ const Checkout = () => {
     }
   };
 
-  const handleInput = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    let finalVal = value;
+
+    if (name === "phone" || name === "alternatePhone") {
+      finalVal = cleanPhone(value);
+    } else if (name === "pincode") {
+      finalVal = cleanPincode(value);
+    } else if (name === "email") {
+      finalVal = value.toLowerCase().trim();
+    } else if (name === "name") {
+      finalVal = sanitizeText(value, 60);
+    } else if (name === "flat" || name === "street" || name === "landmark") {
+      finalVal = sanitizeText(value, 150);
+    }
+
+    setFormData(prev => ({ ...prev, [name]: finalVal }));
+  };
 
   const inputCls = "w-full bg-white border border-zinc-300 rounded-lg px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-800 focus:ring-1 focus:ring-zinc-800/10 transition-all placeholder:text-zinc-400";
 
@@ -1255,14 +1333,32 @@ const Checkout = () => {
                       <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Full Name *</label>
                       <div className="relative">
                         <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                        <input type="text" name="name" required value={formData.name} onChange={handleInput} className={`${inputCls} pl-10`} placeholder="Your full name" />
+                        <input
+                          type="text"
+                          name="name"
+                          required
+                          maxLength={60}
+                          value={formData.name}
+                          onChange={handleInput}
+                          className={`${inputCls} pl-10`}
+                          placeholder="Your full name"
+                        />
                       </div>
                     </div>
                     <div>
                       <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Email Address *</label>
                       <div className="relative">
                         <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                        <input type="email" name="email" required value={formData.email} onChange={handleInput} className={`${inputCls} pl-10`} placeholder="email@example.com" />
+                        <input
+                          type="email"
+                          name="email"
+                          required
+                          maxLength={100}
+                          value={formData.email}
+                          onChange={handleInput}
+                          className={`${inputCls} pl-10`}
+                          placeholder="email@example.com"
+                        />
                       </div>
                     </div>
                   </div>
@@ -1270,18 +1366,39 @@ const Checkout = () => {
                   {/* Primary Phone & Alternate Phone */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Phone Number *</label>
+                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Phone Number (10 digits) *</label>
                       <div className="relative">
                         <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                        <input type="tel" name="phone" required value={formData.phone} onChange={handleInput} className={`${inputCls} pl-10`} placeholder="+91 98765 43210" />
+                        <input
+                          type="tel"
+                          name="phone"
+                          required
+                          maxLength={10}
+                          inputMode="numeric"
+                          value={formData.phone}
+                          onChange={handleInput}
+                          className={`${inputCls} pl-10 font-mono`}
+                          placeholder="10-digit mobile number"
+                        />
                       </div>
+                      <span className="text-[11px] text-zinc-400 mt-1 block">Indian 10-digit mobile (e.g. 9876543210)</span>
                     </div>
                     <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Alternate Phone (Optional - for courier)</label>
+                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Alternate Phone (Optional)</label>
                       <div className="relative">
                         <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                        <input type="tel" name="alternatePhone" value={formData.alternatePhone || ""} onChange={handleInput} className={`${inputCls} pl-10`} placeholder="Secondary mobile number" />
+                        <input
+                          type="tel"
+                          name="alternatePhone"
+                          maxLength={10}
+                          inputMode="numeric"
+                          value={formData.alternatePhone || ""}
+                          onChange={handleInput}
+                          className={`${inputCls} pl-10 font-mono`}
+                          placeholder="Secondary 10-digit mobile"
+                        />
                       </div>
+                      <span className="text-[11px] text-zinc-400 mt-1 block">Optional courier backup number</span>
                     </div>
                   </div>
 
@@ -1293,6 +1410,7 @@ const Checkout = () => {
                         type="text"
                         name="flat"
                         required
+                        maxLength={150}
                         value={formData.flat || ""}
                         onChange={handleInput}
                         className={inputCls}
@@ -1305,6 +1423,7 @@ const Checkout = () => {
                         type="text"
                         name="street"
                         required
+                        maxLength={150}
                         value={formData.street || ""}
                         onChange={handleInput}
                         className={inputCls}
@@ -1319,6 +1438,7 @@ const Checkout = () => {
                     <input
                       type="text"
                       name="landmark"
+                      maxLength={150}
                       value={formData.landmark || ""}
                       onChange={handleInput}
                       className={inputCls}
@@ -1332,6 +1452,7 @@ const Checkout = () => {
                         type="text"
                         name="city"
                         required
+                        maxLength={80}
                         value={formData.city}
                         onChange={(e) => handleCityChange(e.target.value)}
                         onFocus={() => { if (citySearchSuggestions.length > 0) setShowCitySuggestions(true); }}
@@ -1369,6 +1490,7 @@ const Checkout = () => {
                         type="text"
                         name="state"
                         required
+                        maxLength={80}
                         value={formData.state}
                         onChange={handleInput}
                         className={inputCls}
@@ -1377,14 +1499,16 @@ const Checkout = () => {
                     </div>
 
                     <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Pincode *</label>
+                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Pincode (6 digits) *</label>
                       <input
                         type="text"
                         name="pincode"
                         required
+                        maxLength={6}
+                        inputMode="numeric"
                         value={formData.pincode}
                         onChange={handleInput}
-                        className={inputCls}
+                        className={`${inputCls} font-mono`}
                         placeholder="e.g. 452001"
                       />
                     </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../../components/Firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { Save, Phone, Mail, MessageSquare, Image, Upload, Bot, Globe, CheckCircle2, Trash2 } from "lucide-react";
+import { Save, Phone, Mail, MessageSquare, Image, Upload, Bot, Globe, CheckCircle2, Trash2, Share2, Instagram, Facebook, Twitter, Youtube } from "lucide-react";
 import CloudinaryMediaPickerModal from "../../../components/CloudinaryMediaPickerModal";
 
 const SiteSettingsManager = () => {
@@ -15,7 +15,11 @@ const SiteSettingsManager = () => {
         preorder_message: "",
         logo_url: "",
         site_icon_url: "",
-        gemini_api_key: ""
+        gemini_api_key: "",
+        instagram_url: "",
+        facebook_url: "",
+        twitter_url: "",
+        youtube_url: ""
     });
 
     useEffect(() => {
@@ -31,7 +35,11 @@ const SiteSettingsManager = () => {
                         preorder_message: data.preorder_message || "",
                         logo_url: data.logo_url || "",
                         site_icon_url: data.site_icon_url || "",
-                        gemini_api_key: data.gemini_api_key || ""
+                        gemini_api_key: data.gemini_api_key || "",
+                        instagram_url: data.instagram_url || "",
+                        facebook_url: data.facebook_url || "",
+                        twitter_url: data.twitter_url || "",
+                        youtube_url: data.youtube_url || ""
                     });
                 }
             } catch (err) {
@@ -239,7 +247,82 @@ const SiteSettingsManager = () => {
                     </div>
                 </div>
 
-                {/* ── SECTION 3: CONTACT & PRE-ORDER TEMPLATE ── */}
+                {/* ── SECTION 3: SOCIAL MEDIA CHANNELS & HANDLES ── */}
+                <div className="border border-zinc-200/90 rounded-2xl p-5 bg-zinc-50/60 space-y-4">
+                    <div className="border-b border-zinc-200 pb-3 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <Share2 size={18} className="text-[#B8860B]" />
+                            <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-900">
+                                Social Media Links & Handles
+                            </h3>
+                        </div>
+                        <span className="text-[11px] text-zinc-500 font-medium">Controls Header & Footer Social Icons</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-zinc-200">
+                            <label className="text-[12px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
+                                <Instagram size={14} className="text-pink-600" />
+                                Instagram Profile URL
+                            </label>
+                            <input
+                                type="url"
+                                name="instagram_url"
+                                value={settings.instagram_url}
+                                onChange={handleChange}
+                                placeholder="https://www.instagram.com/mahirashparfumerie/"
+                                className="w-full px-3 py-2 rounded-lg border border-zinc-300 focus:border-[#B8860B] outline-none text-xs"
+                            />
+                        </div>
+
+                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-zinc-200">
+                            <label className="text-[12px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
+                                <Facebook size={14} className="text-blue-600" />
+                                Facebook Page URL
+                            </label>
+                            <input
+                                type="url"
+                                name="facebook_url"
+                                value={settings.facebook_url}
+                                onChange={handleChange}
+                                placeholder="https://www.facebook.com/mahirashparfumerie/"
+                                className="w-full px-3 py-2 rounded-lg border border-zinc-300 focus:border-[#B8860B] outline-none text-xs"
+                            />
+                        </div>
+
+                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-zinc-200">
+                            <label className="text-[12px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
+                                <Twitter size={14} className="text-zinc-900" />
+                                Twitter (X) Profile URL
+                            </label>
+                            <input
+                                type="url"
+                                name="twitter_url"
+                                value={settings.twitter_url}
+                                onChange={handleChange}
+                                placeholder="https://x.com/MahirashParfum"
+                                className="w-full px-3 py-2 rounded-lg border border-zinc-300 focus:border-[#B8860B] outline-none text-xs"
+                            />
+                        </div>
+
+                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-zinc-200">
+                            <label className="text-[12px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
+                                <Youtube size={14} className="text-red-600" />
+                                YouTube Channel URL (Optional)
+                            </label>
+                            <input
+                                type="url"
+                                name="youtube_url"
+                                value={settings.youtube_url}
+                                onChange={handleChange}
+                                placeholder="https://www.youtube.com/@mahirashparfumerie"
+                                className="w-full px-3 py-2 rounded-lg border border-zinc-300 focus:border-[#B8860B] outline-none text-xs"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* ── SECTION 4: CONTACT & PRE-ORDER TEMPLATE ── */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                         <label className="text-[13px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">

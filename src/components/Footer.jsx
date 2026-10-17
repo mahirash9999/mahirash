@@ -66,7 +66,7 @@ const Footer = () => {
           <div className="max-w-xl">
             <Link to="/" className="inline-flex flex-col mb-2">
               <img
-                src="/logom.webp"
+                src={siteSettings?.logo_url || "/logom.webp"}
                 alt="MAHIRASH"
                 className="h-8 md:h-10 w-auto object-contain brightness-0 invert mb-1"
               />
@@ -80,10 +80,10 @@ const Footer = () => {
           </div>
           <div className="flex items-center gap-3">
             {[
-              { icon: Instagram, url: 'https://www.instagram.com/mahirashparfumerie/', label: 'Instagram' },
-              { icon: Facebook, url: 'https://www.facebook.com/mahirashparfumerie/', label: 'Facebook' },
-              { icon: Youtube, url: 'https://www.youtube.com/@mahirashparfumerie', label: 'YouTube' },
-              { icon: Twitter, url: 'https://x.com/MahirashParfum', label: 'Twitter' }
+              { icon: Instagram, url: siteSettings?.instagram_url || 'https://www.instagram.com/mahirashparfumerie/', label: 'Instagram' },
+              { icon: Facebook, url: siteSettings?.facebook_url || 'https://www.facebook.com/mahirashparfumerie/', label: 'Facebook' },
+              { icon: Youtube, url: siteSettings?.youtube_url || 'https://www.youtube.com/@mahirashparfumerie', label: 'YouTube' },
+              { icon: Twitter, url: siteSettings?.twitter_url || 'https://x.com/MahirashParfum', label: 'Twitter' }
             ].map(({ icon: Icon, url, label }, i) => (
               <a
                 key={i}

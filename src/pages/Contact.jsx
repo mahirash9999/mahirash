@@ -1,23 +1,106 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, ArrowUpRight, X, CheckCircle, Clock, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, ArrowUpRight, X, CheckCircle, Clock, MessageSquare, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PageHeader from '../components/Home/PageHeader';
 import SEOHead from '../components/SEOHead';
+import { db } from '../components/Firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { useStore } from '../components/StoreProvider';
+import { cleanPhone, isValidPhone, isValidEmail, isValidName, sanitizeMessage, sanitizeText } from '../utils/validation';
 
 const Contact = () => {
+  const { siteSettings } = useStore();
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [activeChannel, setActiveChannel] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => setFormSubmitted(false), 5000);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "Order Inquiry",
+    message: ""
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    let finalVal = value;
+    if (name === "phone") {
+      finalVal = cleanPhone(value);
+    } else if (name === "email") {
+      finalVal = value.toLowerCase().trim();
+    } else if (name === "name") {
+      finalVal = sanitizeText(value, 60);
+    }
+    setFormData(prev => ({ ...prev, [name]: finalVal }));
   };
 
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    const cleanName = formData.name.trim();
+    if (!cleanName || !isValidName(cleanName)) {
+      setError("Please enter a valid full name (letters only, min 2 characters).");
+      return;
+    }
+
+    const cleanEmail = formData.email.toLowerCase().trim();
+    if (!cleanEmail || !isValidEmail(cleanEmail)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    const phoneVal = cleanPhone(formData.phone);
+    if (!phoneVal || !isValidPhone(phoneVal)) {
+      setError("Please enter a valid 10-digit mobile number (starting with 6, 7, 8, or 9).");
+      return;
+    }
+
+    const cleanMsg = sanitizeMessage(formData.message);
+    if (!cleanMsg || cleanMsg.length < 10) {
+      setError("Please provide a message with at least 10 characters.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await addDoc(collection(db, "inquiries"), {
+        name: cleanName,
+        email: cleanEmail,
+        phone: phoneVal,
+        subject: formData.subject,
+        message: cleanMsg,
+        status: "unread",
+        createdAt: serverTimestamp()
+      });
+
+      setFormSubmitted(true);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "Order Inquiry",
+        message: ""
+      });
+      setTimeout(() => setFormSubmitted(false), 6000);
+    } catch (err) {
+      console.error("Inquiry submission failed:", err);
+      setError("Could not submit your message. Please try again or reach us directly via WhatsApp.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const displayPhone = siteSettings?.phone || "+91 8959041514";
+  const rawNumber = siteSettings?.whatsapp_number || "8959041514";
+  const displayEmail = siteSettings?.email || "care@mahirash.com";
+
   const communicationChannels = [
-    { icon: Mail, label: 'Email Us', val: 'mahirash.help@gmail.com', href: 'mailto:mahirash.help@gmail.com', desc: 'We reply within 24 hours' },
-    { icon: Phone, label: 'Call Us', val: '+91 8959041514', href: 'tel:+918959041514', desc: 'Mon–Sat, 10am – 7pm IST' },
-    { icon: MapPin, label: 'Online Store', val: 'Worldwide Shipping', href: '#', desc: 'Completely Online & Globally Accessible' }
+    { icon: Mail, label: 'Email Concierge', val: displayEmail, href: `mailto:${displayEmail}`, desc: 'Personal response within 24 hours' },
+    { icon: Phone, label: 'Concierge Direct', val: displayPhone, href: `tel:${rawNumber}`, desc: 'Mon–Sat, 10:00 AM – 7:00 PM IST' },
+    { icon: MapPin, label: 'Atelier Shipping', val: 'Express Pan-India Delivery', href: '/shop', desc: 'Securely packaged in royal presentation boxes' }
   ];
 
   const fadeUp = {
@@ -31,7 +114,7 @@ const Contact = () => {
     <div className="min-h-screen bg-[#f5f5f5]">
       <SEOHead
         title="Contact Us | Mahirash Customer Support"
-        description="Have questions or need support? Contact Mahirash official support at mahirash.help@gmail.com or call +91 8959041514. Worldwide online store."
+        description="Have questions or need support? Contact Mahirash official support at care@mahirash.com or call our concierge. Worldwide online store."
         url="https://mahirash.com/contact"
         keywords="Mahirash contact, Mahirash customer care, Mahirash email, Mahirash phone number, mahirash.com help"
       />
@@ -46,11 +129,14 @@ const Contact = () => {
         {formSubmitted && (
           <motion.div
             initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 bg-black text-white px-5 py-3.5 shadow-2xl flex items-center gap-3"
+            className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 bg-black text-white px-6 py-4 shadow-2xl flex items-center gap-3 border border-[#B8860B]"
           >
-            <CheckCircle size={14} />
-            <p className="text-[14px] font-black uppercase tracking-wider">Message sent! We'll respond shortly.</p>
-            <button onClick={() => setFormSubmitted(false)} className="opacity-40 hover:opacity-100 ml-1"><X size={13} /></button>
+            <CheckCircle size={18} className="text-[#B8860B]" />
+            <div>
+              <p className="text-[13px] font-bold uppercase tracking-wider text-white">Message Dispatched!</p>
+              <p className="text-[11px] text-zinc-300">Our fragrance concierge will contact you within 24 hours.</p>
+            </div>
+            <button onClick={() => setFormSubmitted(false)} className="opacity-60 hover:opacity-100 ml-3 cursor-pointer"><X size={15} /></button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -61,10 +147,12 @@ const Contact = () => {
           {/* LEFT: Channels */}
           <motion.div {...fadeUp} className="lg:col-span-5 space-y-7">
             <div>
-              <span className="text-[12px]   tracking-[0.3em] uppercase text-zinc-500 block mb-4">Reach Out</span>
-              <h2 className="text-3xl sm:text-4xl font-light text-zinc-900 tracking-widest leading-[1.05] uppercase">We're Here<br />to Help</h2>
+              <span className="text-[12px] tracking-[0.3em] uppercase text-zinc-500 block mb-4">Reach Out</span>
+              <h2 className="text-3xl sm:text-4xl font-light text-zinc-900 tracking-widest leading-[1.05] uppercase">
+                We're Here<br />to Help
+              </h2>
               <p className="text-[14px] text-zinc-600 mt-4 leading-relaxed max-w-sm">
-                Whether you have a question about sizing, need styling advice, or want to discuss a bulk order — our team is ready.
+                Whether you have a question about fragrance notes, need bespoke selection advice, or want to discuss a custom order — our concierge team is at your service.
               </p>
             </div>
 
@@ -84,7 +172,7 @@ const Contact = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-0.5">{item.label}</p>
-                      <p className="text-[15px]   text-zinc-900 truncate">{item.val}</p>
+                      <p className="text-[15px] text-zinc-900 truncate">{item.val}</p>
                       <p className="text-[12px] text-zinc-500 mt-0.5">{item.desc}</p>
                     </div>
                     <ArrowUpRight size={15} className={`text-zinc-400 transition-all duration-300 shrink-0 ${activeChannel === i ? 'rotate-45 text-black' : ''}`} />
@@ -96,7 +184,7 @@ const Contact = () => {
             <div className="flex items-start gap-3 p-4 bg-white border border-zinc-200 shadow-sm">
               <Clock size={14} className="text-zinc-500 shrink-0 mt-0.5" />
               <div>
-                <p className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-1">Business Hours</p>
+                <p className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-1">Concierge Hours</p>
                 <p className="text-[14px] text-zinc-700 font-medium">Monday – Saturday: 10:00 AM – 7:00 PM IST</p>
                 <p className="text-[14px] text-zinc-500">Sunday: Closed</p>
               </div>
@@ -106,54 +194,114 @@ const Contact = () => {
           {/* RIGHT: Form */}
           <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 }} className="lg:col-span-7">
             <div className="bg-white border border-zinc-200 p-6 sm:p-8 md:p-10 shadow-sm">
-              <div className="flex items-center gap-2 mb-7">
-                <MessageSquare size={14} className="text-zinc-400" />
-                <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-zinc-500">Send a Message</h3>
+              <div className="flex items-center justify-between gap-2 mb-6">
+                <div className="flex items-center gap-2">
+                  <MessageSquare size={14} className="text-[#B8860B]" />
+                  <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-zinc-700">Send an Inquiry</h3>
+                </div>
+                <span className="text-[11px] text-zinc-400 uppercase font-mono tracking-wider">* All fields required</span>
               </div>
+
+              {error && (
+                <div className="mb-5 p-3.5 bg-red-50 border border-red-200 flex items-center gap-2.5 text-red-700 text-xs font-medium">
+                  <AlertCircle size={15} className="shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
 
               <form className="space-y-4" onSubmit={handleFormSubmit}>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Full Name</label>
-                    <input type="text" required
-                      className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 transition-colors placeholder:text-zinc-400"
-                      placeholder="Your name"
+                    <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Full Name *</label>
+                    <input
+                      type="text"
+                      name="name"
+                      required
+                      maxLength={60}
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-black transition-colors placeholder:text-zinc-400"
+                      placeholder="Your full name"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Email Address</label>
-                    <input type="email" required
-                      className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 transition-colors placeholder:text-zinc-400"
+                    <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Email Address *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      maxLength={100}
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-black transition-colors placeholder:text-zinc-400"
                       placeholder="email@example.com"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Subject</label>
-                  <select className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 transition-colors appearance-none cursor-pointer">
-                    <option>Order Inquiry</option>
-                    <option>Product Question</option>
-                    <option>Sizing Help</option>
-                    <option>Returns & Exchanges</option>
-                    <option>Wholesale / B2B</option>
-                    <option>General Inquiry</option>
-                  </select>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Mobile Phone (10 digits) *</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      maxLength={10}
+                      inputMode="numeric"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-black transition-colors placeholder:text-zinc-400 font-mono"
+                      placeholder="10-digit phone number"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Subject *</label>
+                    <select
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-black transition-colors appearance-none cursor-pointer"
+                    >
+                      <option>Order Inquiry</option>
+                      <option>Fragrance Consultation</option>
+                      <option>Product Question</option>
+                      <option>Pre-Order Request</option>
+                      <option>Wholesale / B2B</option>
+                      <option>General Inquiry</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Your Message</label>
-                  <textarea rows="5" required
-                    className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 transition-colors resize-none placeholder:text-zinc-400"
-                    placeholder="Tell us how we can help..."
+                  <div className="flex items-center justify-between">
+                    <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Your Message *</label>
+                    <span className="text-[10px] text-zinc-400 font-mono">{formData.message.length}/1000</span>
+                  </div>
+                  <textarea
+                    rows="5"
+                    name="message"
+                    required
+                    maxLength={1000}
+                    value={formData.message}
+                    onChange={(e) => setFormData(p => ({ ...p, message: e.target.value }))}
+                    className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-black transition-colors resize-none placeholder:text-zinc-400"
+                    placeholder="Tell us how our fragrance team can assist you..."
                   ></textarea>
                 </div>
 
-                <button type="submit"
-                  className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-black text-[12px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2.5 group"
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-4 bg-black hover:bg-[#B8860B] text-white font-black text-[12px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2.5 group cursor-pointer disabled:opacity-50"
                 >
-                  <Send size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                  Send Message
+                  {loading ? (
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <Send size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
+                      Send Inquiry
+                    </>
+                  )}
                 </button>
               </form>
             </div>

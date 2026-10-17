@@ -410,7 +410,7 @@ const Header = () => {
             <div className="hidden lg:flex items-center gap-6 justify-end">
               <div className="flex items-center gap-3.5">
                 <a
-                  href="https://www.instagram.com/mahirashparfumerie/"
+                  href={siteSettings?.instagram_url || "https://www.instagram.com/mahirashparfumerie/"}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
@@ -420,7 +420,7 @@ const Header = () => {
                   <Instagram size={17} strokeWidth={1.8} />
                 </a>
                 <a
-                  href="https://www.facebook.com/mahirashparfumerie/"
+                  href={siteSettings?.facebook_url || "https://www.facebook.com/mahirashparfumerie/"}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
@@ -430,7 +430,7 @@ const Header = () => {
                   <Facebook size={17} strokeWidth={1.8} />
                 </a>
                 <a
-                  href="https://x.com/MahirashParfum"
+                  href={siteSettings?.twitter_url || "https://x.com/MahirashParfum"}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Twitter"
@@ -869,7 +869,7 @@ const Header = () => {
                 {/* Mobile Drawer Social Links */}
                 <div className="flex items-center justify-center gap-4 pt-4 border-t border-zinc-800/80">
                   <a
-                    href="https://www.instagram.com/mahirashparfumerie/"
+                    href={siteSettings?.instagram_url || "https://www.instagram.com/mahirashparfumerie/"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#c9a962] hover:border-[#c9a962] transition-colors"
@@ -878,7 +878,7 @@ const Header = () => {
                     <Instagram size={16} />
                   </a>
                   <a
-                    href="https://www.facebook.com/mahirashparfumerie/"
+                    href={siteSettings?.facebook_url || "https://www.facebook.com/mahirashparfumerie/"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#c9a962] hover:border-[#c9a962] transition-colors"
@@ -887,7 +887,7 @@ const Header = () => {
                     <Facebook size={16} />
                   </a>
                   <a
-                    href="https://x.com/MahirashParfum"
+                    href={siteSettings?.twitter_url || "https://x.com/MahirashParfum"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#c9a962] hover:border-[#c9a962] transition-colors"
