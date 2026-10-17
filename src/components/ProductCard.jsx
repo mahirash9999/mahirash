@@ -343,7 +343,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                 {/* Out of Stock Overlay */}
                 {isOutOfStock && (
                     <div className="absolute inset-0 z-20 bg-black/60 backdrop-blur-xs flex items-center justify-center">
-                        <span className="bg-white text-zinc-900 border border-[#E5D5B8] font-extrabold uppercase text-[12px] tracking-[0.2em] px-3.5 py-1.5 rounded-full shadow-sm">
+                        <span className="bg-white text-zinc-900 border border-[#E5D5B8] font-bold uppercase text-[12px] tracking-[0.2em] px-3.5 py-1.5 rounded-full shadow-sm">
                             Out of Stock
                         </span>
                     </div>
@@ -367,7 +367,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                             const bg = isObj ? tagItem.bg || "#000" : "#000";
                             const color = isObj ? tagItem.text || "#fff" : "#fff";
                             return (
-                                <span key={tIdx} style={{ backgroundColor: bg, color: color }} className="font-extrabold w-max uppercase text-[12px] tracking-[0.18em] px-2.5 py-1 shadow-sm rounded-sm">
+                                <span key={tIdx} style={{ backgroundColor: bg, color: color }} className="font-bold w-max uppercase text-[12px] tracking-[0.18em] px-2.5 py-1 shadow-sm rounded-sm">
                                     {text}
                                 </span>
                             );
@@ -395,7 +395,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                         <button
                             type="button"
                             onClick={(e) => handleAction(e, 'notify')}
-                            className={`w-full h-full text-[12px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
+                            className={`w-full h-full text-[12px] tracking-[0.25em] font-bold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
                         >
                             <Bell size={13} />
                             NOTIFY ME
@@ -404,7 +404,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                         <button
                             type="button"
                             onClick={(e) => handleAction(e, 'preorder')}
-                            className={`w-full h-full text-[12px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#B8860B] text-white hover:brightness-110 shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
+                            className={`w-full h-full text-[12px] tracking-[0.25em] font-bold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#B8860B] text-white hover:brightness-110 shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
                         >
                             <Clock size={13} />
                             PRE-ORDER NOW
@@ -413,7 +413,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                         <button
                             type="button"
                             onClick={(e) => handleAction(e, 'cart')}
-                            className={`w-full h-full text-[12px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
+                            className={`w-full h-full text-[12px] tracking-[0.25em] font-bold uppercase transition-all duration-300 flex items-center justify-center bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
                         >
                             {isInCart ? 'IN BAG' : 'ADD TO CART'}
                         </button>
@@ -422,12 +422,12 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
             </div>
 
             {/* Info Area */}
-            <div className="pt-4 pb-5 px-4 flex flex-col text-left bg-white">
+            <div className="pt-3 sm:pt-4 pb-3.5 sm:pb-5 px-3 sm:px-4 flex flex-col text-left bg-white">
                 <div className="flex flex-col gap-0.5 mb-1.5">
-                    <span className="text-[#B8860B] text-[12px] font-extrabold uppercase tracking-[0.2em]">{product.brand || 'MAHIRASH'}</span>
-                    <span className="text-zinc-500 text-[12px] font-semibold uppercase tracking-[0.25em]">{product.category || 'EXTRAIT DE PARFUM'}</span>
+                    <span className="text-[#B8860B] text-[10.5px] sm:text-[12px] font-bold uppercase tracking-[0.2em]">{product.brand || 'MAHIRASH'}</span>
+                    <span className="text-zinc-500 text-[10.5px] sm:text-[12px] font-semibold uppercase tracking-[0.25em]">{product.category || 'EXTRAIT DE PARFUM'}</span>
                 </div>
-                <h3 className="text-[14px] md:text-sm font-semibold text-[#0D0D0D] uppercase tracking-wider line-clamp-1 leading-snug mb-2 group-hover:text-[#B8860B] transition-colors">
+                <h3 className="text-[13px] sm:text-[14px] md:text-sm font-semibold text-[#0D0D0D] uppercase tracking-wider line-clamp-1 leading-snug mb-2 group-hover:text-[#B8860B] transition-colors">
                     {product.name}
                 </h3>
 
@@ -473,7 +473,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                         ₹{Number(displayPrice).toLocaleString('en-IN')}
                     </span>
                     {savingsPercent > 0 && (
-                        <span className="text-[11px] font-bold text-[#e53e3e]">-{savingsPercent}%</span>
+                        <span className="text-[12px] font-bold text-[#e53e3e]">-{savingsPercent}%</span>
                     )}
                     {activeVariant?.size && (
                         <span className="text-[12px] font-medium text-zinc-400 ml-auto">

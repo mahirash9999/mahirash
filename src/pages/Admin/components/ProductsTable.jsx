@@ -486,7 +486,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
       <div className="overflow-x-auto scrollbar-thin">
         <table className="w-full min-w-[860px] text-left text-sm">
           <thead className="bg-zinc-100/80 border-b border-zinc-200">
-            <tr className="text-[11px] text-zinc-600 uppercase tracking-wider font-semibold">
+            <tr className="text-[12px] text-zinc-600 uppercase tracking-wider font-semibold">
               <th className="px-5 py-3.5 w-10">
                 <input
                   type="checkbox"

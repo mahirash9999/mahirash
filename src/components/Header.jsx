@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import {
   User, Search, Menu, X, Heart, ArrowRight, ShoppingBag,
   ChevronDown, Compass, HelpCircle, Tag, Sparkles, MapPin,
-  ShieldCheck, Award, ExternalLink
+  ShieldCheck, Award, ExternalLink, Instagram, Facebook, Twitter
 } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from './useAuth';
@@ -111,7 +111,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { cart, wishlist } = useStore();
+  const { cart, wishlist, siteSettings } = useStore();
   const { scrollY } = useScroll();
 
   // Scroll listener for sticky styles & mobile search bar toggling
@@ -261,8 +261,6 @@ const Header = () => {
   const MAIN_NAV_ITEMS = [
     { id: 'shop', name: 'Shop All', path: '/shop', type: 'link', position: 'left' },
     { id: 'collections', name: 'Collections', type: 'dropdown', position: 'left' },
-    { id: 'story', name: 'Our Story', path: '/about', type: 'link', position: 'right' },
-    { id: 'contact', name: 'Contact', path: '/contact', type: 'link', position: 'right' },
   ];
 
   const leftNavItems = MAIN_NAV_ITEMS.filter(item => item.position === 'left');
@@ -270,12 +268,12 @@ const Header = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 w-full z-[100] flex flex-col pointer-events-auto font-['Inter',sans-serif]">
+      <header className="fixed top-0 left-0 w-full z-[100] flex flex-col pointer-events-auto font-sans">
 
         {/* ── ANNOUNCEMENT TICKER BAR (Active on both Desktop and Mobile) ── */}
         <motion.div
           style={{ height: topbarHeight, opacity: topbarOpacity }}
-          className="bg-[#0b0b0b] text-[#e5d5ab] text-[9.5px] sm:text-[10.5px] font-semibold tracking-[0.22em] uppercase overflow-hidden flex items-center border-b border-[#c9a962]/20"
+          className="bg-[#0b0b0b] text-[#e5d5ab] text-[12px] sm:text-[10.5px] font-semibold tracking-[0.22em] uppercase overflow-hidden flex items-center border-b border-[#c9a962]/20"
         >
           <motion.div
             animate={{ x: ['0%', '-50%'] }}
@@ -308,7 +306,7 @@ const Header = () => {
                     <Link
                       key={item.id}
                       to={item.path}
-                      className={`relative text-[11px] font-semibold uppercase tracking-[0.22em] transition-colors duration-300 py-1 group ${location.pathname === item.path && !location.search ? 'text-black' : 'text-zinc-600 hover:text-black'
+                      className={`relative text-[12px] font-semibold uppercase tracking-[0.22em] transition-colors duration-300 py-1 group ${location.pathname === item.path && !location.search ? 'text-black' : 'text-zinc-600 hover:text-black'
                         }`}
                     >
                       {item.name}
@@ -329,7 +327,7 @@ const Header = () => {
                       <button
                         type="button"
                         onClick={() => navigate('/shop')}
-                        className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] transition-colors duration-300 group cursor-pointer ${location.search.includes('category=') || isCollectionsDropdownOpen ? 'text-black' : 'text-zinc-600 hover:text-black'
+                        className={`flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.22em] transition-colors duration-300 group cursor-pointer ${location.search.includes('category=') || isCollectionsDropdownOpen ? 'text-black' : 'text-zinc-600 hover:text-black'
                           }`}
                       >
                         <span>{item.name}</span>
@@ -353,7 +351,7 @@ const Header = () => {
                               <button
                                 type="button"
                                 onClick={() => handleCollectionSelect('All')}
-                                className="w-full text-left px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#c9a962] hover:bg-zinc-50 transition-colors border-b border-zinc-100 mb-1.5 flex items-center justify-between group"
+                                className="w-full text-left px-3.5 py-2.5 text-[12px] font-bold uppercase tracking-[0.2em] text-[#c9a962] hover:bg-zinc-50 transition-colors border-b border-zinc-100 mb-1.5 flex items-center justify-between group"
                               >
                                 <span className="flex items-center gap-2">
                                   <Sparkles size={13} className="text-[#c9a962]" />
@@ -401,27 +399,47 @@ const Header = () => {
             <div className="flex justify-center">
               <Link to="/" className="flex flex-col items-center group py-0.5">
                 <img
-                  src="/logom.webp"
+                  src={siteSettings?.logo_url || "/logom.webp"}
                   alt="MAHIRASH"
                   className="h-8 sm:h-9 md:h-10 w-auto object-contain brightness-0 group-hover:opacity-85 transition-opacity"
                 />
-
               </Link>
             </div>
 
-            {/* Right Desktop Nav Links & Icons */}
-            <div className="hidden lg:flex items-center gap-8 justify-end">
-              {rightNavItems.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className="relative text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-600 hover:text-black transition-colors duration-300 group py-1"
+            {/* Right Desktop Nav: Social Icons & Action Controls */}
+            <div className="hidden lg:flex items-center gap-6 justify-end">
+              <div className="flex items-center gap-3.5">
+                <a
+                  href="https://www.instagram.com/mahirashparfumerie/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  title="Follow us on Instagram"
+                  className="p-1 text-zinc-600 hover:text-[#B8860B] hover:scale-110 transition-all duration-300"
                 >
-                  {link.name}
-                  <span className={`absolute bottom-0 left-0 h-[1.5px] bg-[#c9a962] transition-all duration-300 ${location.pathname === link.path ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`} />
-                </Link>
-              ))}
+                  <Instagram size={17} strokeWidth={1.8} />
+                </a>
+                <a
+                  href="https://www.facebook.com/mahirashparfumerie/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Facebook"
+                  title="Follow us on Facebook"
+                  className="p-1 text-zinc-600 hover:text-[#B8860B] hover:scale-110 transition-all duration-300"
+                >
+                  <Facebook size={17} strokeWidth={1.8} />
+                </a>
+                <a
+                  href="https://x.com/MahirashParfum"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Twitter"
+                  title="Follow us on Twitter"
+                  className="p-1 text-zinc-600 hover:text-[#B8860B] hover:scale-110 transition-all duration-300"
+                >
+                  <Twitter size={17} strokeWidth={1.8} />
+                </a>
+              </div>
 
               {/* Action Icons */}
               <div className="flex items-center gap-2.5 ml-2 border-l border-zinc-200/80 pl-6">
@@ -513,7 +531,7 @@ const Header = () => {
           className="overflow-hidden block md:hidden bg-[#fbf9f5] border-b border-zinc-200/80 w-full"
         >
           {/* Top Line: Pincode Checker */}
-          <div className="px-4 pt-2.5 pb-1 text-[11px] text-zinc-700 flex items-center justify-between border-b border-zinc-200/50">
+          <div className="px-4 pt-2.5 pb-1 text-[12px] text-zinc-700 flex items-center justify-between border-b border-zinc-200/50">
             <div className="flex items-center gap-1.5">
               <MapPin size={12} className="text-[#c9a962]" />
               <span className="font-medium text-zinc-800">Enter Pincode</span>
@@ -529,7 +547,7 @@ const Header = () => {
                 check availability
               </button>
             </div>
-            <span className="text-[9.5px] uppercase tracking-widest text-[#c9a962] font-bold">EXPRESS</span>
+            <span className="text-[12px] uppercase tracking-widest text-[#c9a962] font-bold">EXPRESS</span>
           </div>
 
           <div className="px-4 pb-3 pt-2">
@@ -563,14 +581,14 @@ const Header = () => {
                 <div className="flex md:hidden items-center justify-between border-b border-zinc-200 pb-3">
                   <div className="flex items-center gap-2">
                     <Sparkles size={14} className="text-[#c9a962]" />
-                    <span className="text-[11px] uppercase tracking-[0.2em] text-[#c9a962] font-semibold">
+                    <span className="text-[12px] uppercase tracking-[0.2em] text-[#c9a962] font-semibold">
                       {searchQuery.trim() ? 'Search Results' : 'Explore Perfumerie'}
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsSearchActive(false)}
-                    className="text-[11px] uppercase tracking-[0.15em] text-zinc-500 hover:text-black transition-colors flex items-center gap-1 font-semibold"
+                    className="text-[12px] uppercase tracking-[0.15em] text-zinc-500 hover:text-black transition-colors flex items-center gap-1 font-semibold"
                   >
                     <span>Close</span>
                     <X size={15} />
@@ -607,7 +625,7 @@ const Header = () => {
                   <button
                     type="button"
                     onClick={() => setIsSearchActive(false)}
-                    className="text-[11px] uppercase tracking-[0.2em] text-zinc-500 hover:text-black font-semibold shrink-0 transition-colors pl-3"
+                    className="text-[12px] uppercase tracking-[0.2em] text-zinc-500 hover:text-black font-semibold shrink-0 transition-colors pl-3"
                   >
                     Close
                   </button>
@@ -626,7 +644,7 @@ const Header = () => {
                           key={tag}
                           type="button"
                           onClick={() => handleQuickTagClick(tag)}
-                          className="px-4 py-2 bg-zinc-50 border border-zinc-200 hover:border-[#c9a962] text-zinc-700 hover:text-black text-[11px] uppercase tracking-[0.15em] transition-all hover:shadow-sm"
+                          className="px-4 py-2 bg-zinc-50 border border-zinc-200 hover:border-[#c9a962] text-zinc-700 hover:text-black text-[12px] uppercase tracking-[0.15em] transition-all hover:shadow-sm"
                         >
                           {tag}
                         </button>
@@ -717,13 +735,13 @@ const Header = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: '-100%' }}
               transition={{ duration: 0.45, ease: easing }}
-              className="fixed inset-0 bg-[#0d0d0d] text-white z-[200] flex flex-col font-['Inter',sans-serif]"
+              className="fixed inset-0 bg-[#0d0d0d] text-white z-[200] flex flex-col font-sans"
             >
               {/* Drawer Top Header */}
               <div className="w-full px-6 h-[76px] flex items-center justify-between border-b border-zinc-800/80 shrink-0">
                 <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="flex flex-col">
                   <img
-                    src="/logom.webp"
+                    src={siteSettings?.logo_url || "/logom.webp"}
                     alt="MAHIRASH"
                     className="h-7 sm:h-8 w-auto object-contain brightness-0 invert"
                   />
@@ -742,7 +760,7 @@ const Header = () => {
 
               {/* Drawer Scrollable Navigation */}
               <div className="px-8 pt-8 flex-1 overflow-y-auto pb-32 space-y-6">
-                <div className="text-[9.5px] uppercase tracking-[0.3em] text-[#c9a962] font-semibold mb-2">
+                <div className="text-[12px] uppercase tracking-[0.3em] text-[#c9a962] font-semibold mb-2">
                   HAUTE PERFUMERIE NAVIGATION
                 </div>
 
@@ -821,7 +839,7 @@ const Header = () => {
 
                 {/* Account & Care Links */}
                 <div className="pt-6 space-y-4">
-                  <div className="text-[9.5px] uppercase tracking-[0.3em] text-[#c9a962] font-semibold mb-2">
+                  <div className="text-[12px] uppercase tracking-[0.3em] text-[#c9a962] font-semibold mb-2">
                     SUPPORT & PRIVILEGES
                   </div>
 
@@ -845,7 +863,38 @@ const Header = () => {
                 <div className="p-4 bg-zinc-900/80 border border-[#c9a962]/20 text-center space-y-1 rounded-none mt-6">
                   <Sparkles size={14} className="text-[#c9a962] mx-auto mb-1" />
                   <p className="text-[12px] uppercase tracking-[0.25em] text-[#c9a962] font-semibold">MAHIRASH GUARANTEE</p>
-                  <p className="text-[11px] text-zinc-400 font-serif italic">"Crafted with rare botanical essences and fine artisanal extraits."</p>
+                  <p className="text-[12px] text-zinc-400 font-serif italic">"Crafted with rare botanical essences and fine artisanal extraits."</p>
+                </div>
+
+                {/* Mobile Drawer Social Links */}
+                <div className="flex items-center justify-center gap-4 pt-4 border-t border-zinc-800/80">
+                  <a
+                    href="https://www.instagram.com/mahirashparfumerie/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#c9a962] hover:border-[#c9a962] transition-colors"
+                    aria-label="Instagram"
+                  >
+                    <Instagram size={16} />
+                  </a>
+                  <a
+                    href="https://www.facebook.com/mahirashparfumerie/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#c9a962] hover:border-[#c9a962] transition-colors"
+                    aria-label="Facebook"
+                  >
+                    <Facebook size={16} />
+                  </a>
+                  <a
+                    href="https://x.com/MahirashParfum"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#c9a962] hover:border-[#c9a962] transition-colors"
+                    aria-label="Twitter"
+                  >
+                    <Twitter size={16} />
+                  </a>
                 </div>
 
               </div>

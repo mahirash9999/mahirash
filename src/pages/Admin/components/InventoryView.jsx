@@ -569,7 +569,7 @@ const InventoryView = () => {
                               const vStockNum = Number(sp.stock) || 0;
                               return (
                                 <div key={vIdx} className="flex items-center justify-between gap-3 bg-zinc-50 border border-zinc-200/80 px-2.5 py-1.5 rounded-lg text-[14px]">
-                                  <span className="font-extrabold uppercase text-zinc-900 min-w-[50px]">{sp.size || `Var ${vIdx + 1}`}</span>
+                                  <span className="font-bold uppercase text-zinc-900 min-w-[50px]">{sp.size || `Var ${vIdx + 1}`}</span>
                                   <div className="flex items-center gap-1">
                                     <button
                                       type="button"
@@ -600,7 +600,7 @@ const InventoryView = () => {
                               );
                             })}
                             <div className="text-[12px] text-zinc-500 font-semibold uppercase tracking-wider text-right pr-1">
-                              Total Stock: <span className="text-zinc-900 font-extrabold">{stockNum}</span>
+                              Total Stock: <span className="text-zinc-900 font-bold">{stockNum}</span>
                             </div>
                           </div>
                         ) : (

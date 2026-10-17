@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, Shirt, Smile, RotateCcw, CreditCard } from 'lucide-react';
+import { Layers, Shirt, Smile, Truck, CreditCard } from 'lucide-react';
 
 const features = [
   {
@@ -18,9 +18,9 @@ const features = [
     desc: "Long Lasting Print"
   },
   {
-    icon: RotateCcw,
-    title: "EASY RETURNS",
-    desc: "7 Days Return"
+    icon: Truck,
+    title: "EXPRESS DELIVERY",
+    desc: "4-5 Days Delivery"
   },
   {
     icon: CreditCard,
@@ -52,7 +52,7 @@ const FeaturesStrip = () => {
 
                 {/* Details */}
                 <div className="flex flex-col text-left">
-                  <span className="text-[11px]   text-zinc-900 tracking-widest uppercase leading-none mb-1">
+                  <span className="text-[12px]   text-zinc-900 tracking-widest uppercase leading-none mb-1">
                     {feature.title}
                   </span>
                   <span className="text-[12px] text-zinc-500 font-medium leading-tight">

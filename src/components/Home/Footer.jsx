@@ -67,7 +67,7 @@ const Footer = () => {
             <div className="max-w-xl">
               <Link to="/" className="inline-flex flex-col mb-4">
                 <img
-                  src="/logom.webp"
+                  src={siteSettings?.logo_url || "/logom.webp"}
                   alt="MAHIRASH"
                   className="h-9 md:h-12 w-auto object-contain brightness-0 invert mb-1"
                 />
@@ -76,7 +76,7 @@ const Footer = () => {
                 </span>
               </Link>
               <p className="text-zinc-300 text-sm leading-relaxed font-light">
-                Mahirash Parfumerie is a modern haute perfumerie atelier crafting rare botanical extraits de parfum, royal Cambodian ouds, and bespoke olfactory signatures designed to leave an undeniable sillage.
+                Mahirash Parfumerie is a modern luxury fragrance house crafting rare botanical extraits de parfum, royal Cambodian ouds, and bespoke olfactory signatures designed to leave an undeniable sillage.
               </p>
             </div>
 
@@ -84,7 +84,7 @@ const Footer = () => {
             <div className="w-full lg:max-w-lg bg-zinc-950/80 border border-[#c9a962]/30 p-6 md:p-8 backdrop-blur-md shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles size={14} className="text-[#c9a962]" />
-                <h5 className="text-[11px] uppercase tracking-[0.3em] text-[#c9a962] font-bold">
+                <h5 className="text-[12px] uppercase tracking-[0.3em] text-[#c9a962] font-bold">
                   JOIN THE MAHIRASH INNER CIRCLE
                 </h5>
               </div>
@@ -103,14 +103,14 @@ const Footer = () => {
                 />
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-[#b8860b] via-[#d4af37] to-[#b8860b] hover:from-white hover:to-white text-black font-extrabold text-[12px] uppercase tracking-[0.25em] px-7 py-3.5 transition-all duration-300 shrink-0 cursor-pointer shadow-md flex items-center justify-center gap-2 rounded-none"
+                  className="bg-gradient-to-r from-[#b8860b] via-[#d4af37] to-[#b8860b] hover:from-white hover:to-white text-black font-bold text-[12px] uppercase tracking-[0.25em] px-7 py-3.5 transition-all duration-300 shrink-0 cursor-pointer shadow-md flex items-center justify-center gap-2 rounded-none"
                 >
                   <span>{subscribed ? 'SUBSCRIBED' : 'JOIN VIP'}</span>
                   <ArrowRight size={13} />
                 </button>
               </form>
               {subscribed && (
-                <p className="text-[11px] text-[#c9a962] mt-2 tracking-wider font-semibold">
+                <p className="text-[12px] text-[#c9a962] mt-2 tracking-wider font-semibold">
                   ✓ Welcome to the Inner Circle. Please check your inbox.
                 </p>
               )}
@@ -139,20 +139,19 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Bespoke Care & Client Services */}
+          {/* Menu */}
           <div>
             <h4 className="text-[12px] font-bold uppercase tracking-[0.25em] text-[#c9a962] mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 bg-[#c9a962] rounded-full inline-block" />
-              CLIENT SERVICES
+              MENU
             </h4>
             <ul className="flex flex-col gap-3">
               {[
-                { label: 'My Account & Vault', path: '/account' },
-                { label: 'Track Shipment', path: '/track' },
-                { label: 'Return & Exchange Policy', path: '/return-policy' },
-                { label: 'Terms & Conditions', path: '/terms' },
-                { label: 'Privacy & Security', path: '/privacy' },
-                { label: 'Concierge Inquiry', path: '/contact' },
+                { label: 'Home', path: '/' },
+                { label: 'Shop', path: '/shop' },
+                { label: 'About Us', path: '/about' },
+                { label: 'Brands', path: '/shop' },
+                { label: 'Contact Us', path: '/contact' },
               ].map((item) => (
                 <li key={item.label}>
                   <Link to={item.path} className="text-[14px] text-zinc-300 hover:text-[#c9a962] transition-colors duration-300 font-light tracking-wide flex items-center gap-2 group">
@@ -164,19 +163,19 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* House of Mahirash */}
+          {/* Quick Links */}
           <div>
             <h4 className="text-[12px] font-bold uppercase tracking-[0.25em] text-[#c9a962] mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 bg-[#c9a962] rounded-full inline-block" />
-              HOUSE OF MAHIRASH
+              QUICK LINKS
             </h4>
             <ul className="flex flex-col gap-3">
               {[
-                { label: 'Our Heritage & Philosophy', path: '/about' },
-                { label: 'Extrait de Parfum Artisanship', path: '/shop' },
-                { label: 'Pre-Order Collection', path: '/shop' },
-                { label: 'Contact Atelier', path: '/contact' },
-                { label: 'Store Terms', path: '/terms' }
+                { label: 'Search', path: '/shop' },
+                { label: 'FAQs', path: '/#faq' },
+                { label: 'Privacy Policy', path: '/privacy' },
+                { label: 'Shipping Policy', path: '/terms' },
+                { label: 'Terms & Conditions', path: '/terms' }
               ].map((item) => (
                 <li key={item.label}>
                   <Link to={item.path} className="text-[14px] text-zinc-300 hover:text-[#c9a962] transition-colors duration-300 font-light tracking-wide flex items-center gap-2 group">
@@ -188,17 +187,17 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Atelier & Socials */}
+          {/* Contact Direct & Socials */}
           <div>
             <h4 className="text-[12px] font-bold uppercase tracking-[0.25em] text-[#c9a962] mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 bg-[#c9a962] rounded-full inline-block" />
-              ATELIER DIRECT
+              DIRECT CONTACT
             </h4>
             <div className="flex flex-col gap-4 mb-7">
               <div className="flex items-start gap-3">
                 <MapPin size={16} className="text-[#c9a962] flex-shrink-0 mt-0.5" />
                 <p className="text-[14px] text-zinc-300 font-light leading-relaxed">
-                  Mahirash Parfumerie Atelier (Express Global Shipping)
+                  Mahirash Parfumerie (Express Global Shipping)
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -253,10 +252,6 @@ const Footer = () => {
             <span className="text-zinc-700">•</span>
             <Link to="/terms" className="text-zinc-400 hover:text-white transition-colors">
               Terms of Service
-            </Link>
-            <span className="text-zinc-700">•</span>
-            <Link to="/return-policy" className="text-zinc-400 hover:text-white transition-colors">
-              Return & Refund
             </Link>
             <span className="text-zinc-700">•</span>
             <a

@@ -567,7 +567,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
               <Sparkles size={15} className="text-[#b8860b]" />
               Home Page Showcases & Badges
             </label>
-            <span className="text-[11px] text-[#b8860b] font-semibold">
+            <span className="text-[12px] text-[#b8860b] font-semibold">
               Select which home page sections this product will display in
             </span>
           </div>
@@ -589,7 +589,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                   Bestseller
                   <span className="text-[12px] bg-red-600 text-white px-1.5 py-0.5 rounded font-black tracking-normal">HOT</span>
                 </span>
-                <span className="text-[11px] text-zinc-500 mt-0.5">
+                <span className="text-[12px] text-zinc-500 mt-0.5">
                   Display in home "Bestseller" section
                 </span>
               </div>
@@ -611,7 +611,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                   New Arrival
                   <span className="text-[12px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">NEW</span>
                 </span>
-                <span className="text-[11px] text-zinc-500 mt-0.5">
+                <span className="text-[12px] text-zinc-500 mt-0.5">
                   Display in "Recent Arrivals" showcase
                 </span>
               </div>
@@ -633,7 +633,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                   Shop Miniatures
                   <span className="text-[12px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">MINI</span>
                 </span>
-                <span className="text-[11px] text-zinc-500 mt-0.5">
+                <span className="text-[12px] text-zinc-500 mt-0.5">
                   Display in "SHOP MINIATURES" section
                 </span>
               </div>
@@ -756,7 +756,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
               key={sz}
               type="button"
               onClick={() => addSizePrice(sz)}
-              className="px-2.5 py-1 bg-white hover:bg-black hover:text-white text-[11px] font-bold text-zinc-700 rounded-md transition-all cursor-pointer border border-zinc-300"
+              className="px-2.5 py-1 bg-white hover:bg-black hover:text-white text-[12px] font-bold text-zinc-700 rounded-md transition-all cursor-pointer border border-zinc-300"
             >
               + {sz}
             </button>
@@ -848,7 +848,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                 </span>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <label className="px-3 py-1 bg-black text-white hover:bg-zinc-800 text-[11px] font-bold rounded cursor-pointer transition-all shadow-xs flex items-center gap-1">
+                  <label className="px-3 py-1 bg-black text-white hover:bg-zinc-800 text-[12px] font-bold rounded cursor-pointer transition-all shadow-xs flex items-center gap-1">
                     <Upload size={12} />
                     <span>Upload Images</span>
                     <input
@@ -876,7 +876,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                       setPickerVariantIndex(index);
                       setIsPickerOpen(true);
                     }}
-                    className="px-3 py-1 bg-white hover:bg-zinc-100 text-zinc-900 border border-zinc-300 text-[11px] font-bold rounded transition-all cursor-pointer shadow-xs flex items-center gap-1"
+                    className="px-3 py-1 bg-white hover:bg-zinc-100 text-zinc-900 border border-zinc-300 text-[12px] font-bold rounded transition-all cursor-pointer shadow-xs flex items-center gap-1"
                   >
                     <ImageIcon size={12} className="text-[#b8860b]" />
                     <span>Cloudinary</span>
@@ -904,7 +904,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                         <X size={10} />
                       </button>
                       {imgIdx === 0 && (
-                        <span className="absolute bottom-0 inset-x-0 bg-black/80 text-white text-[7px] font-extrabold text-center uppercase py-0.5">
+                        <span className="absolute bottom-0 inset-x-0 bg-black/80 text-white text-[7px] font-bold text-center uppercase py-0.5">
                           Main
                         </span>
                       )}
@@ -912,7 +912,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                   ))}
                 </div>
               ) : (
-                <p className="text-[11px] text-zinc-400 italic">No images added for this variant yet. Upload photos or choose from Cloudinary library above.</p>
+                <p className="text-[12px] text-zinc-400 italic">No images added for this variant yet. Upload photos or choose from Cloudinary library above.</p>
               )}
             </div>
           </div>
@@ -927,7 +927,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wider text-zinc-400 font-semibold">Top Notes</label>
+            <label className="text-[12px] uppercase tracking-wider text-zinc-400 font-semibold">Top Notes</label>
             <input
               className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-[14px] outline-none focus:border-[#c9a962]"
               placeholder="e.g. Bergamot, Saffron, Pink Pepper"
@@ -935,7 +935,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wider text-zinc-400 font-semibold">Heart / Middle Notes</label>
+            <label className="text-[12px] uppercase tracking-wider text-zinc-400 font-semibold">Heart / Middle Notes</label>
             <input
               className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-[14px] outline-none focus:border-[#c9a962]"
               placeholder="e.g. Damask Rose, Jasmine, Cedarwood"
@@ -943,7 +943,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wider text-zinc-400 font-semibold">Base Notes</label>
+            <label className="text-[12px] uppercase tracking-wider text-zinc-400 font-semibold">Base Notes</label>
             <input
               className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-[14px] outline-none focus:border-[#c9a962]"
               placeholder="e.g. Royal Oud, Sandalwood, Amber, Musk"
@@ -954,7 +954,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wider text-zinc-400 font-semibold">Longevity</label>
+            <label className="text-[12px] uppercase tracking-wider text-zinc-400 font-semibold">Longevity</label>
             <input
               className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-[14px] outline-none focus:border-[#c9a962]"
               placeholder="e.g. 12+ Hours"
@@ -962,7 +962,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[11px] uppercase tracking-wider text-zinc-400 font-semibold">Sillage / Projection</label>
+            <label className="text-[12px] uppercase tracking-wider text-zinc-400 font-semibold">Sillage / Projection</label>
             <input
               className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-[14px] outline-none focus:border-[#c9a962]"
               placeholder="e.g. Intense / Heavy Sillage"
@@ -974,10 +974,10 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
 
       {/* Shiprocket Package Information */}
       <div className="space-y-3 bg-zinc-50 border border-zinc-200 p-4 rounded-xl">
-        <label className="text-[14px] font-extrabold text-zinc-900 uppercase tracking-wider flex items-center gap-2">
+        <label className="text-[14px] font-bold text-zinc-900 uppercase tracking-wider flex items-center gap-2">
           <Package className="text-[#b8860b]" size={16} /> Package Info (For Shiprocket)
         </label>
-        <span className="text-[11px] font-medium text-zinc-500 block">Provide final package dimensions (cm) and packed weight (kg) for accurate Shiprocket freight charges. Minimum weight should be 0.5kg for standard boxes.</span>
+        <span className="text-[12px] font-medium text-zinc-500 block">Provide final package dimensions (cm) and packed weight (kg) for accurate Shiprocket freight charges. Minimum weight should be 0.5kg for standard boxes.</span>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
           <div className="space-y-1.5">

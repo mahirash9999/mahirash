@@ -277,7 +277,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafafa] flex flex-col justify-center items-center relative overflow-hidden px-4 py-12 md:py-20 font-['Inter',sans-serif]">
+    <div className="min-h-screen bg-[#fafafa] flex flex-col justify-center items-center relative overflow-hidden px-4 py-12 md:py-20 font-sans">
       <SEOHead
         title="Sign In | Mahirash Haute Parfumerie"
         description="Access your exclusive Mahirash account with secure Email OTP or Password authentication."
@@ -460,7 +460,7 @@ const Login = () => {
                     required
                     className="w-full text-center py-3.5 bg-zinc-50 border border-zinc-200 text-2xl font-bold tracking-[14px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all font-mono"
                   />
-                  <p className="text-[11px] text-zinc-400 text-center">
+                  <p className="text-[12px] text-zinc-400 text-center">
                     Valid for 10 minutes. Check your spam folder if delayed.
                   </p>
                 </div>
@@ -482,7 +482,7 @@ const Login = () => {
                   )}
                 </button>
 
-                <div className="flex items-center justify-between pt-2 text-[11px]">
+                <div className="flex items-center justify-between pt-2 text-[12px]">
                   <button
                     type="button"
                     onClick={() => { setError(""); setStep(STEP.OTP_REQUEST); }}
@@ -572,7 +572,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => { setError(""); setStep(STEP.OTP_REQUEST); }}
-                    className="text-[11px] text-zinc-600 hover:text-black underline font-medium cursor-pointer"
+                    className="text-[12px] text-zinc-600 hover:text-black underline font-medium cursor-pointer"
                   >
                     ← Login with Email OTP instead
                   </button>
@@ -587,7 +587,7 @@ const Login = () => {
                   <CheckCircle2 size={16} className="shrink-0 mt-0.5 text-emerald-600" />
                   <div>
                     <strong>Email verified successfully!</strong>
-                    <p className="mt-0.5 text-emerald-700 text-[11px]">
+                    <p className="mt-0.5 text-emerald-700 text-[12px]">
                       Create a password for faster login next time, or skip to continue right away.
                     </p>
                   </div>
@@ -652,7 +652,7 @@ const Login = () => {
                     type="button"
                     onClick={handleSkipPassword}
                     disabled={loading}
-                    className="text-[11px] text-zinc-500 hover:text-black underline font-semibold cursor-pointer"
+                    className="text-[12px] text-zinc-500 hover:text-black underline font-semibold cursor-pointer"
                   >
                     Skip for Now →
                   </button>

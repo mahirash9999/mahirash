@@ -247,7 +247,7 @@ const Signup = () => {
               type="button"
               onClick={handleGoogleSignup}
               disabled={loading}
-              className="w-full py-3.5 border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
+              className="w-full py-3.5 border border-zinc-200 bg-white hover:bg-zinc-50 text-zinc-800 text-[12px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50"
             >
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" width="100%" height="100%">
                 <path
@@ -261,7 +261,7 @@ const Signup = () => {
             <div className="pt-4 text-center">
               <Link
                 to={`/login?redirect=${encodeURIComponent(redirectPath)}`}
-                className="text-[11px] text-zinc-600 hover:text-black underline font-medium"
+                className="text-[12px] text-zinc-600 hover:text-black underline font-medium"
               >
                 Prefer passwordless? Continue with Email OTP →
               </Link>

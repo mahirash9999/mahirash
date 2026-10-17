@@ -32,7 +32,6 @@ export const generateDynamicSitemapXML = async () => {
     { loc: `${BASE_URL}/contact`, priority: "0.7", changefreq: "monthly" },
     { loc: `${BASE_URL}/privacy`, priority: "0.5", changefreq: "yearly" },
     { loc: `${BASE_URL}/terms`, priority: "0.5", changefreq: "yearly" },
-    { loc: `${BASE_URL}/return-policy`, priority: "0.5", changefreq: "yearly" },
   ];
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;

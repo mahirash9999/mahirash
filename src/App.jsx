@@ -2,12 +2,14 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Home/Footer";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import AuthProvider from "./components/AuthProvider";
 import CustomerAuthProvider from "./components/CustomerAuthProvider";
 import { StoreProvider } from "./components/StoreProvider";
 import ScrollToTop from "./components/ScrollToTop";
 import Preloader from "./pages/Preloader";
+import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import GeminiChatbot from "./components/GeminiChatbot";
 
 // Lazy loaded page components
 const Home = lazy(() => import("./components/Homepage/Home"));
@@ -28,9 +30,6 @@ const Shop = lazy(() => import("./pages/Shop"));
 const Orders = lazy(() => import("./pages/Orders"));
 const TermsConditions = lazy(() => import("./pages/TermsConditions"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const ReturnPolicy = lazy(() => import("./pages/ReturnPolicy"));
-const Return = lazy(() => import("./pages/ReturnPolicy"));
-const RefundPolicy = lazy(() => import("./pages/ReturnPolicy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder"));
 const SitemapViewer = lazy(() => import("./pages/SitemapViewer"));
@@ -79,9 +78,9 @@ const AppRoutes = () => {
             <Route path="/terms-and-conditions" element={<TermsConditions />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/return-policy" element={<ReturnPolicy />} />
-            <Route path="/return" element={<ReturnPolicy />} />
-            <Route path="/refund-policy" element={<ReturnPolicy />} />
+            <Route path="/return-policy" element={<Navigate to="/terms" replace />} />
+            <Route path="/return" element={<Navigate to="/terms" replace />} />
+            <Route path="/refund-policy" element={<Navigate to="/terms" replace />} />
 
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/product/:id/quickview" element={<QuickView />} />
@@ -93,6 +92,8 @@ const AppRoutes = () => {
         </Suspense>
       </div>
       {!hideChrome && <Footer />}
+      {!hideChrome && <FloatingWhatsApp />}
+      {!hideChrome && <GeminiChatbot />}
     </>
   );
 };

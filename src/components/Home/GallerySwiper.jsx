@@ -83,19 +83,21 @@ const GallerySwiper = () => {
   const formattedTotal = slides.length.toString().padStart(2, '0');
 
   return (
-    <section className="py-14 md:py-24 bg-[#F5F2EB] overflow-x-hidden relative border-t border-[#E5D5B8]/40 font-['Inter',sans-serif]">
+    <section className="py-14 md:py-24 bg-[#FAF8F5] overflow-x-hidden relative border-t border-[#E5D5B8]/40">
       {/* Opulent Luxury Radial Backdrop Glow & Watermark */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.12)_0%,transparent_70%)] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12vw] font-serif text-[#0D0D0D]/[0.03] tracking-[0.25em] uppercase select-none pointer-events-none whitespace-nowrap">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12vw] text-[#0D0D0D]/[0.02] tracking-[0.25em] uppercase select-none pointer-events-none whitespace-nowrap">
         MAHIRASH
       </div>
 
       <div className="max-w-7xl mx-auto px-5 md:px-10 lg:px-14 relative z-10">
 
-        <SectionHeader
-          subtitle="HAUTE PARFUMERIE SHOWCASE"
-          title="Recent Arrivals"
-        />
+        {/* Centered Section Header without eyebrow */}
+        <div className="mb-8 md:mb-12 text-center">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-[0.15em] text-[#0D0D0D] uppercase text-center">
+            RECENT <span className="text-[#B8860B] italic font-serif">ARRIVALS</span>
+          </h2>
+        </div>
 
         {/* Swiper Container */}
         <div className="relative w-full py-6 gallery-swiper-luxury overflow-x-hidden">
@@ -151,7 +153,7 @@ const GallerySwiper = () => {
                             const bg = isObj ? tagItem.bg || "#000" : "#000";
                             const color = isObj ? tagItem.text || "#fff" : "#fff";
                             return (
-                              <span key={tIdx} style={{ backgroundColor: bg, color: color }} className="font-extrabold w-max uppercase text-[12px] tracking-[0.18em] px-2.5 py-1 shadow-sm rounded-sm">
+                              <span key={tIdx} style={{ backgroundColor: bg, color: color }} className="font-bold w-max uppercase text-[12px] tracking-[0.18em] px-2.5 py-1 shadow-sm rounded-sm">
                                 {text}
                               </span>
                             );
@@ -161,7 +163,7 @@ const GallerySwiper = () => {
                     }
 
                     return (
-                      <div className="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur-md border border-[#E5D5B8] px-3 py-1 text-[#B8860B] text-[12px] uppercase tracking-[0.25em] font-extrabold shadow-sm rounded-full">
+                      <div className="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur-md border border-[#E5D5B8] px-3 py-1 text-[#B8860B] text-[12px] uppercase tracking-[0.25em] font-bold shadow-sm rounded-full">
                         {slide.brand}
                       </div>
                     )
@@ -187,7 +189,7 @@ const GallerySwiper = () => {
 
                   {/* Hover Quick Action Indicator */}
                   <div className="absolute bottom-5 inset-x-5 z-20 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
-                    <span className="text-white text-[12px] font-extrabold uppercase tracking-[0.25em] flex items-center gap-1.5 drop-shadow">
+                    <span className="text-white text-[12px] font-bold uppercase tracking-[0.25em] flex items-center gap-1.5 drop-shadow">
                       <Eye size={13} className="text-[#E5D5B8]" /> View Scent
                     </span>
                     <span className="w-8 h-8 rounded-full bg-[#0D0D0D] text-white flex items-center justify-center text-[14px] font-bold shadow-md">

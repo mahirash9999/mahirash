@@ -49,7 +49,7 @@ const BenefitsStrip = () => {
   if (loading || benefits.length === 0) return null;
 
   return (
-    <section className="relative bg-[#F3EFE6] border-y border-[#C5A059]/30 py-4 overflow-hidden shadow-sm">
+    <section className="relative bg-[#F5F2EB] border-y border-[#C5A059]/30 py-4 overflow-hidden shadow-sm">
       {/* Subtle gold glowing top & bottom border accent lines */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#B8860B]/40 to-transparent pointer-events-none" />
       <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#B8860B]/40 to-transparent pointer-events-none" />
@@ -64,7 +64,7 @@ const BenefitsStrip = () => {
           return (
             <span
               key={i}
-              className="inline-flex items-center gap-3.5 px-10 text-[11px] font-bold uppercase tracking-[0.25em] text-[#1A1A1A]"
+              className="inline-flex items-center gap-3.5 px-10 text-[12px] font-bold uppercase tracking-[0.25em] text-[#1A1A1A]"
             >
               <Icon size={15} strokeWidth={2} className="text-[#B8860B] flex-shrink-0 drop-shadow-sm" />
               {item.text}

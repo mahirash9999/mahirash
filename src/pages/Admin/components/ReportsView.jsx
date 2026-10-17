@@ -118,7 +118,7 @@ const ReportsView = () => {
             <FileText size={16} className="text-[#b8860b]" />
             {reportType === "sales" ? "Live Customer Orders Audit Log" : "Live Product Inventory Stock Summary"}
           </h3>
-          <span className="text-[12px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 flex items-center gap-1">
+          <span className="text-[12px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 flex items-center gap-1">
             <CheckCircle2 size={12} /> Live Sync Active
           </span>
         </div>

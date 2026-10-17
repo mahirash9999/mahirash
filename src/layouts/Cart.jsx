@@ -130,7 +130,7 @@ const Cart = () => {
         />
         {/* Simple page top padding for header */}
         <div className="mt-[145px] md:mt-[130px]" />
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="max-w-[1450px] mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -173,7 +173,7 @@ const Cart = () => {
 
       {/* ── Page title bar ── */}
       <div className="bg-white border-b border-zinc-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <div className="max-w-[1450px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2 text-[14px] text-zinc-400 uppercase tracking-wider">
             <Link to="/" className="hover:text-zinc-700 transition-colors">Home</Link>
             <ChevronRight size={12} />
@@ -192,7 +192,7 @@ const Cart = () => {
       </div>
 
       {/* ── Main content ── */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-[1450px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
         {/* Page heading */}
         <h1 className="text-xl font-bold text-zinc-900 mb-1">
@@ -240,7 +240,7 @@ const Cart = () => {
                             alert(`You will be notified when ${item.name} is restocked! It has been removed from your bag.`);
                             removeFromCart(item.cartId || item.id);
                           }}
-                          className="text-[11px] font-extrabold uppercase tracking-wider text-zinc-900 hover:text-[#b8860b] underline cursor-pointer"
+                          className="text-[12px] font-bold uppercase tracking-wider text-zinc-900 hover:text-[#b8860b] underline cursor-pointer"
                         >
                           Notify Me & Remove
                         </button>
@@ -261,14 +261,14 @@ const Cart = () => {
                               window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, "_blank");
                               removeFromCart(item.cartId || item.id);
                             }}
-                            className="text-[11px] font-extrabold uppercase tracking-wider text-[#b8860b] hover:text-black underline cursor-pointer"
+                            className="text-[12px] font-bold uppercase tracking-wider text-[#b8860b] hover:text-black underline cursor-pointer"
                           >
                             Pre-Order on WhatsApp
                           </button>
                           <button
                             type="button"
                             onClick={() => removeFromCart(item.cartId || item.id)}
-                            className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 hover:text-red-600 underline cursor-pointer"
+                            className="text-[12px] font-bold uppercase tracking-wider text-zinc-500 hover:text-red-600 underline cursor-pointer"
                           >
                             Remove
                           </button>
@@ -365,19 +365,19 @@ const Cart = () => {
               })}
             </AnimatePresence>
 
-            {/* ── Delivery & returns info ── */}
+            {/* ── Delivery & authenticity info ── */}
             <div className="bg-white rounded-xl border border-zinc-200 p-4">
               <div className="grid grid-cols-3 gap-3 text-center">
                 {[
-                  { icon: ShieldCheck, title: "Secure\nCheckout", sub: "256-bit SSL" },
-                  { icon: Truck, title: "Free\nShipping", sub: "On orders ₹1999+" },
-                  { icon: RotateCcw, title: "Easy\nReturns", sub: "7–10 day returns" },
+                  { icon: ShieldCheck, title: "100% Authentic\nLuxury Extraits", sub: "Direct from House" },
+                  { icon: Truck, title: "Express\nDelivery", sub: "Delivered in 4-5 days" },
+                  { icon: Lock, title: "Secure\nCheckout", sub: "256-bit SSL Protected" },
                 ].map(({ icon: Icon, title, sub }) => (
                   <div key={title} className="flex flex-col items-center gap-1.5">
                     <div className="w-9 h-9 rounded-full bg-[#f0eeeb] flex items-center justify-center">
                       <Icon size={16} strokeWidth={1.5} className="text-zinc-600" />
                     </div>
-                    <p className="text-[11px] font-semibold text-zinc-800 leading-tight whitespace-pre-line">
+                    <p className="text-[12px] font-semibold text-zinc-800 leading-tight whitespace-pre-line">
                       {title}
                     </p>
                     <p className="text-[12px] text-zinc-500">{sub}</p>
@@ -386,23 +386,23 @@ const Cart = () => {
               </div>
             </div>
 
-            {/* ── Return promise ── */}
+            {/* ── Authenticity & Express Delivery Promise ── */}
             <div className="bg-white rounded-xl border border-zinc-200 px-4 py-3.5 flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-[#f0eeeb] flex items-center justify-center shrink-0">
-                  <Tag size={14} strokeWidth={1.5} className="text-zinc-500" />
+                  <ShieldCheck size={16} strokeWidth={1.5} className="text-[#b8860b]" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-zinc-800">
-                    Love it or return it
+                    Authentic Luxury Fragrances
                   </p>
                   <p className="text-[14px] text-zinc-500">
-                    Easy 7–10 day returns. Refund after we receive product back.
+                    Handcrafted pure botanical extraits. Express delivery in 4-5 days across India.
                   </p>
                 </div>
               </div>
               <Link
-                to="/return-policy"
+                to="/terms"
                 className="text-[14px] font-semibold text-zinc-700 underline underline-offset-2 hover:text-black transition-colors whitespace-nowrap flex items-center gap-1 shrink-0"
               >
                 Know More <ArrowRight size={11} />

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -10,12 +10,19 @@
   --color-brand-gray: #F3EFE6;
   --color-brand-gray-dark: #1A1A1A;
 
-  --font-serif: "Playfair Display", serif;
-  --font-sans: "Nunito", sans-serif;
+  --font-serif: "Instrument Sans", sans-serif;
+  --font-sans: "Instrument Sans", sans-serif;
   --font-heading: "Instrument Sans", sans-serif;
 }
 
 @layer base {
+
+  *,
+  *::before,
+  *::after {
+    font-family: "Instrument Sans", sans-serif;
+  }
+
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -23,10 +30,12 @@
     overflow-x: clip;
     background-color: #FAF8F5;
     color: #111111;
+    font-family: "Instrument Sans", sans-serif;
   }
 
   body {
-    @apply bg-[#FAF8F5] text-[#111111] font-sans antialiased min-h-screen text-[14px];
+    @apply bg-[#FAF8F5] text-[#111111] antialiased min-h-screen text-[14px];
+    font-family: "Instrument Sans", sans-serif !important;
     overflow-x: clip;
   }
 
@@ -36,7 +45,13 @@
   h4,
   h5,
   h6 {
-    @apply text-[#0D0D0D] font-heading;
+    @apply text-[#0D0D0D];
+    font-family: "Instrument Sans", sans-serif !important;
+  }
+
+  p {
+    font-family: "Instrument Sans", sans-serif !important;
+    letter-spacing: 0.012em;
   }
 
   ::selection {
@@ -129,7 +144,7 @@
 body *[class*="text-[12px]"],
 body *[class*="text-[12px]"],
 body *[class*="text-[10.5px]"],
-body *[class*="text-[11px]"],
+body *[class*="text-[12px]"],
 body *[class*="text-[11.5px]"],
 body *[class*="text-[12px]"],
 body *[class*="text-[13px]"] {

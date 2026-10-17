@@ -80,35 +80,25 @@ const BestsellerProducts = () => {
     <section className="py-14 md:py-20 bg-[#FAF8F5] overflow-hidden border-t border-[#E5D5B8]/60 relative">
       <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-        {/* Premium Header Layout */}
-        <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="flex-1 flex flex-col md:flex-row md:items-end gap-6 md:gap-12">
-            <div>
-              <p className="text-[12px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
-                <span>HAUTE SELECTION</span>
-                <span>•</span>
-                <span>CURATED EXTRAITS</span>
-              </p>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight tracking-[0.15em] text-[#0D0D0D] uppercase whitespace-nowrap">
-                Bestseller
-              </h2>
-            </div>
-            <div className="hidden md:block flex-1 h-[1px] bg-gradient-to-r from-[#B8860B]/40 via-zinc-300 to-transparent mb-3" />
-          </div>
-
-          <div className="flex items-center gap-6 self-start md:self-auto">
-            <div className="flex gap-2.5">
+        {/* Centered Section Header without eyebrow */}
+        <div className="mb-8 md:mb-12 flex flex-col items-center justify-center text-center">
+          <div className="flex items-center justify-between w-full max-w-[1450px]">
+            <div className="w-12 hidden md:block" />
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-[0.15em] text-[#0D0D0D] uppercase text-center flex-1">
+              BEST <span className="text-[#B8860B] italic font-serif">SELLERS</span>
+            </h2>
+            <div className="hidden md:flex items-center gap-2">
               <button
                 onClick={() => swiperRef.current?.slidePrev()}
                 aria-label="Previous slide"
-                className="w-10 h-10 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-zinc-700 hover:text-white hover:bg-[#B8860B] hover:border-[#B8860B] transition-all duration-300 cursor-pointer shadow-md"
+                className="w-9 h-9 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-zinc-700 hover:text-white hover:bg-[#B8860B] hover:border-[#B8860B] transition-all duration-300 cursor-pointer shadow-xs"
               >
                 &larr;
               </button>
               <button
                 onClick={() => swiperRef.current?.slideNext()}
                 aria-label="Next slide"
-                className="w-10 h-10 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-zinc-700 hover:text-white hover:bg-[#B8860B] hover:border-[#B8860B] transition-all duration-300 cursor-pointer shadow-md"
+                className="w-9 h-9 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-zinc-700 hover:text-white hover:bg-[#B8860B] hover:border-[#B8860B] transition-all duration-300 cursor-pointer shadow-xs"
               >
                 &rarr;
               </button>
@@ -116,26 +106,18 @@ const BestsellerProducts = () => {
           </div>
         </div>
 
-        {/* Horizontal Swiper Carousel */}
-        <div className="w-full">
+        {/* Desktop View: Horizontal Swiper Carousel (Same size as requested) */}
+        <div className="hidden md:block w-full max-w-[1450px] mx-auto">
           <Swiper
             onSwiper={(swiper) => { swiperRef.current = swiper; }}
-            spaceBetween={18}
-            slidesPerView={1.15}
-            mousewheel={{
-              forceToAxis: true,
-              sensitivity: 1,
-            }}
+            spaceBetween={20}
+            slidesPerView={3}
             breakpoints={{
-              640: {
-                slidesPerView: 2.2,
-                spaceBetween: 18,
-              },
               1024: {
-                slidesPerView: 3,
+                slidesPerView: 3.5,
                 spaceBetween: 20,
               },
-              1200: {
+              1280: {
                 slidesPerView: 4,
                 spaceBetween: 22,
               },
@@ -151,13 +133,20 @@ const BestsellerProducts = () => {
           </Swiper>
         </div>
 
+        {/* Mobile View: Clean 2-column grid layout (from Shop Miniatures design) */}
+        <div className="md:hidden grid grid-cols-2 gap-3 sm:gap-4 max-w-[1450px] mx-auto">
+          {products.slice(0, 6).map((product, idx) => (
+            <ProductCard key={product.id} product={product} idx={idx} triggerToast={triggerToast} />
+          ))}
+        </div>
+
         {/* Centered Outlined CTA */}
-        <div className="md:mt-16 mt-10 flex justify-center">
+        <div className="md:mt-14 mt-8 flex justify-center">
           <Link
             to="/shop"
-            className="group flex items-center justify-center gap-3 px-10 py-4 border border-[#0D0D0D] bg-[#0D0D0D] text-white text-[11px] font-extrabold uppercase tracking-[0.28em] transition-all duration-300 hover:bg-[#B8860B] hover:border-[#B8860B] rounded-full shadow-lg"
+            className="group flex items-center justify-center gap-3 px-8 py-3.5 border border-[#0D0D0D] bg-[#0D0D0D] text-white text-[12px] font-bold uppercase tracking-[0.25em] transition-all duration-300 hover:bg-[#B8860B] hover:border-[#B8860B] rounded-full shadow-md"
           >
-            <span>View All New Arrivals</span>
+            <span>View All Bestsellers</span>
             <span className="transform group-hover:translate-x-1.5 transition-transform duration-300">&rarr;</span>
           </Link>
         </div>
@@ -172,7 +161,7 @@ const BestsellerProducts = () => {
             exit={{ opacity: 0, y: 20 }}
             className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[200] bg-[#0D0D0D] border border-[#B8860B] text-white px-7 py-3.5 rounded-full shadow-2xl flex items-center gap-3 gold-glow-sm"
           >
-            <p className="text-[12px] font-extrabold uppercase tracking-[0.2em] whitespace-nowrap text-[#D4AF37]">{feedbackMessage}</p>
+            <p className="text-[12px] font-bold uppercase tracking-[0.2em] whitespace-nowrap text-[#D4AF37]">{feedbackMessage}</p>
             <button onClick={() => setFeedbackMessage(null)} className="opacity-60 hover:opacity-100 ml-1 text-white">
               <X size={14} />
             </button>

@@ -177,7 +177,7 @@ const Wishlist = () => {
                                 <button
                                   type="button"
                                   onClick={() => triggerToast("We will notify you when back in stock!")}
-                                  className="h-8 px-2.5 bg-[#0D0D0D] hover:bg-[#b8860b] text-white text-[12px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                                  className="h-8 px-2.5 bg-[#0D0D0D] hover:bg-[#b8860b] text-white text-[12px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                                   title="Notify me when available"
                                 >
                                   <Bell size={12} />
@@ -187,7 +187,7 @@ const Wishlist = () => {
                                 <button
                                   type="button"
                                   onClick={() => navigate(`/product/${item.id}`)}
-                                  className="h-8 px-2.5 bg-[#b8860b] hover:bg-black text-white text-[12px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                                  className="h-8 px-2.5 bg-[#b8860b] hover:bg-black text-white text-[12px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                                   title="Pre-order this item"
                                 >
                                   <Clock size={12} />
@@ -221,7 +221,7 @@ const Wishlist = () => {
           <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
             className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 bg-black text-white px-5 py-3 shadow-2xl flex items-center gap-3"
           >
-            <p className="text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap">{feedbackMessage}</p>
+            <p className="text-[12px] font-semibold uppercase tracking-wider whitespace-nowrap">{feedbackMessage}</p>
             <button onClick={() => setFeedbackMessage(null)} className="opacity-40 hover:opacity-100 ml-1"><X size={13} /></button>
           </motion.div>
         )}

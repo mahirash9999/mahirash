@@ -98,7 +98,7 @@ const QuickView = ({ product, onClose }) => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 {isPreOrder ? (
-                  <div className="absolute top-3 right-3 bg-[#b8860b] text-white px-3 py-1 text-[12px] font-extrabold uppercase tracking-wider shadow-sm">
+                  <div className="absolute top-3 right-3 bg-[#b8860b] text-white px-3 py-1 text-[12px] font-bold uppercase tracking-wider shadow-sm">
                     PRE-ORDER
                   </div>
                 ) : product.original_price && product.original_price > product.price ? (
@@ -113,7 +113,7 @@ const QuickView = ({ product, onClose }) => {
             <div className="flex flex-col justify-between space-y-5">
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-[12px] uppercase tracking-[0.25em] text-[#c9a962] font-semibold">
-                  <span className="text-zinc-600 font-extrabold">{product.brand || 'MAHIRASH'}</span>
+                  <span className="text-zinc-600 font-bold">{product.brand || 'MAHIRASH'}</span>
                   {product.category && <span>• {product.category}</span>}
                 </div>
 
@@ -144,7 +144,7 @@ const QuickView = ({ product, onClose }) => {
                 {/* Size / Volume Option Selector */}
                 {sizeOptions.length > 0 && (
                   <div className="space-y-2 pt-2 border-t border-zinc-100">
-                    <span className="text-[11px] uppercase tracking-[0.2em] text-zinc-800 font-bold block">
+                    <span className="text-[12px] uppercase tracking-[0.2em] text-zinc-800 font-bold block">
                       Select Volume
                     </span>
                     <div className="flex flex-wrap gap-2">
@@ -214,7 +214,7 @@ const QuickView = ({ product, onClose }) => {
                 <div className="flex gap-3">
                   <button
                     onClick={handleAction}
-                    className={`flex-1 py-3.5 px-4 text-white text-[11px] font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 cursor-pointer ${isOutOfStock
+                    className={`flex-1 py-3.5 px-4 text-white text-[12px] font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 cursor-pointer ${isOutOfStock
                       ? 'bg-[#0D0D0D] hover:bg-[#b8860b]'
                       : isPreOrder
                         ? 'bg-[#b8860b] hover:bg-black'
@@ -241,7 +241,7 @@ const QuickView = ({ product, onClose }) => {
 
                   <button
                     onClick={() => navigate(`/product/${product.id}`)}
-                    className="py-3.5 px-4 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 text-[11px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                    className="py-3.5 px-4 bg-zinc-100 hover:bg-zinc-200 text-zinc-900 text-[12px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
                   >
                     View Details
                   </button>

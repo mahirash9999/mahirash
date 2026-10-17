@@ -353,7 +353,7 @@ const OrdersTable = ({ onRefresh }) => {
       <div className="overflow-x-auto scrollbar-thin">
         <table className="w-full min-w-[840px] text-left text-sm text-[13px]">
           <thead className="bg-[#FAF9F6] border-b border-zinc-200">
-            <tr className="text-[11px] text-zinc-700 uppercase tracking-widest">
+            <tr className="text-[12px] text-zinc-700 uppercase tracking-widest">
               <th className="px-6 py-4 w-10">
                 <input
                   type="checkbox"
@@ -397,30 +397,30 @@ const OrdersTable = ({ onRefresh }) => {
                   </td>
                   <td className="px-6 py-4">
                     <p className="text-zinc-900 font-bold">{order.shipping?.name || "Atelier Guest"}</p>
-                    <p className="text-[11px] text-zinc-550 text-zinc-500">{order.userEmail}</p>
+                    <p className="text-[12px] text-zinc-550 text-zinc-500">{order.userEmail}</p>
                     {order.shipping?.phone && <p className="text-[12px] text-zinc-400 font-semibold">{order.shipping.phone}</p>}
                   </td>
                   <td className="px-6 py-4 text-zinc-900 font-semibold">₹{(order.total || 0).toLocaleString("en-IN")}</td>
                   <td className="px-6 py-4">
                     {order.awbCode ? (
                       <div className="space-y-1 text-left">
-                        <span className="inline-flex items-center gap-1 text-[11px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-mono font-bold">
+                        <span className="inline-flex items-center gap-1 text-[12px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-mono font-bold">
                           <Truck size={10} /> {order.awbCode}
                         </span>
                         <p className="text-[10.5px] text-zinc-500 italic block">{order.courierName || "Delhivery Partner"}</p>
                       </div>
                     ) : (
-                      <span className="text-[11px] text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-md font-medium">
+                      <span className="text-[12px] text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-md font-medium">
                         Not Dispatched
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-zinc-600 uppercase text-[11px] tracking-wider font-mono">{order.paymentMethod || "Online"}</td>
+                  <td className="px-6 py-4 text-zinc-600 uppercase text-[12px] tracking-wider font-mono">{order.paymentMethod || "Online"}</td>
                   <td className="px-6 py-4">
                     <select
                       value={order.status?.toLowerCase() || "confirmed"}
                       onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                      className={`inline-flex items-center px-2 py-1 rounded-md border text-[11px] uppercase tracking-wider font-semibold outline-none cursor-pointer ${statusBadgeClasses(order.status)}`}
+                      className={`inline-flex items-center px-2 py-1 rounded-md border text-[12px] uppercase tracking-wider font-semibold outline-none cursor-pointer ${statusBadgeClasses(order.status)}`}
                     >
                       {ORDER_STATUSES.map(st => (
                         <option key={st} value={st} className="bg-white text-black">{st}</option>
@@ -433,7 +433,7 @@ const OrdersTable = ({ onRefresh }) => {
                         <button
                           type="button"
                           onClick={() => handleTrackAWB(order.awbCode)}
-                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[11px] font-semibold flex items-center gap-1.5 transition"
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[12px] font-semibold flex items-center gap-1.5 transition"
                           title="Track details live"
                         >
                           <Truck size={12} /> Track Live
@@ -443,7 +443,7 @@ const OrdersTable = ({ onRefresh }) => {
                           type="button"
                           disabled={syncingOrderId === order.id}
                           onClick={() => handleSyncShiprocket(order)}
-                          className="px-3 py-1.5 bg-zinc-900 hover:bg-black disabled:bg-zinc-400 text-white rounded text-[11px] font-semibold flex items-center gap-1.5 transition"
+                          className="px-3 py-1.5 bg-zinc-900 hover:bg-black disabled:bg-zinc-400 text-white rounded text-[12px] font-semibold flex items-center gap-1.5 transition"
                         >
                           {syncingOrderId === order.id ? (
                             <>
@@ -517,7 +517,7 @@ const OrdersTable = ({ onRefresh }) => {
               {/* Header */}
               <div className="px-6 py-5 border-b border-zinc-200 flex items-center justify-between">
                 <div>
-                  <span className="text-[12px] text-zinc-400 font-extrabold uppercase tracking-widest">Courier Partner Live Info</span>
+                  <span className="text-[12px] text-zinc-400 font-bold uppercase tracking-widest">Courier Partner Live Info</span>
                   <h3 className="text-sm font-bold text-zinc-900 font-serif uppercase tracking-widest mt-0.5">AWB Tracking Code: {activeTrackingAwb}</h3>
                 </div>
                 <button
@@ -566,14 +566,14 @@ const OrdersTable = ({ onRefresh }) => {
 
                     {/* Checkpoints logs timeline */}
                     <div className="space-y-4 text-left font-sans">
-                      <h4 className="text-[11px] text-zinc-450 text-zinc-550 uppercase tracking-widest font-extrabold pb-2 border-b border-zinc-100">Scan Activity Logs</h4>
+                      <h4 className="text-[12px] text-zinc-450 text-zinc-550 uppercase tracking-widest font-bold pb-2 border-b border-zinc-100">Scan Activity Logs</h4>
                       <div className="relative border-l border-zinc-200 ml-2 pl-5 space-y-6 py-2">
                         {trackingData.scans && trackingData.scans.length > 0 ? (
                           trackingData.scans.map((scan, idx) => (
                             <div key={idx} className="relative group text-left">
                               <span className={`absolute -left-[27px] top-1 w-2.5 h-2.5 rounded-full border-2 ${idx === 0 ? "bg-black border-black ring-4 ring-zinc-100" : "bg-white border-zinc-300"}`} />
                               <div className="space-y-0.5">
-                                <span className="text-[9.5px] font-mono text-zinc-400 block">{scan.date}</span>
+                                <span className="text-[12px] font-mono text-zinc-400 block">{scan.date}</span>
                                 <h5 className="text-[11.5px] font-bold text-zinc-900 leading-tight">{scan.activity}</h5>
                                 {scan.location && (
                                   <p className="text-[10.5px] text-zinc-500 font-light flex items-center gap-1 mt-0.5">
@@ -588,7 +588,7 @@ const OrdersTable = ({ onRefresh }) => {
                           <div className="relative">
                             <span className="absolute -left-[26px] top-1 w-2.5 h-2.5 rounded-full bg-black border border-black" />
                             <div className="space-y-0.5">
-                              <span className="text-[9.5px] text-zinc-400 font-mono">Just Now</span>
+                              <span className="text-[12px] text-zinc-400 font-mono">Just Now</span>
                               <h5 className="text-[11.5px] text-zinc-900 font-bold">Courier manifest generated.</h5>
                               <p className="text-[10.5px] text-zinc-500 font-light">Coordinating handoff and carrier sorting center scheduling.</p>
                             </div>

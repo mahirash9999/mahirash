@@ -110,7 +110,7 @@ const EditorialStory = () => {
                 to="/about"
                 className="inline-flex items-center gap-3 group"
               >
-                <span className="text-[11px] uppercase tracking-[0.2em] font-black text-white/60 group-hover:text-white transition-colors duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-white/60 after:origin-left">
+                <span className="text-[12px] uppercase tracking-[0.2em] font-black text-white/60 group-hover:text-white transition-colors duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-white/60 after:origin-left">
                   Read Our Story
                 </span>
                 <div className="w-9 h-9 rounded-full border border-white/15 flex items-center justify-center group-hover:bg-white group-hover:border-white transition-all duration-400">

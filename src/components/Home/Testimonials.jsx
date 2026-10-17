@@ -156,44 +156,42 @@ const Testimonials = () => {
   if (loading || !settings.is_active) return null;
 
   return (
-    <section className="py-14 md:py-24 bg-[#FAF8F5] overflow-hidden relative border-t border-[#E5D5B8]/40">
+    <section className="py-14 md:py-24 bg-[#F5F2EB] overflow-hidden relative border-t border-[#E5D5B8]/40">
       {/* Luxury Ambient Radial Overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06)_0%,transparent_70%)] pointer-events-none" />
 
-      <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="w-full max-w-[1450px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-        {/* Header Layout */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div className="flex-1 flex flex-col md:flex-row md:items-end gap-6 md:gap-12">
-            <div>
-              <p className="text-[12px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
-                <Quote size={13} className="text-[#B8860B]" />
-                {settings.eyebrow}
-              </p>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight tracking-[0.15em] text-[#0D0D0D] uppercase whitespace-nowrap">
-                {settings.heading}
-              </h2>
-            </div>
-            <div className="hidden md:block flex-1 h-[1px] bg-gradient-to-r from-[#B8860B]/40 via-[#E5D5B8] to-transparent mb-3" />
-          </div>
-
-          <div className="flex items-center gap-6 self-start md:self-auto">
-            <div className="flex gap-2.5">
-              <button
-                onClick={() => swiperRef.current?.slidePrev()}
-                aria-label="Previous review"
-                className="w-10 h-10 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-[#0D0D0D] hover:text-white hover:bg-[#0D0D0D] hover:border-[#0D0D0D] transition-all duration-300 cursor-pointer shadow-md"
-              >
-                &larr;
-              </button>
-              <button
-                onClick={() => swiperRef.current?.slideNext()}
-                aria-label="Next review"
-                className="w-10 h-10 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-[#0D0D0D] hover:text-white hover:bg-[#0D0D0D] hover:border-[#0D0D0D] transition-all duration-300 cursor-pointer shadow-md"
-              >
-                &rarr;
-              </button>
-            </div>
+        {/* Centered Header Layout without eyebrow */}
+        <div className="flex flex-col items-center justify-center text-center gap-4 mb-10 md:mb-12">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-[0.15em] text-[#0D0D0D] uppercase text-center">
+            {(() => {
+              const text = settings.heading || 'CLIENT EXPERIENCES';
+              const words = text.trim().split(' ');
+              if (words.length <= 1) return text;
+              const last = words.pop();
+              return (
+                <>
+                  {words.join(' ')} <span className="text-[#B8860B] italic font-serif">{last}</span>
+                </>
+              );
+            })()}
+          </h2>
+          <div className="flex items-center justify-center gap-2.5">
+            <button
+              onClick={() => swiperRef.current?.slidePrev()}
+              aria-label="Previous review"
+              className="w-9 h-9 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-zinc-700 hover:text-white hover:bg-[#B8860B] hover:border-[#B8860B] transition-all duration-300 cursor-pointer shadow-xs"
+            >
+              &larr;
+            </button>
+            <button
+              onClick={() => swiperRef.current?.slideNext()}
+              aria-label="Next review"
+              className="w-9 h-9 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-zinc-700 hover:text-white hover:bg-[#B8860B] hover:border-[#B8860B] transition-all duration-300 cursor-pointer shadow-xs"
+            >
+              &rarr;
+            </button>
           </div>
         </div>
 
@@ -242,7 +240,7 @@ const Testimonials = () => {
                       </div>
 
                       {/* Verified Badge */}
-                      <span className="inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.2em] font-extrabold text-[#B8860B] bg-[#FAF8F5] border border-[#E5D5B8] px-2.5 py-1 rounded-full shadow-sm">
+                      <span className="inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.2em] font-bold text-[#B8860B] bg-[#FAF8F5] border border-[#E5D5B8] px-2.5 py-1 rounded-full shadow-sm">
                         <CheckCircle2 size={11} className="text-[#B8860B]" />
                         {item.status || 'Verified Patron'}
                       </span>
@@ -300,7 +298,7 @@ const Testimonials = () => {
                 <span className="text-xl sm:text-2xl font-bold tracking-wide text-[#0D0D0D] uppercase leading-none mb-1">
                   {st.value}
                 </span>
-                <span className="text-[12px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-stone-600">
+                <span className="text-[12px] sm:text-[12px] uppercase tracking-[0.2em] font-semibold text-stone-600">
                   {st.label}
                 </span>
               </div>

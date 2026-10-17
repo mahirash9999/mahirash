@@ -85,7 +85,7 @@ const Contact = () => {
                     <div className="flex-1 min-w-0">
                       <p className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-0.5">{item.label}</p>
                       <p className="text-[15px]   text-zinc-900 truncate">{item.val}</p>
-                      <p className="text-[11px] text-zinc-500 mt-0.5">{item.desc}</p>
+                      <p className="text-[12px] text-zinc-500 mt-0.5">{item.desc}</p>
                     </div>
                     <ArrowUpRight size={15} className={`text-zinc-400 transition-all duration-300 shrink-0 ${activeChannel === i ? 'rotate-45 text-black' : ''}`} />
                   </a>
@@ -150,7 +150,7 @@ const Contact = () => {
                 </div>
 
                 <button type="submit"
-                  className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-black text-[11px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2.5 group"
+                  className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-black text-[12px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2.5 group"
                 >
                   <Send size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
                   Send Message

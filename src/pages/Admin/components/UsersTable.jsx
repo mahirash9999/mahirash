@@ -102,7 +102,7 @@ const UsersTable = ({ users, onRefresh }) => {
       <div className="overflow-x-auto scrollbar-thin">
         <table className="w-full min-w-[620px] text-left text-sm">
           <thead className="bg-zinc-100 animate-fadeIn">
-            <tr className="text-[11px] text-zinc-700 uppercase tracking-widest">
+            <tr className="text-[12px] text-zinc-700 uppercase tracking-widest">
               <th className="px-6 py-3.5 w-10">
                 <input
                   type="checkbox"

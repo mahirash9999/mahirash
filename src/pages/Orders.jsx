@@ -344,7 +344,7 @@ const Orders = () => {
                 key={tab.id}
                 type="button"
                 onClick={() => setStatusFilter(tab.id)}
-                className={`px-4 py-2 text-[12px] font-extrabold uppercase tracking-widest transition-all rounded-sm ${statusFilter === tab.id
+                className={`px-4 py-2 text-[12px] font-bold uppercase tracking-widest transition-all rounded-sm ${statusFilter === tab.id
                   ? "bg-black text-white font-black"
                   : "bg-zinc-100 text-zinc-600 border border-zinc-200 hover:text-black hover:bg-zinc-200"
                   }`}
@@ -392,7 +392,7 @@ const Orders = () => {
             </p>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 px-7 py-3 bg-black text-white font-extrabold text-[12px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all"
+              className="inline-flex items-center gap-2 px-7 py-3 bg-black text-white font-bold text-[12px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all"
             >
               Explore Shop <ChevronRight size={12} />
             </Link>
@@ -439,14 +439,14 @@ const Orders = () => {
 
                     <div className="flex flex-wrap items-center gap-3">
                       <div className="text-left sm:text-right mr-2">
-                        <span className="text-[12px] font-extrabold uppercase tracking-widest text-zinc-400 block">
+                        <span className="text-[12px] font-bold uppercase tracking-widest text-zinc-400 block">
                           Placed On
                         </span>
                         <span className="text-[14px] text-zinc-700">{formattedDate}</span>
                       </div>
 
                       <span
-                        className={`px-3 py-1 text-[12px] font-extrabold uppercase tracking-widest border flex items-center gap-1.5 ${getStatusProps(order.status).colorClass}`}
+                        className={`px-3 py-1 text-[12px] font-bold uppercase tracking-widest border flex items-center gap-1.5 ${getStatusProps(order.status).colorClass}`}
                       >
                         {(() => { const { Icon } = getStatusProps(order.status); return <Icon size={11} />; })()}
                         {order.status || "Confirmed"}
@@ -456,7 +456,7 @@ const Orders = () => {
                       <button
                         type="button"
                         onClick={() => handleDownloadInvoice(order)}
-                        className="px-3.5 py-2 bg-white border border-zinc-300 hover:bg-[#b8860b] hover:text-white text-[#b8860b] text-[12px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2"
+                        className="px-3.5 py-2 bg-white border border-zinc-300 hover:bg-[#b8860b] hover:text-white text-[#b8860b] text-[12px] font-bold uppercase tracking-widest transition-all flex items-center gap-2"
                         title="Download official tax invoice PDF"
                       >
                         <Download size={12} />
@@ -467,7 +467,7 @@ const Orders = () => {
                       <button
                         type="button"
                         onClick={() => setSelectedOrder(order)}
-                        className="px-3.5 py-2 bg-black text-white font-extrabold text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center gap-1.5"
+                        className="px-3.5 py-2 bg-black text-white font-bold text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center gap-1.5"
                       >
                         <Eye size={12} />
                         Details
@@ -500,7 +500,7 @@ const Orders = () => {
                               <h4 className="text-[14px]   text-zinc-900 uppercase tracking-wider line-clamp-1">
                                 {item.name}
                               </h4>
-                              <div className="flex items-center gap-3 text-[11px] text-zinc-500 mt-1">
+                              <div className="flex items-center gap-3 text-[12px] text-zinc-500 mt-1">
                                 {item.size && <span>Size: <strong className="text-zinc-800">{item.size}</strong></span>}
                                 <span>Qty: <strong className="text-zinc-800">{item.quantity || 1}</strong></span>
                               </div>
@@ -519,7 +519,7 @@ const Orders = () => {
 
                   {/* Order Summary Bottom Bar */}
                   <div className="pt-4 border-t border-zinc-200 flex items-center justify-between text-[14px]">
-                    <div className="text-zinc-500 text-[11px]">
+                    <div className="text-zinc-500 text-[12px]">
                       <span>Payment: <strong className="text-zinc-900 uppercase">{order.paymentMethod || "Online"}</strong></span>
                     </div>
 
@@ -595,7 +595,7 @@ const Orders = () => {
                   </div>
                   <Link
                     to={`/track?awb=${selectedOrder.awbCode}`}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-1.5"
+                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-bold uppercase tracking-widest transition-colors flex items-center gap-1.5"
                   >
                     <Truck size={12} /> Track Live
                   </Link>
@@ -613,7 +613,7 @@ const Orders = () => {
                   <p className="text-zinc-600">
                     {selectedOrder.shipping?.city}, {selectedOrder.shipping?.state} - {selectedOrder.shipping?.pincode}
                   </p>
-                  <p className="text-[#b8860b] font-mono text-[11px] pt-1">Phone: {selectedOrder.shipping?.phone || 'N/A'}</p>
+                  <p className="text-[#b8860b] font-mono text-[12px] pt-1">Phone: {selectedOrder.shipping?.phone || 'N/A'}</p>
                 </div>
 
                 <div className="space-y-1">
@@ -621,7 +621,7 @@ const Orders = () => {
                     <CreditCard size={12} /> Payment Info
                   </div>
                   <p className="text-zinc-700">Method: <strong className="text-zinc-900 uppercase">{selectedOrder.paymentMethod || 'Online'}</strong></p>
-                  <p className="text-zinc-500 font-mono text-[11px]">Transaction ID: {selectedOrder.paymentId || 'COD'}</p>
+                  <p className="text-zinc-500 font-mono text-[12px]">Transaction ID: {selectedOrder.paymentId || 'COD'}</p>
                   <p className="text-zinc-700">Status: <strong className="text-emerald-700 uppercase">PAID / CONFIRMED</strong></p>
                 </div>
               </div>
@@ -643,7 +643,7 @@ const Orders = () => {
                         />
                         <div>
                           <p className="text-[14px]   text-zinc-900 uppercase">{item.name}</p>
-                          <p className="text-[11px] text-zinc-500">
+                          <p className="text-[12px] text-zinc-500">
                             {item.size ? `Size: ${item.size} • ` : ""}Qty: {item.quantity || 1}
                           </p>
                         </div>
@@ -677,7 +677,7 @@ const Orders = () => {
                 <button
                   type="button"
                   onClick={() => handleDownloadInvoice(selectedOrder)}
-                  className="flex-1 py-3 bg-black text-white font-extrabold text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-black text-white font-bold text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2"
                 >
                   <Download size={14} /> Download PDF Invoice
                 </button>

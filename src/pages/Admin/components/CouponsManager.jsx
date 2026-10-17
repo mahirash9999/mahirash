@@ -173,7 +173,7 @@ const CouponsManager = () => {
                             {coupons.map((coupon) => (
                                 <tr key={coupon.id} className="border-b border-zinc-200 hover:bg-zinc-50/80 transition-colors">
                                     <td className="py-3.5 px-4 font-bold text-zinc-900">
-                                        <span className="inline-flex items-center bg-[#b8860b]/10 text-[#b8860b] text-[11px] px-2 py-0.5 rounded tracking-wider border border-[#b8860b]/20 font-mono">
+                                        <span className="inline-flex items-center bg-[#b8860b]/10 text-[#b8860b] text-[12px] px-2 py-0.5 rounded tracking-wider border border-[#b8860b]/20 font-mono">
                                             {coupon.code}
                                         </span>
                                     </td>
@@ -238,7 +238,7 @@ const CouponsManager = () => {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4">
                     <form onSubmit={handleSubmit} className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl max-w-2xl w-full p-4 sm:p-6 space-y-4 shadow-2xl max-h-[92vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex justify-between items-center border-b border-zinc-200 pb-3">
-                            <h3 className="text-sm font-extrabold uppercase tracking-wider text-zinc-900">
+                            <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-900">
                                 {editingCoupon ? `Edit Coupon: ${editingCoupon.code}` : "Create Brand Coupon / Offer"}
                             </h3>
                             <button type="button" onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-black p-1.5 rounded-full hover:bg-zinc-100 transition-colors">

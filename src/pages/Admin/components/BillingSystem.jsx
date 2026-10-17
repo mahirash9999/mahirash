@@ -108,7 +108,7 @@ const BillingSystem = () => {
                         <p className="text-[12px] text-zinc-400 font-mono">{phone}</p>
                       </td>
                       <td className="py-3.5 px-3 text-zinc-600 font-medium">{dateStr}</td>
-                      <td className="py-3.5 px-3 font-extrabold text-zinc-900">₹{Number(total).toLocaleString('en-IN')}</td>
+                      <td className="py-3.5 px-3 font-bold text-zinc-900">₹{Number(total).toLocaleString('en-IN')}</td>
                       <td className="py-3.5 px-3 text-zinc-600 font-medium">{o.paymentMethod || 'UPI / Razorpay'}</td>
                       <td className="py-3.5 px-3 text-right">
                         <button
@@ -140,7 +140,7 @@ const BillingSystem = () => {
 
             {/* Modal Close & Print Buttons Header (Hidden during printing) */}
             <div className="flex justify-between items-center border-b border-zinc-200 pb-4 print:hidden">
-              <span className="text-[14px] font-extrabold uppercase tracking-widest text-[#b8860b]">
+              <span className="text-[14px] font-bold uppercase tracking-widest text-[#b8860b]">
                 Tax Invoice Preview
               </span>
               <div className="flex items-center gap-2">
@@ -177,7 +177,7 @@ const BillingSystem = () => {
                   <p className="text-[14px] text-zinc-500">Contact: +91 8959041514 | mahirash.help@gmail.com</p>
                 </div>
                 <div className="text-right">
-                  <span className="px-3 py-1 bg-black text-white text-[12px] font-extrabold uppercase tracking-widest rounded-md inline-block mb-2">
+                  <span className="px-3 py-1 bg-black text-white text-[12px] font-bold uppercase tracking-widest rounded-md inline-block mb-2">
                     TAX INVOICE
                   </span>
                   <p className="text-[14px]   text-zinc-900">Invoice #: INV-{selectedOrder.id?.slice(0, 8).toUpperCase()}</p>
@@ -255,7 +255,7 @@ const BillingSystem = () => {
                     <span>Shipping Fee:</span>
                     <span className="  text-emerald-600">FREE</span>
                   </div>
-                  <div className="flex justify-between text-sm font-extrabold text-black border-t border-zinc-300 pt-2">
+                  <div className="flex justify-between text-sm font-bold text-black border-t border-zinc-300 pt-2">
                     <span>Grand Total:</span>
                     <span>₹{Number(selectedOrder.total || selectedOrder.grandTotal || 3999).toLocaleString('en-IN')}</span>
                   </div>

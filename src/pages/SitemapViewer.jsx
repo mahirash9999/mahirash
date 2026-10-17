@@ -39,7 +39,7 @@ const SitemapViewer = () => {
             <FileCode size={20} className="text-[#c9a962]" />
             <div>
               <h1 className="text-sm font-bold uppercase tracking-wider text-white">Dynamic XML Sitemap</h1>
-              <p className="text-[11px] text-zinc-400">Live generated from active Firestore products, categories & pages</p>
+              <p className="text-[12px] text-zinc-400">Live generated from active Firestore products, categories & pages</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

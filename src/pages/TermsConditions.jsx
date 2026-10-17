@@ -56,17 +56,17 @@ const TermsConditions = () => {
             4. Shipping, Delivery & Transit
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
-            We strive to dispatch all orders within 24 to 48 working hours. Estimated delivery timelines (typically 3 to 5 business days) are approximate and may vary based on courier performance or remote region transit times. MAHIRASH PARFUMERIE is not liable for delay caused by natural events or logistics disruptions beyond our control.
+            We strive to dispatch all orders promptly. Delivery timelines are typically 4-5 days across India. All shipments are insured and carefully packaged in tamper-evident luxury containers.
           </p>
         </section>
 
-        {/* Returns & Refunds */}
+        {/* Authenticity Guarantee & Quality Commitment */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
           <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
-            5. Returns, Exchanges & Refunds
+            5. Authenticity Guarantee & Quality Commitment
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
-            Items may be returned or exchanged within 7 to 10 calendar days of delivery, provided they remain sealed, unused, and in their original packaging with all security seals intact. Refunds are initiated only after the returned product has been received back at our warehouse and cleared through a quality inspection process.
+            All Mahirash creations are 100% authentic, handcrafted extraits de parfum created with precious botanical ingredients and royal Cambodian ouds. Due to the personal and artisanal nature of haute perfumerie, we do not accept product returns. In the rare event that a package arrives damaged in transit, our concierge team will immediately assist with verification and replacement.
           </p>
         </section>
 

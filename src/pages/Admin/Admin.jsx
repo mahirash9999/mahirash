@@ -542,7 +542,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
             <div className="flex justify-between items-center border-b border-zinc-200 pb-3 mb-3">
               <div>
                 <h3 className="text-sm sm:text-base font-bold uppercase tracking-wider text-zinc-900">{editingItem ? "Edit Item" : "Create Item"}</h3>
-                <p className="text-[11px] text-zinc-400">Save your changes directly to the cloud</p>
+                <p className="text-[12px] text-zinc-400">Save your changes directly to the cloud</p>
               </div>
               <button type="button" onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-black p-1.5 rounded-full hover:bg-zinc-100 transition-colors">
                 <X size={16} />
@@ -559,7 +559,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                         <OptimizedCloudinaryImage src={formData[f.key]} preset="category" className="w-20 h-20 object-cover rounded-lg border border-zinc-200 bg-zinc-50" alt="preview" />
                       )}
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="px-3 py-1.5 rounded-lg border border-zinc-300 bg-zinc-100 hover:bg-zinc-200 text-[11px] font-semibold text-zinc-900 cursor-pointer transition-all">
+                        <label className="px-3 py-1.5 rounded-lg border border-zinc-300 bg-zinc-100 hover:bg-zinc-200 text-[12px] font-semibold text-zinc-900 cursor-pointer transition-all">
                           Upload from Device
                           <input
                             type="file"
@@ -574,7 +574,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                             setActivePickerField(f.key);
                             setIsPickerOpen(true);
                           }}
-                          className="px-3 py-1.5 rounded-lg border border-zinc-300 bg-white hover:bg-zinc-50 text-[11px] font-semibold text-zinc-900 cursor-pointer flex items-center gap-1.5 transition-all shadow-sm"
+                          className="px-3 py-1.5 rounded-lg border border-zinc-300 bg-white hover:bg-zinc-50 text-[12px] font-semibold text-zinc-900 cursor-pointer flex items-center gap-1.5 transition-all shadow-sm"
                         >
                           <ImageIcon size={13} className="text-[#b8860b]" /> Choose from Cloudinary
                         </button>
@@ -831,19 +831,19 @@ const CommunityManager = () => {
       <div className="flex border-b border-zinc-200 mb-6 text-[14px]">
         <button
           onClick={() => setSubTab("settings")}
-          className={`px-4 py-2   border-b-2 transition-all ${subTab === "settings" ? "border-black text-zinc-900 font-extrabold" : "border-transparent text-zinc-500 hover:text-black"}`}
+          className={`px-4 py-2   border-b-2 transition-all ${subTab === "settings" ? "border-black text-zinc-900 font-bold" : "border-transparent text-zinc-500 hover:text-black"}`}
         >
           Section Settings
         </button>
         <button
           onClick={() => setSubTab("gallery")}
-          className={`px-4 py-2   border-b-2 transition-all ${subTab === "gallery" ? "border-black text-zinc-900 font-extrabold" : "border-transparent text-zinc-500 hover:text-black"}`}
+          className={`px-4 py-2   border-b-2 transition-all ${subTab === "gallery" ? "border-black text-zinc-900 font-bold" : "border-transparent text-zinc-500 hover:text-black"}`}
         >
           Gallery Images
         </button>
         <button
           onClick={() => setSubTab("stats")}
-          className={`px-4 py-2   border-b-2 transition-all ${subTab === "stats" ? "border-black text-zinc-900 font-extrabold" : "border-transparent text-zinc-500 hover:text-black"}`}
+          className={`px-4 py-2   border-b-2 transition-all ${subTab === "stats" ? "border-black text-zinc-900 font-bold" : "border-transparent text-zinc-500 hover:text-black"}`}
         >
           Social Proof Stats
         </button>
@@ -2090,16 +2090,16 @@ const Admin = () => {
             <div className="w-12 h-12 rounded-2xl bg-black text-[#c9a962] flex items-center justify-center shadow-xl shadow-black/10 ring-4 ring-black/5 mx-auto mb-2 transform hover:scale-105 transition-transform duration-300">
               <Sparkles size={22} strokeWidth={2} />
             </div>
-            <h1 className="text-lg font-poppins font-extrabold tracking-[0.2em] text-zinc-900 uppercase">
+            <h1 className="text-lg font-poppins font-bold tracking-[0.2em] text-zinc-900 uppercase">
               MAHIRASH ADMIN
             </h1>
-            <p className="text-[9.5px] text-[#b8860b] uppercase tracking-[0.25em] font-extrabold">
+            <p className="text-[12px] text-[#b8860b] uppercase tracking-[0.25em] font-bold">
               HAUTE PARFUMERIE CONTROL CENTRE
             </p>
           </div>
 
           {loginError && (
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-700 text-[11px] font-medium flex items-center gap-2.5">
+            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-700 text-[12px] font-medium flex items-center gap-2.5">
               <AlertCircle size={15} className="shrink-0 text-red-600" />
               <span>{loginError}</span>
             </div>
@@ -2143,7 +2143,7 @@ const Admin = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 bg-black text-white font-extrabold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 hover:bg-zinc-800 active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer shadow-lg shadow-black/10 rounded-xl mt-2 disabled:opacity-60"
+              className="w-full py-3.5 bg-black text-white font-bold text-[12px] uppercase tracking-[0.2em] transition-all duration-300 hover:bg-zinc-800 active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer shadow-lg shadow-black/10 rounded-xl mt-2 disabled:opacity-60"
             >
               <span>{isSubmitting ? "Authenticating..." : "Authenticate Admin"}</span>
               <ArrowRight size={14} />
@@ -2186,7 +2186,7 @@ const Admin = () => {
                 <h2 className="text-sm sm:text-base font-bold text-zinc-900 uppercase tracking-wider">
                   Add New Fragrance Product
                 </h2>
-                <p className="text-[11px] text-zinc-500">Configure formulation, pricing variants, and notes</p>
+                <p className="text-[12px] text-zinc-500">Configure formulation, pricing variants, and notes</p>
               </div>
               <button
                 type="button"

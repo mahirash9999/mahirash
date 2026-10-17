@@ -72,7 +72,7 @@ const sidebarSections = [
     items: [
       { name: "Hero Video", icon: Video },
       { name: "Home Page Collection", icon: Image },
-      { name: "Shop Miniatures", icon: Package },
+      // { name: "Shop Miniatures", icon: Package },
       { name: "Instagram Reels", icon: Instagram },
       { name: "FAQs", icon: HelpCircle },
       { name: "Shop By Scents", icon: Sparkles },
@@ -203,7 +203,7 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
               <p className="text-[13px] font-bold font-serif tracking-[0.12em] text-zinc-900 uppercase">
                 MAHIRASH
               </p>
-              <p className="text-[12px] text-[#b8860b] uppercase tracking-[0.2em] font-semibold">Luxury Atelier</p>
+              <p className="text-[12px] text-[#b8860b] uppercase tracking-[0.2em] font-semibold">Luxury Parfumerie</p>
             </div>
           </div>
 

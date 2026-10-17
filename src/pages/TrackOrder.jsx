@@ -191,7 +191,7 @@ const TrackOrder = () => {
                             </h2>
                             <form onSubmit={handleTrackSubmit} className="space-y-4">
                                 <div>
-                                    <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
+                                    <label className="block text-[12px] font-bold uppercase tracking-wider text-zinc-400 mb-1.5">
                                         Order Reference or AWB Track Code
                                     </label>
                                     <div className="relative">
@@ -336,7 +336,7 @@ const TrackOrder = () => {
                                                     Carrier status: {trackingData.currentStatus}
                                                 </h2>
                                             </div>
-                                            <span className={`px-4 py-1.5 text-[12px] font-extrabold uppercase tracking-widest border rounded-full ${getStatusColor(trackingData.currentStatus)}`}>
+                                            <span className={`px-4 py-1.5 text-[12px] font-bold uppercase tracking-widest border rounded-full ${getStatusColor(trackingData.currentStatus)}`}>
                                                 {trackingData.currentStatus}
                                             </span>
                                         </div>
@@ -381,7 +381,7 @@ const TrackOrder = () => {
                                                                 {scan.activity}
                                                             </h4>
                                                             {scan.location && (
-                                                                <p className="text-[11px] text-zinc-500 font-light flex items-center gap-1">
+                                                                <p className="text-[12px] text-zinc-500 font-light flex items-center gap-1">
                                                                     <MapPin size={11} className="text-zinc-400" />
                                                                     {scan.location}
                                                                 </p>
@@ -395,7 +395,7 @@ const TrackOrder = () => {
                                                     <div className="space-y-1">
                                                         <span className="text-[12px] font-mono text-zinc-400 block">Just Now</span>
                                                         <h4 className="text-[14px] font-bold text-zinc-900">Carrier Information Requested</h4>
-                                                        <p className="text-[11px] text-zinc-500 font-light">
+                                                        <p className="text-[12px] text-zinc-500 font-light">
                                                             Shipping label printed successfully. We are coordinating carrier pickup handoff.
                                                         </p>
                                                     </div>

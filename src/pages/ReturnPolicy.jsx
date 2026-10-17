@@ -32,8 +32,8 @@ const ReturnPolicy = () => {
               <div className="w-10 h-10 border border-zinc-300 flex items-center justify-center text-zinc-600 mb-3">
                 <Icon size={17} strokeWidth={1.5} />
               </div>
-              <h3 className="text-[11px] font-semibold uppercase tracking-wider text-zinc-900 mb-1">{title}</h3>
-              <p className="text-[11px] text-zinc-500">{sub}</p>
+              <h3 className="text-[12px] font-semibold uppercase tracking-wider text-zinc-900 mb-1">{title}</h3>
+              <p className="text-[12px] text-zinc-500">{sub}</p>
             </div>
           ))}
         </section>
@@ -41,7 +41,7 @@ const ReturnPolicy = () => {
         {/* 1. Return Eligibility */}
         <section className="space-y-5">
           <div className="flex items-center gap-2.5 pb-4 border-b border-zinc-200">
-            <span className="w-8 h-8 bg-black text-white text-[11px] font-black flex items-center justify-center">1</span>
+            <span className="w-8 h-8 bg-black text-white text-[12px] font-black flex items-center justify-center">1</span>
             <h2 className="text-xl font-light uppercase tracking-widest text-zinc-900">Return Eligibility</h2>
           </div>
           <ul className="space-y-3 text-[13px] md:text-sm text-zinc-600 leading-relaxed list-none">
@@ -67,7 +67,7 @@ const ReturnPolicy = () => {
         {/* 2. How to Return */}
         <section className="space-y-5 border-t border-zinc-200 pt-10">
           <div className="flex items-center gap-2.5 pb-4 border-b border-zinc-200">
-            <span className="w-8 h-8 bg-black text-white text-[11px] font-black flex items-center justify-center">2</span>
+            <span className="w-8 h-8 bg-black text-white text-[12px] font-black flex items-center justify-center">2</span>
             <h2 className="text-xl font-light uppercase tracking-widest text-zinc-900">How To Return</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-4 md:gap-5">
@@ -91,13 +91,13 @@ const ReturnPolicy = () => {
         {/* 3. Refund Timeline & Methods */}
         <section className="space-y-5 border-t border-zinc-200 pt-10">
           <div className="flex items-center gap-2.5 pb-4 border-b border-zinc-200">
-            <span className="w-8 h-8 bg-black text-white text-[11px] font-black flex items-center justify-center">3</span>
+            <span className="w-8 h-8 bg-black text-white text-[12px] font-black flex items-center justify-center">3</span>
             <h2 className="text-xl font-light uppercase tracking-widest text-zinc-900">Refund Timeline &amp; Methods</h2>
           </div>
           <div className="bg-white border border-zinc-200 p-6 md:p-8 shadow-sm">
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <h3 className="text-[11px] font-black uppercase tracking-[0.25em] text-[#b8860b]">Processing Timeline</h3>
+                <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b]">Processing Timeline</h3>
                 <ul className="space-y-3 text-[14px] md:text-sm text-zinc-600">
                   <li className="flex gap-2.5 items-start">
                     <Clock size={14} className="text-zinc-500 shrink-0 mt-0.5" />
@@ -114,7 +114,7 @@ const ReturnPolicy = () => {
                 </ul>
               </div>
               <div className="space-y-4">
-                <h3 className="text-[11px] font-black uppercase tracking-[0.25em] text-[#b8860b]">Payment Method Refunds</h3>
+                <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b]">Payment Method Refunds</h3>
                 <ul className="space-y-3 text-[14px] md:text-sm text-zinc-600">
                   <li>• <strong>UPI / Cards / Net Banking:</strong> Refund credited back to original source account.</li>
                   <li>• <strong>Wallets (Paytm, PhonePe, GPay):</strong> Refund to wallet within 24–48 hours.</li>
@@ -129,7 +129,7 @@ const ReturnPolicy = () => {
         {/* 4. Accepted Payment Methods */}
         <section className="space-y-5 border-t border-zinc-200 pt-10">
           <div className="flex items-center gap-2.5 pb-4 border-b border-zinc-200">
-            <span className="w-8 h-8 bg-black text-white text-[11px] font-black flex items-center justify-center">4</span>
+            <span className="w-8 h-8 bg-black text-white text-[12px] font-black flex items-center justify-center">4</span>
             <h2 className="text-xl font-light uppercase tracking-widest text-zinc-900">Payment Methods We Accept</h2>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
@@ -143,12 +143,12 @@ const ReturnPolicy = () => {
             ].map((m) => (
               <div key={m.label} className="bg-white border border-zinc-200 p-4 flex flex-col items-center text-center hover:border-black/30 transition-colors">
                 <ShieldCheck size={18} className="text-[#b8860b] mb-2" />
-                <h3 className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 mb-1">{m.label}</h3>
+                <h3 className="text-[12px] font-bold uppercase tracking-wider text-zinc-900 mb-1">{m.label}</h3>
                 <p className="text-[12px] text-zinc-500 leading-snug">{m.desc}</p>
               </div>
             ))}
           </div>
-          <p className="text-[11px] text-zinc-500 text-center pt-2">
+          <p className="text-[12px] text-zinc-500 text-center pt-2">
             All online transactions are secured via Razorpay with 256-bit SSL encryption.
           </p>
         </section>
@@ -156,7 +156,7 @@ const ReturnPolicy = () => {
         {/* 5. Exchanges & Cancellations */}
         <section className="space-y-5 border-t border-zinc-200 pt-10">
           <div className="flex items-center gap-2.5 pb-4 border-b border-zinc-200">
-            <span className="w-8 h-8 bg-black text-white text-[11px] font-black flex items-center justify-center">5</span>
+            <span className="w-8 h-8 bg-black text-white text-[12px] font-black flex items-center justify-center">5</span>
             <h2 className="text-xl font-light uppercase tracking-widest text-zinc-900">Exchanges &amp; Order Cancellation</h2>
           </div>
           <div className="space-y-4 text-[13px] md:text-sm text-zinc-600 leading-relaxed">
@@ -169,7 +169,7 @@ const ReturnPolicy = () => {
         {/* 6. Contact */}
         <section className="bg-[#f5f5f5] border border-zinc-200 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
           <div>
-            <h3 className="text-[11px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-2">Need Help With A Return?</h3>
+            <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-2">Need Help With A Return?</h3>
             <p className="text-[13px] md:text-sm text-zinc-600">Reach out to our support team for assistance with returns, exchanges or refund status.</p>
           </div>
           <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3.5 bg-black text-white text-[12px] font-black uppercase tracking-[0.2em] hover:bg-zinc-800 transition-colors shrink-0 self-start md:self-auto">
@@ -177,7 +177,7 @@ const ReturnPolicy = () => {
           </Link>
         </section>
 
-        <p className="text-[11px] text-zinc-400 text-center pt-4">
+        <p className="text-[12px] text-zinc-400 text-center pt-4">
           Last updated: {new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })} • This policy is subject to change without prior notice.
         </p>
       </div>

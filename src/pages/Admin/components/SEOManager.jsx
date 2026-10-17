@@ -138,9 +138,9 @@ const SEOManager = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Total Sitemap URLs</span>
-            <h3 className="text-2xl font-extrabold text-zinc-900 mt-1">{totalIndexedUrls}</h3>
-            <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
+            <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-400">Total Sitemap URLs</span>
+            <h3 className="text-2xl font-bold text-zinc-900 mt-1">{totalIndexedUrls}</h3>
+            <span className="text-[12px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
               <CheckCircle size={12} /> Auto-synced with DB
             </span>
           </div>
@@ -151,9 +151,9 @@ const SEOManager = () => {
 
         <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Active Products Indexed</span>
-            <h3 className="text-2xl font-extrabold text-zinc-900 mt-1">{stats.productsCount}</h3>
-            <span className="text-[11px] text-zinc-500 mt-1 block">With Schema.org & images</span>
+            <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-400">Active Products Indexed</span>
+            <h3 className="text-2xl font-bold text-zinc-900 mt-1">{stats.productsCount}</h3>
+            <span className="text-[12px] text-zinc-500 mt-1 block">With Schema.org & images</span>
           </div>
           <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
             <Search size={22} />
@@ -162,9 +162,9 @@ const SEOManager = () => {
 
         <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Catalog Categories</span>
-            <h3 className="text-2xl font-extrabold text-zinc-900 mt-1">{stats.categoriesCount}</h3>
-            <span className="text-[11px] text-zinc-500 mt-1 block">Dynamic URL routes</span>
+            <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-400">Catalog Categories</span>
+            <h3 className="text-2xl font-bold text-zinc-900 mt-1">{stats.categoriesCount}</h3>
+            <span className="text-[12px] text-zinc-500 mt-1 block">Dynamic URL routes</span>
           </div>
           <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
             <Sparkles size={22} />
@@ -173,9 +173,9 @@ const SEOManager = () => {
 
         <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Core Store Pages</span>
-            <h3 className="text-2xl font-extrabold text-zinc-900 mt-1">{stats.totalPages}</h3>
-            <span className="text-[11px] text-zinc-500 mt-1 block">Home, Shop, About, Legal</span>
+            <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-400">Core Store Pages</span>
+            <h3 className="text-2xl font-bold text-zinc-900 mt-1">{stats.totalPages}</h3>
+            <span className="text-[12px] text-zinc-500 mt-1 block">Home, Shop, About, Legal</span>
           </div>
           <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
             <ShieldCheck size={22} />
@@ -300,14 +300,14 @@ const SEOManager = () => {
                 <ShieldCheck size={16} className="text-[#b8860b]" />
                 robots.txt Rules Inspector
               </h3>
-              <span className="text-[11px] font-mono px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded font-bold">
+              <span className="text-[12px] font-mono px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded font-bold">
                 Active: /robots.txt
               </span>
             </div>
             <p className="text-xs text-zinc-500">
               The following rules protect sensitive checkout and customer account areas while prioritizing product catalogue indexing:
             </p>
-            <div className="bg-zinc-950 p-3.5 rounded-xl border border-zinc-800 text-[11px] font-mono text-zinc-300 space-y-1 overflow-x-auto leading-relaxed">
+            <div className="bg-zinc-950 p-3.5 rounded-xl border border-zinc-800 text-[12px] font-mono text-zinc-300 space-y-1 overflow-x-auto leading-relaxed">
               <p className="text-emerald-400 font-bold"># Public Routes Allowed</p>
               <p className="text-zinc-400">Allow: /</p>
               <p className="text-zinc-400">Allow: /shop</p>

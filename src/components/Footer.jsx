@@ -186,7 +186,6 @@ const Footer = () => {
                 { label: 'FAQs', path: '/#faq' },
                 { label: 'Privacy Policy', path: '/privacy' },
                 { label: 'Shipping Policy', path: '/terms' },
-                { label: 'Returns & Refunds', path: '/return-policy' },
                 { label: 'Terms & Conditions', path: '/terms' },
                 { label: 'Request a fragrance', path: '/contact' },
               ].map((item) => (
@@ -220,20 +219,20 @@ const Footer = () => {
               <div className="flex items-center gap-3 pt-1">
                 <Phone size={16} className="text-[#c9a962] shrink-0" />
                 <a
-                  href="tel:+918588996969"
+                  href={`tel:${siteSettings?.whatsapp_number || "+918959041514"}`}
                   className="font-mono text-zinc-300 hover:text-[#c9a962] transition-colors"
                 >
-                  Phone: +91 85889 96969
+                  Phone: {siteSettings?.whatsapp_number || "+91 8959041514"}
                 </a>
               </div>
 
               <div className="flex items-center gap-3">
                 <Mail size={16} className="text-[#c9a962] shrink-0" />
                 <a
-                  href={`mailto:${siteSettings?.email || "cares@belvish.com"}`}
+                  href={`mailto:${siteSettings?.email || "care@mahirash.com"}`}
                   className="text-zinc-300 hover:text-[#c9a962] transition-colors"
                 >
-                  Email: {siteSettings?.email || "cares@belvish.com"}
+                  Email: {siteSettings?.email || "care@mahirash.com"}
                 </a>
               </div>
             </div>

@@ -108,7 +108,7 @@ const Preloader = ({ onComplete, label = 'Loading Atelier', isDataReady }) => {
           />
           <div className="flex items-center gap-3 mt-1">
             <span className="h-[1px] w-6 bg-[#c9a962]/40" />
-            <span className="text-[12px] sm:text-[9.5px] uppercase tracking-[0.45em] text-[#c9a962] font-semibold">
+            <span className="text-[12px] sm:text-[12px] uppercase tracking-[0.45em] text-[#c9a962] font-semibold">
               HAUTE PARFUMERIE
             </span>
             <span className="h-[1px] w-6 bg-[#c9a962]/40" />

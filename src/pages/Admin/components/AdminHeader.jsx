@@ -39,7 +39,7 @@ const AdminHeader = ({ activeItem, searchVal, setSearchVal, onMenuClick }) => {
 
           <div className="min-w-0">
             <span className="text-[12px] uppercase tracking-[0.2em] font-bold text-[#b8860b] block truncate">
-              ADMIN ATELIER
+              ADMIN PANEL
             </span>
             <h1 className="text-base sm:text-xl font-bold font-serif text-zinc-900 tracking-tight truncate leading-tight">
               {activeItem || "Overview"}

@@ -552,7 +552,7 @@ const Account = () => {
       {toastMessage && (
         <div className="fixed bottom-8 right-8 z-[100] bg-black text-white px-6 py-3.5 shadow-2xl flex items-center gap-3 border border-zinc-800 animate-bounce">
           <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-          <p className="text-[11px]   uppercase tracking-wider">{toastMessage}</p>
+          <p className="text-[12px]   uppercase tracking-wider">{toastMessage}</p>
         </div>
       )}
 
@@ -590,11 +590,11 @@ const Account = () => {
                 </div>
                 <p className="text-[14px] text-zinc-500">{activeEmail}</p>
                 {phone && (
-                  <p className="text-[11px] text-[#b8860b] flex items-center justify-center md:justify-start gap-1 font-semibold">
+                  <p className="text-[12px] text-[#b8860b] flex items-center justify-center md:justify-start gap-1 font-semibold">
                     <Phone size={10} /> {phone}
                   </p>
                 )}
-                {userData?.bio && <p className="text-[11px] text-zinc-500 italic max-w-sm leading-relaxed">{userData.bio}</p>}
+                {userData?.bio && <p className="text-[12px] text-zinc-500 italic max-w-sm leading-relaxed">{userData.bio}</p>}
               </div>
             </div>
 
@@ -776,7 +776,7 @@ const Account = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-zinc-200">
                     <div>
                       <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Recent Purchases</h3>
-                      <p className="text-[11px] text-zinc-500 mt-0.5">Track shipment timeline & download tax invoices</p>
+                      <p className="text-[12px] text-zinc-500 mt-0.5">Track shipment timeline & download tax invoices</p>
                     </div>
                     {recentOrders.length > 0 && (
                       <button onClick={() => setActiveTab("orders")} className="h-8 px-4 border border-zinc-300 text-[12px] font-semibold text-zinc-600 uppercase tracking-wider hover:border-black hover:text-black transition-all flex items-center">
@@ -799,7 +799,7 @@ const Account = () => {
                               <p className="text-[13px]   text-zinc-800 group-hover:text-black transition-colors">
                                 #{order.id.toUpperCase()}
                               </p>
-                              <p className="text-[11px] text-zinc-500">
+                              <p className="text-[12px] text-zinc-500">
                                 {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
                               </p>
                             </div>
@@ -848,7 +848,7 @@ const Account = () => {
                         <ShoppingBag size={20} strokeWidth={1.5} />
                       </div>
                       <h4 className="text-sm font-light text-zinc-900 uppercase tracking-widest mb-1">No orders yet</h4>
-                      <p className="text-[11px] text-zinc-500 mb-4">Start exploring the shop to place your first order.</p>
+                      <p className="text-[12px] text-zinc-500 mb-4">Start exploring the shop to place your first order.</p>
                       <Link to="/shop" className="inline-flex items-center gap-2 px-5 py-2.5 bg-black text-white   text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all">
                         Explore Shop <ChevronRight size={11} />
                       </Link>
@@ -894,7 +894,7 @@ const Account = () => {
               <div className="bg-white border border-zinc-200 p-6 md:p-8 space-y-6 shadow-sm">
                 <div className="pb-4 border-b border-zinc-200">
                   <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Personal Information</h3>
-                  <p className="text-[11px] text-zinc-500">Update your profile name, contact number, and biography</p>
+                  <p className="text-[12px] text-zinc-500">Update your profile name, contact number, and biography</p>
                 </div>
 
                 <form onSubmit={handleUpdateProfile} className="space-y-5">
@@ -960,7 +960,7 @@ const Account = () => {
                 <div className="pb-4 border-b border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
                     <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Order History & Invoices</h3>
-                    <p className="text-[11px] text-zinc-500">Track shipments and download official invoices</p>
+                    <p className="text-[12px] text-zinc-500">Track shipments and download official invoices</p>
                   </div>
                   <span className="text-[12px] text-zinc-500 font-mono">Total Orders: {recentOrders.length}</span>
                 </div>
@@ -992,7 +992,7 @@ const Account = () => {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[11px] text-zinc-600">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[12px] text-zinc-600">
                           <div>
                             <span className="block text-[12px] uppercase tracking-wider text-zinc-500   mb-0.5">Date Placed</span>
                             <span className="text-zinc-900">{order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString('en-IN') : 'Recent'}</span>
@@ -1054,7 +1054,7 @@ const Account = () => {
                 <div className="pb-4 border-b border-zinc-200 flex justify-between items-center">
                   <div>
                     <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Saved Addresses</h3>
-                    <p className="text-[11px] text-zinc-500">Manage your shipping destinations & contact numbers</p>
+                    <p className="text-[12px] text-zinc-500">Manage your shipping destinations & contact numbers</p>
                   </div>
                   <button
                     onClick={() => {
@@ -1246,9 +1246,9 @@ const Account = () => {
                         <h4 className="font-bold text-zinc-900 tracking-wide uppercase">{a.name}</h4>
                         {a.flat && <p className="text-zinc-800 font-medium text-xs">{a.flat}</p>}
                         <p className="text-zinc-600 leading-relaxed text-xs">{a.street || a.address}</p>
-                        {a.landmark && <p className="text-zinc-500 text-[11px]">Landmark: {a.landmark}</p>}
+                        {a.landmark && <p className="text-zinc-500 text-[12px]">Landmark: {a.landmark}</p>}
                         <p className="text-zinc-600 text-xs">{a.city}, {a.state} - <span className="font-mono font-semibold">{a.pincode}</span></p>
-                        <div className="pt-1.5 flex flex-col gap-0.5 text-[11px] text-zinc-700">
+                        <div className="pt-1.5 flex flex-col gap-0.5 text-[12px] text-zinc-700">
                           <p className="flex items-center gap-1.5 font-semibold text-[#b8860b]">
                             <Phone size={11} /> {a.phone}
                           </p>
@@ -1312,7 +1312,7 @@ const Account = () => {
                 <div className="pb-4 border-b border-zinc-200 flex justify-between items-center">
                   <div>
                     <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Saved Payment Cards</h3>
-                    <p className="text-[11px] text-zinc-500">Manage cards saved for express checkout</p>
+                    <p className="text-[12px] text-zinc-500">Manage cards saved for express checkout</p>
                   </div>
                   <button
                     onClick={() => setShowCardForm(!showCardForm)}
@@ -1423,7 +1423,7 @@ const Account = () => {
               <div className="bg-white border border-zinc-200 p-6 md:p-8 space-y-6 shadow-sm">
                 <div className="pb-4 border-b border-zinc-200">
                   <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Notification Settings</h3>
-                  <p className="text-[11px] text-zinc-500">Manage your communication channels and alert preferences</p>
+                  <p className="text-[12px] text-zinc-500">Manage your communication channels and alert preferences</p>
                 </div>
 
                 <div className="space-y-4">

@@ -165,7 +165,7 @@ const ProductDetail = () => {
       setPincodeStatus({ success: false, msg: 'Please enter a valid 6-digit pincode.' });
       return;
     }
-    setPincodeStatus({ success: true, msg: `Express delivery available for pincode ${pincode}! Delivered in 1-2 days.` });
+    setPincodeStatus({ success: true, msg: `Express delivery available for pincode ${pincode}! Delivered in 4-5 days.` });
   };
 
   const variantImages = (selectedSize?.images && selectedSize.images.length > 0)
@@ -226,7 +226,7 @@ const ProductDetail = () => {
             className="fixed bottom-24 md:bottom-10 left-1/2 z-50 bg-black text-white px-6 py-3.5 shadow-2xl flex items-center gap-3 min-w-[280px]"
           >
             <ShoppingBag size={14} className="shrink-0 text-[#c9a962]" />
-            <p className="text-[11px] uppercase tracking-wider flex-1">{feedbackMessage}</p>
+            <p className="text-[12px] uppercase tracking-wider flex-1">{feedbackMessage}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -249,7 +249,7 @@ const ProductDetail = () => {
               className="bg-white max-w-lg w-full p-6 shadow-2xl relative border border-zinc-200"
             >
               <div className="flex items-center justify-between border-b border-zinc-200 pb-4 mb-4">
-                <h3 className="text-sm font-extrabold uppercase tracking-widest text-zinc-900">FRAGRANCE & VOLUME GUIDE</h3>
+                <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-900">FRAGRANCE & VOLUME GUIDE</h3>
                 <button
                   type="button"
                   onClick={() => setIsSizeChartOpen(false)}
@@ -262,7 +262,7 @@ const ProductDetail = () => {
               <div className="overflow-x-auto mb-4">
                 <table className="w-full text-[13px] text-left border-collapse">
                   <thead>
-                    <tr className="bg-zinc-100 border-b border-zinc-200 text-zinc-900 font-extrabold uppercase tracking-wider text-[11px]">
+                    <tr className="bg-zinc-100 border-b border-zinc-200 text-zinc-900 font-bold uppercase tracking-wider text-[12px]">
                       <th className="p-2.5">BOTTLE VOLUME</th>
                       <th className="p-2.5">RECOMMENDED USE</th>
                       <th className="p-2.5">APPROX SPRAYS</th>
@@ -278,7 +278,7 @@ const ProductDetail = () => {
                 </table>
               </div>
 
-              <div className="bg-[#faf5ed] p-3 border border-[#e8ded0] text-[11px] text-zinc-700 font-medium">
+              <div className="bg-[#faf5ed] p-3 border border-[#e8ded0] text-[12px] text-zinc-700 font-medium">
                 <p>💡 <strong>Application Tip:</strong> Apply Extrait de Parfum directly to pulse points (wrists, base of neck, inner elbows) for 14+ hours of opulent sillage.</p>
               </div>
             </motion.div>
@@ -337,7 +337,7 @@ const ProductDetail = () => {
                   >
                     <div className="flex flex-col items-center gap-2.5 bg-black/95 text-white px-5 py-3 shadow-2xl">
                       <div className="w-5 h-5 border-2 border-[#c9a962] border-t-transparent rounded-full animate-spin" />
-                      <span className="text-[12px] uppercase font-extrabold tracking-[0.2em] text-white">
+                      <span className="text-[12px] uppercase font-bold tracking-[0.2em] text-white">
                         SELECTING {selectedColor}...
                       </span>
                     </div>
@@ -435,7 +435,7 @@ const ProductDetail = () => {
                           }}
                           className="flex items-center gap-1.5"
                         >
-                          <span className="font-extrabold text-white/90">{detail.label} :</span>
+                          <span className="font-bold text-white/90">{detail.label} :</span>
                           <span className="text-zinc-200 font-normal">{detail.value}</span>
                         </motion.div>
                       ))}
@@ -452,7 +452,7 @@ const ProductDetail = () => {
             <div>
               {Boolean(selectedSize?.is_preorder === true || selectedSize?.is_preorder === 'true') && (
                 <div className="mb-2">
-                  <span className="inline-flex items-center gap-1.5 bg-[#b8860b] text-white px-3 py-1 text-[12px] font-extrabold uppercase tracking-widest shadow-xs">
+                  <span className="inline-flex items-center gap-1.5 bg-[#b8860b] text-white px-3 py-1 text-[12px] font-bold uppercase tracking-widest shadow-xs">
                     <Clock size={12} /> PRE-ORDER VARIANT
                   </span>
                 </div>
@@ -460,7 +460,7 @@ const ProductDetail = () => {
 
               {/* Brand & Category Header Row */}
               <div className="flex items-center justify-between gap-3 mb-2.5 pb-2 border-b border-zinc-200/80">
-                <span className="text-sm sm:text-base font-extrabold uppercase tracking-[0.3em] text-[#b8860b]">
+                <span className="text-sm sm:text-base font-bold uppercase tracking-[0.3em] text-[#b8860b]">
                   {product.brand || 'MAHIRASH PARFUMS'}
                 </span>
                 {product.category && (
@@ -488,7 +488,7 @@ const ProductDetail = () => {
                   )}
                 </div>
                 {discountPercent > 0 && (
-                  <span className="bg-red-50 text-red-600 border border-red-200 text-[12px] font-extrabold uppercase tracking-widest px-2.5 py-1">
+                  <span className="bg-red-50 text-red-600 border border-red-200 text-[12px] font-bold uppercase tracking-widest px-2.5 py-1">
                     SAVE {discountPercent}%
                   </span>
                 )}
@@ -496,7 +496,7 @@ const ProductDetail = () => {
 
               {/* Ratings Badge */}
               <div className="flex items-center gap-3 pt-1">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[11px] font-bold">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[12px] font-bold">
                   <span>{product.rating || 4.8}</span>
                   <Star size={11} fill="#b8860b" strokeWidth={0} />
                 </div>
@@ -512,7 +512,7 @@ const ProductDetail = () => {
                 onClick={() => handleCopyCoupon('MAHIRASH5')}
                 className="p-3 bg-[#faf5ed] border border-[#e8ded0] flex flex-col justify-between rounded-none cursor-pointer hover:border-[#c9a962] transition-colors group"
               >
-                <div className="flex items-center justify-between text-[12px] font-extrabold tracking-wider uppercase text-zinc-900 mb-1">
+                <div className="flex items-center justify-between text-[12px] font-bold tracking-wider uppercase text-zinc-900 mb-1">
                   <span className="flex items-center gap-1">
                     <Tag size={11} className="text-[#b8860b]" />
                     MAHIRASH5
@@ -528,7 +528,7 @@ const ProductDetail = () => {
                 onClick={() => handleCopyCoupon('ROYAL10')}
                 className="p-3 bg-[#faf5ed] border border-[#e8ded0] flex flex-col justify-between rounded-none cursor-pointer hover:border-[#c9a962] transition-colors group"
               >
-                <div className="flex items-center justify-between text-[12px] font-extrabold tracking-wider uppercase text-zinc-900 mb-1">
+                <div className="flex items-center justify-between text-[12px] font-bold tracking-wider uppercase text-zinc-900 mb-1">
                   <span className="flex items-center gap-1">
                     <Tag size={11} className="text-[#b8860b]" />
                     ROYAL10
@@ -544,11 +544,11 @@ const ProductDetail = () => {
             {/* VOLUME & PRICE Selection Grid */}
             <div className="border-t border-zinc-200 pt-5 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-[14px] font-extrabold uppercase tracking-[0.2em] text-zinc-900">SELECT BOTTLE VOLUME</span>
+                <span className="text-[14px] font-bold uppercase tracking-[0.2em] text-zinc-900">SELECT BOTTLE VOLUME</span>
                 <button
                   type="button"
                   onClick={() => setIsSizeChartOpen(true)}
-                  className="text-[12px] text-[#b8860b] hover:text-black flex items-center gap-1.5 transition-colors uppercase font-extrabold tracking-wider cursor-pointer underline underline-offset-4"
+                  className="text-[12px] text-[#b8860b] hover:text-black flex items-center gap-1.5 transition-colors uppercase font-bold tracking-wider cursor-pointer underline underline-offset-4"
                 >
                   <Sparkles size={12} className="text-[#b8860b]" />
                   <span>FRAGRANCE & VOLUME GUIDE</span>
@@ -661,7 +661,7 @@ const ProductDetail = () => {
                     </button>
 
                     {isPreOrder && (
-                      <p className="text-[11px] font-semibold text-[#b8860b] bg-[#faf5ed] border border-[#e8ded0] p-2.5 flex items-center gap-1.5">
+                      <p className="text-[12px] font-semibold text-[#b8860b] bg-[#faf5ed] border border-[#e8ded0] p-2.5 flex items-center gap-1.5">
                         <Clock size={13} className="shrink-0" />
                         <span>Pre-Order: Estimated dispatch in 5–7 business days. Insured delivery.</span>
                       </p>
@@ -675,17 +675,17 @@ const ProductDetail = () => {
             <div className="grid grid-cols-3 gap-2 pt-3 border-t border-zinc-200 text-center">
               <div className="flex flex-col items-center p-2.5 bg-zinc-50 border border-zinc-200/80">
                 <Sparkles size={14} className="text-[#b8860b] mb-1" />
-                <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-zinc-900">100% Extrait</span>
+                <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-900">100% Extrait</span>
                 <span className="text-[8.5px] text-zinc-500">Authentic Perfume</span>
               </div>
               <div className="flex flex-col items-center p-2.5 bg-zinc-50 border border-zinc-200/80">
                 <Truck size={14} className="text-[#b8860b] mb-1" />
-                <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-zinc-900">Free Shipping</span>
-                <span className="text-[8.5px] text-zinc-500">Insured Delivery</span>
+                <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-900">4-5 Days Express</span>
+                <span className="text-[8.5px] text-zinc-500">Fast Delivery</span>
               </div>
               <div className="flex flex-col items-center p-2.5 bg-zinc-50 border border-zinc-200/80">
                 <ShieldCheck size={14} className="text-[#b8860b] mb-1" />
-                <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-zinc-900">Atelier Guarantee</span>
+                <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-900">Authentic Guarantee</span>
                 <span className="text-[8.5px] text-zinc-500">Original Formulation</span>
               </div>
             </div>
@@ -700,7 +700,7 @@ const ProductDetail = () => {
                   onClick={() => setActiveAccordion(activeAccordion === 'description' ? null : 'description')}
                   className="w-full flex items-center justify-between py-4 text-left group cursor-pointer"
                 >
-                  <span className="text-[14px] font-extrabold uppercase tracking-[0.2em] text-zinc-800 group-hover:text-black transition-colors">
+                  <span className="text-[14px] font-bold uppercase tracking-[0.2em] text-zinc-800 group-hover:text-black transition-colors">
                     OLFACTORY NOTES & DETAILS
                   </span>
                   {activeAccordion === 'description' ? (
@@ -732,7 +732,7 @@ const ProductDetail = () => {
 
                         {/* Olfactory Notes Breakdown */}
                         <div className="bg-zinc-900 text-white p-4 rounded-xl space-y-2.5 border border-zinc-800">
-                          <p className="text-[#c9a962] font-extrabold uppercase tracking-widest text-[11px] flex items-center gap-1.5">
+                          <p className="text-[#c9a962] font-bold uppercase tracking-widest text-[12px] flex items-center gap-1.5">
                             <Sparkles size={13} /> Olfactory Pyramid & Performance
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[12px] pt-1">
@@ -749,7 +749,7 @@ const ProductDetail = () => {
                               <span className="text-white font-medium">{product.base_notes || 'Royal Oud, Golden Amber, White Musk'}</span>
                             </div>
                           </div>
-                          <div className="flex flex-wrap items-center gap-4 text-[11px] pt-2 border-t border-zinc-800 text-zinc-300">
+                          <div className="flex flex-wrap items-center gap-4 text-[12px] pt-2 border-t border-zinc-800 text-zinc-300">
                             <span><strong>Concentration:</strong> {product.material || 'Extrait de Parfum (30%)'}</span>
                             <span><strong>Longevity:</strong> {product.longevity || '12-14 Hours'}</span>
                             <span><strong>Sillage:</strong> {product.sillage || 'Intense'}</span>
@@ -758,7 +758,7 @@ const ProductDetail = () => {
 
                         {/* Storage & Brand Details Care */}
                         <div className="space-y-1.5 pt-1">
-                          <p className="font-extrabold text-zinc-900 uppercase tracking-wider text-[11px]">Fragrance Preservation & Brand Details</p>
+                          <p className="font-bold text-zinc-900 uppercase tracking-wider text-[12px]">Fragrance Preservation & Brand Details</p>
                           <p><strong>Brand:</strong> {product.brand || 'MAHIRASH'}</p>
                           {((product.collections && Array.isArray(product.collections) && product.collections.length > 0) || product.collection) && (
                             <div className="flex flex-wrap items-center gap-1.5 pt-1">
@@ -773,8 +773,8 @@ const ProductDetail = () => {
                               ))}
                             </div>
                           )}
-                          <p>Store in a cool, dry atelier away from direct heat or humidity. Keep bottle upright with cap secured.</p>
-                          <p className="pt-1 text-zinc-400 font-mono text-[11px]">SKU: {product.sku || `${product.id?.slice(0, 10)?.toUpperCase() || 'MHR-ROYAL-01'}`}</p>
+                          <p>Store in a cool, dry place away from direct heat or humidity. Keep bottle upright with cap secured.</p>
+                          <p className="pt-1 text-zinc-400 font-mono text-[12px]">SKU: {product.sku || `${product.id?.slice(0, 10)?.toUpperCase() || 'MHR-ROYAL-01'}`}</p>
                         </div>
 
                       </div>
@@ -815,7 +815,7 @@ const ProductDetail = () => {
                           <button
                             type="button"
                             onClick={() => setReviewTab('style')}
-                            className={`flex-1 py-2.5 text-[11px]   uppercase tracking-wider transition-colors ${reviewTab === 'style'
+                            className={`flex-1 py-2.5 text-[12px]   uppercase tracking-wider transition-colors ${reviewTab === 'style'
                               ? 'text-black border-b-2 border-[#d92323]'
                               : 'text-zinc-400 hover:text-zinc-700'
                               }`}
@@ -825,7 +825,7 @@ const ProductDetail = () => {
                           <button
                             type="button"
                             onClick={() => setReviewTab('category')}
-                            className={`flex-1 py-2.5 text-[11px]   uppercase tracking-wider transition-colors ${reviewTab === 'category'
+                            className={`flex-1 py-2.5 text-[12px]   uppercase tracking-wider transition-colors ${reviewTab === 'category'
                               ? 'text-black border-b-2 border-[#d92323]'
                               : 'text-zinc-400 hover:text-zinc-700'
                               }`}
@@ -846,7 +846,7 @@ const ProductDetail = () => {
                               <Star size={16} fill="none" stroke="black" strokeWidth={1.5} />
                             </div>
                           </div>
-                          <p className="text-[11px] text-zinc-600 font-medium mt-1">
+                          <p className="text-[12px] text-zinc-600 font-medium mt-1">
                             Loved by our users! <strong>74 out of 128</strong> rated 5 stars
                           </p>
                         </div>
@@ -858,10 +858,10 @@ const ProductDetail = () => {
                               <span className="px-1.5 py-0.5 bg-zinc-900 text-white text-[12px]   flex items-center gap-0.5">
                                 5 <Star size={8} fill="white" strokeWidth={0} />
                               </span>
-                              <span className="text-[11px]   text-zinc-900">AAKASH</span>
+                              <span className="text-[12px]   text-zinc-900">AAKASH</span>
                               <span className="text-[12px] text-[#d92323] font-semibold">Verified User</span>
                             </div>
-                            <div className="flex items-center gap-1 text-zinc-500 text-[11px]">
+                            <div className="flex items-center gap-1 text-zinc-500 text-[12px]">
                               <span>2</span>
                               <ThumbsUp size={12} className="cursor-pointer hover:text-black" />
                             </div>
@@ -912,20 +912,20 @@ const ProductDetail = () => {
                           />
                           <button
                             type="submit"
-                            className="px-4 py-2 bg-black text-white text-[11px]   uppercase tracking-wider hover:bg-zinc-800 transition-colors cursor-pointer"
+                            className="px-4 py-2 bg-black text-white text-[12px]   uppercase tracking-wider hover:bg-zinc-800 transition-colors cursor-pointer"
                           >
                             Check
                           </button>
                         </form>
                         {pincodeStatus && (
-                          <p className={`text-[11px] font-medium ${pincodeStatus.success ? 'text-emerald-700' : 'text-red-600'}`}>
+                          <p className={`text-[12px] font-medium ${pincodeStatus.success ? 'text-emerald-700' : 'text-red-600'}`}>
                             {pincodeStatus.msg}
                           </p>
                         )}
-                        <ul className="text-[11px] text-zinc-600 space-y-1.5 pt-1">
+                        <ul className="text-[12px] text-zinc-600 space-y-1.5 pt-1">
                           <li className="flex items-center gap-2">
                             <Truck size={13} className="text-zinc-800 shrink-0" />
-                            <span>FREE 1-2 day express shipping on 5k+ pincodes.</span>
+                            <span>Express nationwide delivery in 4-5 days.</span>
                           </li>
                           <li className="flex items-center gap-2">
                             <ShieldCheck size={13} className="text-zinc-800 shrink-0" />
@@ -938,24 +938,24 @@ const ProductDetail = () => {
                 </AnimatePresence>
               </div>
 
-              {/* 4. RETURNS Accordion (Snitch Screenshot 5) */}
+              {/* 4. AUTHENTICITY & LUXURY GUARANTEE Accordion */}
               <div>
                 <button
                   type="button"
-                  onClick={() => setActiveAccordion(activeAccordion === 'returns' ? null : 'returns')}
+                  onClick={() => setActiveAccordion(activeAccordion === 'authenticity' ? null : 'authenticity')}
                   className="w-full flex items-center justify-between py-4 text-left group cursor-pointer"
                 >
-                  <span className="text-[14px]   uppercase tracking-[0.2em] text-zinc-800 group-hover:text-black transition-colors">
-                    RETURNS
+                  <span className="text-[14px] uppercase tracking-[0.2em] text-zinc-800 group-hover:text-black transition-colors">
+                    AUTHENTICITY & LUXURY GUARANTEE
                   </span>
-                  {activeAccordion === 'returns' ? (
+                  {activeAccordion === 'authenticity' ? (
                     <Minus size={14} className="text-black" />
                   ) : (
                     <Plus size={14} className="text-zinc-500 group-hover:text-black transition-colors" />
                   )}
                 </button>
                 <AnimatePresence initial={false}>
-                  {activeAccordion === 'returns' && (
+                  {activeAccordion === 'authenticity' && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
@@ -965,8 +965,12 @@ const ProductDetail = () => {
                     >
                       <div className="pb-5 text-[14px] text-zinc-600 font-light leading-relaxed space-y-2">
                         <p className="flex items-start gap-2">
-                          <RefreshCw size={13} className="text-zinc-800 shrink-0 mt-0.5" />
-                          <span>Hassle-free <strong>30-day return & exchange</strong> window. Doorstep pickup scheduled automatically upon request.</span>
+                          <ShieldCheck size={14} className="text-[#b8860b] shrink-0 mt-0.5" />
+                          <span>100% Genuine & Handcrafted. Formulated with authentic botanical extracts and royal Cambodian ouds.</span>
+                        </p>
+                        <p className="flex items-start gap-2">
+                          <Truck size={14} className="text-zinc-800 shrink-0 mt-0.5" />
+                          <span>Tamper-evident luxury packaging delivered directly to your doorstep in 4-5 days.</span>
                         </p>
                       </div>
                     </motion.div>
@@ -1048,7 +1052,7 @@ const ProductDetail = () => {
                   addToCollection('cart');
                 }
               }}
-              className={`flex-1 h-12 text-[14px] font-extrabold uppercase tracking-[0.2em] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${isCurrentVariantOut
+              className={`flex-1 h-12 text-[14px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${isCurrentVariantOut
                 ? 'bg-[#0D0D0D] active:bg-[#b8860b] text-white'
                 : isPreOrder
                   ? 'bg-[#b8860b] active:bg-black text-white'

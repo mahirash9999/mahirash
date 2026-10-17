@@ -120,7 +120,7 @@ const CloudinaryMediaPickerModal = ({
               <ImageIcon size={18} className="text-[#b8860b]" />
               Cloudinary Media Library
             </h3>
-            <p className="text-[11px] text-zinc-500 font-light mt-0.5">
+            <p className="text-[12px] text-zinc-500 font-light mt-0.5">
               {isMultiSelect ? 'Select one or more images from previously uploaded Cloudinary media.' : 'Select an image from Cloudinary media library.'}
             </p>
           </div>
@@ -176,9 +176,8 @@ const CloudinaryMediaPickerModal = ({
                   <div
                     key={idx}
                     onClick={() => toggleSelectUrl(url)}
-                    className={`relative group aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all bg-white ${
-                      isSelected ? 'border-black ring-2 ring-black/20 scale-[0.98]' : 'border-zinc-200 hover:border-zinc-400'
-                    }`}
+                    className={`relative group aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all bg-white ${isSelected ? 'border-black ring-2 ring-black/20 scale-[0.98]' : 'border-zinc-200 hover:border-zinc-400'
+                      }`}
                   >
                     <OptimizedCloudinaryImage
                       src={url}
@@ -188,12 +187,10 @@ const CloudinaryMediaPickerModal = ({
                     />
 
                     {/* Overlay Checkmark */}
-                    <div className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity ${
-                      isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'
-                    }`}>
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center ${
-                        isSelected ? 'bg-black text-white shadow-md' : 'bg-white/80 text-zinc-900'
+                    <div className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-30'
                       }`}>
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center ${isSelected ? 'bg-black text-white shadow-md' : 'bg-white/80 text-zinc-900'
+                        }`}>
                         <Check size={14} strokeWidth={3} />
                       </div>
                     </div>

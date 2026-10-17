@@ -39,7 +39,7 @@ const FilterSection = ({ title, children, defaultOpen = false, activeCount = 0 }
             {title}
           </span>
           {activeCount > 0 && (
-            <span className="w-5 h-5 rounded-full bg-[#b8860b] text-white shop-sidebar-badge flex items-center justify-center font-extrabold shrink-0">
+            <span className="w-5 h-5 rounded-full bg-[#b8860b] text-white shop-sidebar-badge flex items-center justify-center font-bold shrink-0">
               {activeCount}
             </span>
           )}
@@ -146,7 +146,7 @@ const ShopFilterSidebar = ({
 
         {activeCount > 0 && (
           <div className="flex items-center justify-between px-3 py-1.5 bg-[#b8860b]/10 border border-[#b8860b]/30 rounded-sm">
-            <span className="text-[12px] font-extrabold uppercase tracking-widest text-[#b8860b] shop-sidebar-badge">
+            <span className="text-[12px] font-bold uppercase tracking-widest text-[#b8860b] shop-sidebar-badge">
               {activeCount} Filter{activeCount > 1 ? "s" : ""} Active
             </span>
             <button

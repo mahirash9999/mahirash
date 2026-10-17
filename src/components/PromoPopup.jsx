@@ -193,7 +193,7 @@ const PromoPopup = () => {
                     onChange={(e) => setNotify(e.target.checked)}
                     className="w-4 h-4 rounded text-black focus:ring-black cursor-pointer accent-black"
                   />
-                  <span className="text-[11px] text-zinc-600 font-medium">
+                  <span className="text-[12px] text-zinc-600 font-medium">
                     Notify me for any updates & offers
                   </span>
                 </label>

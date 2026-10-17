@@ -112,13 +112,13 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
           </div>
           <div>
             <p className="text-zinc-400 font-normal">Total Amount</p>
-            <p className="text-zinc-905 font-extrabold mt-1 text-sm font-sans">
+            <p className="text-zinc-905 font-bold mt-1 text-sm font-sans">
               ₹{(finalDetails.total || 0).toLocaleString("en-IN")}
             </p>
           </div>
           <div>
             <p className="text-zinc-400 font-normal">Payment</p>
-            <p className="text-zinc-900 font-bold mt-1 text-[11px]">
+            <p className="text-zinc-900 font-bold mt-1 text-[12px]">
               {isCOD ? "COD" : "Prepaid"}
             </p>
           </div>
@@ -134,7 +134,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
                   <ShieldCheck size={15} className="text-[#c9a962]" />
                   Track Your Fragrance Journey
                 </h4>
-                <p className="text-[11px] text-zinc-500 font-light leading-relaxed max-w-md">
+                <p className="text-[12px] text-zinc-500 font-light leading-relaxed max-w-md">
                   Create an account or sign in with <strong className="text-zinc-800">{finalDetails.shipping?.email}</strong> via Email OTP to view real-time delivery timelines and manage your order history.
                 </p>
               </div>
@@ -151,13 +151,13 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-[14px] leading-relaxed">
           {/* Shipping Address Summary */}
           <div className="space-y-2 bg-zinc-50/50 p-4.5 rounded-xl border border-zinc-100/60 p-4 text-left">
-            <h3 className="font-extrabold text-zinc-950 uppercase tracking-widest text-[12px] pb-1.5 border-b border-zinc-200 flex items-center gap-1.5">
+            <h3 className="font-bold text-zinc-950 uppercase tracking-widest text-[12px] pb-1.5 border-b border-zinc-200 flex items-center gap-1.5">
               <MapPin size={12} className="text-zinc-500" /> Shipping Details
             </h3>
             <p className="font-bold text-zinc-900 text-sm font-serif">{finalDetails.shipping?.name}</p>
             {finalDetails.shipping?.flat && <p className="text-zinc-700 font-medium text-xs">{finalDetails.shipping?.flat}</p>}
             <p className="text-zinc-500 font-light text-xs">{finalDetails.shipping?.street || finalDetails.shipping?.address}</p>
-            {finalDetails.shipping?.landmark && <p className="text-zinc-400 text-[11px]">Landmark: {finalDetails.shipping?.landmark}</p>}
+            {finalDetails.shipping?.landmark && <p className="text-zinc-400 text-[12px]">Landmark: {finalDetails.shipping?.landmark}</p>}
             <p className="text-zinc-500 font-light text-xs">{finalDetails.shipping?.city}, {finalDetails.shipping?.state} – {finalDetails.shipping?.pincode}</p>
             <p className="text-zinc-800 font-semibold mt-1 text-xs">
               Phone: {finalDetails.shipping?.phone}
@@ -168,7 +168,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
           {/* Delivery & Tracking Details */}
           <div className="space-y-2 bg-zinc-50/50 p-4.5 rounded-xl border border-zinc-100/60 p-4 text-left flex flex-col justify-between">
             <div className="space-y-2">
-              <h3 className="font-extrabold text-zinc-950 uppercase tracking-widest text-[12px] pb-1.5 border-b border-zinc-200 flex items-center gap-1.5">
+              <h3 className="font-bold text-zinc-950 uppercase tracking-widest text-[12px] pb-1.5 border-b border-zinc-200 flex items-center gap-1.5">
                 <Truck size={12} className="text-zinc-500" /> Shipping & Tracking
               </h3>
               <div>
@@ -198,7 +198,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
                 href={finalDetails.trackingUrl || `https://shiprocket.co/tracking/${finalDetails.awbCode}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-full text-center py-2.5 bg-zinc-900 hover:bg-black text-[12px] text-white font-extrabold uppercase tracking-widest rounded-lg transition-colors border border-black inline-block mt-2"
+                className="w-full text-center py-2.5 bg-zinc-900 hover:bg-black text-[12px] text-white font-bold uppercase tracking-widest rounded-lg transition-colors border border-black inline-block mt-2"
               >
                 Track Live Order
               </a>
@@ -208,7 +208,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
 
         {/* Order Items Summary */}
         <div className="space-y-3 mb-8 text-left">
-          <h3 className="font-extrabold text-zinc-950 uppercase tracking-widest text-[12px] pb-1.5 border-b border-zinc-200">
+          <h3 className="font-bold text-zinc-950 uppercase tracking-widest text-[12px] pb-1.5 border-b border-zinc-200">
             Order Items
           </h3>
           <div className="divide-y divide-zinc-100 max-h-48 overflow-y-auto pr-1">
@@ -248,7 +248,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
           </Link>
           <Link
             to="/shop"
-            className="w-full py-3.5 bg-white hover:bg-zinc-50 text-zinc-805 text-[14px] font-extrabold uppercase tracking-widest rounded-xl transition-all text-center border border-zinc-200"
+            className="w-full py-3.5 bg-white hover:bg-zinc-50 text-zinc-805 text-[14px] font-bold uppercase tracking-widest rounded-xl transition-all text-center border border-zinc-200"
           >
             Continue Shopping
           </Link>
@@ -1119,7 +1119,7 @@ const Checkout = () => {
       {/* Header offset + breadcrumb */}
       <div className="mt-[145px] md:mt-[130px]" />
       <div className="bg-white border-b border-zinc-200">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-2 text-[14px] text-zinc-400 uppercase tracking-wider">
+        <div className="max-w-[1450px] mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-2 text-[14px] text-zinc-400 uppercase tracking-wider">
           <Link to="/" className="hover:text-zinc-700 transition-colors">Home</Link>
           <ChevronRight size={12} />
           <Link to="/cart" className="hover:text-zinc-700 transition-colors">Cart</Link>
@@ -1128,7 +1128,7 @@ const Checkout = () => {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+      <div className="max-w-[1450px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         <h1 className="text-xl font-bold text-zinc-900 mb-6">Secure Checkout</h1>
 
         {invalidCartError && (
@@ -1197,7 +1197,7 @@ const Checkout = () => {
                                   <p className="font-semibold text-zinc-900">{addr.name}</p>
                                   {addr.flat && <p className="text-zinc-700 text-xs">{addr.flat}</p>}
                                   <p className="text-zinc-500 leading-relaxed text-xs">{addr.street || addr.address}</p>
-                                  {addr.landmark && <p className="text-zinc-400 text-[11px]">Landmark: {addr.landmark}</p>}
+                                  {addr.landmark && <p className="text-zinc-400 text-[12px]">Landmark: {addr.landmark}</p>}
                                   <p className="text-zinc-500 text-xs">{addr.city}, {addr.state} – {addr.pincode}</p>
                                   <p className="text-zinc-700 font-medium text-xs mt-1">Phone: {addr.phone}</p>
                                 </div>
@@ -1500,7 +1500,7 @@ const Checkout = () => {
                           <p className="text-[14px] text-zinc-500 mt-0.5 flex items-center gap-1.5">
                             <span>Size: {item.size}</span>
                             {item.is_preorder && (
-                              <span className="bg-[#b8860b] text-white text-[12px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 shadow-xs">
+                              <span className="bg-[#b8860b] text-white text-[12px] font-bold uppercase tracking-wider px-1.5 py-0.5 shadow-xs">
                                 Pre-Order
                               </span>
                             )}

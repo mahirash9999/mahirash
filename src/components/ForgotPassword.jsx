@@ -273,7 +273,7 @@ const ForgotPassword = () => {
                             <h2 className="text-xl font-light text-zinc-900 tracking-[0.2em] uppercase">
                                 {step === 1 ? "Password Recovery" : step === 2 ? "Verification Code" : "Set New Password"}
                             </h2>
-                            <p className="text-[11px] text-[#b8860b] tracking-wider font-medium mt-1 uppercase">
+                            <p className="text-[12px] text-[#b8860b] tracking-wider font-medium mt-1 uppercase">
                                 {step === 1 ? "ENTER EMAIL TO CONTINUE" : step === 2 ? `OTP HAS BEEN SENT TO ${email.toUpperCase()}` : "CREATE A STRONG PASSCODE"}
                             </p>
                         </div>
@@ -282,7 +282,7 @@ const ForgotPassword = () => {
                         <AnimatePresence mode="wait">
                             {error && (
                                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mb-5 overflow-hidden">
-                                    <div className="p-3.5 bg-red-50 border border-red-200 flex items-start gap-3 text-red-600 text-[11px]">
+                                    <div className="p-3.5 bg-red-50 border border-red-200 flex items-start gap-3 text-red-600 text-[12px]">
                                         <AlertCircle size={14} className="shrink-0 mt-0.5" />
                                         <span>{error}</span>
                                     </div>
@@ -291,7 +291,7 @@ const ForgotPassword = () => {
 
                             {success && (
                                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mb-5 overflow-hidden">
-                                    <div className="p-3.5 bg-emerald-50 border border-emerald-200 flex items-start gap-3 text-emerald-800 text-[11px]">
+                                    <div className="p-3.5 bg-emerald-50 border border-emerald-200 flex items-start gap-3 text-emerald-800 text-[12px]">
                                         <CheckCircle size={14} className="shrink-0 mt-0.5 text-emerald-600" />
                                         <span>{success}</span>
                                     </div>
@@ -440,7 +440,7 @@ const ForgotPassword = () => {
                     <div className="relative z-10 pt-6">
                         <span className="text-[14px] text-zinc-500 tracking-wider">
                             Remember your password?{" "}
-                            <Link to={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="text-zinc-900 hover:text-black transition-colors uppercase text-[11px] tracking-wider ml-1">Sign In</Link>
+                            <Link to={`/login?redirect=${encodeURIComponent(redirectPath)}`} className="text-zinc-900 hover:text-black transition-colors uppercase text-[12px] tracking-wider ml-1">Sign In</Link>
                         </span>
                     </div>
                 </div>

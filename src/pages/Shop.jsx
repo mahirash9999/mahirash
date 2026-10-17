@@ -680,7 +680,7 @@ const Shop = () => {
               <SlidersHorizontal size={13} className="text-[#b8860b]" />
               <span>Filters</span>
               {activeFiltersCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-black text-white text-[12px] font-extrabold flex items-center justify-center">
+                <span className="w-4 h-4 rounded-full bg-black text-white text-[12px] font-bold flex items-center justify-center">
                   {activeFiltersCount}
                 </span>
               )}
@@ -898,7 +898,7 @@ const Shop = () => {
               <div className="mb-6 bg-[#b8860b]/5 border border-dashed border-[#b8860b]/30 p-4 rounded-xl flex items-center justify-between gap-3 text-zinc-950">
                 <div className="text-left">
                   <h4 className="text-[14px] font-bold text-[#b8860b] uppercase tracking-wider font-mono">Coupon Activated: {activeCoupon.code}</h4>
-                  <p className="text-[11px] text-zinc-600 mt-1 leading-normal">
+                  <p className="text-[12px] text-zinc-600 mt-1 leading-normal">
                     Showing products eligible for this exclusive offer. The discount will be applied during checkout.
                   </p>
                 </div>
@@ -1011,7 +1011,7 @@ const Shop = () => {
             exit={{ opacity: 0, y: 20 }}
             className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 bg-black text-white px-5 py-3 shadow-2xl flex items-center gap-3"
           >
-            <p className="text-[11px] font-black uppercase tracking-wider whitespace-nowrap">
+            <p className="text-[12px] font-black uppercase tracking-wider whitespace-nowrap">
               {feedbackMessage}
             </p>
             <button

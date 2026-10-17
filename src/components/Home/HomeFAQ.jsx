@@ -43,10 +43,10 @@ export const DEFAULT_FAQS = [
   },
   {
     id: "faq-5",
-    question: "What is your shipping and return policy for online orders?",
+    question: "What is your shipping and delivery timeline for online orders?",
     answer:
-      "We offer complimentary express shipping across India on orders over ₹1999. Every full presentation flacon includes a complimentary miniature sample so you can test the scent before unsealing the master packaging. Unopened master bottles can be returned within 7 days.",
-    category: "Shipping & Returns",
+      "We offer complimentary express shipping across India on orders over ₹1999. All fragrances are safely dispatched in temperature-controlled luxury packaging and delivered within 4-5 days.",
+    category: "Shipping & Delivery",
     sort_order: 5,
     is_active: true,
   },
@@ -76,7 +76,7 @@ const HomeFAQ = () => {
           DEFAULT_FAQS.forEach(async (faq) => {
             try {
               await setDoc(doc(db, "faqs", faq.id), faq);
-            } catch (e) {
+            } catch {
               // Ignore seed error
             }
           });
@@ -98,16 +98,13 @@ const HomeFAQ = () => {
 
   return (
     <section id="faq" className="bg-[#FAF8F5] py-16 md:py-24 border-t border-[#EAE3D8] text-[#111111]">
-      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-12">
+      <div className="max-w-[1450px] mx-auto px-4 sm:px-6 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
           {/* Left Column: Heading and Context */}
-          <div className="lg:col-span-5 space-y-4">
-            <span className="text-[12px] font-bold uppercase tracking-[0.3em] text-[#B8860B] block">
-              ASSISTANCE & INFORMATION
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal leading-tight text-[#0D0D0D]">
-              Frequently Asked <span className="italic text-[#B8860B]">Questions</span>
+          <div className="lg:col-span-5 space-y-3">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-[0.15em] text-[#0D0D0D] uppercase leading-tight">
+              FREQUENTLY ASKED <span className="text-[#B8860B] italic font-serif">QUESTIONS</span>
             </h2>
             <p className="text-zinc-600 text-sm sm:text-base font-light leading-relaxed max-w-md pt-2">
               Everything you need to know about our handcrafted artisanal extraits, fragrance care, longevity, and worldwide concierge shipping.

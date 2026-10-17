@@ -105,10 +105,10 @@ const AdminSignup = () => {
             <ShieldCheck size={12} />
             Temporary Setup Route
           </div>
-          <h1 className="text-lg font-poppins font-extrabold tracking-[0.2em] text-zinc-900 uppercase">
+          <h1 className="text-lg font-poppins font-bold tracking-[0.2em] text-zinc-900 uppercase">
             REGISTER ADMIN
           </h1>
-          <p className="text-[9.5px] text-[#b8860b] uppercase tracking-[0.25em] font-extrabold">
+          <p className="text-[12px] text-[#b8860b] uppercase tracking-[0.25em] font-bold">
             HAUTE PARFUMERIE CONTROL CENTRE
           </p>
         </div>
@@ -135,8 +135,8 @@ const AdminSignup = () => {
             </div>
 
             <div className="p-3.5 bg-amber-50 border border-amber-200/80 rounded-xl text-left space-y-1">
-              <p className="text-[11px] font-semibold text-amber-900">Notice:</p>
-              <p className="text-[11px] text-amber-800 leading-relaxed">
+              <p className="text-[12px] font-semibold text-amber-900">Notice:</p>
+              <p className="text-[12px] text-amber-800 leading-relaxed">
                 You can now delete this file (<code className="bg-amber-100 px-1 py-0.5 rounded font-mono text-[12px]">src/pages/AdminSignup.jsx</code>) and remove the route from <code className="bg-amber-100 px-1 py-0.5 rounded font-mono text-[12px]">App.jsx</code> whenever you are ready.
               </p>
             </div>
@@ -144,7 +144,7 @@ const AdminSignup = () => {
             <button
               type="button"
               onClick={() => navigate("/admin")}
-              className="w-full py-3.5 bg-black text-white font-extrabold text-[11px] uppercase tracking-[0.2em] transition-all hover:bg-zinc-800 active:scale-[0.98] flex items-center justify-center gap-2.5 rounded-xl shadow-lg shadow-black/10 cursor-pointer"
+              className="w-full py-3.5 bg-black text-white font-bold text-[12px] uppercase tracking-[0.2em] transition-all hover:bg-zinc-800 active:scale-[0.98] flex items-center justify-center gap-2.5 rounded-xl shadow-lg shadow-black/10 cursor-pointer"
             >
               <span>Go to Admin Dashboard</span>
               <ArrowRight size={14} />
@@ -233,7 +233,7 @@ const AdminSignup = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-black text-white font-extrabold text-[11px] uppercase tracking-[0.2em] transition-all duration-300 hover:bg-zinc-800 active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer shadow-lg shadow-black/10 rounded-xl mt-3 disabled:opacity-60"
+              className="w-full py-3.5 bg-black text-white font-bold text-[12px] uppercase tracking-[0.2em] transition-all duration-300 hover:bg-zinc-800 active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer shadow-lg shadow-black/10 rounded-xl mt-3 disabled:opacity-60"
             >
               <span>{loading ? "Registering Admin..." : "Register Admin Account"}</span>
               <ArrowRight size={14} />
@@ -242,7 +242,7 @@ const AdminSignup = () => {
             <div className="text-center pt-2">
               <Link
                 to="/admin"
-                className="text-[11px] text-zinc-500 hover:text-black transition-colors underline font-medium"
+                className="text-[12px] text-zinc-500 hover:text-black transition-colors underline font-medium"
               >
                 Already have an admin account? Go to Admin Login
               </Link>

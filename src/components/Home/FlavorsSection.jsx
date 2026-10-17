@@ -71,7 +71,7 @@ const OlfactoryCard = ({ family }) => {
           <h3 className="text-lg font-serif tracking-wider uppercase text-white mb-1.5">
             {family.name}
           </h3>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-[#b8860b] mb-4">
+          <p className="text-[12px] uppercase tracking-[0.2em] text-[#b8860b] mb-4">
             {family.subtitle}
           </p>
 

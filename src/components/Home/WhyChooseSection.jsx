@@ -86,7 +86,7 @@ const WhyChooseSection = () => {
             Pure Benefits
             <span className="absolute -bottom-1 left-0 w-full h-[1px] bg-[#D9A036]/50"></span>
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-poppins font-extrabold text-white tracking-tight pb-3 leading-[1.1]">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-poppins font-bold text-white tracking-tight pb-3 leading-[1.1]">
             Why Choose Sattu Sattu?
           </h2>
           {/* Stamped rustic divider */}

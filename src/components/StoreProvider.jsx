@@ -22,7 +22,10 @@ export const StoreProvider = ({ children }) => {
     whatsapp_number: "9584826112",
     phone: "+91 9584826112",
     email: "care@mahirash.com",
-    preorder_message: "Hello Mahirash! I would like to pre-order: "
+    preorder_message: "Hello Mahirash! I would like to pre-order: ",
+    logo_url: "",
+    site_icon_url: "",
+    gemini_api_key: ""
   });
 
   const mergedUidsRef = useRef(new Set());
@@ -34,7 +37,19 @@ export const StoreProvider = ({ children }) => {
       const settingsRef = doc(db, "settings", "global");
       unsub = onSnapshot(settingsRef, (snapshot) => {
         if (snapshot.exists()) {
-          setSiteSettings(prev => ({ ...prev, ...snapshot.data() }));
+          const data = snapshot.data();
+          setSiteSettings(prev => ({ ...prev, ...data }));
+
+          // Dynamically update siteicon / favicon if configured
+          if (data.site_icon_url) {
+            let iconLink = document.querySelector("link[rel*='icon']");
+            if (!iconLink) {
+              iconLink = document.createElement("link");
+              iconLink.rel = "shortcut icon";
+              document.getElementsByTagName("head")[0].appendChild(iconLink);
+            }
+            iconLink.href = data.site_icon_url;
+          }
         }
       });
     } catch (err) {
