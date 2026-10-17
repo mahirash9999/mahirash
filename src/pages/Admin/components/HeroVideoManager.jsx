@@ -246,10 +246,10 @@ const HeroVideoManager = () => {
       {/* Notification Toast Alert */}
       {statusMessage.text && (
         <div className={`p-4 rounded-xl border flex items-center justify-between gap-4 transition-all ${statusMessage.type === 'error'
-            ? 'bg-rose-500/10 border-rose-500/30 text-rose-300'
-            : statusMessage.type === 'success'
-              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-              : 'bg-blue-500/10 border-blue-500/30 text-blue-300'
+          ? 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+          : statusMessage.type === 'success'
+            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+            : 'bg-blue-500/10 border-blue-500/30 text-blue-300'
           }`}>
           <div className="flex items-center gap-3">
             {statusMessage.type === 'error' ? <AlertCircle className="shrink-0" /> : <CheckCircle2 className="shrink-0" />}
@@ -518,7 +518,7 @@ const HeroVideoManager = () => {
                 <button
                   type="button"
                   onClick={() => setIsMuted(!isMuted)}
-                  className="px-1 text-[10px] uppercase font-semibold tracking-wider hover:text-emerald-600 transition-colors"
+                  className="px-1 text-[12px] uppercase font-semibold tracking-wider hover:text-emerald-600 transition-colors"
                 >
                   {isMuted ? 'Muted' : 'Sound On'}
                 </button>

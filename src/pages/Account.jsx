@@ -122,7 +122,7 @@ const Account = () => {
             const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0);
             return tB - tA;
           });
-        } catch (_) {}
+        } catch (_) { }
       }
 
       setRecentOrders(ordersList);
@@ -586,7 +586,7 @@ const Account = () => {
                   <h1 className="text-2xl font-light text-zinc-900 uppercase tracking-widest">
                     {userData?.displayName || userData?.name || customer?.name || "Atelier Guest"}
                   </h1>
-                  <span className="px-2.5 py-0.5 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[8px] font-black uppercase tracking-widest">Client Member</span>
+                  <span className="px-2.5 py-0.5 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[12px] font-black uppercase tracking-widest">Client Member</span>
                 </div>
                 <p className="text-[14px] text-zinc-500">{activeEmail}</p>
                 {phone && (
@@ -608,7 +608,7 @@ const Account = () => {
               </button>
 
               <button onClick={handleLogout}
-                className="h-10 px-5 bg-zinc-100 border border-zinc-300 text-zinc-700   text-[10px] uppercase tracking-[0.2em] hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-all flex items-center gap-2"
+                className="h-10 px-5 bg-zinc-100 border border-zinc-300 text-zinc-700   text-[12px] uppercase tracking-[0.2em] hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-all flex items-center gap-2"
               >
                 <LogOut size={12} strokeWidth={2} />
                 Logout
@@ -641,7 +641,7 @@ const Account = () => {
                   <p className="text-sm font-poppins   tracking-wider text-zinc-900 uppercase">
                     ACCOUNT
                   </p>
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Panel</p>
+                  <p className="text-[12px] text-zinc-500 uppercase tracking-widest font-semibold">Panel</p>
                 </div>
               </div>
               <button
@@ -662,7 +662,7 @@ const Account = () => {
                       <ShoppingBag size={13} strokeWidth={1.5} />
                     </div>
                     <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.cart}</p>
-                    <p className="text-[8px]   text-zinc-500 uppercase tracking-widest mt-0.5">In Cart</p>
+                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">In Cart</p>
                   </Link>
 
                   <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)} className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
@@ -670,7 +670,7 @@ const Account = () => {
                       <Heart size={13} strokeWidth={1.5} />
                     </div>
                     <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.wishlist}</p>
-                    <p className="text-[8px]   text-zinc-500 uppercase tracking-widest mt-0.5">Wishlist</p>
+                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">Wishlist</p>
                   </Link>
 
                   <button onClick={() => { setActiveTab("orders"); setMobileMenuOpen(false); }} className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
@@ -678,12 +678,12 @@ const Account = () => {
                       <Package size={13} strokeWidth={1.5} />
                     </div>
                     <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.orders}</p>
-                    <p className="text-[8px]   text-zinc-500 uppercase tracking-widest mt-0.5">Orders</p>
+                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">Orders</p>
                   </button>
                 </div>
 
                 <div className="bg-white border border-zinc-200 p-1.5 shadow-sm">
-                  <span className="block px-3 py-2 text-[9px]   text-zinc-400 uppercase tracking-[0.3em]">Account Panel</span>
+                  <span className="block px-3 py-2 text-[12px]   text-zinc-400 uppercase tracking-[0.3em]">Account Panel</span>
                   {[
                     { id: "profile", icon: Settings, label: "Profile & Phone" },
                     { id: "orders", icon: Package, label: "Orders & Invoices" },
@@ -711,7 +711,7 @@ const Account = () => {
                       <ShoppingBag size={13} strokeWidth={1.5} />
                     </div>
                     <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.cart}</p>
-                    <p className="text-[8px]   text-zinc-500 uppercase tracking-widest mt-0.5">In Cart</p>
+                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">In Cart</p>
                   </Link>
 
                   <Link to="/wishlist" className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
@@ -719,7 +719,7 @@ const Account = () => {
                       <Heart size={13} strokeWidth={1.5} />
                     </div>
                     <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.wishlist}</p>
-                    <p className="text-[8px]   text-zinc-500 uppercase tracking-widest mt-0.5">Wishlist</p>
+                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">Wishlist</p>
                   </Link>
 
                   <button onClick={() => setActiveTab("orders")} className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
@@ -727,12 +727,12 @@ const Account = () => {
                       <Package size={13} strokeWidth={1.5} />
                     </div>
                     <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.orders}</p>
-                    <p className="text-[8px]   text-zinc-500 uppercase tracking-widest mt-0.5">Orders</p>
+                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">Orders</p>
                   </button>
                 </div>
 
                 <div className="bg-white border border-zinc-200 p-1.5 shadow-sm">
-                  <span className="block px-3 py-2 text-[9px]   text-zinc-400 uppercase tracking-[0.3em]">Account Panel</span>
+                  <span className="block px-3 py-2 text-[12px]   text-zinc-400 uppercase tracking-[0.3em]">Account Panel</span>
                   {[
                     { id: "profile", icon: Settings, label: "Profile & Phone" },
                     { id: "orders", icon: Package, label: "Orders & Invoices" },
@@ -779,7 +779,7 @@ const Account = () => {
                       <p className="text-[11px] text-zinc-500 mt-0.5">Track shipment timeline & download tax invoices</p>
                     </div>
                     {recentOrders.length > 0 && (
-                      <button onClick={() => setActiveTab("orders")} className="h-8 px-4 border border-zinc-300 text-[10px] font-semibold text-zinc-600 uppercase tracking-wider hover:border-black hover:text-black transition-all flex items-center">
+                      <button onClick={() => setActiveTab("orders")} className="h-8 px-4 border border-zinc-300 text-[12px] font-semibold text-zinc-600 uppercase tracking-wider hover:border-black hover:text-black transition-all flex items-center">
                         View All ({recentOrders.length})
                       </button>
                     )}
@@ -808,7 +808,7 @@ const Account = () => {
                           <div className="w-full sm:w-auto flex sm:flex-row items-center justify-between sm:justify-end gap-3">
                             <div className="text-right">
                               <p className="text-sm   text-zinc-900">₹{order.total?.toLocaleString()}</p>
-                              <span className={`inline-block px-2 py-0.5 text-[8px]   uppercase tracking-wider border ${order.status === 'confirmed' || order.status === 'delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                              <span className={`inline-block px-2 py-0.5 text-[12px]   uppercase tracking-wider border ${order.status === 'confirmed' || order.status === 'delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
                                 : order.status === 'failed' ? 'bg-red-50 text-red-700 border-red-300'
                                   : 'bg-amber-50 text-amber-700 border-amber-300'
                                 }`}>{order.status || 'Confirmed'}</span>
@@ -826,7 +826,7 @@ const Account = () => {
                               )}
                               <button
                                 onClick={() => setSelectedOrder(order)}
-                                className="px-3 py-2 bg-zinc-100 border border-zinc-300 text-zinc-800 text-[9px]   uppercase tracking-wider hover:bg-black hover:text-white transition-all"
+                                className="px-3 py-2 bg-zinc-100 border border-zinc-300 text-zinc-800 text-[12px]   uppercase tracking-wider hover:bg-black hover:text-white transition-all"
                               >
                                 Details
                               </button>
@@ -849,7 +849,7 @@ const Account = () => {
                       </div>
                       <h4 className="text-sm font-light text-zinc-900 uppercase tracking-widest mb-1">No orders yet</h4>
                       <p className="text-[11px] text-zinc-500 mb-4">Start exploring the shop to place your first order.</p>
-                      <Link to="/shop" className="inline-flex items-center gap-2 px-5 py-2.5 bg-black text-white   text-[9px] uppercase tracking-widest hover:bg-zinc-800 transition-all">
+                      <Link to="/shop" className="inline-flex items-center gap-2 px-5 py-2.5 bg-black text-white   text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all">
                         Explore Shop <ChevronRight size={11} />
                       </Link>
                     </div>
@@ -863,7 +863,7 @@ const Account = () => {
                       <MapPin size={14} className="text-[#b8860b]" />
                       <h4 className="text-[14px]   text-zinc-900 uppercase tracking-widest">Primary Shipping Address</h4>
                     </div>
-                    <button onClick={() => setActiveTab("addresses")} className="text-[10px] text-[#b8860b] font-semibold hover:underline uppercase tracking-wider">
+                    <button onClick={() => setActiveTab("addresses")} className="text-[12px] text-[#b8860b] font-semibold hover:underline uppercase tracking-wider">
                       Manage Addresses ({addresses.length})
                     </button>
                   </div>
@@ -875,14 +875,14 @@ const Account = () => {
                         <div className="text-[14px] text-zinc-700 space-y-1">
                           <p className="  text-zinc-900 uppercase tracking-wider">{defaultAddr.name}</p>
                           <p className="text-zinc-500">{defaultAddr.address}, {defaultAddr.city}, {defaultAddr.state} - {defaultAddr.pincode}</p>
-                          <p className="text-[10px] text-[#b8860b] font-semibold">Contact: {defaultAddr.phone}</p>
+                          <p className="text-[12px] text-[#b8860b] font-semibold">Contact: {defaultAddr.phone}</p>
                         </div>
                       );
                     })()
                   ) : (
                     <div className="flex items-center justify-between text-[14px] text-zinc-500">
                       <p>No saved addresses.</p>
-                      <button onClick={() => { setActiveTab("addresses"); setShowAddressForm(true); }} className="text-[10px] text-zinc-900 underline uppercase  ">Add Address</button>
+                      <button onClick={() => { setActiveTab("addresses"); setShowAddressForm(true); }} className="text-[12px] text-zinc-900 underline uppercase  ">Add Address</button>
                     </div>
                   )}
                 </div>
@@ -900,7 +900,7 @@ const Account = () => {
                 <form onSubmit={handleUpdateProfile} className="space-y-5">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px]   text-zinc-500 uppercase tracking-widest">Profile Name</label>
+                      <label className="text-[12px]   text-zinc-500 uppercase tracking-widest">Profile Name</label>
                       <input
                         type="text"
                         value={displayName}
@@ -911,7 +911,7 @@ const Account = () => {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px]   text-zinc-500 uppercase tracking-widest">Contact Phone Number</label>
+                      <label className="text-[12px]   text-zinc-500 uppercase tracking-widest">Contact Phone Number</label>
                       <input
                         type="text"
                         value={phone}
@@ -923,7 +923,7 @@ const Account = () => {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px]   text-zinc-400 uppercase tracking-widest">Registered Email (Read-only)</label>
+                    <label className="text-[12px]   text-zinc-400 uppercase tracking-widest">Registered Email (Read-only)</label>
                     <input
                       type="email"
                       value={activeEmail || ""}
@@ -933,7 +933,7 @@ const Account = () => {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px]   text-zinc-500 uppercase tracking-widest">Short Bio</label>
+                    <label className="text-[12px]   text-zinc-500 uppercase tracking-widest">Short Bio</label>
                     <textarea
                       value={bio}
                       onChange={(e) => setBio(e.target.value)}
@@ -946,7 +946,7 @@ const Account = () => {
                   <button
                     type="submit"
                     disabled={savingProfile}
-                    className="px-8 py-3.5 bg-black text-white text-[10px]   uppercase tracking-widest hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                    className="px-8 py-3.5 bg-black text-white text-[12px]   uppercase tracking-widest hover:bg-zinc-800 transition-colors disabled:opacity-50"
                   >
                     {savingProfile ? "Saving Details..." : "Save Profile Changes"}
                   </button>
@@ -962,7 +962,7 @@ const Account = () => {
                     <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Order History & Invoices</h3>
                     <p className="text-[11px] text-zinc-500">Track shipments and download official invoices</p>
                   </div>
-                  <span className="text-[10px] text-zinc-500 font-mono">Total Orders: {recentOrders.length}</span>
+                  <span className="text-[12px] text-zinc-500 font-mono">Total Orders: {recentOrders.length}</span>
                 </div>
 
                 {recentOrders.length > 0 ? (
@@ -974,18 +974,18 @@ const Account = () => {
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-200">
                           <div>
-                            <span className="text-[9px] text-[#b8860b] font-black uppercase tracking-widest">Order Reference</span>
+                            <span className="text-[12px] text-[#b8860b] font-black uppercase tracking-widest">Order Reference</span>
                             <h4 className="text-[14px]   text-zinc-900 uppercase tracking-wider">#{order.id.toUpperCase()}</h4>
                           </div>
                           <div className="flex items-center gap-3">
-                            <span className={`px-2.5 py-0.5 text-[8px]   uppercase tracking-widest border ${order.status === 'confirmed' || order.status === 'delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                            <span className={`px-2.5 py-0.5 text-[12px]   uppercase tracking-widest border ${order.status === 'confirmed' || order.status === 'delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
                               : order.status === 'failed' ? 'bg-red-50 text-red-700 border-red-300'
                                 : 'bg-amber-50 text-amber-700 border-amber-300'
                               }`}>{order.status || 'Confirmed'}</span>
 
                             <button
                               onClick={() => handleDownloadInvoice(order)}
-                              className="px-3 py-1 bg-white border border-zinc-300 hover:bg-[#b8860b] hover:text-white text-[#b8860b] text-[9px]   uppercase tracking-wider transition-all flex items-center gap-1.5"
+                              className="px-3 py-1 bg-white border border-zinc-300 hover:bg-[#b8860b] hover:text-white text-[#b8860b] text-[12px]   uppercase tracking-wider transition-all flex items-center gap-1.5"
                             >
                               <Download size={11} /> Invoice
                             </button>
@@ -994,19 +994,19 @@ const Account = () => {
 
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[11px] text-zinc-600">
                           <div>
-                            <span className="block text-[8px] uppercase tracking-wider text-zinc-500   mb-0.5">Date Placed</span>
+                            <span className="block text-[12px] uppercase tracking-wider text-zinc-500   mb-0.5">Date Placed</span>
                             <span className="text-zinc-900">{order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString('en-IN') : 'Recent'}</span>
                           </div>
                           <div>
-                            <span className="block text-[8px] uppercase tracking-wider text-zinc-500   mb-0.5">Total Amount</span>
+                            <span className="block text-[12px] uppercase tracking-wider text-zinc-500   mb-0.5">Total Amount</span>
                             <span className="text-zinc-900  ">₹{order.total?.toLocaleString()}</span>
                           </div>
                           <div>
-                            <span className="block text-[8px] uppercase tracking-wider text-zinc-500   mb-0.5">Payment Method</span>
+                            <span className="block text-[12px] uppercase tracking-wider text-zinc-500   mb-0.5">Payment Method</span>
                             <span className="text-zinc-900 uppercase">{order.paymentMethod || 'Online'}</span>
                           </div>
                           <div>
-                            <span className="block text-[8px] uppercase tracking-wider text-zinc-500   mb-0.5">Items</span>
+                            <span className="block text-[12px] uppercase tracking-wider text-zinc-500   mb-0.5">Items</span>
                             <span className="text-zinc-900">{order.items?.length || 1} Item(s)</span>
                           </div>
                         </div>
@@ -1015,21 +1015,21 @@ const Account = () => {
                           {order.awbCode ? (
                             <Link
                               to={`/track?awb=${order.awbCode}`}
-                              className="text-[10px] text-emerald-700 hover:text-emerald-800 font-bold uppercase tracking-wider flex items-center gap-1"
+                              className="text-[12px] text-emerald-700 hover:text-emerald-800 font-bold uppercase tracking-wider flex items-center gap-1"
                             >
                               <Truck size={12} className="animate-pulse" /> Track Shipment Live
                             </Link>
                           ) : (
                             <Link
                               to={`/track?orderId=${order.id}`}
-                              className="text-[10px] text-zinc-500 hover:text-zinc-800 font-semibold uppercase tracking-wider flex items-center gap-1"
+                              className="text-[12px] text-zinc-500 hover:text-zinc-800 font-semibold uppercase tracking-wider flex items-center gap-1"
                             >
                               <Clock size={11} /> View Packing Status
                             </Link>
                           )}
                           <button
                             onClick={() => setSelectedOrder(order)}
-                            className="text-[10px] text-zinc-600 hover:text-black uppercase tracking-widest flex items-center gap-1 transition-colors"
+                            className="text-[12px] text-zinc-600 hover:text-black uppercase tracking-widest flex items-center gap-1 transition-colors"
                           >
                             Details <ChevronRight size={11} />
                           </button>
@@ -1040,7 +1040,7 @@ const Account = () => {
                 ) : (
                   <div className="text-center py-16">
                     <p className="text-zinc-500 text-[14px] uppercase tracking-widest mb-3">No order history available.</p>
-                    <Link to="/shop" className="px-6 py-3 bg-black text-white   text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all inline-block">
+                    <Link to="/shop" className="px-6 py-3 bg-black text-white   text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all inline-block">
                       Browse Shop
                     </Link>
                   </div>
@@ -1061,7 +1061,7 @@ const Account = () => {
                       if (showAddressForm) resetAddressForm();
                       else setShowAddressForm(true);
                     }}
-                    className="h-9 px-4 border border-zinc-300 text-[9px]   text-[#b8860b] uppercase tracking-widest hover:bg-black hover:text-white hover:border-black transition-all flex items-center gap-1.5"
+                    className="h-9 px-4 border border-zinc-300 text-[12px]   text-[#b8860b] uppercase tracking-widest hover:bg-black hover:text-white hover:border-black transition-all flex items-center gap-1.5"
                   >
                     <Plus size={12} /> {showAddressForm ? "Cancel" : "Add New Address"}
                   </button>
@@ -1077,17 +1077,16 @@ const Account = () => {
                       </h4>
                       {/* Address Type Selector */}
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[9px] font-semibold text-zinc-500 uppercase tracking-wider mr-1">Type:</span>
+                        <span className="text-[12px] font-semibold text-zinc-500 uppercase tracking-wider mr-1">Type:</span>
                         {["Home", "Office", "Other"].map((t) => (
                           <button
                             key={t}
                             type="button"
                             onClick={() => setAddressForm(p => ({ ...p, type: t }))}
-                            className={`px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded border transition-all cursor-pointer ${
-                              addressForm.type === t
-                                ? "bg-black text-white border-black shadow-xs"
-                                : "bg-white text-zinc-600 border-zinc-300 hover:border-black hover:text-black"
-                            }`}
+                            className={`px-2.5 py-1 text-[12px] font-semibold uppercase tracking-wider rounded border transition-all cursor-pointer ${addressForm.type === t
+                              ? "bg-black text-white border-black shadow-xs"
+                              : "bg-white text-zinc-600 border-zinc-300 hover:border-black hover:text-black"
+                              }`}
                           >
                             {t}
                           </button>
@@ -1097,7 +1096,7 @@ const Account = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Contact Person Full Name *</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Contact Person Full Name *</label>
                         <input
                           type="text"
                           value={addressForm.name}
@@ -1108,7 +1107,7 @@ const Account = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Primary Mobile Phone *</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Primary Mobile Phone *</label>
                         <input
                           type="tel"
                           value={addressForm.phone}
@@ -1122,7 +1121,7 @@ const Account = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Alternate Phone (Optional - for courier)</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Alternate Phone (Optional - for courier)</label>
                         <input
                           type="tel"
                           value={addressForm.alternatePhone || ""}
@@ -1132,7 +1131,7 @@ const Account = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Flat, House No., Building, Apartment *</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Flat, House No., Building, Apartment *</label>
                         <input
                           type="text"
                           value={addressForm.flat || ""}
@@ -1146,7 +1145,7 @@ const Account = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Area, Street, Sector, Locality *</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Area, Street, Sector, Locality *</label>
                         <input
                           type="text"
                           value={addressForm.street || ""}
@@ -1157,7 +1156,7 @@ const Account = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Landmark (Optional)</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Landmark (Optional)</label>
                         <input
                           type="text"
                           value={addressForm.landmark || ""}
@@ -1170,7 +1169,7 @@ const Account = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">City / District *</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">City / District *</label>
                         <input
                           type="text"
                           value={addressForm.city}
@@ -1181,7 +1180,7 @@ const Account = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">State *</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">State *</label>
                         <input
                           type="text"
                           value={addressForm.state}
@@ -1192,7 +1191,7 @@ const Account = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Pincode *</label>
+                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Pincode *</label>
                         <input
                           type="text"
                           value={addressForm.pincode}
@@ -1218,10 +1217,10 @@ const Account = () => {
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <button type="submit" className="px-5 py-2.5 bg-black text-white text-[9px] font-bold uppercase tracking-wider hover:bg-zinc-800 transition-colors rounded">
+                      <button type="submit" className="px-5 py-2.5 bg-black text-white text-[12px] font-bold uppercase tracking-wider hover:bg-zinc-800 transition-colors rounded">
                         {editingAddressId ? "Update Address" : "Save Address"}
                       </button>
-                      <button type="button" onClick={resetAddressForm} className="px-5 py-2.5 border border-zinc-300 text-zinc-600 text-[9px] font-bold uppercase tracking-wider hover:text-black transition-colors rounded">
+                      <button type="button" onClick={resetAddressForm} className="px-5 py-2.5 border border-zinc-300 text-zinc-600 text-[12px] font-bold uppercase tracking-wider hover:text-black transition-colors rounded">
                         Cancel
                       </button>
                     </div>
@@ -1233,11 +1232,11 @@ const Account = () => {
                   {addresses.map((a) => (
                     <div key={a.id} className={`p-5 bg-zinc-50 border ${a.isDefault ? 'border-[#b8860b]' : 'border-zinc-200'} rounded-xl flex flex-col justify-between space-y-4 relative shadow-xs`}>
                       <div className="flex items-center justify-between">
-                        <span className="px-2.5 py-0.5 bg-zinc-200 text-zinc-800 text-[9px] font-bold uppercase tracking-wider rounded">
+                        <span className="px-2.5 py-0.5 bg-zinc-200 text-zinc-800 text-[12px] font-bold uppercase tracking-wider rounded">
                           {a.type || "Home"}
                         </span>
                         {a.isDefault && (
-                          <span className="px-2 py-0.5 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[8px] font-bold uppercase tracking-wider rounded">
+                          <span className="px-2 py-0.5 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[12px] font-bold uppercase tracking-wider rounded">
                             Default
                           </span>
                         )}
@@ -1254,7 +1253,7 @@ const Account = () => {
                             <Phone size={11} /> {a.phone}
                           </p>
                           {a.alternatePhone && (
-                            <p className="text-zinc-500 pl-4 text-[10px]">
+                            <p className="text-zinc-500 pl-4 text-[12px]">
                               Alt: {a.alternatePhone}
                             </p>
                           )}
@@ -1265,7 +1264,7 @@ const Account = () => {
                         {!a.isDefault ? (
                           <button
                             onClick={() => handleSetDefaultAddress(a.id)}
-                            className="text-[9px] text-zinc-500 hover:text-[#b8860b] uppercase tracking-wider transition-colors  "
+                            className="text-[12px] text-zinc-500 hover:text-[#b8860b] uppercase tracking-wider transition-colors  "
                           >
                             Set Default
                           </button>
@@ -1297,7 +1296,7 @@ const Account = () => {
                       <p className="text-zinc-500 text-[14px] uppercase tracking-widest mb-3">No saved addresses found.</p>
                       <button
                         onClick={() => setShowAddressForm(true)}
-                        className="px-4 py-2 border border-zinc-400 text-zinc-900 text-[9px]   uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+                        className="px-4 py-2 border border-zinc-400 text-zinc-900 text-[12px]   uppercase tracking-widest hover:bg-black hover:text-white transition-all"
                       >
                         Add Your First Address
                       </button>
@@ -1317,7 +1316,7 @@ const Account = () => {
                   </div>
                   <button
                     onClick={() => setShowCardForm(!showCardForm)}
-                    className="h-8 px-4 border border-zinc-300 text-[9px]   text-[#b8860b] uppercase tracking-widest hover:bg-black hover:text-white hover:border-black transition-all flex items-center gap-1.5"
+                    className="h-8 px-4 border border-zinc-300 text-[12px]   text-[#b8860b] uppercase tracking-widest hover:bg-black hover:text-white hover:border-black transition-all flex items-center gap-1.5"
                   >
                     <Plus size={11} /> {showCardForm ? "Cancel" : "Add Card"}
                   </button>
@@ -1327,7 +1326,7 @@ const Account = () => {
                   <form onSubmit={handleAddCard} className="bg-zinc-50 border border-zinc-200 p-5 space-y-4 rounded">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">Cardholder Name</label>
+                        <label className="text-[12px]   text-zinc-500 uppercase tracking-wider">Cardholder Name</label>
                         <input
                           type="text"
                           value={newCard.cardHolder}
@@ -1338,7 +1337,7 @@ const Account = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">Card Number</label>
+                        <label className="text-[12px]   text-zinc-500 uppercase tracking-wider">Card Number</label>
                         <input
                           type="text"
                           value={newCard.cardNumber}
@@ -1352,7 +1351,7 @@ const Account = () => {
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">Expiry Date</label>
+                        <label className="text-[12px]   text-zinc-500 uppercase tracking-wider">Expiry Date</label>
                         <input
                           type="text"
                           value={newCard.expiry}
@@ -1364,7 +1363,7 @@ const Account = () => {
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px]   text-zinc-500 uppercase tracking-wider">Card Network</label>
+                        <label className="text-[12px]   text-zinc-500 uppercase tracking-wider">Card Network</label>
                         <select
                           value={newCard.brand}
                           onChange={(e) => setNewCard({ ...newCard, brand: e.target.value })}
@@ -1378,10 +1377,10 @@ const Account = () => {
                       </div>
                     </div>
                     <div className="flex gap-2 pt-2">
-                      <button type="submit" className="px-4 py-2 bg-black text-white text-[9px]   uppercase tracking-wider hover:bg-zinc-800 transition-colors">
+                      <button type="submit" className="px-4 py-2 bg-black text-white text-[12px]   uppercase tracking-wider hover:bg-zinc-800 transition-colors">
                         Save Card
                       </button>
-                      <button type="button" onClick={() => setShowCardForm(false)} className="px-4 py-2 border border-zinc-300 text-zinc-600 text-[9px]   uppercase tracking-wider hover:text-black transition-colors">
+                      <button type="button" onClick={() => setShowCardForm(false)} className="px-4 py-2 border border-zinc-300 text-zinc-600 text-[12px]   uppercase tracking-wider hover:text-black transition-colors">
                         Cancel
                       </button>
                     </div>
@@ -1392,7 +1391,7 @@ const Account = () => {
                   {payments.map((p) => (
                     <div key={p.id} className="p-5 bg-gradient-to-br from-zinc-900 to-black text-white border border-zinc-800 rounded relative overflow-hidden flex flex-col justify-between h-40 shadow-md">
                       <div className="flex justify-between items-start">
-                        <span className="text-[10px]   text-[#c9a962] tracking-[0.25em] uppercase">{p.brand}</span>
+                        <span className="text-[12px]   text-[#c9a962] tracking-[0.25em] uppercase">{p.brand}</span>
                         <div className="flex items-center gap-2">
                           <CreditCard size={18} strokeWidth={1.2} className="text-white/40" />
                           <button onClick={() => handleDeleteCard(p.id)} className="text-white/40 hover:text-red-400 transition-colors">
@@ -1405,11 +1404,11 @@ const Account = () => {
                         <div className="flex justify-between items-end">
                           <div>
                             <span className="block text-[7px] uppercase tracking-wider text-zinc-400  ">Holder</span>
-                            <span className="text-[10px]   text-white/80">{p.cardHolder}</span>
+                            <span className="text-[12px]   text-white/80">{p.cardHolder}</span>
                           </div>
                           <div>
                             <span className="block text-[7px] uppercase tracking-wider text-zinc-400  ">Expiry</span>
-                            <span className="text-[10px] font-mono   text-white/80">{p.expiry}</span>
+                            <span className="text-[12px] font-mono   text-white/80">{p.expiry}</span>
                           </div>
                         </div>
                       </div>
@@ -1437,7 +1436,7 @@ const Account = () => {
                     <div key={notif.key} className="flex justify-between items-center p-4 bg-zinc-50 border border-zinc-200 rounded">
                       <div className="max-w-[80%] space-y-0.5">
                         <h4 className="text-[14px]   text-zinc-900 uppercase tracking-wider">{notif.title}</h4>
-                        <p className="text-[10px] text-zinc-500 leading-relaxed">{notif.sub}</p>
+                        <p className="text-[12px] text-zinc-500 leading-relaxed">{notif.sub}</p>
                       </div>
                       <input
                         type="checkbox"
@@ -1466,7 +1465,7 @@ const Account = () => {
             {/* Modal Header */}
             <div className="px-6 py-5 border-b border-zinc-200 flex items-center justify-between sticky top-0 bg-white z-10">
               <div>
-                <span className="text-[9px] text-[#b8860b] font-black uppercase tracking-widest">Order Details & Tracking</span>
+                <span className="text-[12px] text-[#b8860b] font-black uppercase tracking-widest">Order Details & Tracking</span>
                 <h3 className="text-[14px]   uppercase tracking-widest text-zinc-900 mt-0.5">
                   Order #{selectedOrder.id.toUpperCase()}
                 </h3>
@@ -1474,7 +1473,7 @@ const Account = () => {
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleDownloadInvoice(selectedOrder)}
-                  className="px-3 py-1.5 bg-black text-white text-[9px]   uppercase tracking-wider hover:bg-zinc-800 transition-all flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-black text-white text-[12px]   uppercase tracking-wider hover:bg-zinc-800 transition-all flex items-center gap-1.5"
                 >
                   <Download size={11} /> Invoice
                 </button>
@@ -1488,17 +1487,17 @@ const Account = () => {
               {/* STEPPER TIMELINE */}
               <div className="space-y-4 bg-zinc-50 border border-[#e4e4e7] p-5 rounded">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] text-zinc-500 uppercase tracking-widest">Shipment status</span>
+                  <span className="text-[12px] text-zinc-500 uppercase tracking-widest">Shipment status</span>
                   <div className="flex items-center gap-2">
                     {selectedOrder.awbCode && (
                       <Link
                         to={`/track?awb=${selectedOrder.awbCode}`}
-                        className="px-2.5 py-0.5 text-[8px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded uppercase tracking-wider transition"
+                        className="px-2.5 py-0.5 text-[12px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded uppercase tracking-wider transition"
                       >
                         Track Live Shipment
                       </Link>
                     )}
-                    <span className="px-2.5 py-0.5 text-[8px] font-black uppercase tracking-wider border border-[#b8860b]/40 text-[#b8860b] bg-[#b8860b]/10 rounded">
+                    <span className="px-2.5 py-0.5 text-[12px] font-black uppercase tracking-wider border border-[#b8860b]/40 text-[#b8860b] bg-[#b8860b]/10 rounded">
                       {selectedOrder.status || 'Confirmed'}
                     </span>
                   </div>
@@ -1508,7 +1507,7 @@ const Account = () => {
                   <div className="h-1 bg-zinc-200 w-full rounded" />
                   <div className={`absolute top-2 h-1 bg-[#b8860b] rounded transition-all duration-500 ${selectedOrder.status === 'delivered' ? 'w-full' : selectedOrder.status === 'shipped' || selectedOrder.status === 'shipping' ? 'w-2/3' : 'w-1/3'
                     }`} />
-                  <div className="flex justify-between text-[9px] uppercase tracking-wider mt-3 text-zinc-500  ">
+                  <div className="flex justify-between text-[12px] uppercase tracking-wider mt-3 text-zinc-500  ">
                     <span className="text-zinc-900 flex items-center gap-1"><CheckCircle2 size={10} className="text-[#b8860b]" /> Confirmed</span>
                     <span className={selectedOrder.status === 'shipped' || selectedOrder.status === 'delivered' ? 'text-zinc-900 flex items-center gap-1' : ''}>
                       <Truck size={10} /> Shipped
@@ -1522,7 +1521,7 @@ const Account = () => {
 
               {/* PURCHASED ITEMS */}
               <div className="space-y-3">
-                <span className="text-[9px]   text-zinc-500 uppercase tracking-widest block">Purchased Items ({selectedOrder.items?.length || 1})</span>
+                <span className="text-[12px]   text-zinc-500 uppercase tracking-widest block">Purchased Items ({selectedOrder.items?.length || 1})</span>
                 <div className="space-y-2">
                   {selectedOrder.items?.map((item, i) => (
                     <div key={i} className="flex gap-4 items-center bg-zinc-50 border border-zinc-200 p-3.5 rounded">
@@ -1531,7 +1530,7 @@ const Account = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="  text-zinc-900 truncate uppercase tracking-wider">{item.name}</h4>
-                        <p className="text-[10px] text-zinc-500 uppercase mt-0.5">Qty: {item.quantity || 1} {item.size && `| Size: ${item.size}`}</p>
+                        <p className="text-[12px] text-zinc-500 uppercase mt-0.5">Qty: {item.quantity || 1} {item.size && `| Size: ${item.size}`}</p>
                       </div>
                       <span className="  text-zinc-900 text-sm">₹{((item.price || 0) * (item.quantity || 1)).toLocaleString()}</span>
                     </div>
@@ -1542,7 +1541,7 @@ const Account = () => {
               {/* SHIPPING & SUMMARY INFO */}
               <div className="grid sm:grid-cols-2 gap-6 pt-4 border-t border-zinc-200">
                 <div className="space-y-1.5">
-                  <span className="block text-[8px] uppercase tracking-wider text-zinc-500  ">Shipping Destination</span>
+                  <span className="block text-[12px] uppercase tracking-wider text-zinc-500  ">Shipping Destination</span>
                   <p className="text-zinc-700 leading-relaxed">
                     <strong>{selectedOrder.shipping?.name || displayName || 'Valued Customer'}</strong><br />
                     {selectedOrder.shipping?.address}, {selectedOrder.shipping?.city}, {selectedOrder.shipping?.state} - {selectedOrder.shipping?.pincode}<br />
@@ -1551,11 +1550,11 @@ const Account = () => {
                 </div>
                 <div className="space-y-2 text-right">
                   <div>
-                    <span className="block text-[8px] uppercase tracking-wider text-zinc-500  ">Payment Status</span>
+                    <span className="block text-[12px] uppercase tracking-wider text-zinc-500  ">Payment Status</span>
                     <span className="text-emerald-700   uppercase">PAID ({selectedOrder.paymentMethod || 'Online'})</span>
                   </div>
                   <div>
-                    <span className="block text-[8px] uppercase tracking-wider text-zinc-500  ">Grand Total</span>
+                    <span className="block text-[12px] uppercase tracking-wider text-zinc-500  ">Grand Total</span>
                     <span className="text-lg   text-zinc-900">₹{(selectedOrder.total || 0).toLocaleString()}</span>
                   </div>
                 </div>
@@ -1564,7 +1563,7 @@ const Account = () => {
               <div className="pt-2 flex justify-end">
                 <button
                   onClick={() => handleDownloadInvoice(selectedOrder)}
-                  className="w-full py-3 bg-black text-white   text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-black text-white   text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2"
                 >
                   <Download size={13} /> Print / Download Tax Invoice
                 </button>

@@ -84,7 +84,7 @@ const BestsellerProducts = () => {
         <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex-1 flex flex-col md:flex-row md:items-end gap-6 md:gap-12">
             <div>
-              <p className="text-[10px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
+              <p className="text-[12px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
                 <span>HAUTE SELECTION</span>
                 <span>•</span>
                 <span>CURATED EXTRAITS</span>

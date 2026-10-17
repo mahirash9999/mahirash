@@ -40,7 +40,7 @@ const CollectionHighlights = () => {
 
         {/* Header */}
         <div className="pb-10 border-b border-white/[0.06] mb-12">
-          <span className="text-[10px] uppercase tracking-[0.3em] text-white/25   block mb-3">The Blueprint</span>
+          <span className="text-[12px] uppercase tracking-[0.3em] text-white/25   block mb-3">The Blueprint</span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight uppercase">
             Curated Collections
           </h2>
@@ -73,7 +73,7 @@ const CollectionHighlights = () => {
 
               {/* Tag chip */}
               <div className="absolute top-4 left-4 bg-white px-3 py-1.5">
-                <span className="text-[9px] uppercase tracking-[0.25em] font-black text-black">
+                <span className="text-[12px] uppercase tracking-[0.25em] font-black text-black">
                   {pillars[activeIndex].tag}
                 </span>
               </div>
@@ -93,8 +93,8 @@ const CollectionHighlights = () => {
                 <div className="flex items-start justify-between gap-6">
                   <div className="space-y-2.5 max-w-md flex-1">
                     <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-black tracking-widest text-white/30 font-mono">{pillar.id}</span>
-                      <span className="text-[9px] tracking-[0.2em] font-black uppercase text-white/30 border border-white/10 px-2 py-0.5">
+                      <span className="text-[12px] font-black tracking-widest text-white/30 font-mono">{pillar.id}</span>
+                      <span className="text-[12px] tracking-[0.2em] font-black uppercase text-white/30 border border-white/10 px-2 py-0.5">
                         {pillar.tag}
                       </span>
                     </div>
@@ -107,7 +107,7 @@ const CollectionHighlights = () => {
                       <p className="text-[13px] text-white/40 leading-relaxed mb-4">{pillar.desc}</p>
                       <Link
                         to={pillar.link}
-                        className="inline-flex items-center gap-1.5 text-[10px] font-black tracking-[0.2em] uppercase text-white hover:text-white/60 transition-colors"
+                        className="inline-flex items-center gap-1.5 text-[12px] font-black tracking-[0.2em] uppercase text-white hover:text-white/60 transition-colors"
                       >
                         View Collection
                         <ArrowUpRight size={12} />

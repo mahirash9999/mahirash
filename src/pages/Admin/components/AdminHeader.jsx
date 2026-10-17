@@ -38,7 +38,7 @@ const AdminHeader = ({ activeItem, searchVal, setSearchVal, onMenuClick }) => {
           </button>
 
           <div className="min-w-0">
-            <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#b8860b] block truncate">
+            <span className="text-[12px] uppercase tracking-[0.2em] font-bold text-[#b8860b] block truncate">
               ADMIN ATELIER
             </span>
             <h1 className="text-base sm:text-xl font-bold font-serif text-zinc-900 tracking-tight truncate leading-tight">
@@ -87,7 +87,7 @@ const AdminHeader = ({ activeItem, searchVal, setSearchVal, onMenuClick }) => {
             </div>
             <div className="hidden md:block">
               <p className="text-[13px] font-bold text-zinc-900 leading-none">{profile.name}</p>
-              <p className="text-[9px] text-zinc-400 uppercase tracking-widest mt-1 font-semibold">{profile.role}</p>
+              <p className="text-[12px] text-zinc-400 uppercase tracking-widest mt-1 font-semibold">{profile.role}</p>
             </div>
           </div>
         </div>

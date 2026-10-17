@@ -1,71 +1,45 @@
 # ==========================================================
-# PASOJA - robots.txt
-# https://pasoja.in
+# MAHIRASH PARFUMERIE - robots.txt
+# https://mahirash.com
 # ==========================================================
 
 User-agent: *
 
-# Allow all public pages
+# Allow all public store pages
 Allow: /
+Allow: /shop
+Allow: /product/*
+Allow: /about
+Allow: /contact
+Allow: /terms
+Allow: /privacy
+Allow: /return-policy
 
-# ===========================================
-# Block Admin & Private Routes
-# ===========================================
-
-Disallow: /admin/
-Disallow: /dashboard/
+# Block Admin, Private, & Authentication Routes
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /admin-signup
 Disallow: /login
-Disallow: /register
+Disallow: /signup
 Disallow: /forgot-password
-Disallow: /reset-password
-Disallow: /checkout/
-Disallow: /cart/
-Disallow: /wishlist/
-Disallow: /account/
-Disallow: /profile/
-Disallow: /my-orders/
-Disallow: /payment/
-Disallow: /api/
-Disallow: /storage/private/
-Disallow: /vendor/
-Disallow: /node_modules/
+Disallow: /checkout
+Disallow: /cart
+Disallow: /wishlist
+Disallow: /account
+Disallow: /account/*
+Disallow: /orders
+Disallow: /track
+Disallow: /track-order
 Disallow: /.env
 Disallow: /.git/
 
-# ===========================================
-# Block Search Parameters (Optional)
-# ===========================================
-
-Disallow: /*?sort=
-Disallow: /*?page=
-Disallow: /*?filter=
-Disallow: /*?price=
-Disallow: /*?color=
-Disallow: /*?size=
-Disallow: /*?brand=
-Disallow: /*?search=
-Disallow: /*?q=
-Disallow: /*&sort=
-Disallow: /*&page=
-Disallow: /*&filter=
-
-# ===========================================
 # Allow Static Assets
-# ===========================================
-
-Allow: /images/
-Allow: /uploads/
 Allow: /assets/
-Allow: /storage/
+Allow: /logom.webp
+Allow: /favicon.ico
 
-# ===========================================
-# Crawl Delay (Ignored by Google, used by some bots)
-# ===========================================
+# Crawl Delay
+Crawl-delay: 1
 
-Crawl-delay: 2
-
-# ===========================================
-# Sitemap
-# ===========================================
-
-Sitemap: https://pasoja.in/sitemap.xml
+# Dynamic XML Sitemap
+Sitemap: https://mahirash.com/sitemap.xml

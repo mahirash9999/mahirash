@@ -159,7 +159,7 @@ const CouponsManager = () => {
                 <div className="overflow-x-auto scrollbar-thin">
                     <table className="w-full min-w-[720px] text-left text-[13px] border-collapse">
                         <thead>
-                            <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-widest text-[10px]">
+                            <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-widest text-[12px]">
                                 <th className="py-3 px-4">Coupon Code</th>
                                 <th className="py-3 px-4">Type</th>
                                 <th className="py-3 px-4">Discount</th>
@@ -200,7 +200,7 @@ const CouponsManager = () => {
                                         )}
                                     </td>
                                     <td className="py-3.5 px-4">
-                                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${coupon.is_active ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
+                                        <span className={`px-2 py-0.5 rounded text-[12px] font-bold ${coupon.is_active ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
                                             {coupon.is_active ? 'ACTIVE' : 'INACTIVE'}
                                         </span>
                                     </td>
@@ -248,145 +248,145 @@ const CouponsManager = () => {
 
                         <div className="overflow-y-auto flex-1 pr-1">
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Info Column */}
-                            <div className="space-y-4">
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Coupon Code *</label>
-                                    <input
-                                        type="text"
-                                        required
-                                        disabled={!!editingCoupon}
-                                        value={formData.code}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
-                                        placeholder="e.g. FESTIVE20"
-                                        className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all placeholder:text-zinc-400 disabled:opacity-60"
-                                    />
-                                </div>
-
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Discount Type</label>
-                                    <select
-                                        value={formData.discount_type}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, discount_type: e.target.value }))}
-                                        className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
-                                    >
-                                        <option value="Percentage">Percentage (%)</option>
-                                        <option value="Fixed">Fixed Amount (₹)</option>
-                                    </select>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">
-                                        {formData.discount_type === "Percentage" ? "Discount Percentage (%)" : "Discount Value (₹)"}
-                                    </label>
-                                    <input
-                                        type="number"
-                                        required
-                                        min="1"
-                                        value={formData.discount_val}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, discount_val: Number(e.target.value) }))}
-                                        className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
-                                    />
-                                </div>
-
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Minimum Order Amount (₹)</label>
-                                    <input
-                                        type="number"
-                                        required
-                                        min="0"
-                                        value={formData.min_order}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, min_order: Number(e.target.value) }))}
-                                        className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
-                                    />
-                                </div>
-
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block">Status</label>
-                                    <select
-                                        value={formData.is_active ? "true" : "false"}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.value === "true" }))}
-                                        className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
-                                    >
-                                        <option value="true">Active</option>
-                                        <option value="false">Inactive</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Products selection Column */}
-                            <div className="flex flex-col border border-zinc-200 rounded-xl overflow-hidden bg-zinc-50 p-3 h-[360px]">
-                                <div className="pb-2 border-b border-zinc-200">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1.5">Applicable Products</label>
-                                    <div className="flex justify-between items-center gap-2 mb-2">
-                                        <button
-                                            type="button"
-                                            onClick={selectAllProducts}
-                                            className="text-[9px] font-bold text-zinc-900 hover:text-black uppercase tracking-wider border border-zinc-300 bg-white px-2 py-1 rounded"
-                                        >
-                                            Select All
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={clearAllProductSelections}
-                                            className="text-[9px] font-bold text-red-600 hover:text-red-700 uppercase tracking-wider border border-zinc-300 bg-white px-2 py-1 rounded"
-                                        >
-                                            Clear/All Products
-                                        </button>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Info Column */}
+                                <div className="space-y-4">
+                                    <div className="space-y-1">
+                                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider block">Coupon Code *</label>
+                                        <input
+                                            type="text"
+                                            required
+                                            disabled={!!editingCoupon}
+                                            value={formData.code}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, code: e.target.value.toUpperCase() }))}
+                                            placeholder="e.g. FESTIVE20"
+                                            className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all placeholder:text-zinc-400 disabled:opacity-60"
+                                        />
                                     </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Search products..."
-                                        value={productSearch}
-                                        onChange={(e) => setProductSearch(e.target.value)}
-                                        className="w-full px-3 py-1.5 bg-white border border-zinc-300 rounded text-[14px] text-zinc-950 focus:border-black outline-none"
-                                    />
+
+                                    <div className="space-y-1">
+                                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider block">Discount Type</label>
+                                        <select
+                                            value={formData.discount_type}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, discount_type: e.target.value }))}
+                                            className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
+                                        >
+                                            <option value="Percentage">Percentage (%)</option>
+                                            <option value="Fixed">Fixed Amount (₹)</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider block">
+                                            {formData.discount_type === "Percentage" ? "Discount Percentage (%)" : "Discount Value (₹)"}
+                                        </label>
+                                        <input
+                                            type="number"
+                                            required
+                                            min="1"
+                                            value={formData.discount_val}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, discount_val: Number(e.target.value) }))}
+                                            className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider block">Minimum Order Amount (₹)</label>
+                                        <input
+                                            type="number"
+                                            required
+                                            min="0"
+                                            value={formData.min_order}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, min_order: Number(e.target.value) }))}
+                                            className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider block">Status</label>
+                                        <select
+                                            value={formData.is_active ? "true" : "false"}
+                                            onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.value === "true" }))}
+                                            className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
+                                        >
+                                            <option value="true">Active</option>
+                                            <option value="false">Inactive</option>
+                                        </select>
+                                    </div>
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto space-y-1.5 mt-2 pr-1">
-                                    {filteredProductsForSelect.map(p => {
-                                        const isSelected = formData.applicableProducts.includes(p.id);
-                                        return (
-                                            <div
-                                                key={p.id}
-                                                onClick={() => toggleProductSelection(p.id)}
-                                                className={`flex items-center gap-2.5 p-2 rounded-lg cursor-pointer border transition-all ${isSelected
-                                                    ? "bg-[#b8860b]/5 border-[#b8860b]/30"
-                                                    : "bg-white border-zinc-200 hover:bg-zinc-100"
-                                                    }`}
+                                {/* Products selection Column */}
+                                <div className="flex flex-col border border-zinc-200 rounded-xl overflow-hidden bg-zinc-50 p-3 h-[360px]">
+                                    <div className="pb-2 border-b border-zinc-200">
+                                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider block mb-1.5">Applicable Products</label>
+                                        <div className="flex justify-between items-center gap-2 mb-2">
+                                            <button
+                                                type="button"
+                                                onClick={selectAllProducts}
+                                                className="text-[12px] font-bold text-zinc-900 hover:text-black uppercase tracking-wider border border-zinc-300 bg-white px-2 py-1 rounded"
                                             >
-                                                <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 ${isSelected ? "border-[#b8860b] bg-[#b8860b] text-white" : "border-zinc-300 bg-white"}`}>
-                                                    {isSelected && <Check size={10} strokeWidth={3} />}
+                                                Select All
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={clearAllProductSelections}
+                                                className="text-[12px] font-bold text-red-600 hover:text-red-700 uppercase tracking-wider border border-zinc-300 bg-white px-2 py-1 rounded"
+                                            >
+                                                Clear/All Products
+                                            </button>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            placeholder="Search products..."
+                                            value={productSearch}
+                                            onChange={(e) => setProductSearch(e.target.value)}
+                                            className="w-full px-3 py-1.5 bg-white border border-zinc-300 rounded text-[14px] text-zinc-950 focus:border-black outline-none"
+                                        />
+                                    </div>
+
+                                    <div className="flex-1 overflow-y-auto space-y-1.5 mt-2 pr-1">
+                                        {filteredProductsForSelect.map(p => {
+                                            const isSelected = formData.applicableProducts.includes(p.id);
+                                            return (
+                                                <div
+                                                    key={p.id}
+                                                    onClick={() => toggleProductSelection(p.id)}
+                                                    className={`flex items-center gap-2.5 p-2 rounded-lg cursor-pointer border transition-all ${isSelected
+                                                        ? "bg-[#b8860b]/5 border-[#b8860b]/30"
+                                                        : "bg-white border-zinc-200 hover:bg-zinc-100"
+                                                        }`}
+                                                >
+                                                    <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center shrink-0 ${isSelected ? "border-[#b8860b] bg-[#b8860b] text-white" : "border-zinc-300 bg-white"}`}>
+                                                        {isSelected && <Check size={10} strokeWidth={3} />}
+                                                    </div>
+                                                    {p.image && (
+                                                        <OptimizedCloudinaryImage
+                                                            src={p.image}
+                                                            preset="avatar"
+                                                            className="w-7 h-7 object-cover rounded bg-zinc-100 shrink-0"
+                                                            alt=""
+                                                        />
+                                                    )}
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="text-[14px] font-semibold text-zinc-900 truncate leading-snug">{p.name}</p>
+                                                        <p className="text-[12px] text-zinc-500 font-mono">₹{p.price}</p>
+                                                    </div>
                                                 </div>
-                                                {p.image && (
-                                                    <OptimizedCloudinaryImage
-                                                        src={p.image}
-                                                        preset="avatar"
-                                                        className="w-7 h-7 object-cover rounded bg-zinc-100 shrink-0"
-                                                        alt=""
-                                                    />
-                                                )}
-                                                <div className="min-w-0 flex-1">
-                                                    <p className="text-[14px] font-semibold text-zinc-900 truncate leading-snug">{p.name}</p>
-                                                    <p className="text-[10px] text-zinc-500 font-mono">₹{p.price}</p>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                    {filteredProductsForSelect.length === 0 && (
-                                        <p className="text-center text-[14px] text-zinc-400 py-6">No products found matching query.</p>
-                                    )}
-                                </div>
-                                <div className="pt-2 border-t border-zinc-200 mt-2 text-[10px] text-zinc-500">
-                                    {formData.applicableProducts.length > 0 ? (
-                                        <span>Selected {formData.applicableProducts.length} of {products.length} products.</span>
-                                    ) : (
-                                        <span>Applies to <strong>All Products</strong> in store.</span>
-                                    )}
+                                            );
+                                        })}
+                                        {filteredProductsForSelect.length === 0 && (
+                                            <p className="text-center text-[14px] text-zinc-400 py-6">No products found matching query.</p>
+                                        )}
+                                    </div>
+                                    <div className="pt-2 border-t border-zinc-200 mt-2 text-[12px] text-zinc-500">
+                                        {formData.applicableProducts.length > 0 ? (
+                                            <span>Selected {formData.applicableProducts.length} of {products.length} products.</span>
+                                        ) : (
+                                            <span>Applies to <strong>All Products</strong> in store.</span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </div>
 
                         <div className="pt-3.5 mt-2 border-t border-zinc-200/80 flex items-center justify-end gap-2.5">

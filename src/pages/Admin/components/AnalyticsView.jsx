@@ -154,7 +154,7 @@ const AnalyticsView = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px]   text-zinc-400 uppercase tracking-widest">Total Gross Revenue</span>
+                <span className="text-[12px]   text-zinc-400 uppercase tracking-widest">Total Gross Revenue</span>
                 <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl"><DollarSign size={16} /></div>
               </div>
               <h3 className="text-2xl   text-zinc-900">₹{Math.round(totalGrossRevenue).toLocaleString('en-IN')}</h3>
@@ -165,7 +165,7 @@ const AnalyticsView = () => {
 
             <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px]   text-zinc-400 uppercase tracking-widest">Completed Orders</span>
+                <span className="text-[12px]   text-zinc-400 uppercase tracking-widest">Completed Orders</span>
                 <div className="p-2 bg-blue-50 text-blue-600 rounded-xl"><ShoppingBag size={16} /></div>
               </div>
               <h3 className="text-2xl   text-zinc-900">{completedOrdersCount}</h3>
@@ -176,7 +176,7 @@ const AnalyticsView = () => {
 
             <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px]   text-zinc-400 uppercase tracking-widest">Average Order Value</span>
+                <span className="text-[12px]   text-zinc-400 uppercase tracking-widest">Average Order Value</span>
                 <div className="p-2 bg-amber-50 text-[#b8860b] rounded-xl"><TrendingUp size={16} /></div>
               </div>
               <h3 className="text-2xl   text-zinc-900">₹{aov.toLocaleString('en-IN')}</h3>
@@ -187,7 +187,7 @@ const AnalyticsView = () => {
 
             <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[10px]   text-zinc-400 uppercase tracking-widest">Store Conversion Rate</span>
+                <span className="text-[12px]   text-zinc-400 uppercase tracking-widest">Store Conversion Rate</span>
                 <div className="p-2 bg-purple-50 text-purple-600 rounded-xl"><Users size={16} /></div>
               </div>
               <h3 className="text-2xl   text-zinc-900">{conversionRate}%</h3>
@@ -227,7 +227,7 @@ const AnalyticsView = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-[14px] border-collapse">
                   <thead>
-                    <tr className="text-[10px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-100">
+                    <tr className="text-[12px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-100">
                       <th className="pb-3">Category</th>
                       <th className="pb-3">Revenue Total</th>
                       <th className="pb-3 text-right">Revenue Share</th>

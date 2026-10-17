@@ -301,7 +301,7 @@ const Cart = () => {
                       <div className="flex-1 min-w-0 px-4 py-4 flex flex-col justify-between gap-2">
                         {/* Top: product info */}
                         <div>
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-[#b8860b] mb-0.5">
+                          <p className="text-[12px] font-bold uppercase tracking-widest text-[#b8860b] mb-0.5">
                             {item.brand || 'MAHIRASH'} {item.category ? `· ${item.category}` : ''}
                           </p>
                           <Link
@@ -380,7 +380,7 @@ const Cart = () => {
                     <p className="text-[11px] font-semibold text-zinc-800 leading-tight whitespace-pre-line">
                       {title}
                     </p>
-                    <p className="text-[10px] text-zinc-500">{sub}</p>
+                    <p className="text-[12px] text-zinc-500">{sub}</p>
                   </div>
                 ))}
               </div>

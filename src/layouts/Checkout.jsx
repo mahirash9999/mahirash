@@ -62,8 +62,9 @@ const MasterIcon = () => (
 
 /* ─── Order Status pages ─────────────────────────────────────────────────── */
 const OrderSuccess = ({ navigate, orderDetails }) => {
+  const [fallbackId] = useState(() => "MHR-" + Math.floor(100000 + Math.random() * 900000));
   const finalDetails = orderDetails || {
-    id: "MHR-" + Math.floor(100000 + Math.random() * 900000),
+    id: fallbackId,
     total: 0,
     shipping: { name: "", phone: "", alternatePhone: "", flat: "", street: "", landmark: "", address: "", city: "", state: "", pincode: "", type: "Home", paymentMethod: "COD" },
     items: [],
@@ -139,7 +140,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
               </div>
               <Link
                 to={`/login?redirect=orders`}
-                className="shrink-0 px-4 py-2.5 bg-black hover:bg-zinc-800 text-white text-[10px] uppercase font-bold tracking-widest rounded-lg transition-all"
+                className="shrink-0 px-4 py-2.5 bg-black hover:bg-zinc-800 text-white text-[12px] uppercase font-bold tracking-widest rounded-lg transition-all"
               >
                 Access Account →
               </Link>
@@ -150,7 +151,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-[14px] leading-relaxed">
           {/* Shipping Address Summary */}
           <div className="space-y-2 bg-zinc-50/50 p-4.5 rounded-xl border border-zinc-100/60 p-4 text-left">
-            <h3 className="font-extrabold text-zinc-950 uppercase tracking-widest text-[10px] pb-1.5 border-b border-zinc-200 flex items-center gap-1.5">
+            <h3 className="font-extrabold text-zinc-950 uppercase tracking-widest text-[12px] pb-1.5 border-b border-zinc-200 flex items-center gap-1.5">
               <MapPin size={12} className="text-zinc-500" /> Shipping Details
             </h3>
             <p className="font-bold text-zinc-900 text-sm font-serif">{finalDetails.shipping?.name}</p>
@@ -167,11 +168,11 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
           {/* Delivery & Tracking Details */}
           <div className="space-y-2 bg-zinc-50/50 p-4.5 rounded-xl border border-zinc-100/60 p-4 text-left flex flex-col justify-between">
             <div className="space-y-2">
-              <h3 className="font-extrabold text-zinc-950 uppercase tracking-widest text-[10px] pb-1.5 border-b border-zinc-200 flex items-center gap-1.5">
+              <h3 className="font-extrabold text-zinc-950 uppercase tracking-widest text-[12px] pb-1.5 border-b border-zinc-200 flex items-center gap-1.5">
                 <Truck size={12} className="text-zinc-500" /> Shipping & Tracking
               </h3>
               <div>
-                <p className="text-zinc-400 uppercase tracking-wider text-[9px]">Status</p>
+                <p className="text-zinc-400 uppercase tracking-wider text-[12px]">Status</p>
                 <p className="text-zinc-800 font-semibold text-[14px] flex items-center gap-1.5 mt-0.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                   Order Placed – Processing
@@ -179,7 +180,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
               </div>
 
               {finalDetails.awbCode && (
-                <div className="pt-1.5 grid grid-cols-2 gap-2 text-[10px] bg-white border border-zinc-200 p-2 rounded-lg">
+                <div className="pt-1.5 grid grid-cols-2 gap-2 text-[12px] bg-white border border-zinc-200 p-2 rounded-lg">
                   <div>
                     <span className="text-zinc-400 block uppercase font-medium">AWB Track Code</span>
                     <span className="text-zinc-900 font-bold font-mono text-[14px] select-all">{finalDetails.awbCode}</span>
@@ -197,7 +198,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
                 href={finalDetails.trackingUrl || `https://shiprocket.co/tracking/${finalDetails.awbCode}`}
                 target="_blank"
                 rel="noreferrer"
-                className="w-full text-center py-2.5 bg-zinc-900 hover:bg-black text-[10px] text-white font-extrabold uppercase tracking-widest rounded-lg transition-colors border border-black inline-block mt-2"
+                className="w-full text-center py-2.5 bg-zinc-900 hover:bg-black text-[12px] text-white font-extrabold uppercase tracking-widest rounded-lg transition-colors border border-black inline-block mt-2"
               >
                 Track Live Order
               </a>
@@ -207,7 +208,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
 
         {/* Order Items Summary */}
         <div className="space-y-3 mb-8 text-left">
-          <h3 className="font-extrabold text-zinc-950 uppercase tracking-widest text-[10px] pb-1.5 border-b border-zinc-200">
+          <h3 className="font-extrabold text-zinc-950 uppercase tracking-widest text-[12px] pb-1.5 border-b border-zinc-200">
             Order Items
           </h3>
           <div className="divide-y divide-zinc-100 max-h-48 overflow-y-auto pr-1">
@@ -222,7 +223,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
                   />
                   <div className="truncate">
                     <p className="font-bold text-zinc-900 text-sm truncate font-serif">{item.name}</p>
-                    <p className="text-[10px] text-zinc-400 mt-0.5">
+                    <p className="text-[12px] text-zinc-400 mt-0.5">
                       {item.size ? `Size: ${item.size}` : ""}
                       {item.color ? ` • Color: ${item.color}` : ""}
                       {` • Qty: ${item.quantity || 1}`}
@@ -602,7 +603,7 @@ const Checkout = () => {
           if (userSnap.exists() && Array.isArray(userSnap.data()?.cart) && userSnap.data().cart.length > 0) {
             activeCart = userSnap.data().cart;
           }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       if (activeCart.length === 0) {
@@ -679,7 +680,7 @@ const Checkout = () => {
     try {
       localStorage.removeItem("guest_cart");
       localStorage.removeItem("applied_coupon_code");
-    } catch (_) {}
+    } catch (_) { }
   };
 
   const saveOrder = async (paymentId = "COD", status = "confirmed", paymentStatus = "captured", tempPassword = "") => {
@@ -851,7 +852,7 @@ const Checkout = () => {
               status,
               createdAt: serverTimestamp()
             }, { merge: true });
-          } catch (_) {}
+          } catch (_) { }
 
           // If authenticated Firebase user, also link in users subcollection
           if (user?.uid) {
@@ -863,7 +864,7 @@ const Checkout = () => {
                 status,
                 createdAt: serverTimestamp()
               }, { merge: true });
-            } catch (_) {}
+            } catch (_) { }
           }
 
           // Set createdAt only on first write
@@ -1183,10 +1184,10 @@ const Checkout = () => {
                               className={`p-3.5 border-2 rounded-xl cursor-pointer transition-all relative ${sel ? "border-zinc-900 bg-zinc-50" : "border-zinc-200 bg-white hover:border-zinc-400"}`}
                             >
                               <div className="flex items-center gap-1.5 absolute top-2 right-2">
-                                <span className="text-[8px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded border border-zinc-200">
+                                <span className="text-[12px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded border border-zinc-200">
                                   {addr.type || "Home"}
                                 </span>
-                                {addr.isDefault && <span className="text-[8px] font-bold uppercase tracking-wider bg-zinc-900 text-white px-1.5 py-0.5 rounded">Default</span>}
+                                {addr.isDefault && <span className="text-[12px] font-bold uppercase tracking-wider bg-zinc-900 text-white px-1.5 py-0.5 rounded">Default</span>}
                               </div>
                               <div className="flex items-start gap-2">
                                 <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center shrink-0 ${sel ? "border-zinc-900 bg-zinc-900" : "border-zinc-300"}`}>
@@ -1237,11 +1238,10 @@ const Checkout = () => {
                           key={t}
                           type="button"
                           onClick={() => setFormData(p => ({ ...p, type: t }))}
-                          className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${
-                            formData.type === t
-                              ? "bg-zinc-900 text-white border-zinc-900 shadow-xs"
-                              : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
-                          }`}
+                          className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${formData.type === t
+                            ? "bg-zinc-900 text-white border-zinc-900 shadow-xs"
+                            : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                            }`}
                         >
                           {t}
                         </button>
@@ -1356,7 +1356,7 @@ const Checkout = () => {
                               className="w-full text-left px-4 py-3 hover:bg-zinc-50 transition-colors text-[14px] space-y-0.5 block cursor-pointer"
                             >
                               <div className="font-bold text-zinc-950 truncate">{office.Name || office.District}, {office.District}</div>
-                              <div className="text-zinc-500 font-medium font-mono text-[9px]">{office.State} – Pin: {office.Pincode}</div>
+                              <div className="text-zinc-500 font-medium font-mono text-[12px]">{office.State} – Pin: {office.Pincode}</div>
                             </button>
                           ))}
                         </div>
@@ -1422,7 +1422,7 @@ const Checkout = () => {
                         animate={{ opacity: 1, height: "auto" }}
                         className="mt-4 pt-4 border-t border-zinc-100"
                       >
-                        <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-3">Accepted Payments</p>
+                        <p className="text-[12px] font-semibold uppercase tracking-wider text-zinc-400 mb-3">Accepted Payments</p>
                         <div className="flex flex-wrap items-center gap-3">
                           <div className="h-8 px-2 bg-white border border-zinc-200 rounded-md flex items-center justify-center">
                             <GPayIcon />
@@ -1443,13 +1443,13 @@ const Checkout = () => {
                             <span className="text-[#F26821] text-[14px] font-black tracking-tight">RuPay</span>
                           </div>
                           <div className="h-8 px-3 bg-[#0B5ED7] border border-[#0B5ED7] rounded-md flex items-center justify-center">
-                            <span className="text-white text-[10px] font-black tracking-wide">NET BANKING</span>
+                            <span className="text-white text-[12px] font-black tracking-wide">NET BANKING</span>
                           </div>
                           <div className="h-8 px-2 bg-[#6B3FA0] border border-[#6B3FA0] rounded-md flex items-center justify-center">
                             <span className="text-white text-[14px] font-bold">UPI</span>
                           </div>
                         </div>
-                        <p className="text-[10px] text-zinc-400 mt-3 flex items-center gap-1.5">
+                        <p className="text-[12px] text-zinc-400 mt-3 flex items-center gap-1.5">
                           <Lock size={10} /> Powered by Razorpay · 256-bit SSL encryption
                         </p>
                       </motion.div>
@@ -1470,7 +1470,7 @@ const Checkout = () => {
                         <p className="text-sm font-bold text-zinc-900">Cash on Delivery</p>
                         <p className="text-[14px] text-zinc-500 mt-0.5">Pay when your order arrives</p>
                       </div>
-                      <span className="ml-auto text-[10px] font-bold uppercase tracking-wide bg-amber-100 text-amber-700 px-2 py-1 rounded-full">COD</span>
+                      <span className="ml-auto text-[12px] font-bold uppercase tracking-wide bg-amber-100 text-amber-700 px-2 py-1 rounded-full">COD</span>
                     </div>
                   </button>
                 </div>
@@ -1494,13 +1494,13 @@ const Checkout = () => {
                         <OptimizedCloudinaryImage src={item.image} alt={item.name} preset="avatar" className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-[#b8860b] mb-0.5">{item.brand || 'MAHIRASH'}</p>
+                        <p className="text-[12px] font-bold uppercase tracking-wider text-[#b8860b] mb-0.5">{item.brand || 'MAHIRASH'}</p>
                         <p className="text-sm font-semibold text-zinc-900 line-clamp-1">{item.name}</p>
                         {item.size && (
                           <p className="text-[14px] text-zinc-500 mt-0.5 flex items-center gap-1.5">
                             <span>Size: {item.size}</span>
                             {item.is_preorder && (
-                              <span className="bg-[#b8860b] text-white text-[8px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 shadow-xs">
+                              <span className="bg-[#b8860b] text-white text-[12px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 shadow-xs">
                                 Pre-Order
                               </span>
                             )}
@@ -1551,7 +1551,7 @@ const Checkout = () => {
                       <button
                         type="button"
                         onClick={() => handleApplyCoupon()}
-                        className="bg-black text-white hover:bg-zinc-800 text-[10px] font-bold uppercase tracking-wider px-4 py-2 rounded-lg transition-all cursor-pointer shadow-sm shrink-0"
+                        className="bg-black text-white hover:bg-zinc-800 text-[12px] font-bold uppercase tracking-wider px-4 py-2 rounded-lg transition-all cursor-pointer shadow-sm shrink-0"
                       >
                         Apply
                       </button>
@@ -1565,7 +1565,7 @@ const Checkout = () => {
                     <div className="flex items-center justify-between bg-[#b8860b]/5 border border-[#b8860b]/20 p-2.5 rounded-lg">
                       <div className="min-w-0 text-left">
                         <span className="text-[14px] font-bold text-[#b8860b] font-mono tracking-wider">{appliedCoupon.code}</span>
-                        <p className="text-[10px] text-zinc-500 font-medium mt-0.5">
+                        <p className="text-[12px] text-zinc-500 font-medium mt-0.5">
                           {appliedCoupon.discount_type === "Percentage" ? `${appliedCoupon.discount_val}% Extra Discount` : `Flat ₹${appliedCoupon.discount_val} Discount`}
                         </p>
                       </div>

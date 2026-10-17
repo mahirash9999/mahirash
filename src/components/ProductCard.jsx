@@ -45,7 +45,7 @@ export const resolveProductVariant = (product, preferredSize = null, sortBy = nu
         const vStr = String(v.size).toLowerCase().replace(/\s+/g, '');
         const tStr = String(target).toLowerCase().replace(/\s+/g, '');
         if (vStr === tStr) return true;
-        
+
         const vMl = parseMlValue(v.size);
         const tMl = parseMlValue(target);
         if (vMl !== null && tMl !== null && vMl === tMl) return true;
@@ -343,7 +343,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                 {/* Out of Stock Overlay */}
                 {isOutOfStock && (
                     <div className="absolute inset-0 z-20 bg-black/60 backdrop-blur-xs flex items-center justify-center">
-                        <span className="bg-white text-zinc-900 border border-[#E5D5B8] font-extrabold uppercase text-[9px] tracking-[0.2em] px-3.5 py-1.5 rounded-full shadow-sm">
+                        <span className="bg-white text-zinc-900 border border-[#E5D5B8] font-extrabold uppercase text-[12px] tracking-[0.2em] px-3.5 py-1.5 rounded-full shadow-sm">
                             Out of Stock
                         </span>
                     </div>
@@ -352,7 +352,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                 {/* Pre-Order Badge */}
                 {isPreOrder && !isOutOfStock && (
                     <div className="absolute top-3.5 left-3.5 z-10">
-                        <span className="bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#B8860B] text-white font-black uppercase text-[9px] tracking-[0.2em] px-3 py-1 rounded-full shadow-md">
+                        <span className="bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#B8860B] text-white font-black uppercase text-[12px] tracking-[0.2em] px-3 py-1 rounded-full shadow-md">
                             PRE-ORDER
                         </span>
                     </div>
@@ -367,7 +367,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                             const bg = isObj ? tagItem.bg || "#000" : "#000";
                             const color = isObj ? tagItem.text || "#fff" : "#fff";
                             return (
-                                <span key={tIdx} style={{ backgroundColor: bg, color: color }} className="font-extrabold w-max uppercase text-[8px] tracking-[0.18em] px-2.5 py-1 shadow-sm rounded-sm">
+                                <span key={tIdx} style={{ backgroundColor: bg, color: color }} className="font-extrabold w-max uppercase text-[12px] tracking-[0.18em] px-2.5 py-1 shadow-sm rounded-sm">
                                     {text}
                                 </span>
                             );
@@ -395,7 +395,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                         <button
                             type="button"
                             onClick={(e) => handleAction(e, 'notify')}
-                            className={`w-full h-full text-[10px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
+                            className={`w-full h-full text-[12px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
                         >
                             <Bell size={13} />
                             NOTIFY ME
@@ -404,7 +404,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                         <button
                             type="button"
                             onClick={(e) => handleAction(e, 'preorder')}
-                            className={`w-full h-full text-[10px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#B8860B] text-white hover:brightness-110 shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
+                            className={`w-full h-full text-[12px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#B8860B] via-[#D4AF37] to-[#B8860B] text-white hover:brightness-110 shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
                         >
                             <Clock size={13} />
                             PRE-ORDER NOW
@@ -413,7 +413,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                         <button
                             type="button"
                             onClick={(e) => handleAction(e, 'cart')}
-                            className={`w-full h-full text-[10px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
+                            className={`w-full h-full text-[12px] tracking-[0.25em] font-extrabold uppercase transition-all duration-300 flex items-center justify-center bg-[#0D0D0D] text-white hover:bg-[#B8860B] shadow-lg ${isHovered ? 'translate-y-0' : 'translate-y-full'}`}
                         >
                             {isInCart ? 'IN BAG' : 'ADD TO CART'}
                         </button>
@@ -424,8 +424,8 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
             {/* Info Area */}
             <div className="pt-4 pb-5 px-4 flex flex-col text-left bg-white">
                 <div className="flex flex-col gap-0.5 mb-1.5">
-                    <span className="text-[#B8860B] text-[9px] font-extrabold uppercase tracking-[0.2em]">{product.brand || 'MAHIRASH'}</span>
-                    <span className="text-zinc-500 text-[8px] font-semibold uppercase tracking-[0.25em]">{product.category || 'EXTRAIT DE PARFUM'}</span>
+                    <span className="text-[#B8860B] text-[12px] font-extrabold uppercase tracking-[0.2em]">{product.brand || 'MAHIRASH'}</span>
+                    <span className="text-zinc-500 text-[12px] font-semibold uppercase tracking-[0.25em]">{product.category || 'EXTRAIT DE PARFUM'}</span>
                 </div>
                 <h3 className="text-[14px] md:text-sm font-semibold text-[#0D0D0D] uppercase tracking-wider line-clamp-1 leading-snug mb-2 group-hover:text-[#B8860B] transition-colors">
                     {product.name}
@@ -447,15 +447,14 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                                         e.stopPropagation();
                                         setSelectedVariant(v);
                                     }}
-                                    className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase transition-all cursor-pointer ${
-                                        isCurrent
-                                            ? 'bg-black text-white border border-black shadow-xs'
-                                            : vOut
-                                                ? 'bg-zinc-100 text-zinc-400 border border-zinc-200 line-through opacity-75 hover:border-zinc-400 hover:text-zinc-600'
-                                                : vPre
-                                                    ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:border-amber-400'
-                                                    : 'bg-zinc-50 text-zinc-600 border border-zinc-200 hover:border-black hover:text-black'
-                                    }`}
+                                    className={`px-2 py-0.5 rounded text-[12px] font-semibold tracking-wider uppercase transition-all cursor-pointer ${isCurrent
+                                        ? 'bg-black text-white border border-black shadow-xs'
+                                        : vOut
+                                            ? 'bg-zinc-100 text-zinc-400 border border-zinc-200 line-through opacity-75 hover:border-zinc-400 hover:text-zinc-600'
+                                            : vPre
+                                                ? 'bg-amber-50 text-amber-800 border border-amber-200 hover:border-amber-400'
+                                                : 'bg-zinc-50 text-zinc-600 border border-zinc-200 hover:border-black hover:text-black'
+                                        }`}
                                     title={`${v.size} - ₹${Number(v.price).toLocaleString('en-IN')}${vOut ? ' (Out of Stock)' : vPre ? ' (Pre-Order)' : ''}`}
                                 >
                                     {v.size}
@@ -477,7 +476,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                         <span className="text-[11px] font-bold text-[#e53e3e]">-{savingsPercent}%</span>
                     )}
                     {activeVariant?.size && (
-                        <span className="text-[10px] font-medium text-zinc-400 ml-auto">
+                        <span className="text-[12px] font-medium text-zinc-400 ml-auto">
                             ({activeVariant.size})
                         </span>
                     )}

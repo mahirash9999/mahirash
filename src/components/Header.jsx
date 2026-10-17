@@ -257,19 +257,25 @@ const Header = () => {
     })
     : [];
 
-  const rightNavLinks = [
-    { name: 'Our Story', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+  // Unified Navigation Menu items used for both Desktop and Mobile Header
+  const MAIN_NAV_ITEMS = [
+    { id: 'shop', name: 'Shop All', path: '/shop', type: 'link', position: 'left' },
+    { id: 'collections', name: 'Collections', type: 'dropdown', position: 'left' },
+    { id: 'story', name: 'Our Story', path: '/about', type: 'link', position: 'right' },
+    { id: 'contact', name: 'Contact', path: '/contact', type: 'link', position: 'right' },
   ];
+
+  const leftNavItems = MAIN_NAV_ITEMS.filter(item => item.position === 'left');
+  const rightNavItems = MAIN_NAV_ITEMS.filter(item => item.position === 'right');
 
   return (
     <>
       <header className="fixed top-0 left-0 w-full z-[100] flex flex-col pointer-events-auto font-['Inter',sans-serif]">
 
-        {/* ── ANNOUNCEMENT TICKER BAR ── */}
+        {/* ── ANNOUNCEMENT TICKER BAR (Active on both Desktop and Mobile) ── */}
         <motion.div
           style={{ height: topbarHeight, opacity: topbarOpacity }}
-          className="bg-[#0b0b0b] text-[#e5d5ab] text-[10.5px] font-semibold tracking-[0.22em] uppercase overflow-hidden hidden md:flex items-center border-b border-[#c9a962]/20"
+          className="bg-[#0b0b0b] text-[#e5d5ab] text-[9.5px] sm:text-[10.5px] font-semibold tracking-[0.22em] uppercase overflow-hidden flex items-center border-b border-[#c9a962]/20"
         >
           <motion.div
             animate={{ x: ['0%', '-50%'] }}
@@ -278,7 +284,7 @@ const Header = () => {
           >
             {[...globalAlerts, ...globalAlerts].map((item, i) => (
               <span key={i} className="flex items-center gap-6">
-                <span className="text-[#c9a962] text-[9px] font-serif">✦</span>
+                <span className="text-[#c9a962] text-[12px] font-serif">✦</span>
                 <span className="hover:text-white transition-colors cursor-pointer">{item}</span>
               </span>
             ))}
@@ -292,80 +298,92 @@ const Header = () => {
             : 'bg-white/90 backdrop-blur-md border-zinc-200/60 text-zinc-900 py-4 md:py-5'
             } px-4 sm:px-8 md:px-12`}
         >
-          <div className="max-w-7xl mx-auto w-full grid grid-cols-3 items-center">
+          <div className="max-w-[1800px] mx-auto w-full grid grid-cols-3 items-center">
 
             {/* Left Desktop Nav */}
             <div className="hidden lg:flex items-center gap-8 justify-start">
-              <Link
-                to="/shop"
-                className={`relative text-[11px] font-semibold uppercase tracking-[0.22em] transition-colors duration-300 py-1 group ${location.pathname === '/shop' && !location.search ? 'text-black' : 'text-zinc-600 hover:text-black'
-                  }`}
-              >
-                Shop All
-                <span className={`absolute bottom-0 left-0 h-[1.5px] bg-[#c9a962] transition-all duration-300 ${location.pathname === '/shop' && !location.search ? 'w-full' : 'w-0 group-hover:w-full'
-                  }`} />
-              </Link>
-
-              {/* Collections Dropdown Trigger */}
-              <div
-                className="relative py-1"
-                onMouseEnter={() => setIsCollectionsDropdownOpen(true)}
-                onMouseLeave={() => setIsCollectionsDropdownOpen(false)}
-              >
-                <button
-                  type="button"
-                  onClick={() => navigate('/shop')}
-                  className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] transition-colors duration-300 group cursor-pointer ${location.search.includes('category=') || isCollectionsDropdownOpen ? 'text-black' : 'text-zinc-600 hover:text-black'
-                    }`}
-                >
-                  <span>Collections</span>
-                  <ChevronDown size={12} className={`transition-transform duration-300 ${isCollectionsDropdownOpen ? 'rotate-180 text-[#c9a962]' : 'text-zinc-400 group-hover:text-zinc-900'
-                    }`} />
-                  <span className={`absolute bottom-0 left-0 h-[1.5px] bg-[#c9a962] transition-all duration-300 ${location.search.includes('category=') ? 'w-full' : 'w-0 group-hover:w-full'
-                    }`} />
-                </button>
-
-                {/* Rich Luxury Dropdown Menu */}
-                <AnimatePresence>
-                  {isCollectionsDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 12, scale: 0.97 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                      transition={{ duration: 0.22, ease: easing }}
-                      className="absolute top-full left-0 w-64 bg-white/98 backdrop-blur-xl border border-zinc-200/90 shadow-2xl p-3 z-50 rounded-none border-t-2 border-t-[#c9a962]"
+              {leftNavItems.map(item => {
+                if (item.type === 'link') {
+                  return (
+                    <Link
+                      key={item.id}
+                      to={item.path}
+                      className={`relative text-[11px] font-semibold uppercase tracking-[0.22em] transition-colors duration-300 py-1 group ${location.pathname === item.path && !location.search ? 'text-black' : 'text-zinc-600 hover:text-black'
+                        }`}
                     >
-                      <div className="py-1">
-                        <button
-                          type="button"
-                          onClick={() => handleCollectionSelect('All')}
-                          className="w-full text-left px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#c9a962] hover:bg-zinc-50 transition-colors border-b border-zinc-100 mb-1.5 flex items-center justify-between group"
-                        >
-                          <span className="flex items-center gap-2">
-                            <Sparkles size={13} className="text-[#c9a962]" />
-                            Explore All Scents
-                          </span>
-                          <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
+                      {item.name}
+                      <span className={`absolute bottom-0 left-0 h-[1.5px] bg-[#c9a962] transition-all duration-300 ${location.pathname === item.path && !location.search ? 'w-full' : 'w-0 group-hover:w-full'
+                        }`} />
+                    </Link>
+                  );
+                }
 
-                        <div className="space-y-0.5 max-h-[320px] overflow-y-auto scrollbar-hide">
-                          {collections.map((col) => (
-                            <button
-                              key={col}
-                              type="button"
-                              onClick={() => handleCollectionSelect(col)}
-                              className="w-full text-left px-3.5 py-2 text-[11.5px] font-medium uppercase tracking-[0.14em] text-zinc-700 hover:text-black hover:bg-zinc-100/80 transition-colors flex items-center justify-between group rounded-none"
-                            >
-                              <span>{col}</span>
-                              <span className="opacity-0 group-hover:opacity-100 text-[#c9a962] text-[12px] transition-opacity">→</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                if (item.type === 'dropdown') {
+                  return (
+                    <div
+                      key={item.id}
+                      className="relative py-1"
+                      onMouseEnter={() => setIsCollectionsDropdownOpen(true)}
+                      onMouseLeave={() => setIsCollectionsDropdownOpen(false)}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => navigate('/shop')}
+                        className={`flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] transition-colors duration-300 group cursor-pointer ${location.search.includes('category=') || isCollectionsDropdownOpen ? 'text-black' : 'text-zinc-600 hover:text-black'
+                          }`}
+                      >
+                        <span>{item.name}</span>
+                        <ChevronDown size={12} className={`transition-transform duration-300 ${isCollectionsDropdownOpen ? 'rotate-180 text-[#c9a962]' : 'text-zinc-400 group-hover:text-zinc-900'
+                          }`} />
+                        <span className={`absolute bottom-0 left-0 h-[1.5px] bg-[#c9a962] transition-all duration-300 ${location.search.includes('category=') ? 'w-full' : 'w-0 group-hover:w-full'
+                          }`} />
+                      </button>
+
+                      {/* Rich Luxury Dropdown Menu */}
+                      <AnimatePresence>
+                        {isCollectionsDropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 12, scale: 0.97 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                            transition={{ duration: 0.22, ease: easing }}
+                            className="absolute top-full left-0 w-64 bg-white/98 backdrop-blur-xl border border-zinc-200/90 shadow-2xl p-3 z-50 rounded-none border-t-2 border-t-[#c9a962]"
+                          >
+                            <div className="py-1">
+                              <button
+                                type="button"
+                                onClick={() => handleCollectionSelect('All')}
+                                className="w-full text-left px-3.5 py-2.5 text-[11px] font-bold uppercase tracking-[0.2em] text-[#c9a962] hover:bg-zinc-50 transition-colors border-b border-zinc-100 mb-1.5 flex items-center justify-between group"
+                              >
+                                <span className="flex items-center gap-2">
+                                  <Sparkles size={13} className="text-[#c9a962]" />
+                                  Explore All Scents
+                                </span>
+                                <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                              </button>
+
+                              <div className="space-y-0.5 max-h-[320px] overflow-y-auto scrollbar-hide">
+                                {collections.map((col) => (
+                                  <button
+                                    key={col}
+                                    type="button"
+                                    onClick={() => handleCollectionSelect(col)}
+                                    className="w-full text-left px-3.5 py-2 text-[11.5px] font-medium uppercase tracking-[0.14em] text-zinc-700 hover:text-black hover:bg-zinc-100/80 transition-colors flex items-center justify-between group rounded-none"
+                                  >
+                                    <span>{col}</span>
+                                    <span className="opacity-0 group-hover:opacity-100 text-[#c9a962] text-[12px] transition-opacity">→</span>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+                return null;
+              })}
             </div>
 
             {/* Mobile Burger */}
@@ -393,7 +411,7 @@ const Header = () => {
 
             {/* Right Desktop Nav Links & Icons */}
             <div className="hidden lg:flex items-center gap-8 justify-end">
-              {rightNavLinks.map((link) => (
+              {rightNavItems.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
@@ -427,7 +445,7 @@ const Header = () => {
                 >
                   <Heart size={19} strokeWidth={1.75} />
                   {wishlistCount > 0 && (
-                    <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[9px] font-black rounded-full flex items-center justify-center border border-white shadow-sm">
+                    <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[12px] font-black rounded-full flex items-center justify-center border border-white shadow-sm">
                       {wishlistCount}
                     </span>
                   )}
@@ -442,7 +460,7 @@ const Header = () => {
                 >
                   <ShoppingBag size={19} strokeWidth={1.75} />
                   {cartCount > 0 && (
-                    <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[9px] font-black rounded-full flex items-center justify-center border border-white shadow-sm">
+                    <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[12px] font-black rounded-full flex items-center justify-center border border-white shadow-sm">
                       {cartCount}
                     </span>
                   )}
@@ -465,7 +483,7 @@ const Header = () => {
               <Link to="/wishlist" className="p-2 text-zinc-800 hover:text-black relative" aria-label="Wishlist">
                 <Heart size={21} strokeWidth={1.6} />
                 {wishlistCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[9px] font-bold rounded-full flex items-center justify-center border border-white">
+                  <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[12px] font-bold rounded-full flex items-center justify-center border border-white">
                     {wishlistCount}
                   </span>
                 )}
@@ -474,7 +492,7 @@ const Header = () => {
               <Link to="/cart" className="p-2 text-zinc-800 hover:text-black relative" aria-label="Cart">
                 <ShoppingBag size={21} strokeWidth={1.6} />
                 {cartCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[9px] font-bold rounded-full flex items-center justify-center border border-white">
+                  <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[12px] font-bold rounded-full flex items-center justify-center border border-white">
                     {cartCount}
                   </span>
                 )}
@@ -582,7 +600,7 @@ const Header = () => {
                   )}
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-[#0b0b0b] text-[#e5d5ab] font-bold text-[10px] uppercase tracking-[0.22em] hover:bg-[#c9a962] hover:text-black transition-all shrink-0 shadow-md"
+                    className="px-6 py-3 bg-[#0b0b0b] text-[#e5d5ab] font-bold text-[12px] uppercase tracking-[0.22em] hover:bg-[#c9a962] hover:text-black transition-all shrink-0 shadow-md"
                   >
                     Search
                   </button>
@@ -651,7 +669,7 @@ const Header = () => {
                                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700"
                                 />
                                 {product.stock === 0 && (
-                                  <span className="absolute top-2 left-2 bg-red-700 text-white text-[8px] uppercase tracking-widest font-bold px-2 py-0.5">
+                                  <span className="absolute top-2 left-2 bg-red-700 text-white text-[12px] uppercase tracking-widest font-bold px-2 py-0.5">
                                     Sold Out
                                   </span>
                                 )}
@@ -659,7 +677,7 @@ const Header = () => {
 
                               <div>
                                 {product.category && (
-                                  <span className="text-[9px] uppercase tracking-[0.2em] text-[#c9a962] font-bold block mb-0.5">
+                                  <span className="text-[12px] uppercase tracking-[0.2em] text-[#c9a962] font-bold block mb-0.5">
                                     {product.category}
                                   </span>
                                 )}
@@ -728,82 +746,78 @@ const Header = () => {
                   HAUTE PERFUMERIE NAVIGATION
                 </div>
 
-                {/* Shop All */}
-                <Link
-                  to="/shop"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-between py-4 border-b border-zinc-800/60 group"
-                >
-                  <span className="text-[15px] font-medium tracking-[0.1em] text-zinc-100 group-hover:text-[#c9a962] transition-colors duration-300 uppercase">
-                    Shop All Scents
-                  </span>
-                  <ArrowRight size={18} className="text-zinc-500 group-hover:text-[#c9a962] group-hover:translate-x-1 transition-all duration-300" />
-                </Link>
-
-                {/* Collections Accordion */}
-                <div className="border-b border-zinc-800/60">
-                  <button
-                    type="button"
-                    onClick={() => setIsMobileCollectionsOpen(!isMobileCollectionsOpen)}
-                    className="w-full flex items-center justify-between py-4 group text-left"
-                  >
-                    <span className="text-[15px] font-medium tracking-[0.1em] text-zinc-100 group-hover:text-[#c9a962] transition-colors duration-300 uppercase">
-                      Fragrance Collections
-                    </span>
-                    <ChevronDown size={18} className={`text-zinc-500 transition-transform duration-300 ${isMobileCollectionsOpen ? 'rotate-180 text-[#c9a962]' : ''
-                      }`} />
-                  </button>
-
-                  <AnimatePresence>
-                    {isMobileCollectionsOpen && (
+                {/* Unified Mobile Navigation Items (automatically in-sync with Desktop Header) */}
+                {MAIN_NAV_ITEMS.map((item, idx) => {
+                  if (item.type === 'link') {
+                    return (
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden pb-4 space-y-2.5 pl-4 border-l border-[#c9a962]/30 ml-2"
+                        key={item.id}
+                        initial={{ opacity: 0, x: -16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.05 + 0.08, duration: 0.4, ease: easing }}
                       >
+                        <Link
+                          to={item.path}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center justify-between py-4 border-b border-zinc-800/60 group"
+                        >
+                          <span className="text-[15px] font-medium tracking-[0.1em] text-zinc-100 group-hover:text-[#c9a962] transition-colors duration-300 uppercase">
+                            {item.name}
+                          </span>
+                          <ArrowRight size={18} className="text-zinc-500 group-hover:text-[#c9a962] group-hover:translate-x-1 transition-all duration-300" />
+                        </Link>
+                      </motion.div>
+                    );
+                  }
+
+                  if (item.type === 'dropdown') {
+                    return (
+                      <div key={item.id} className="border-b border-zinc-800/60">
                         <button
                           type="button"
-                          onClick={() => handleCollectionSelect('All')}
-                          className="block text-[12px] uppercase tracking-[0.2em] text-[#c9a962] font-semibold py-1 hover:underline"
+                          onClick={() => setIsMobileCollectionsOpen(!isMobileCollectionsOpen)}
+                          className="w-full flex items-center justify-between py-4 group text-left"
                         >
-                          All Fragrances →
+                          <span className="text-[15px] font-medium tracking-[0.1em] text-zinc-100 group-hover:text-[#c9a962] transition-colors duration-300 uppercase">
+                            {item.name}
+                          </span>
+                          <ChevronDown size={18} className={`text-zinc-500 transition-transform duration-300 ${isMobileCollectionsOpen ? 'rotate-180 text-[#c9a962]' : ''}`} />
                         </button>
-                        {collections.map((col) => (
-                          <button
-                            key={col}
-                            type="button"
-                            onClick={() => handleCollectionSelect(col)}
-                            className="block w-full text-left text-[12.5px] uppercase tracking-[0.15em] text-zinc-300 hover:text-white py-1 transition-colors"
-                          >
-                            {col}
-                          </button>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
 
-                {/* Navigation Links */}
-                {rightNavLinks.map((link, idx) => (
-                  <motion.div
-                    key={link.name}
-                    initial={{ opacity: 0, x: -16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05 + 0.08, duration: 0.4, ease: easing }}
-                  >
-                    <Link
-                      to={link.path}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-between py-4 border-b border-zinc-800/60 group"
-                    >
-                      <span className="text-[15px] font-medium tracking-[0.1em] text-zinc-100 group-hover:text-[#c9a962] transition-colors duration-300 uppercase">
-                        {link.name}
-                      </span>
-                      <ArrowRight size={18} className="text-zinc-500 group-hover:text-[#c9a962] group-hover:translate-x-1 transition-all duration-300" />
-                    </Link>
-                  </motion.div>
-                ))}
+                        <AnimatePresence>
+                          {isMobileCollectionsOpen && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden pb-4 space-y-2.5 pl-4 border-l border-[#c9a962]/30 ml-2"
+                            >
+                              <button
+                                type="button"
+                                onClick={() => handleCollectionSelect('All')}
+                                className="block text-[12px] uppercase tracking-[0.2em] text-[#c9a962] font-semibold py-1 hover:underline"
+                              >
+                                All Fragrances →
+                              </button>
+                              {collections.map((col) => (
+                                <button
+                                  key={col}
+                                  type="button"
+                                  onClick={() => handleCollectionSelect(col)}
+                                  className="block w-full text-left text-[12.5px] uppercase tracking-[0.15em] text-zinc-300 hover:text-white py-1 transition-colors"
+                                >
+                                  {col}
+                                </button>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  }
+
+                  return null;
+                })}
 
                 {/* Account & Care Links */}
                 <div className="pt-6 space-y-4">
@@ -830,7 +844,7 @@ const Header = () => {
                 {/* Signature Brand Quote Card */}
                 <div className="p-4 bg-zinc-900/80 border border-[#c9a962]/20 text-center space-y-1 rounded-none mt-6">
                   <Sparkles size={14} className="text-[#c9a962] mx-auto mb-1" />
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-[#c9a962] font-semibold">MAHIRASH GUARANTEE</p>
+                  <p className="text-[12px] uppercase tracking-[0.25em] text-[#c9a962] font-semibold">MAHIRASH GUARANTEE</p>
                   <p className="text-[11px] text-zinc-400 font-serif italic">"Crafted with rare botanical essences and fine artisanal extraits."</p>
                 </div>
 

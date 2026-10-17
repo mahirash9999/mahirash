@@ -81,7 +81,7 @@ const AddToCartModal = () => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     {addedItem.category && (
-                                        <p className="text-[10px] uppercase tracking-widest text-zinc-400 font-semibold mb-0.5">
+                                        <p className="text-[12px] uppercase tracking-widest text-zinc-400 font-semibold mb-0.5">
                                             {addedItem.category}
                                         </p>
                                     )}

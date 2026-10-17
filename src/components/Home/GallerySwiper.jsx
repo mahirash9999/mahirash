@@ -151,7 +151,7 @@ const GallerySwiper = () => {
                             const bg = isObj ? tagItem.bg || "#000" : "#000";
                             const color = isObj ? tagItem.text || "#fff" : "#fff";
                             return (
-                              <span key={tIdx} style={{ backgroundColor: bg, color: color }} className="font-extrabold w-max uppercase text-[8px] tracking-[0.18em] px-2.5 py-1 shadow-sm rounded-sm">
+                              <span key={tIdx} style={{ backgroundColor: bg, color: color }} className="font-extrabold w-max uppercase text-[12px] tracking-[0.18em] px-2.5 py-1 shadow-sm rounded-sm">
                                 {text}
                               </span>
                             );
@@ -161,7 +161,7 @@ const GallerySwiper = () => {
                     }
 
                     return (
-                      <div className="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur-md border border-[#E5D5B8] px-3 py-1 text-[#B8860B] text-[9px] uppercase tracking-[0.25em] font-extrabold shadow-sm rounded-full">
+                      <div className="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur-md border border-[#E5D5B8] px-3 py-1 text-[#B8860B] text-[12px] uppercase tracking-[0.25em] font-extrabold shadow-sm rounded-full">
                         {slide.brand}
                       </div>
                     )
@@ -187,7 +187,7 @@ const GallerySwiper = () => {
 
                   {/* Hover Quick Action Indicator */}
                   <div className="absolute bottom-5 inset-x-5 z-20 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
-                    <span className="text-white text-[10px] font-extrabold uppercase tracking-[0.25em] flex items-center gap-1.5 drop-shadow">
+                    <span className="text-white text-[12px] font-extrabold uppercase tracking-[0.25em] flex items-center gap-1.5 drop-shadow">
                       <Eye size={13} className="text-[#E5D5B8]" /> View Scent
                     </span>
                     <span className="w-8 h-8 rounded-full bg-[#0D0D0D] text-white flex items-center justify-center text-[14px] font-bold shadow-md">
@@ -202,7 +202,7 @@ const GallerySwiper = () => {
 
         {/* Dynamic centered slide content below swiper */}
         <div className="mt-8 flex flex-col items-center justify-center text-center px-4">
-          <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.28em] font-bold text-[#B8860B] mb-2">
+          <div className="flex items-center gap-1.5 text-[12px] uppercase tracking-[0.28em] font-bold text-[#B8860B] mb-2">
             <span>{currentSlide.brand || 'MAHIRASH'}</span>
             {currentSlide.subtitle && <span className="text-stone-500">• {currentSlide.subtitle}</span>}
           </div>

@@ -118,7 +118,7 @@ const ReportsView = () => {
             <FileText size={16} className="text-[#b8860b]" />
             {reportType === "sales" ? "Live Customer Orders Audit Log" : "Live Product Inventory Stock Summary"}
           </h3>
-          <span className="text-[10px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 flex items-center gap-1">
+          <span className="text-[12px] font-extrabold uppercase tracking-widest text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 flex items-center gap-1">
             <CheckCircle2 size={12} /> Live Sync Active
           </span>
         </div>
@@ -130,7 +130,7 @@ const ReportsView = () => {
             {reportType === "sales" ? (
               <table className="w-full text-left text-[14px] border-collapse">
                 <thead>
-                  <tr className="text-[10px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
+                  <tr className="text-[12px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
                     <th className="py-3 px-3">Date</th>
                     <th className="py-3 px-3">Order ID</th>
                     <th className="py-3 px-3">Customer</th>
@@ -155,7 +155,7 @@ const ReportsView = () => {
                         <td className="py-3.5 px-3   text-zinc-900">₹{Number(total).toLocaleString('en-IN')}</td>
                         <td className="py-3.5 px-3 text-zinc-600">{o.paymentMethod || 'UPI / Card'}</td>
                         <td className="py-3.5 px-3 text-right">
-                          <span className="px-2.5 py-0.5 rounded text-[9px]   bg-emerald-100 text-emerald-800 border border-emerald-200">
+                          <span className="px-2.5 py-0.5 rounded text-[12px]   bg-emerald-100 text-emerald-800 border border-emerald-200">
                             {o.status || 'PAID'}
                           </span>
                         </td>
@@ -172,7 +172,7 @@ const ReportsView = () => {
             ) : (
               <table className="w-full text-left text-[14px] border-collapse">
                 <thead>
-                  <tr className="text-[10px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
+                  <tr className="text-[12px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
                     <th className="py-3 px-3">Product ID</th>
                     <th className="py-3 px-3">Product Name</th>
                     <th className="py-3 px-3">Category</th>
@@ -190,7 +190,7 @@ const ReportsView = () => {
                         <td className="py-3.5 px-3 text-zinc-600">{p.category || 'General'}</td>
                         <td className="py-3.5 px-3   text-zinc-900">{stockNum} units</td>
                         <td className="py-3.5 px-3 text-right">
-                          <span className={`px-2.5 py-0.5 rounded text-[9px]   ${stockNum === 0 ? "bg-red-100 text-red-800 border border-red-200" :
+                          <span className={`px-2.5 py-0.5 rounded text-[12px]   ${stockNum === 0 ? "bg-red-100 text-red-800 border border-red-200" :
                             stockNum <= 5 ? "bg-amber-100 text-amber-800 border border-amber-200" :
                               "bg-emerald-100 text-emerald-800 border border-emerald-200"
                             }`}>

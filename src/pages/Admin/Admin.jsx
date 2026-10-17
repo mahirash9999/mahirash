@@ -33,7 +33,7 @@ import {
   User, Calendar, DollarSign, ShoppingBag, Eye, Printer,
   Download, PlusCircle, Check, HelpCircle, FileText,
   Shirt, AlertCircle, Mail, Lock, ArrowRight, Image as ImageIcon,
-  Upload, Sparkles
+  Upload, Sparkles, Package
 } from "lucide-react";
 
 import { useSearchParams } from "react-router-dom";
@@ -57,6 +57,8 @@ import BillingSystem from "./components/BillingSystem";
 import AdminProfileSettings from "./components/AdminProfileSettings";
 import HeroVideoManager from "./components/HeroVideoManager";
 import AboutUsManager from "./components/AboutUsManager";
+import NewsManager from "./components/NewsManager";
+import SEOManager from "./components/SEOManager";
 import CloudinaryMediaPickerModal from "../../components/CloudinaryMediaPickerModal";
 
 import uploadToCloudinary from "../../utils/cloudinary";
@@ -131,7 +133,7 @@ const DEFAULT_SEED_DATA = {
     { id: 'm_cat_5', name: 'FLORAL ESSENCE', title: 'FLORAL ESSENCE', badge: '', image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800&auto=format&fit=crop', link: '/shop?category=Floral+%26+Fresh', sort_order: 5, is_active: true },
     { id: 'm_cat_6', name: 'DISCOVERY SETS', title: 'DISCOVERY SETS', badge: 'GIFT BOX', image: 'https://images.unsplash.com/photo-1615397349754-cfa2066a298e?q=80&w=800&auto=format&fit=crop', link: '/shop?category=Gift+Sets', sort_order: 6, is_active: true }
   ],
-  
+
 };
 
 // Generic CMS Manager helper
@@ -209,12 +211,8 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
     try {
       const q = query(collection(db, collectionName));
       const snap = await getDocs(q);
-      if (snap.empty && DEFAULT_SEED_DATA[collectionName]) {
-        const seedItems = DEFAULT_SEED_DATA[collectionName];
-        for (const item of seedItems) {
-          await setDoc(doc(db, collectionName, item.id), item);
-        }
-        setItems(seedItems);
+      if (snap.empty) {
+        setItems([]);
       } else {
         const list = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         list.sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
@@ -456,7 +454,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
         <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
           <table className="w-full min-w-[620px] text-left text-[13px] border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-widest text-[10px]">
+              <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-widest text-[12px]">
                 <th className="py-3 px-4 w-10">
                   <input
                     type="checkbox"
@@ -487,7 +485,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                       {f.type === 'image' ? (
                         <OptimizedCloudinaryImage src={item[f.key]} preset="avatar" className="w-10 h-10 object-cover rounded bg-zinc-100 border border-zinc-200" alt="thumb" />
                       ) : f.type === 'boolean' ? (
-                        <span className={`px-2 py-0.5 rounded text-[9px]   ${item[f.key] ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
+                        <span className={`px-2 py-0.5 rounded text-[12px]   ${item[f.key] ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
                           {item[f.key] ? 'ACTIVE' : 'INACTIVE'}
                         </span>
                       ) : (
@@ -554,7 +552,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
             <div className="space-y-3.5 overflow-y-auto flex-1 pr-1.5 py-1">
               {fields.map(f => (
                 <div key={f.key} className="space-y-1">
-                  <label className="text-[10px]   text-zinc-500 uppercase tracking-wider block">{f.label}</label>
+                  <label className="text-[12px]   text-zinc-500 uppercase tracking-wider block">{f.label}</label>
                   {f.type === 'image' ? (
                     <div className="space-y-2">
                       {formData[f.key] && (
@@ -582,7 +580,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                         </button>
                       </div>
                       {uploading && (
-                        <p className="text-[10px] text-[#b8860b]   animate-pulse">Uploading image...</p>
+                        <p className="text-[12px] text-[#b8860b]   animate-pulse">Uploading image...</p>
                       )}
                     </div>
                   ) : f.type === 'boolean' ? (
@@ -864,7 +862,7 @@ const CommunityManager = () => {
             <label htmlFor="settings-active" className="  text-zinc-800 cursor-pointer">Section Active</label>
           </div>
           <div className="space-y-1">
-            <label className="text-[10px]   text-zinc-500 uppercase tracking-wider block">Eyebrow</label>
+            <label className="text-[12px]   text-zinc-500 uppercase tracking-wider block">Eyebrow</label>
             <input
               type="text"
               value={settings.eyebrow}
@@ -873,7 +871,7 @@ const CommunityManager = () => {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px]   text-zinc-500 uppercase tracking-wider block">Heading</label>
+            <label className="text-[12px]   text-zinc-500 uppercase tracking-wider block">Heading</label>
             <input
               type="text"
               value={settings.heading}
@@ -882,7 +880,7 @@ const CommunityManager = () => {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px]   text-zinc-500 uppercase tracking-wider block">Description Line 1</label>
+            <label className="text-[12px]   text-zinc-500 uppercase tracking-wider block">Description Line 1</label>
             <input
               type="text"
               value={settings.description_line_1}
@@ -891,7 +889,7 @@ const CommunityManager = () => {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[10px]   text-zinc-500 uppercase tracking-wider block">Description Line 2</label>
+            <label className="text-[12px]   text-zinc-500 uppercase tracking-wider block">Description Line 2</label>
             <input
               type="text"
               value={settings.description_line_2}
@@ -942,7 +940,7 @@ const CommunityManager = () => {
 
                 <div className="flex gap-4 items-center">
                   <div className="w-16 h-16 bg-[#0f0f0f] border border-[#222] rounded overflow-hidden flex items-center justify-center shrink-0">
-                    {img.image ? <OptimizedCloudinaryImage src={img.image} preset="category" className="w-full h-full object-cover" alt="look" /> : <span className="text-[9px] text-zinc-600">No Image</span>}
+                    {img.image ? <OptimizedCloudinaryImage src={img.image} preset="category" className="w-full h-full object-cover" alt="look" /> : <span className="text-[12px] text-zinc-600">No Image</span>}
                   </div>
                   <div className="flex-1">
                     <input type="file" accept="image/*" onChange={(e) => handleImageUpload(img.id, e.target.files[0])} className="hidden" id={`gallery-file-${img.id}`} />
@@ -953,12 +951,12 @@ const CommunityManager = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Destination Link</label>
+                  <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Destination Link</label>
                   <input type="text" value={img.link || ''} onChange={(e) => handleImageChange(img.id, 'link', e.target.value)} className="w-full px-3 py-2 bg-[#090909] border border-[#222] rounded text-white" />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Sort Order</label>
+                  <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Sort Order</label>
                   <input type="number" value={img.sort_order} onChange={(e) => handleImageChange(img.id, 'sort_order', parseInt(e.target.value) || 0)} className="w-full px-3 py-2 bg-[#090909] border border-[#222] rounded text-white" />
                 </div>
 
@@ -1000,7 +998,7 @@ const CommunityManager = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Icon</label>
+                  <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Icon</label>
                   <select value={stat.icon} onChange={(e) => handleStatChange(stat.id, 'icon', e.target.value)} className="w-full px-3 py-2 bg-[#090909] border border-[#222] rounded text-white">
                     <option value="Star">Star (Rating)</option>
                     <option value="Award">Award (Badge)</option>
@@ -1011,17 +1009,17 @@ const CommunityManager = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Primary Value</label>
+                  <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Primary Value</label>
                   <input type="text" value={stat.value} onChange={(e) => handleStatChange(stat.id, 'value', e.target.value)} className="w-full px-3 py-2 bg-[#090909] border border-[#222] rounded text-white" />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Label</label>
+                  <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Label</label>
                   <input type="text" value={stat.label} onChange={(e) => handleStatChange(stat.id, 'label', e.target.value)} className="w-full px-3 py-2 bg-[#090909] border border-[#222] rounded text-white" />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Sort Order</label>
+                  <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Sort Order</label>
                   <input type="number" value={stat.sort_order} onChange={(e) => handleStatChange(stat.id, 'sort_order', parseInt(e.target.value) || 0)} className="w-full px-3 py-2 bg-[#090909] border border-[#222] rounded text-white" />
                 </div>
 
@@ -1125,10 +1123,10 @@ const CMSManager = ({ collectionName, title }) => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Image</label>
+              <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Image</label>
               <div className="flex gap-4 items-center">
                 <div className="w-24 h-24 bg-[#090909] border border-[#222] rounded overflow-hidden flex items-center justify-center">
-                  {item.image ? <OptimizedCloudinaryImage src={item.image} preset="category" alt={item.title} className="w-full h-full object-cover" /> : <span className="text-[10px] text-zinc-600">No Image</span>}
+                  {item.image ? <OptimizedCloudinaryImage src={item.image} preset="category" alt={item.title} className="w-full h-full object-cover" /> : <span className="text-[12px] text-zinc-600">No Image</span>}
                 </div>
                 <div className="flex-1 space-y-2">
                   <input type="file" accept="image/*" onChange={(e) => handleImageUpload(item.id, e.target.files[0])} className="hidden" id={`file-input-${item.id}`} />
@@ -1140,17 +1138,17 @@ const CMSManager = ({ collectionName, title }) => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Title</label>
+              <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Title</label>
               <input type="text" value={item.title} onChange={(e) => handleChange(item.id, 'title', e.target.value)} className="w-full px-3 py-2 bg-[#090909] border border-[#222] rounded text-white" />
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Destination Link</label>
+              <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Destination Link</label>
               <input type="text" value={item.link} onChange={(e) => handleChange(item.id, 'link', e.target.value)} className="w-full px-3 py-2 bg-[#090909] border border-[#222] rounded text-white" />
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px]   text-zinc-400 uppercase tracking-wider block">Sort Order</label>
+              <label className="text-[12px]   text-zinc-400 uppercase tracking-wider block">Sort Order</label>
               <input type="number" value={item.sort_order} onChange={(e) => handleChange(item.id, 'sort_order', parseInt(e.target.value) || 0)} className="w-full px-3 py-2 bg-[#090909] border border-[#222] rounded text-white" />
             </div>
 
@@ -1196,9 +1194,9 @@ const ActivityLogsView = () => {
             <div key={log.id} className="p-3 bg-[#161616] border border-[#222] rounded flex justify-between items-center">
               <div>
                 <p className="  text-[#c9a962]">{log.action}</p>
-                <p className="text-zinc-400 text-[10px] mt-0.5">Admin: {log.admin} | target: {log.entity}</p>
+                <p className="text-zinc-400 text-[12px] mt-0.5">Admin: {log.admin} | target: {log.entity}</p>
               </div>
-              <span className="text-[10px] text-zinc-500">
+              <span className="text-[12px] text-zinc-500">
                 {log.timestamp?.toDate ? log.timestamp.toDate().toLocaleTimeString() : new Date().toLocaleTimeString()}
               </span>
             </div>
@@ -1601,30 +1599,30 @@ const Admin = () => {
         {/* KPI Row */}
         <div className="grid gap-5 grid-cols-2 lg:grid-cols-4">
           <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-            <p className="text-[10px]   text-zinc-500 uppercase tracking-wider">Total Revenue</p>
+            <p className="text-[12px]   text-zinc-500 uppercase tracking-wider">Total Revenue</p>
             <h3 className="text-xl   text-zinc-900 mt-1">₹{statsSummary.revenue.toLocaleString('en-IN')}</h3>
-            <span className={`text-[10px] block mt-1 ${statsSummary.revChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+            <span className={`text-[12px] block mt-1 ${statsSummary.revChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
               {statsSummary.revChange >= 0 ? '+' : ''}{statsSummary.revChange.toFixed(1)}% vs last month
             </span>
           </div>
           <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-            <p className="text-[10px]   text-zinc-500 uppercase tracking-wider">Total Orders</p>
+            <p className="text-[12px]   text-zinc-500 uppercase tracking-wider">Total Orders</p>
             <h3 className="text-xl   text-zinc-900 mt-1">{statsSummary.orders}</h3>
-            <span className={`text-[10px] block mt-1 ${statsSummary.ordersChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+            <span className={`text-[12px] block mt-1 ${statsSummary.ordersChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
               {statsSummary.ordersChange >= 0 ? '+' : ''}{statsSummary.ordersChange.toFixed(1)}% vs last month
             </span>
           </div>
           <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-            <p className="text-[10px]   text-zinc-500 uppercase tracking-wider">Total Customers</p>
+            <p className="text-[12px]   text-zinc-500 uppercase tracking-wider">Total Customers</p>
             <h3 className="text-xl   text-zinc-900 mt-1">{statsSummary.customers}</h3>
-            <span className={`text-[10px] block mt-1 ${statsSummary.custChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+            <span className={`text-[12px] block mt-1 ${statsSummary.custChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
               {statsSummary.custChange >= 0 ? '+' : ''}{statsSummary.custChange.toFixed(1)}% vs last month
             </span>
           </div>
           <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-            <p className="text-[10px]   text-zinc-500 uppercase tracking-wider">Total Products</p>
+            <p className="text-[12px]   text-zinc-500 uppercase tracking-wider">Total Products</p>
             <h3 className="text-xl   text-zinc-900 mt-1">{statsSummary.products}</h3>
-            <span className="text-[10px] text-zinc-500 block mt-1">Live catalog items</span>
+            <span className="text-[12px] text-zinc-500 block mt-1">Live catalog items</span>
           </div>
         </div>
 
@@ -1640,7 +1638,7 @@ const Admin = () => {
                 <div key={p.id} className="flex justify-between items-center border-b border-zinc-100 pb-2">
                   <div>
                     <p className="font-semibold text-zinc-900">{p.name}</p>
-                    <p className="text-[10px] text-zinc-500">Category: {p.category}</p>
+                    <p className="text-[12px] text-zinc-500">Category: {p.category}</p>
                   </div>
                   <span className="text-red-600  ">Stock: {p.stock || 0}</span>
                 </div>
@@ -1670,7 +1668,7 @@ const Admin = () => {
                 <div key={o.id} className="flex justify-between items-center border-b border-zinc-100 pb-2">
                   <div>
                     <p className="font-semibold text-zinc-900">#{o.id?.slice(0, 8)}</p>
-                    <p className="text-[10px] text-zinc-500">{o.customerName || 'Guest User'}</p>
+                    <p className="text-[12px] text-zinc-500">{o.customerName || 'Guest User'}</p>
                   </div>
                   <span className="text-[#b8860b]  ">₹{(o.total || o.grandTotal || 0).toLocaleString('en-IN')}</span>
                 </div>
@@ -1965,6 +1963,55 @@ const Admin = () => {
       case "Hero Video":
       case "Hero Slides":
         return <HeroVideoManager />;
+      case "Instagram Reels":
+        return <NewsManager isDarkMode={false} />;
+      case "FAQs":
+        return (
+          <GenericCRUDManager
+            collectionName="faqs"
+            title="Frequently Asked Questions (FAQs)"
+            fields={[
+              { key: 'question', label: 'Question' },
+              { key: 'answer', label: 'Answer (Explanation)', type: 'textarea' },
+              { key: 'category', label: 'Category / Topic' },
+              { key: 'sort_order', label: 'Sort Order', type: 'number' },
+              { key: 'is_active', label: 'Active on Homepage', type: 'boolean' }
+            ]}
+            defaultItem={{ question: '', answer: '', category: 'General', sort_order: 1, is_active: true }}
+          />
+        );
+      case "Shop Miniatures":
+        return (
+          <div className="space-y-6">
+            <div className="p-6 rounded-2xl border bg-white border-zinc-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Package className="text-[#b8860b]" size={22} />
+                  <h2 className="text-xl font-bold text-zinc-900">Shop Miniatures Showcase Manager</h2>
+                </div>
+                <p className="text-sm text-zinc-500">
+                  Products checked as "Shop Miniatures" or smaller volume flacons (≤10ml) automatically render in the "SHOP MINIATURES" showcase on the homepage.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setEditingProduct(null);
+                  setIsProductModalOpen(true);
+                }}
+                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#b8860b] text-white font-semibold rounded-xl hover:bg-black transition-all shadow-md text-sm cursor-pointer"
+              >
+                <span>+ Add Miniature Product</span>
+              </button>
+            </div>
+            <ProductsTable
+              products={products.filter(p => p.is_miniature === true || p.isMiniature === true || (String(p.sizes || '').toLowerCase().includes('ml') && (p.sizes?.includes('5ml') || p.sizes?.includes('10ml'))) || (p.name || '').toLowerCase().includes('miniature') || (p.name || '').toLowerCase().includes('sample'))}
+              loading={productsLoading}
+              onEdit={handleEditClick}
+              onDelete={handleDeleteProduct}
+              onImportSuccess={loadData}
+            />
+          </div>
+        );
       case "Benefits Strip":
         return (
           <GenericCRUDManager
@@ -1991,21 +2038,22 @@ const Admin = () => {
         );
       case "Activity Logs":
         return <ActivityLogsView />;
-      case "Store Settings":
+      case "SEO & Sitemap":
+      case "SEO Settings":
+        return <SEOManager />;
       case "Payment Settings":
       case "Shipping Settings":
       case "Tax Settings":
-      case "SEO Settings":
         return (
           <div className="bg-[#121212] border border-[#1a1a1a] rounded-xl p-6 text-white text-[14px] max-w-lg space-y-4">
             <h2 className="text-base   uppercase tracking-wider text-[#c9a962]">{activeItem}</h2>
             <div className="space-y-3">
               <div className="space-y-1">
-                <label className="text-zinc-500 uppercase tracking-widest text-[9px] block">Primary Parameter</label>
+                <label className="text-zinc-500 uppercase tracking-widest text-[12px] block">Primary Parameter</label>
                 <input type="text" defaultValue="Mahirash Luxury Perfumes" className="w-full px-3 py-2 bg-[#161616] border border-[#222] rounded text-white" />
               </div>
               <div className="space-y-1">
-                <label className="text-zinc-500 uppercase tracking-widest text-[9px] block">Fallback Mode</label>
+                <label className="text-zinc-500 uppercase tracking-widest text-[12px] block">Fallback Mode</label>
                 <select className="w-full px-3 py-2 bg-[#161616] border border-[#222] rounded text-white">
                   <option>Enabled (Production)</option>
                   <option>Disabled (Staging)</option>
@@ -2059,7 +2107,7 @@ const Admin = () => {
 
           <form onSubmit={handleAdminLogin} className="space-y-4">
             <div className="space-y-1">
-              <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
+              <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
                 Admin ID (Email)
               </label>
               <div className="relative">
@@ -2076,7 +2124,7 @@ const Admin = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
+              <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
                 Security Password
               </label>
               <div className="relative">

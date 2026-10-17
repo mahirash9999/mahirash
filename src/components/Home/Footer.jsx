@@ -71,7 +71,7 @@ const Footer = () => {
                   alt="MAHIRASH"
                   className="h-9 md:h-12 w-auto object-contain brightness-0 invert mb-1"
                 />
-                <span className="text-[9px] uppercase tracking-[0.4em] text-[#c9a962] font-semibold">
+                <span className="text-[12px] uppercase tracking-[0.4em] text-[#c9a962] font-semibold">
                   HAUTE PARFUMERIE · PARIS & DUBAI
                 </span>
               </Link>
@@ -103,7 +103,7 @@ const Footer = () => {
                 />
                 <button
                   type="submit"
-                  className="bg-gradient-to-r from-[#b8860b] via-[#d4af37] to-[#b8860b] hover:from-white hover:to-white text-black font-extrabold text-[10px] uppercase tracking-[0.25em] px-7 py-3.5 transition-all duration-300 shrink-0 cursor-pointer shadow-md flex items-center justify-center gap-2 rounded-none"
+                  className="bg-gradient-to-r from-[#b8860b] via-[#d4af37] to-[#b8860b] hover:from-white hover:to-white text-black font-extrabold text-[12px] uppercase tracking-[0.25em] px-7 py-3.5 transition-all duration-300 shrink-0 cursor-pointer shadow-md flex items-center justify-center gap-2 rounded-none"
                 >
                   <span>{subscribed ? 'SUBSCRIBED' : 'JOIN VIP'}</span>
                   <ArrowRight size={13} />

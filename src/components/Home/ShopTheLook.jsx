@@ -57,7 +57,7 @@ const ShopTheLook = () => {
 
       {/* Header Container */}
       <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 mb-10 md:mb-12 relative z-10">
-        <p className="text-[10px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
+        <p className="text-[12px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
           <span>THE ESSENCE OF YOU</span>
           <span>•</span>
           <span>SIGNATURE ATELIER</span>
@@ -107,7 +107,7 @@ const ShopTheLook = () => {
                   {/* Banner Content Container */}
                   <div className="absolute inset-0 p-6 sm:p-7 lg:p-8 z-20 flex flex-col justify-end items-start pointer-events-none">
                     {banner.tag && (
-                      <span className="text-[10px] sm:text-[12px] tracking-[0.25em] uppercase text-[#E5D5B8] font-bold mb-2 drop-shadow flex items-center gap-1.5">
+                      <span className="text-[12px] sm:text-[12px] tracking-[0.25em] uppercase text-[#E5D5B8] font-bold mb-2 drop-shadow flex items-center gap-1.5">
                         <span className="text-[#B8860B]">✦</span> {banner.tag}
                       </span>
                     )}
@@ -122,7 +122,7 @@ const ShopTheLook = () => {
                       </p>
                     )}
 
-                    <div className="inline-flex items-center justify-center gap-2.5 bg-[#0D0D0D] text-white px-6 py-3 text-[10px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 shrink-0 shadow-lg pointer-events-auto rounded-full group-hover:bg-[#B8860B] group-hover:text-black">
+                    <div className="inline-flex items-center justify-center gap-2.5 bg-[#0D0D0D] text-white px-6 py-3 text-[12px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 shrink-0 shadow-lg pointer-events-auto rounded-full group-hover:bg-[#B8860B] group-hover:text-black">
                       <span>{banner.cta || banner.buttonText || 'EXPLORE COLLECTION'}</span>
                       <ArrowRight size={13} className="group-hover:translate-x-1.5 transition-transform" />
                     </div>

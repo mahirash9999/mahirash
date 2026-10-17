@@ -230,7 +230,7 @@ const ForgotPassword = () => {
             <div className="w-full max-w-[1100px] flex justify-start mb-6 z-10 px-2 lg:px-0">
                 <Link
                     to="/shop"
-                    className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500 hover:text-black transition-all duration-300"
+                    className="flex items-center gap-2 text-[12px] uppercase tracking-[0.2em] text-zinc-500 hover:text-black transition-all duration-300"
                 >
                     <span className="text-[14px]">←</span> Collection
                 </Link>
@@ -246,7 +246,7 @@ const ForgotPassword = () => {
                     </div>
 
                     <div className="relative z-10 my-auto">
-                        <span className="text-[10px] uppercase tracking-[0.25em] text-[#b8860b]">Security Portal</span>
+                        <span className="text-[12px] uppercase tracking-[0.25em] text-[#b8860b]">Security Portal</span>
                         <h1 className="text-3xl md:text-4xl font-light text-zinc-900 tracking-[0.16em] uppercase leading-[1.25] mt-3 mb-5">
                             Reset<br />Password
                         </h1>
@@ -257,7 +257,7 @@ const ForgotPassword = () => {
                     </div>
 
                     <div className="relative z-10 pt-6">
-                        <span className="text-[9px] text-zinc-400 uppercase tracking-widest font-medium">© MAHIRASH PARFUMERIE</span>
+                        <span className="text-[12px] text-zinc-400 uppercase tracking-widest font-medium">© MAHIRASH PARFUMERIE</span>
                     </div>
                 </div>
 
@@ -265,7 +265,7 @@ const ForgotPassword = () => {
                 <div className="lg:col-span-7 p-8 md:p-12 lg:p-14 flex flex-col justify-between bg-white text-zinc-900">
                     {/* Header metadata */}
                     <div className="relative z-10 h-9 flex items-center">
-                        <span className="text-[10px] uppercase tracking-[0.25em] font-medium text-zinc-400">ATELIER MEMBERSHIP</span>
+                        <span className="text-[12px] uppercase tracking-[0.25em] font-medium text-zinc-400">ATELIER MEMBERSHIP</span>
                     </div>
 
                     <div className="max-w-[420px] w-full relative z-10 my-auto py-8">
@@ -303,7 +303,7 @@ const ForgotPassword = () => {
                         {step === 1 && (
                             <form onSubmit={handleSendOtp} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500">Email Address</label>
+                                    <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500">Email Address</label>
                                     <div className="relative">
                                         <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                                         <input
@@ -320,7 +320,7 @@ const ForgotPassword = () => {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold text-[10px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                                    className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold text-[12px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                                 >
                                     {loading ? (
                                         <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
@@ -338,7 +338,7 @@ const ForgotPassword = () => {
                         {step === 2 && (
                             <form onSubmit={handleVerifyOtp} className="space-y-6">
                                 <div className="space-y-3">
-                                    <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500 block">Verification Code</label>
+                                    <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500 block">Verification Code</label>
                                     <div className="flex justify-between gap-2.5">
                                         {enteredOtp.map((digit, idx) => (
                                             <input
@@ -358,7 +358,7 @@ const ForgotPassword = () => {
 
                                 <button
                                     type="submit"
-                                    className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold text-[10px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                                    className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold text-[12px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
                                 >
                                     <span>Verify OTP</span>
                                     <CheckCircle size={13} />
@@ -369,7 +369,7 @@ const ForgotPassword = () => {
                                         type="button"
                                         onClick={handleResendOtp}
                                         disabled={resendTimer > 0 || loading}
-                                        className="text-[10px] uppercase tracking-wider text-zinc-500 hover:text-black font-semibold disabled:opacity-40 transition-colors"
+                                        className="text-[12px] uppercase tracking-wider text-zinc-500 hover:text-black font-semibold disabled:opacity-40 transition-colors"
                                     >
                                         {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Resend OTP Code"}
                                     </button>
@@ -382,7 +382,7 @@ const ForgotPassword = () => {
                             <form onSubmit={handlePasswordResetSubmit} className="space-y-6">
                                 <div className="space-y-4">
                                     <div className="space-y-2">
-                                        <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500">New Password</label>
+                                        <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500">New Password</label>
                                         <div className="relative">
                                             <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                                             <input
@@ -404,7 +404,7 @@ const ForgotPassword = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500">Confirm Password</label>
+                                        <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500">Confirm Password</label>
                                         <div className="relative">
                                             <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                                             <input
@@ -422,7 +422,7 @@ const ForgotPassword = () => {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold text-[10px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                                    className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold text-[12px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                                 >
                                     {loading ? (
                                         <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />

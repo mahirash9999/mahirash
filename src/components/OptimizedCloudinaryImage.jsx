@@ -40,6 +40,25 @@ const OptimizedCloudinaryImage = ({
 }) => {
   const [hasError, setHasError] = useState(false);
 
+  // Cross-cloud fallback: if an image fails and points to an old cloud account, fallback to the configured account
+  const autoFallback = React.useMemo(() => {
+    if (fallbackSrc) return fallbackSrc;
+    const configuredCloud = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    if (typeof src === 'string' && src.includes('res.cloudinary.com') && configuredCloud) {
+      try {
+        const parsed = new URL(src);
+        const pathSegments = parsed.pathname.split('/').filter(Boolean);
+        if (pathSegments.length > 0 && pathSegments[0] !== configuredCloud) {
+          pathSegments[0] = configuredCloud;
+          return `${parsed.origin}/${pathSegments.join('/')}${parsed.search}`;
+        }
+      } catch {
+        // ignore parse errors
+      }
+    }
+    return undefined;
+  }, [src, fallbackSrc]);
+
   if (!src) {
     return null;
   }
@@ -87,25 +106,6 @@ const OptimizedCloudinaryImage = ({
   const handleImageLoad = (e) => {
     if (onLoad) onLoad(e);
   };
-
-  // Cross-cloud fallback: if an image fails and points to an old cloud account, fallback to the configured account
-  const autoFallback = React.useMemo(() => {
-    if (fallbackSrc) return fallbackSrc;
-    const configuredCloud = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-    if (typeof src === 'string' && src.includes('res.cloudinary.com') && configuredCloud) {
-      try {
-        const parsed = new URL(src);
-        const pathSegments = parsed.pathname.split('/').filter(Boolean);
-        if (pathSegments.length > 0 && pathSegments[0] !== configuredCloud) {
-          pathSegments[0] = configuredCloud;
-          return `${parsed.origin}/${pathSegments.join('/')}${parsed.search}`;
-        }
-      } catch {
-        // ignore parse errors
-      }
-    }
-    return undefined;
-  }, [src, fallbackSrc]);
 
   const finalSrc = hasError && autoFallback ? autoFallback : optimizedSrc;
 

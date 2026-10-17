@@ -61,7 +61,7 @@ const Contact = () => {
           {/* LEFT: Channels */}
           <motion.div {...fadeUp} className="lg:col-span-5 space-y-7">
             <div>
-              <span className="text-[10px]   tracking-[0.3em] uppercase text-zinc-500 block mb-4">Reach Out</span>
+              <span className="text-[12px]   tracking-[0.3em] uppercase text-zinc-500 block mb-4">Reach Out</span>
               <h2 className="text-3xl sm:text-4xl font-light text-zinc-900 tracking-widest leading-[1.05] uppercase">We're Here<br />to Help</h2>
               <p className="text-[14px] text-zinc-600 mt-4 leading-relaxed max-w-sm">
                 Whether you have a question about sizing, need styling advice, or want to discuss a bulk order — our team is ready.
@@ -83,7 +83,7 @@ const Contact = () => {
                       <Icon size={16} strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[9px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-0.5">{item.label}</p>
+                      <p className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-0.5">{item.label}</p>
                       <p className="text-[15px]   text-zinc-900 truncate">{item.val}</p>
                       <p className="text-[11px] text-zinc-500 mt-0.5">{item.desc}</p>
                     </div>
@@ -96,7 +96,7 @@ const Contact = () => {
             <div className="flex items-start gap-3 p-4 bg-white border border-zinc-200 shadow-sm">
               <Clock size={14} className="text-zinc-500 shrink-0 mt-0.5" />
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-1">Business Hours</p>
+                <p className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-1">Business Hours</p>
                 <p className="text-[14px] text-zinc-700 font-medium">Monday – Saturday: 10:00 AM – 7:00 PM IST</p>
                 <p className="text-[14px] text-zinc-500">Sunday: Closed</p>
               </div>
@@ -108,20 +108,20 @@ const Contact = () => {
             <div className="bg-white border border-zinc-200 p-6 sm:p-8 md:p-10 shadow-sm">
               <div className="flex items-center gap-2 mb-7">
                 <MessageSquare size={14} className="text-zinc-400" />
-                <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-500">Send a Message</h3>
+                <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-zinc-500">Send a Message</h3>
               </div>
 
               <form className="space-y-4" onSubmit={handleFormSubmit}>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Full Name</label>
+                    <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Full Name</label>
                     <input type="text" required
                       className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 transition-colors placeholder:text-zinc-400"
                       placeholder="Your name"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Email Address</label>
+                    <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Email Address</label>
                     <input type="email" required
                       className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 transition-colors placeholder:text-zinc-400"
                       placeholder="email@example.com"
@@ -130,7 +130,7 @@ const Contact = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Subject</label>
+                  <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Subject</label>
                   <select className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 transition-colors appearance-none cursor-pointer">
                     <option>Order Inquiry</option>
                     <option>Product Question</option>
@@ -142,7 +142,7 @@ const Contact = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Your Message</label>
+                  <label className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500">Your Message</label>
                   <textarea rows="5" required
                     className="w-full bg-zinc-50 border border-zinc-300 px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 transition-colors resize-none placeholder:text-zinc-400"
                     placeholder="Tell us how we can help..."
@@ -165,7 +165,7 @@ const Contact = () => {
       {/* <section className="bg-[#f5f5f5] py-14 md:py-16 border-t border-zinc-200">
         <div className="max-w-7xl py-3 mx-auto px-5 md:px-10 lg:px-14">
           <div className="mb-8 pb-8 border-b border-zinc-200">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-500   block mb-3">Find Us</span>
+            <span className="text-[12px] uppercase tracking-[0.3em] text-zinc-500   block mb-3">Find Us</span>
             <h2 className="text-2xl font-light text-zinc-900 uppercase tracking-widest">Visit Our Store</h2>
           </div>
           <div className="w-full h-[280px] sm:h-[350px] bg-zinc-100 overflow-hidden border border-zinc-200 shadow-sm">

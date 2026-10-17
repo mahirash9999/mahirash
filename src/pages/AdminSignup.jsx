@@ -95,13 +95,13 @@ const AdminSignup = () => {
       <div className="absolute bottom-10 right-10 w-72 h-72 bg-black/[0.03] blur-2xl rounded-full pointer-events-none" />
 
       <div className="w-full max-w-md bg-white/95 backdrop-blur-xl border border-zinc-200/90 p-6 sm:p-9 shadow-[0_20px_60px_rgba(0,0,0,0.08)] rounded-3xl relative z-10 space-y-6 transition-all duration-500">
-        
+
         {/* Header */}
         <div className="text-center space-y-1.5">
           <div className="w-12 h-12 rounded-2xl bg-black text-[#c9a962] flex items-center justify-center shadow-xl shadow-black/10 ring-4 ring-black/5 mx-auto mb-2">
             <Sparkles size={22} strokeWidth={2} />
           </div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 text-[10px] font-semibold uppercase tracking-wider mb-1">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-700 text-[12px] font-semibold uppercase tracking-wider mb-1">
             <ShieldCheck size={12} />
             Temporary Setup Route
           </div>
@@ -137,7 +137,7 @@ const AdminSignup = () => {
             <div className="p-3.5 bg-amber-50 border border-amber-200/80 rounded-xl text-left space-y-1">
               <p className="text-[11px] font-semibold text-amber-900">Notice:</p>
               <p className="text-[11px] text-amber-800 leading-relaxed">
-                You can now delete this file (<code className="bg-amber-100 px-1 py-0.5 rounded font-mono text-[10px]">src/pages/AdminSignup.jsx</code>) and remove the route from <code className="bg-amber-100 px-1 py-0.5 rounded font-mono text-[10px]">App.jsx</code> whenever you are ready.
+                You can now delete this file (<code className="bg-amber-100 px-1 py-0.5 rounded font-mono text-[12px]">src/pages/AdminSignup.jsx</code>) and remove the route from <code className="bg-amber-100 px-1 py-0.5 rounded font-mono text-[12px]">App.jsx</code> whenever you are ready.
               </p>
             </div>
 
@@ -154,7 +154,7 @@ const AdminSignup = () => {
           /* Signup Form */
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1">
-              <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
+              <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
                 Admin Full Name
               </label>
               <div className="relative">
@@ -171,7 +171,7 @@ const AdminSignup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
+              <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
                 Admin Email ID
               </label>
               <div className="relative">
@@ -188,7 +188,7 @@ const AdminSignup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
+              <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
                 Password
               </label>
               <div className="relative">
@@ -213,7 +213,7 @@ const AdminSignup = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[9px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
+              <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
                 Confirm Password
               </label>
               <div className="relative">

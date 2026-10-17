@@ -126,8 +126,8 @@
 }
 
 /* Direct font-size enforcement for very small Tailwind classes that appear on body content */
-body *[class*="text-[9px]"],
-body *[class*="text-[10px]"],
+body *[class*="text-[12px]"],
+body *[class*="text-[12px]"],
 body *[class*="text-[10.5px]"],
 body *[class*="text-[11px]"],
 body *[class*="text-[11.5px]"],
@@ -242,11 +242,13 @@ body *[class*="text-[13px]"] {
   font-size: 1.25rem;
   font-weight: 500;
 }
+
 .cms-content-editor p {
   letter-spacing: 0.025em;
   font-size: 1.1rem;
   line-height: 1.6;
 }
+
 .cms-content-editor a {
   color: var(--color-brand-primary);
   text-decoration: underline;

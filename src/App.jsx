@@ -33,6 +33,7 @@ const Return = lazy(() => import("./pages/ReturnPolicy"));
 const RefundPolicy = lazy(() => import("./pages/ReturnPolicy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder"));
+const SitemapViewer = lazy(() => import("./pages/SitemapViewer"));
 
 const RouteLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center bg-[#f5f5f5]">
@@ -84,6 +85,7 @@ const AppRoutes = () => {
 
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/product/:id/quickview" element={<QuickView />} />
+            <Route path="/sitemap.xml" element={<SitemapViewer />} />
 
             {/* 404 Route */}
             <Route path="*" element={<NotFound />} />

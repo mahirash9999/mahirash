@@ -83,7 +83,7 @@ const InventoryView = () => {
             try {
               const parsedSp = JSON.parse(row.size_prices);
               if (Array.isArray(parsedSp)) sizePricesArr = parsedSp;
-            } catch (_) {}
+            } catch (_) { }
           }
           if (sizePricesArr.length === 0 && row.sizes) {
             const splitSizes = String(row.sizes).split(',').map(s => s.trim()).filter(Boolean);
@@ -403,7 +403,7 @@ const InventoryView = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[10px]   text-zinc-400 uppercase tracking-widest block">Total Inventory Stock</span>
+            <span className="text-[12px]   text-zinc-400 uppercase tracking-widest block">Total Inventory Stock</span>
             <h3 className="text-2xl   text-zinc-900 mt-1">{totalStockCount} units</h3>
           </div>
           <div className="p-3 bg-zinc-100 rounded-xl text-zinc-700"><Package size={20} /></div>
@@ -411,7 +411,7 @@ const InventoryView = () => {
 
         <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[10px]   text-amber-600 uppercase tracking-widest block">Low Stock Alerts</span>
+            <span className="text-[12px]   text-amber-600 uppercase tracking-widest block">Low Stock Alerts</span>
             <h3 className="text-2xl   text-amber-700 mt-1">{lowStockCount} items</h3>
           </div>
           <div className="p-3 bg-amber-50 rounded-xl text-amber-600"><AlertTriangle size={20} /></div>
@@ -419,7 +419,7 @@ const InventoryView = () => {
 
         <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[10px]   text-red-600 uppercase tracking-widest block">Out of Stock Items</span>
+            <span className="text-[12px]   text-red-600 uppercase tracking-widest block">Out of Stock Items</span>
             <h3 className="text-2xl   text-red-700 mt-1">{outOfStockCount} items</h3>
           </div>
           <div className="p-3 bg-red-50 rounded-xl text-red-600"><AlertTriangle size={20} /></div>
@@ -513,7 +513,7 @@ const InventoryView = () => {
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full min-w-[800px] text-left text-[13px] border-collapse">
               <thead>
-                <tr className="text-[10px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
+                <tr className="text-[12px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
                   <th className="py-3 px-3 w-10">
                     <input
                       type="checkbox"
@@ -548,14 +548,14 @@ const InventoryView = () => {
                           <OptimizedCloudinaryImage src={p.image || p.images?.[0]} preset="avatar" className="w-10 h-10 object-cover rounded-lg bg-zinc-100 border border-zinc-200" alt={p.name} />
                           <div>
                             <p className="  text-zinc-900">{p.name}</p>
-                            <span className="text-[10px] text-zinc-500 font-mono">ID: #{p.id?.slice(0, 8)}</span>
+                            <span className="text-[12px] text-zinc-500 font-mono">ID: #{p.id?.slice(0, 8)}</span>
                           </div>
                         </div>
                       </td>
                       <td className="py-3.5 px-3 text-zinc-600 font-semibold">{p.category || 'General'}</td>
                       <td className="py-3.5 px-3   text-zinc-900">₹{(p.price || 0).toLocaleString('en-IN')}</td>
                       <td className="py-3.5 px-3">
-                        <span className={`px-2.5 py-0.5 rounded text-[9px]   ${stockNum === 0 ? "bg-red-100 text-red-800 border border-red-200" :
+                        <span className={`px-2.5 py-0.5 rounded text-[12px]   ${stockNum === 0 ? "bg-red-100 text-red-800 border border-red-200" :
                           stockNum <= 5 ? "bg-amber-100 text-amber-800 border border-amber-200" :
                             "bg-emerald-100 text-emerald-800 border border-emerald-200"
                           }`}>
@@ -584,8 +584,8 @@ const InventoryView = () => {
                                       value={sp.stock ?? 0}
                                       onChange={(e) => handleVariantManualStockInput(p.id, vIdx, e.target.value)}
                                       className={`w-12 px-1 py-0.5 text-center font-bold border rounded outline-none text-[14px] ${vStockNum === 0 ? 'bg-red-50 text-red-700 border-red-300' :
-                                          vStockNum <= 5 ? 'bg-amber-50 text-amber-800 border-amber-300' :
-                                            'bg-white text-zinc-900 border-zinc-300'
+                                        vStockNum <= 5 ? 'bg-amber-50 text-amber-800 border-amber-300' :
+                                          'bg-white text-zinc-900 border-zinc-300'
                                         }`}
                                     />
                                     <button
@@ -599,7 +599,7 @@ const InventoryView = () => {
                                 </div>
                               );
                             })}
-                            <div className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider text-right pr-1">
+                            <div className="text-[12px] text-zinc-500 font-semibold uppercase tracking-wider text-right pr-1">
                               Total Stock: <span className="text-zinc-900 font-extrabold">{stockNum}</span>
                             </div>
                           </div>

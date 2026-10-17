@@ -201,7 +201,7 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen bg-[#f5f5f5] flex flex-col items-center justify-center text-center p-6">
         <h3 className="text-sm font-light tracking-widest uppercase text-zinc-900 mb-4">Product Not Found</h3>
-        <Link to="/shop" className="px-8 py-3 bg-black text-white font-semibold text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-sm">
+        <Link to="/shop" className="px-8 py-3 bg-black text-white font-semibold text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all shadow-sm">
           Return To Collection
         </Link>
       </div>
@@ -287,29 +287,19 @@ const ProductDetail = () => {
       </AnimatePresence>
       {product && (
         <SEOHead
-          title={`${product.name} | Mahirash Luxury Perfumes`}
-          description={product.description?.replace(/<[^>]*>?/gm, '').slice(0, 160) || `Experience ${product.name} online at Mahirash Haute Parfumerie.`}
+          title={`${product.name} | ${product.brand || 'Mahirash'} Extrait de Parfum`}
+          description={product.description?.replace(/<[^>]*>?/gm, '').slice(0, 160) || `Experience ${product.name} handcrafted by ${product.brand || 'Mahirash'}. Rare luxury extrait de parfum with intense projection and longevity.`}
           image={images[0] || product.image}
+          imageAlt={`${product.name} - Luxury Extrait de Parfum by ${product.brand || 'Mahirash'}`}
           url={`https://mahirash.com/product/${id}`}
+          canonical={`https://mahirash.com/product/${id}`}
+          author={product.brand || "Mahirash Parfumerie"}
           type="product"
-          jsonLd={{
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": product.name,
-            "image": images[0] || product.image,
-            "description": product.description?.replace(/<[^>]*>?/gm, ''),
-            "offers": {
-              "@type": "Offer",
-              "priceCurrency": "INR",
-              "price": selectedSize?.price || product.price,
-              "availability": isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-              "url": `https://mahirash.com/product/${id}`
-            }
-          }}
+          product={product}
         />
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* ── LEFT GALLERY SECTION ── */}
@@ -347,7 +337,7 @@ const ProductDetail = () => {
                   >
                     <div className="flex flex-col items-center gap-2.5 bg-black/95 text-white px-5 py-3 shadow-2xl">
                       <div className="w-5 h-5 border-2 border-[#c9a962] border-t-transparent rounded-full animate-spin" />
-                      <span className="text-[10px] uppercase font-extrabold tracking-[0.2em] text-white">
+                      <span className="text-[12px] uppercase font-extrabold tracking-[0.2em] text-white">
                         SELECTING {selectedColor}...
                       </span>
                     </div>
@@ -358,7 +348,7 @@ const ProductDetail = () => {
               {/* Discount Tag */}
               {discountPercent > 0 && (
                 <div className="absolute top-4 left-4 z-30">
-                  <span className="bg-[#d92323] text-white px-3 py-1.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider shadow-md">
+                  <span className="bg-[#d92323] text-white px-3 py-1.5 text-[12px] sm:text-[12px] font-black uppercase tracking-wider shadow-md">
                     SAVE {discountPercent}%
                   </span>
                 </div>
@@ -462,7 +452,7 @@ const ProductDetail = () => {
             <div>
               {Boolean(selectedSize?.is_preorder === true || selectedSize?.is_preorder === 'true') && (
                 <div className="mb-2">
-                  <span className="inline-flex items-center gap-1.5 bg-[#b8860b] text-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest shadow-xs">
+                  <span className="inline-flex items-center gap-1.5 bg-[#b8860b] text-white px-3 py-1 text-[12px] font-extrabold uppercase tracking-widest shadow-xs">
                     <Clock size={12} /> PRE-ORDER VARIANT
                   </span>
                 </div>
@@ -474,7 +464,7 @@ const ProductDetail = () => {
                   {product.brand || 'MAHIRASH PARFUMS'}
                 </span>
                 {product.category && (
-                  <span className="text-[10px] uppercase font-bold tracking-[0.2em] text-zinc-600 bg-zinc-100 px-3 py-1 border border-zinc-200">
+                  <span className="text-[12px] uppercase font-bold tracking-[0.2em] text-zinc-600 bg-zinc-100 px-3 py-1 border border-zinc-200">
                     {product.category}
                   </span>
                 )}
@@ -498,7 +488,7 @@ const ProductDetail = () => {
                   )}
                 </div>
                 {discountPercent > 0 && (
-                  <span className="bg-red-50 text-red-600 border border-red-200 text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1">
+                  <span className="bg-red-50 text-red-600 border border-red-200 text-[12px] font-extrabold uppercase tracking-widest px-2.5 py-1">
                     SAVE {discountPercent}%
                   </span>
                 )}
@@ -522,14 +512,14 @@ const ProductDetail = () => {
                 onClick={() => handleCopyCoupon('MAHIRASH5')}
                 className="p-3 bg-[#faf5ed] border border-[#e8ded0] flex flex-col justify-between rounded-none cursor-pointer hover:border-[#c9a962] transition-colors group"
               >
-                <div className="flex items-center justify-between text-[10px] font-extrabold tracking-wider uppercase text-zinc-900 mb-1">
+                <div className="flex items-center justify-between text-[12px] font-extrabold tracking-wider uppercase text-zinc-900 mb-1">
                   <span className="flex items-center gap-1">
                     <Tag size={11} className="text-[#b8860b]" />
                     MAHIRASH5
                   </span>
                   <Copy size={10} className="text-zinc-400 group-hover:text-black transition-colors" />
                 </div>
-                <p className="text-[10px] text-zinc-600 font-normal leading-tight">
+                <p className="text-[12px] text-zinc-600 font-normal leading-tight">
                   Enjoy 5% off on your first luxury order.
                 </p>
               </div>
@@ -538,14 +528,14 @@ const ProductDetail = () => {
                 onClick={() => handleCopyCoupon('ROYAL10')}
                 className="p-3 bg-[#faf5ed] border border-[#e8ded0] flex flex-col justify-between rounded-none cursor-pointer hover:border-[#c9a962] transition-colors group"
               >
-                <div className="flex items-center justify-between text-[10px] font-extrabold tracking-wider uppercase text-zinc-900 mb-1">
+                <div className="flex items-center justify-between text-[12px] font-extrabold tracking-wider uppercase text-zinc-900 mb-1">
                   <span className="flex items-center gap-1">
                     <Tag size={11} className="text-[#b8860b]" />
                     ROYAL10
                   </span>
                   <Copy size={10} className="text-zinc-400 group-hover:text-black transition-colors" />
                 </div>
-                <p className="text-[10px] text-zinc-600 font-normal leading-tight">
+                <p className="text-[12px] text-zinc-600 font-normal leading-tight">
                   Enjoy 10% off on orders over ₹2,999.
                 </p>
               </div>
@@ -558,7 +548,7 @@ const ProductDetail = () => {
                 <button
                   type="button"
                   onClick={() => setIsSizeChartOpen(true)}
-                  className="text-[10px] text-[#b8860b] hover:text-black flex items-center gap-1.5 transition-colors uppercase font-extrabold tracking-wider cursor-pointer underline underline-offset-4"
+                  className="text-[12px] text-[#b8860b] hover:text-black flex items-center gap-1.5 transition-colors uppercase font-extrabold tracking-wider cursor-pointer underline underline-offset-4"
                 >
                   <Sparkles size={12} className="text-[#b8860b]" />
                   <span>FRAGRANCE & VOLUME GUIDE</span>
@@ -747,15 +737,15 @@ const ProductDetail = () => {
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[12px] pt-1">
                             <div>
-                              <span className="text-zinc-400 font-bold block text-[10px] uppercase tracking-wider">Top Notes</span>
+                              <span className="text-zinc-400 font-bold block text-[12px] uppercase tracking-wider">Top Notes</span>
                               <span className="text-white font-medium">{product.top_notes || 'Bergamot, Saffron, Pink Pepper'}</span>
                             </div>
                             <div>
-                              <span className="text-zinc-400 font-bold block text-[10px] uppercase tracking-wider">Heart Notes</span>
+                              <span className="text-zinc-400 font-bold block text-[12px] uppercase tracking-wider">Heart Notes</span>
                               <span className="text-white font-medium">{product.heart_notes || 'Damask Rose, Jasmine, Smoked Cedar'}</span>
                             </div>
                             <div>
-                              <span className="text-zinc-400 font-bold block text-[10px] uppercase tracking-wider">Base Notes</span>
+                              <span className="text-zinc-400 font-bold block text-[12px] uppercase tracking-wider">Base Notes</span>
                               <span className="text-white font-medium">{product.base_notes || 'Royal Oud, Golden Amber, White Musk'}</span>
                             </div>
                           </div>
@@ -777,7 +767,7 @@ const ProductDetail = () => {
                                 ? product.collections
                                 : [product.collection]
                               ).map((col, idx) => (
-                                <span key={idx} className="bg-amber-50 border border-amber-200/80 px-2 py-0.5 text-[10px] uppercase font-semibold text-amber-900">
+                                <span key={idx} className="bg-amber-50 border border-amber-200/80 px-2 py-0.5 text-[12px] uppercase font-semibold text-amber-900">
                                   {col}
                                 </span>
                               ))}
@@ -865,11 +855,11 @@ const ProductDetail = () => {
                         <div className="p-3.5 bg-white border border-zinc-200 space-y-2">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <span className="px-1.5 py-0.5 bg-zinc-900 text-white text-[10px]   flex items-center gap-0.5">
+                              <span className="px-1.5 py-0.5 bg-zinc-900 text-white text-[12px]   flex items-center gap-0.5">
                                 5 <Star size={8} fill="white" strokeWidth={0} />
                               </span>
                               <span className="text-[11px]   text-zinc-900">AAKASH</span>
-                              <span className="text-[10px] text-[#d92323] font-semibold">Verified User</span>
+                              <span className="text-[12px] text-[#d92323] font-semibold">Verified User</span>
                             </div>
                             <div className="flex items-center gap-1 text-zinc-500 text-[11px]">
                               <span>2</span>

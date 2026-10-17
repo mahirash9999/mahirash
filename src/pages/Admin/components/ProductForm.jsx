@@ -65,6 +65,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         : (product?.tag?.toUpperCase?.()?.includes('NEW'))
     )
   );
+  const [isMiniature, setIsMiniature] = useState(Boolean(product?.is_miniature || product?.isMiniature));
 
   const [customTagLabel, setCustomTagLabel] = useState("");
   const [customTagBg, setCustomTagBg] = useState("#000000");
@@ -195,6 +196,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
 
       setIsBestseller(product.is_bestseller !== undefined ? Boolean(product.is_bestseller) : Boolean(hasBestsellerTag));
       setIsNewArrival(product.is_new_arrival !== undefined ? Boolean(product.is_new_arrival) : Boolean(hasNewArrivalTag));
+      setIsMiniature(Boolean(product.is_miniature || product.isMiniature));
 
       reset({
         name: product.name || "",
@@ -226,6 +228,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
     } else {
       setIsBestseller(false);
       setIsNewArrival(false);
+      setIsMiniature(false);
       setSizePrices([{ size: "", price: 0, original_price: 0, stock: 10, is_preorder: false, images: [] }]);
       reset({
         name: "",
@@ -362,6 +365,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         image: allVariantImages[0] || "",
         is_bestseller: Boolean(isBestseller),
         is_new_arrival: Boolean(isNewArrival),
+        is_miniature: Boolean(isMiniature),
         is_atelier_edition: false,
         tags: (() => {
           let tagsToSave = [...selectedTags].filter(t => t.label?.toUpperCase() !== 'ATELIER EDITION');
@@ -420,7 +424,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         <div className="space-y-1.5 md:col-span-2 lg:col-span-3">
           <label className="text-[14px] text-zinc-600 uppercase tracking-wide flex items-center justify-between">
             <span>Perfume Brand</span>
-            <span className="text-[10px] text-[#b8860b] font-bold">Select or type custom brand</span>
+            {/* <span className="text-[12px] text-[#b8860b] font-bold">Select or type custom brand</span> */}
           </label>
           <div className="flex gap-2">
             <select
@@ -433,12 +437,12 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                 <option key={b} value={b}>{b}</option>
               ))}
             </select>
-            <input
+            {/* <input
               type="text"
               placeholder="Or enter custom brand name"
               className="w-1/2 px-3.5 py-2.5 rounded-xl border border-gray-300 focus:border-[#c9a962] focus:ring-1 focus:ring-[#c9a962] outline-none transition-all text-sm bg-white"
               {...register("brand")}
-            />
+            /> */}
           </div>
         </div>
 
@@ -513,7 +517,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         <div className="space-y-1.5 md:col-span-1 lg:col-span-3">
           <label className="text-[14px] text-zinc-600 uppercase tracking-wide flex items-center justify-between">
             <span>Home Page Collection</span>
-            <span className="text-[10px] text-[#b8860b] font-semibold">Admin Collection</span>
+            <span className="text-[12px] text-[#b8860b] font-semibold">Admin Collection</span>
           </label>
           <select
             className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:border-[#c9a962] focus:ring-1 focus:ring-[#c9a962] outline-none transition-all text-sm bg-white cursor-pointer"
@@ -531,7 +535,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         <div className="space-y-1.5 md:col-span-1 lg:col-span-3">
           <label className="text-[14px] text-zinc-600 uppercase tracking-wide flex items-center justify-between">
             <span>Availability Status</span>
-            <span className="text-[10px] text-[#b8860b] font-semibold">Managed from Admin</span>
+            <span className="text-[12px] text-[#b8860b] font-semibold">Managed from Admin</span>
           </label>
           <select
             className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:border-[#c9a962] focus:ring-1 focus:ring-[#c9a962] outline-none transition-all text-sm bg-white cursor-pointer"
@@ -568,13 +572,12 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
             {/* Bestseller Checkbox */}
-            <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
-              isBestseller
-                ? 'bg-red-50/90 border-red-300 shadow-sm ring-1 ring-red-400/30'
-                : 'bg-white border-zinc-200 hover:border-zinc-300'
-            }`}>
+            <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${isBestseller
+              ? 'bg-red-50/90 border-red-300 shadow-sm ring-1 ring-red-400/30'
+              : 'bg-white border-zinc-200 hover:border-zinc-300'
+              }`}>
               <input
                 type="checkbox"
                 checked={isBestseller}
@@ -584,7 +587,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-zinc-900 uppercase tracking-wider flex items-center gap-1.5">
                   Bestseller
-                  <span className="text-[9px] bg-red-600 text-white px-1.5 py-0.5 rounded font-black tracking-normal">HOT</span>
+                  <span className="text-[12px] bg-red-600 text-white px-1.5 py-0.5 rounded font-black tracking-normal">HOT</span>
                 </span>
                 <span className="text-[11px] text-zinc-500 mt-0.5">
                   Display in home "Bestseller" section
@@ -593,11 +596,10 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             </label>
 
             {/* New Arrivals Checkbox */}
-            <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
-              isNewArrival
-                ? 'bg-amber-50/90 border-[#b8860b] shadow-sm ring-1 ring-[#b8860b]/30'
-                : 'bg-white border-zinc-200 hover:border-zinc-300'
-            }`}>
+            <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${isNewArrival
+              ? 'bg-amber-50/90 border-[#b8860b] shadow-sm ring-1 ring-[#b8860b]/30'
+              : 'bg-white border-zinc-200 hover:border-zinc-300'
+              }`}>
               <input
                 type="checkbox"
                 checked={isNewArrival}
@@ -607,10 +609,32 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
               <div className="flex flex-col">
                 <span className="text-xs font-bold text-zinc-900 uppercase tracking-wider flex items-center gap-1.5">
                   New Arrival
-                  <span className="text-[9px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">NEW</span>
+                  <span className="text-[12px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">NEW</span>
                 </span>
                 <span className="text-[11px] text-zinc-500 mt-0.5">
                   Display in "Recent Arrivals" showcase
+                </span>
+              </div>
+            </label>
+
+            {/* Shop Miniatures Checkbox */}
+            <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${isMiniature
+              ? 'bg-amber-50/90 border-[#b8860b] shadow-sm ring-1 ring-[#b8860b]/30'
+              : 'bg-white border-zinc-200 hover:border-zinc-300'
+              }`}>
+              <input
+                type="checkbox"
+                checked={isMiniature}
+                onChange={e => setIsMiniature(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded text-[#b8860b] focus:ring-[#b8860b] accent-[#b8860b] cursor-pointer"
+              />
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-zinc-900 uppercase tracking-wider flex items-center gap-1.5">
+                  Shop Miniatures
+                  <span className="text-[12px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">MINI</span>
+                </span>
+                <span className="text-[11px] text-zinc-500 mt-0.5">
+                  Display in "SHOP MINIATURES" section
                 </span>
               </div>
             </label>
@@ -624,7 +648,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
               <Tag size={14} className="text-[#b8860b]" />
               Tags & Labels
             </span>
-            <span className="text-[10px] text-[#b8860b] font-semibold">
+            <span className="text-[12px] text-[#b8860b] font-semibold">
               {selectedTags.length > 0 ? `${selectedTags.length} Selected` : 'Click to add badges'}
             </span>
           </label>
@@ -648,7 +672,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
           {/* Custom Tag Inputs */}
           <div className="mt-3 flex flex-wrap items-end gap-3 p-3 bg-white border border-zinc-200 rounded-lg">
             <div className="flex flex-col gap-1 flex-1 min-w-[150px]">
-              <label className="text-[10px] font-bold uppercase text-zinc-500">Custom Tag Text</label>
+              <label className="text-[12px] font-bold uppercase text-zinc-500">Custom Tag Text</label>
               <input
                 type="text"
                 value={customTagLabel}
@@ -658,11 +682,11 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold uppercase text-zinc-500">Background Color</label>
+              <label className="text-[12px] font-bold uppercase text-zinc-500">Background Color</label>
               <input type="color" value={customTagBg} onChange={e => setCustomTagBg(e.target.value)} className="h-8 w-12 cursor-pointer border border-zinc-300 rounded" />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-bold uppercase text-zinc-500">Font Color</label>
+              <label className="text-[12px] font-bold uppercase text-zinc-500">Font Color</label>
               <input type="color" value={customTagText} onChange={e => setCustomTagText(e.target.value)} className="h-8 w-12 cursor-pointer border border-zinc-300 rounded" />
             </div>
             <button
@@ -726,7 +750,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
 
         {/* Quick Size Pills */}
         <div className="flex flex-wrap gap-1.5 items-center">
-          <span className="text-[10px] text-zinc-500 uppercase font-semibold mr-1">Quick Add Volumes:</span>
+          <span className="text-[12px] text-zinc-500 uppercase font-semibold mr-1">Quick Add Volumes:</span>
           {availableSizes.map(sz => (
             <button
               key={sz}

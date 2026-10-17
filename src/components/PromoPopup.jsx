@@ -108,7 +108,7 @@ const PromoPopup = () => {
 
           {/* Graphical Poster Typography Overlay */}
           <div className="relative z-10 p-6 text-center text-white space-y-2 flex flex-col items-center justify-end h-full w-full">
-            <span className="px-3 py-1 bg-[#b8860b] text-white font-black text-[9px] uppercase tracking-[0.25em] rounded-sm shadow-md flex items-center gap-1 mx-auto">
+            <span className="px-3 py-1 bg-[#b8860b] text-white font-black text-[12px] uppercase tracking-[0.25em] rounded-sm shadow-md flex items-center gap-1 mx-auto">
               <Sparkles size={11} /> MAHIRASH PARFUMERIE
             </span>
 
@@ -208,7 +208,7 @@ const PromoPopup = () => {
               </form>
 
               {/* Footer Terms Micro-text */}
-              <p className="text-[10px] text-zinc-400 text-center leading-normal pt-1">
+              <p className="text-[12px] text-zinc-400 text-center leading-normal pt-1">
                 By logging in, you're agreeing to our{' '}
                 <Link to="/privacy" onClick={handleClose} className="underline text-zinc-600 hover:text-black">
                   Privacy Policy

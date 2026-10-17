@@ -7,6 +7,8 @@ import BenefitsStrip from '../Home/BenefitsStrip';
 import GallerySwiper from '../Home/GallerySwiper';
 import Testimonials from '../Home/Testimonials';
 import RandomProducts from '../Home/RandomProducts';
+import TheJournal from '../Home/TheJournal';
+import HomeFAQ from '../Home/HomeFAQ';
 import SEOHead from '../SEOHead';
 
 const Home = () => {
@@ -40,6 +42,8 @@ const Home = () => {
         <Bestsellers />
         <RandomProducts />
         <ShopTheLook />
+        <TheJournal />
+        <HomeFAQ />
         <Testimonials />
       </div>
     </main>

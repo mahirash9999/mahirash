@@ -282,59 +282,28 @@ const Shop = () => {
   }, [products]);
 
   const dynamicCategories = useMemo(() => {
-    const set = new Set(categoriesList);
-    products.forEach(p => {
-      if (p.category) set.add(p.category.trim());
-    });
-    return Array.from(set);
-  }, [products, categoriesList]);
+    return categoriesList;
+  }, [categoriesList]);
 
   const availableBrands = useMemo(() => {
-    const set = new Set(brandsList);
-    products.forEach(p => {
-      if (p.brand) set.add(p.brand.trim());
-    });
-    return Array.from(set).filter(Boolean);
-  }, [products, brandsList]);
+    return brandsList;
+  }, [brandsList]);
 
   const availableFamilies = useMemo(() => {
-    const set = new Set(dbFragranceFamilies);
-    products.forEach(p => {
-      if (p.fragrance_family) set.add(p.fragrance_family.trim());
-      // legacy fallback
-      if (p.colors) p.colors.split(",").forEach(c => set.add(c.trim()));
-    });
-    return Array.from(set).filter(Boolean);
-  }, [products, dbFragranceFamilies]);
+    return dbFragranceFamilies;
+  }, [dbFragranceFamilies]);
 
   const availableConcentrations = useMemo(() => {
-    const set = new Set(dbFragranceConcentrations);
-    products.forEach(p => {
-      if (p.fragrance_concentration) set.add(p.fragrance_concentration.trim());
-      // legacy fallback
-      if (p.material) set.add(p.material.trim());
-    });
-    return Array.from(set).filter(Boolean);
-  }, [products, dbFragranceConcentrations]);
+    return dbFragranceConcentrations;
+  }, [dbFragranceConcentrations]);
 
   const availableCollections = useMemo(() => {
-    const set = new Set(dbCollections);
-    products.forEach(p => {
-      if (p.collection) set.add(p.collection.trim());
-      if (p.home_page_collection) set.add(p.home_page_collection.trim());
-      if (Array.isArray(p.collections)) p.collections.forEach(c => set.add(c.trim()));
-    });
-    return Array.from(set).filter(Boolean);
-  }, [products, dbCollections]);
+    return dbCollections;
+  }, [dbCollections]);
 
   const availableAvailabilities = useMemo(() => {
-    const set = new Set(dbAvailabilities);
-    products.forEach(p => {
-      if (p.availability) set.add(p.availability.trim());
-      if (p.stock_status) set.add(p.stock_status.trim());
-    });
-    return Array.from(set).filter(Boolean);
-  }, [products, dbAvailabilities]);
+    return dbAvailabilities;
+  }, [dbAvailabilities]);
 
   const availableGenders = useMemo(() => {
     const set = new Set();
@@ -656,7 +625,7 @@ const Shop = () => {
         breadcrumbItems={[{ label: "Home", path: "/" }, { label: "Shop" }]}
       />
 
-      <div className="max-w-7xl py-3 mx-auto px-2 md:px-10 lg:px-14 pb-20 md:pb-24 pt-8 md:pt-12">
+      <div className="max-w-[1800px] py-3 mx-auto px-4 sm:px-6 lg:px-8 pb-20 md:pb-24 pt-8 md:pt-12">
         {/* Top Control Bar: Search, Sort, Mobile Filter Trigger */}
         <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between mb-8 pb-6 border-b border-zinc-200">
           {/* Search bar */}
@@ -689,7 +658,7 @@ const Shop = () => {
               <select
                 value={sortBy}
                 onChange={e => setSortBy(e.target.value)}
-                className="appearance-none bg-white border border-zinc-300 px-4 py-3 pr-9 text-[10px]   uppercase tracking-wider text-zinc-800 outline-none focus:border-zinc-500 transition-colors cursor-pointer w-full sm:w-auto"
+                className="appearance-none bg-white border border-zinc-300 px-4 py-3 pr-9 text-[12px]   uppercase tracking-wider text-zinc-800 outline-none focus:border-zinc-500 transition-colors cursor-pointer w-full sm:w-auto"
               >
                 <option value="newest">Sort: Newest First</option>
                 <option value="price-low">Sort: Price (Low to High)</option>
@@ -706,12 +675,12 @@ const Shop = () => {
             <button
               type="button"
               onClick={() => setShowMobileFilters(true)}
-              className="lg:hidden flex items-center justify-center gap-2 bg-white border border-zinc-300 px-4 py-3 text-[10px]   uppercase tracking-widest text-zinc-800 hover:bg-zinc-100 transition-all"
+              className="lg:hidden flex items-center justify-center gap-2 bg-white border border-zinc-300 px-4 py-3 text-[12px]   uppercase tracking-widest text-zinc-800 hover:bg-zinc-100 transition-all"
             >
               <SlidersHorizontal size={13} className="text-[#b8860b]" />
               <span>Filters</span>
               {activeFiltersCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-black text-white text-[9px] font-extrabold flex items-center justify-center">
+                <span className="w-4 h-4 rounded-full bg-black text-white text-[12px] font-extrabold flex items-center justify-center">
                   {activeFiltersCount}
                 </span>
               )}
@@ -722,12 +691,12 @@ const Shop = () => {
         {/* Applied Active Filter Pills Bar */}
         {activeFiltersCount > 0 && (
           <div className="flex flex-wrap items-center gap-2 mb-8 bg-white p-3 border border-zinc-200 shadow-sm">
-            <span className="text-[9px]   uppercase tracking-widest text-zinc-500 mr-1">
+            <span className="text-[12px]   uppercase tracking-widest text-zinc-500 mr-1">
               Active Filters:
             </span>
 
             {filters.brand && filters.brand !== "All" && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px] uppercase tracking-wider border border-zinc-300">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px] uppercase tracking-wider border border-zinc-300">
                 Brand: {filters.brand}
                 <button
                   type="button"
@@ -740,7 +709,7 @@ const Shop = () => {
             )}
 
             {filters.category !== "All" && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px] uppercase tracking-wider border border-zinc-300">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px] uppercase tracking-wider border border-zinc-300">
                 Category: {filters.category}
                 <button
                   type="button"
@@ -753,7 +722,7 @@ const Shop = () => {
             )}
 
             {filters.collection && filters.collection !== "All" && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px] uppercase tracking-wider border border-zinc-300">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px] uppercase tracking-wider border border-zinc-300">
                 Collection: {filters.collection}
                 <button
                   type="button"
@@ -768,7 +737,7 @@ const Shop = () => {
             {filters.availabilities && filters.availabilities.map(avail => (
               <span
                 key={avail}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px] uppercase tracking-wider border border-zinc-300"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px] uppercase tracking-wider border border-zinc-300"
               >
                 Availability: {avail}
                 <button
@@ -784,7 +753,7 @@ const Shop = () => {
             ))}
 
             {filters.gender !== "All" && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px]   uppercase tracking-wider border border-zinc-300">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px]   uppercase tracking-wider border border-zinc-300">
                 Gender: {filters.gender}
                 <button
                   type="button"
@@ -797,7 +766,7 @@ const Shop = () => {
             )}
 
             {(filters.minPrice > 0 || (filters.maxPrice !== null && filters.maxPrice !== undefined && filters.maxPrice < maxPriceLimit)) && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px] uppercase tracking-wider border border-zinc-300">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px] uppercase tracking-wider border border-zinc-300">
                 {filters.minPrice > 0 ? `₹${filters.minPrice.toLocaleString("en-IN")} - ` : "Max "}
                 ₹{(filters.maxPrice ?? maxPriceLimit).toLocaleString("en-IN")}
                 <button
@@ -813,7 +782,7 @@ const Shop = () => {
             {filters.sizes.map(sz => (
               <span
                 key={sz}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px]   uppercase tracking-wider border border-zinc-300"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px]   uppercase tracking-wider border border-zinc-300"
               >
                 Size: {sz}
                 <button
@@ -831,7 +800,7 @@ const Shop = () => {
             {filters.families && filters.families.map(fam => (
               <span
                 key={fam}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px]   uppercase tracking-wider border border-zinc-300"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px]   uppercase tracking-wider border border-zinc-300"
               >
                 Scent: {fam}
                 <button
@@ -849,7 +818,7 @@ const Shop = () => {
             {filters.concentrations && filters.concentrations.map(conc => (
               <span
                 key={conc}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px]   uppercase tracking-wider border border-zinc-300"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px]   uppercase tracking-wider border border-zinc-300"
               >
                 Concentration: {conc}
                 <button
@@ -865,7 +834,7 @@ const Shop = () => {
             ))}
 
             {filters.inStockOnly && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px]   uppercase tracking-wider border border-zinc-300">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px]   uppercase tracking-wider border border-zinc-300">
                 In Stock Only
                 <button
                   type="button"
@@ -878,7 +847,7 @@ const Shop = () => {
             )}
 
             {filters.onSaleOnly && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px]   uppercase tracking-wider border border-zinc-300">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[12px]   uppercase tracking-wider border border-zinc-300">
                 On Sale
                 <button
                   type="button"
@@ -893,7 +862,7 @@ const Shop = () => {
             <button
               type="button"
               onClick={resetFilters}
-              className="text-[9px]   uppercase tracking-widest text-[#b8860b] hover:underline ml-auto"
+              className="text-[12px]   uppercase tracking-widest text-[#b8860b] hover:underline ml-auto"
             >
               Clear All
             </button>
@@ -943,7 +912,7 @@ const Shop = () => {
                     newParams.delete("code");
                     setSearchParams(newParams);
                   }}
-                  className="bg-white border border-zinc-200 text-zinc-700 hover:text-black hover:border-zinc-400 text-[10px] font-bold uppercase tracking-wider px-3.5 py-2 rounded-lg transition-all shrink-0 cursor-pointer shadow-sm"
+                  className="bg-white border border-zinc-200 text-zinc-700 hover:text-black hover:border-zinc-400 text-[12px] font-bold uppercase tracking-wider px-3.5 py-2 rounded-lg transition-all shrink-0 cursor-pointer shadow-sm"
                 >
                   Clear
                 </button>
@@ -951,7 +920,7 @@ const Shop = () => {
             )}
 
             {/* Grid Header Info */}
-            <div className="flex items-center justify-between text-[10px] text-zinc-500 uppercase tracking-widest mb-6 font-semibold">
+            <div className="flex items-center justify-between text-[12px] text-zinc-500 uppercase tracking-widest mb-6 font-semibold">
               <span>Showing {filteredProducts.length} Results</span>
             </div>
 
@@ -967,7 +936,7 @@ const Shop = () => {
               </div>
             ) : filteredProducts.length > 0 ? (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-x-1 gap-y-6 md:gap-x-2 md:gap-y-8">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-1 gap-y-6 md:gap-x-2 md:gap-y-8">
                   {filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage).map((product, idx) => (
                     <ProductCard
                       key={product.id}
@@ -1022,7 +991,7 @@ const Shop = () => {
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] bg-black text-white px-6 py-3 hover:bg-zinc-800 transition-all"
+                  className="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] bg-black text-white px-6 py-3 hover:bg-zinc-800 transition-all"
                 >
                   Reset All Filters
                   <ArrowUpRight size={13} />

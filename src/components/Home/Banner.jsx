@@ -10,7 +10,7 @@ const fadeUp = {
   viewport: { once: true, margin: '-60px' },
   transition: { duration: 0.7, ease: [0.215, 0.61, 0.355, 1] }
 };
- 
+
 const EditorialStory = () => {
   return (
     <section className="py-10 md:py-28 bg-[#111111] overflow-hidden">
@@ -56,7 +56,7 @@ const EditorialStory = () => {
               transition={{ delay: 0.45, duration: 0.5 }}
               className="absolute bottom-5 left-1/2 -translate-x-1/2 lg:bottom-auto lg:top-1/2 lg:-right-6 lg:left-auto lg:translate-x-0 lg:-translate-y-1/2 z-10 bg-white text-black px-5 py-3"
             >
-              <span className="text-[9px] uppercase tracking-[0.3em] font-black block text-black/40 mb-0.5">Since</span>
+              <span className="text-[12px] uppercase tracking-[0.3em] font-black block text-black/40 mb-0.5">Since</span>
               <span className="text-2xl font-black">2024</span>
             </motion.div>
           </div>
@@ -64,7 +64,7 @@ const EditorialStory = () => {
           {/* ── Right: Narrative Copy ── */}
           <div className="space-y-7 lg:pl-4">
             <motion.div {...fadeUp}>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-white/30   block mb-4">
+              <span className="text-[12px] uppercase tracking-[0.3em] text-white/30   block mb-4">
                 Our Philosophy
               </span>
               <h3 className="text-3xl sm:text-4xl lg:text-5xl font-light text-white tracking-widest uppercase mb-6">
@@ -92,11 +92,11 @@ const EditorialStory = () => {
               className="grid grid-cols-2 gap-6 py-7 border-y border-white/[0.07]"
             >
               <div>
-                <span className="block text-[9px] font-black uppercase tracking-[0.3em] text-white/25 mb-2">Traceability</span>
+                <span className="block text-[12px] font-black uppercase tracking-[0.3em] text-white/25 mb-2">Traceability</span>
                 <span className="text-sm text-white  ">100% Verified Origins</span>
               </div>
               <div>
-                <span className="block text-[9px] font-black uppercase tracking-[0.3em] text-white/25 mb-2">Production</span>
+                <span className="block text-[12px] font-black uppercase tracking-[0.3em] text-white/25 mb-2">Production</span>
                 <span className="text-sm text-white  ">Small-Batch Curated</span>
               </div>
             </motion.div>

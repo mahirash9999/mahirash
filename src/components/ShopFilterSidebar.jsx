@@ -136,7 +136,7 @@ const ShopFilterSidebar = ({
             <button
               type="button"
               onClick={resetFilters}
-              className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-zinc-400 hover:text-[#b8860b] transition-colors"
+              className="flex items-center gap-1.5 text-[12px] uppercase tracking-wider text-zinc-400 hover:text-[#b8860b] transition-colors"
             >
               <RotateCcw size={11} />
               <span>Reset All</span>
@@ -146,13 +146,13 @@ const ShopFilterSidebar = ({
 
         {activeCount > 0 && (
           <div className="flex items-center justify-between px-3 py-1.5 bg-[#b8860b]/10 border border-[#b8860b]/30 rounded-sm">
-            <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#b8860b] shop-sidebar-badge">
+            <span className="text-[12px] font-extrabold uppercase tracking-widest text-[#b8860b] shop-sidebar-badge">
               {activeCount} Filter{activeCount > 1 ? "s" : ""} Active
             </span>
             <button
               type="button"
               onClick={resetFilters}
-              className="text-[9px] uppercase tracking-wider text-zinc-500 hover:text-black"
+              className="text-[12px] uppercase tracking-wider text-zinc-500 hover:text-black"
             >
               Clear
             </button>
@@ -178,11 +178,10 @@ const ShopFilterSidebar = ({
                     key={b}
                     type="button"
                     onClick={() => setFilters(prev => ({ ...prev, brand: b }))}
-                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
-                      isSelected
-                        ? "text-zinc-900 font-semibold"
-                        : "text-zinc-500 hover:text-black"
-                    }`}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
+                      ? "text-zinc-900 font-semibold"
+                      : "text-zinc-500 hover:text-black"
+                      }`}
                   >
                     <span className="shop-sidebar-label">{b}</span>
                     {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
@@ -207,11 +206,10 @@ const ShopFilterSidebar = ({
                   key={cat}
                   type="button"
                   onClick={() => setFilters(prev => ({ ...prev, category: cat }))}
-                  className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
-                    isSelected
-                      ? "text-zinc-900 font-semibold"
-                      : "text-zinc-500 hover:text-black"
-                  }`}
+                  className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
+                    ? "text-zinc-900 font-semibold"
+                    : "text-zinc-500 hover:text-black"
+                    }`}
                 >
                   <span className="shop-sidebar-label">{cat}</span>
                   {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
@@ -221,35 +219,8 @@ const ShopFilterSidebar = ({
           </div>
         </FilterSection>
 
-        {/* Collections Filter */}
-        {availableCollections && availableCollections.length > 0 && (
-          <FilterSection
-            title="Collections"
-            defaultOpen={false}
-            activeCount={filters.collection && filters.collection !== "All" ? 1 : 0}
-          >
-            <div className="space-y-0">
-              {["All", ...availableCollections].map(col => {
-                const isSelected = (filters.collection || "All").toLowerCase() === col.toLowerCase();
-                return (
-                  <button
-                    key={col}
-                    type="button"
-                    onClick={() => setFilters(prev => ({ ...prev, collection: col }))}
-                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
-                      isSelected
-                        ? "text-zinc-900 font-semibold"
-                        : "text-zinc-500 hover:text-black"
-                    }`}
-                  >
-                    <span className="shop-sidebar-label">{col}</span>
-                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
-                  </button>
-                );
-              })}
-            </div>
-          </FilterSection>
-        )}
+        {/* Collections Filter (Hidden as requested: display none) */}
+
 
         {/* 3. Fragrance Families Filter (Positioned dynamically under Categories) */}
         {familiesList && familiesList.length > 0 && (
@@ -267,11 +238,10 @@ const ShopFilterSidebar = ({
                     key={familyName}
                     type="button"
                     onClick={() => toggleArrayFilter("families", familyName)}
-                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
-                      isSelected
-                        ? "text-zinc-900 font-semibold"
-                        : "text-zinc-500 hover:text-black"
-                    }`}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
+                      ? "text-zinc-900 font-semibold"
+                      : "text-zinc-500 hover:text-black"
+                      }`}
                   >
                     <span className="shop-sidebar-label">{familyName}</span>
                     {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
@@ -297,11 +267,10 @@ const ShopFilterSidebar = ({
                     key={mat}
                     type="button"
                     onClick={() => toggleArrayFilter("concentrations", mat)}
-                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
-                      isSelected
-                        ? "text-zinc-900 font-semibold"
-                        : "text-zinc-500 hover:text-black"
-                    }`}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
+                      ? "text-zinc-900 font-semibold"
+                      : "text-zinc-500 hover:text-black"
+                      }`}
                   >
                     <span className="shop-sidebar-label">{mat}</span>
                     {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
@@ -327,11 +296,10 @@ const ShopFilterSidebar = ({
                     key={avail}
                     type="button"
                     onClick={() => toggleArrayFilter("availabilities", avail)}
-                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
-                      isSelected
-                        ? "text-zinc-900 font-semibold"
-                        : "text-zinc-500 hover:text-black"
-                    }`}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
+                      ? "text-zinc-900 font-semibold"
+                      : "text-zinc-500 hover:text-black"
+                      }`}
                   >
                     <span className="shop-sidebar-label">{avail}</span>
                     {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
@@ -357,11 +325,10 @@ const ShopFilterSidebar = ({
                     key={g}
                     type="button"
                     onClick={() => setFilters(prev => ({ ...prev, gender: g }))}
-                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
-                      isSelected
-                        ? "text-zinc-900 font-semibold"
-                        : "text-zinc-500 hover:text-black"
-                    }`}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
+                      ? "text-zinc-900 font-semibold"
+                      : "text-zinc-500 hover:text-black"
+                      }`}
                   >
                     <span className="shop-sidebar-label">{g}</span>
                     {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
@@ -378,7 +345,7 @@ const ShopFilterSidebar = ({
           defaultOpen={false}
           activeCount={
             filters.minPrice > 0 ||
-            (filters.maxPrice !== null && filters.maxPrice !== undefined && filters.maxPrice < maxPriceLimit)
+              (filters.maxPrice !== null && filters.maxPrice !== undefined && filters.maxPrice < maxPriceLimit)
               ? 1
               : 0
           }
@@ -444,11 +411,10 @@ const ShopFilterSidebar = ({
                         }));
                       }
                     }}
-                    className={`py-2 px-2 border text-center uppercase transition-all rounded-sm flex items-center justify-center ${
-                      isSelected
-                        ? "border-[#b8860b] bg-[#b8860b]/10 text-[#b8860b]"
-                        : "border-zinc-300 text-zinc-600 hover:border-black hover:text-black"
-                    }`}
+                    className={`py-2 px-2 border text-center uppercase transition-all rounded-sm flex items-center justify-center ${isSelected
+                      ? "border-[#b8860b] bg-[#b8860b]/10 text-[#b8860b]"
+                      : "border-zinc-300 text-zinc-600 hover:border-black hover:text-black"
+                      }`}
                   >
                     <span className="shop-sidebar-preset-btn">{preset.label}</span>
                   </button>
@@ -507,11 +473,10 @@ const ShopFilterSidebar = ({
                       minRating: isSelected ? 0 : stars
                     }))
                   }
-                  className={`w-full flex items-center justify-between py-2 px-3 uppercase transition-colors rounded-sm ${
-                    isSelected
-                      ? "bg-zinc-100 text-zinc-900"
-                      : "text-zinc-600 hover:text-black hover:bg-zinc-50"
-                  }`}
+                  className={`w-full flex items-center justify-between py-2 px-3 uppercase transition-colors rounded-sm ${isSelected
+                    ? "bg-zinc-100 text-zinc-900"
+                    : "text-zinc-600 hover:text-black hover:bg-zinc-50"
+                    }`}
                 >
                   <div className="flex items-center gap-1.5 text-[#b8860b]">
                     <Star size={12} fill="currentColor" />
@@ -579,14 +544,14 @@ const ShopFilterSidebar = ({
                     resetFilters();
                     onClose();
                   }}
-                  className="w-1/3 py-3 border border-zinc-300 text-[10px]   uppercase tracking-widest text-zinc-600 hover:text-black"
+                  className="w-1/3 py-3 border border-zinc-300 text-[12px]   uppercase tracking-widest text-zinc-600 hover:text-black"
                 >
                   Reset
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-2/3 py-3 bg-black text-white text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all"
+                  className="w-2/3 py-3 bg-black text-white text-[12px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all"
                 >
                   Show ({totalResults})
                 </button>

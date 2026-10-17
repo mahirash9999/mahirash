@@ -289,14 +289,14 @@ const Login = () => {
       <div className="w-full max-w-[1100px] flex justify-start mb-6 z-10">
         <Link
           to="/shop"
-          className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-zinc-500 hover:text-black transition-all duration-300 font-semibold"
+          className="flex items-center gap-1.5 text-[12px] uppercase tracking-[0.25em] text-zinc-500 hover:text-black transition-all duration-300 font-semibold"
         >
           <span className="text-[12px] font-sans">←</span> Collections
         </Link>
       </div>
 
       <div className="w-full max-w-[1100px] grid lg:grid-cols-12 gap-0 border border-zinc-200/80 bg-white min-h-[620px] z-10 shadow-2xl overflow-hidden rounded-none">
-        
+
         {/* Left Editorial Column */}
         <div className="lg:col-span-5 bg-black p-8 md:p-12 lg:p-14 flex flex-col justify-between relative overflow-hidden text-white border-r border-zinc-200">
           <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay">
@@ -314,7 +314,7 @@ const Login = () => {
           </div>
 
           <div className="relative z-10 my-auto">
-            <span className="text-[9px] uppercase tracking-[0.35em] text-[#d9a036] font-semibold">Concierge Access</span>
+            <span className="text-[12px] uppercase tracking-[0.35em] text-[#d9a036] font-semibold">Concierge Access</span>
             <h1 className="text-3xl md:text-4xl font-extralight text-white tracking-[0.18em] uppercase leading-[1.3] mt-4 mb-6">
               Sensory<br />Sanctuary
             </h1>
@@ -325,31 +325,31 @@ const Login = () => {
           </div>
 
           <div className="relative z-10 pt-6">
-            <span className="text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY ATELIER</span>
+            <span className="text-[12px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY ATELIER</span>
           </div>
         </div>
 
         {/* Right Authentication Panel */}
         <div className="lg:col-span-7 p-8 md:p-12 lg:p-14 flex flex-col justify-between bg-white text-zinc-900 border-t border-zinc-100 lg:border-t-0">
           <div className="relative z-10 h-8 flex items-center justify-between">
-            <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#d9a036]">
+            <span className="text-[12px] uppercase tracking-[0.3em] font-semibold text-[#d9a036]">
               {step === STEP.PASSWORD_LOGIN ? "Password Authentication" : "Passwordless Verification"}
             </span>
           </div>
 
           <div className="max-w-[420px] w-full relative z-10 my-auto py-6">
-            
+
             {/* Header Text */}
             <div className="mb-6">
               <h2 className="text-2xl font-extralight text-zinc-900 tracking-[0.2em] uppercase">
                 {step === STEP.NEW_USER_SETUP ? "Set Password" : step === STEP.OTP_VERIFY ? "Enter Code" : "Sign In"}
               </h2>
-              <p className="text-[10px] text-zinc-400 tracking-[0.15em] font-medium uppercase mt-2">
+              <p className="text-[12px] text-zinc-400 tracking-[0.15em] font-medium uppercase mt-2">
                 {step === STEP.OTP_VERIFY
                   ? `Sent to ${email}`
                   : step === STEP.NEW_USER_SETUP
-                  ? "Email verified successfully! Optional faster login"
-                  : "Continuous access for connoisseurs"}
+                    ? "Email verified successfully! Optional faster login"
+                    : "Continuous access for connoisseurs"}
               </p>
             </div>
 
@@ -374,7 +374,7 @@ const Login = () => {
             {step === STEP.OTP_REQUEST && (
               <form onSubmit={handleRequestOtp} className="space-y-5">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">
+                  <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">
                     Email Address
                   </label>
                   <div className="relative">
@@ -393,7 +393,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-black text-white text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
+                  className="w-full py-4 bg-black text-white text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -409,7 +409,7 @@ const Login = () => {
 
                 <div className="relative my-6 text-center">
                   <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-200" /></div>
-                  <span className="relative bg-white px-3 text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-semibold">Or</span>
+                  <span className="relative bg-white px-3 text-[12px] uppercase tracking-[0.2em] text-zinc-400 font-semibold">Or</span>
                 </div>
 
                 {/* Alternate Actions */}
@@ -417,7 +417,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => { setError(""); setStep(STEP.PASSWORD_LOGIN); }}
-                    className="w-full py-3.5 border border-zinc-200 bg-white text-zinc-800 text-[10px] uppercase tracking-[0.25em] font-semibold hover:border-black hover:text-black transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3.5 border border-zinc-200 bg-white text-zinc-800 text-[12px] uppercase tracking-[0.25em] font-semibold hover:border-black hover:text-black transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <KeyRound size={13} />
                     <span>Login with Password</span>
@@ -427,7 +427,7 @@ const Login = () => {
                     type="button"
                     onClick={handleGoogleAuth}
                     disabled={loading}
-                    className="w-full py-3.5 border border-zinc-200 bg-white text-zinc-800 text-[10px] uppercase tracking-[0.25em] font-semibold hover:border-black hover:text-black transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
+                    className="w-full py-3.5 border border-zinc-200 bg-white text-zinc-800 text-[12px] uppercase tracking-[0.25em] font-semibold hover:border-black hover:text-black transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50"
                   >
                     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -445,7 +445,7 @@ const Login = () => {
             {step === STEP.OTP_VERIFY && (
               <form onSubmit={handleVerifyOtp} className="space-y-5">
                 <div className="space-y-2">
-                  <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">
+                  <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">
                     6-Digit Verification Code
                   </label>
                   <input
@@ -468,7 +468,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading || otp.length !== 6}
-                  className="w-full py-4 bg-black text-white text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
+                  className="w-full py-4 bg-black text-white text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -507,7 +507,7 @@ const Login = () => {
             {step === STEP.PASSWORD_LOGIN && (
               <form onSubmit={handlePasswordLogin} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Email Address</label>
+                  <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Email Address</label>
                   <div className="relative">
                     <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                     <input
@@ -523,10 +523,10 @@ const Login = () => {
 
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
-                    <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Password</label>
+                    <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Password</label>
                     <Link
                       to="/forgot-password"
-                      className="text-[10px] text-zinc-400 hover:text-black underline font-medium"
+                      className="text-[12px] text-zinc-400 hover:text-black underline font-medium"
                     >
                       Forgot?
                     </Link>
@@ -554,7 +554,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-black text-white text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
+                  className="w-full py-4 bg-black text-white text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -594,7 +594,7 @@ const Login = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Your Full Name</label>
+                  <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Your Full Name</label>
                   <input
                     type="text"
                     value={displayName}
@@ -605,7 +605,7 @@ const Login = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Password (Min 6 Characters)</label>
+                  <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Password (Min 6 Characters)</label>
                   <input
                     type="password"
                     value={password}
@@ -618,7 +618,7 @@ const Login = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Confirm Password</label>
+                  <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Confirm Password</label>
                   <input
                     type="password"
                     value={confirmPassword}
@@ -633,7 +633,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-black text-white text-[10px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50 mt-2"
+                  className="w-full py-4 bg-black text-white text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50 mt-2"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -678,7 +678,7 @@ const Login = () => {
           </div>
 
           <div className="relative z-10 text-center border-t border-zinc-100 pt-5">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-medium">
+            <span className="text-[12px] uppercase tracking-[0.2em] text-zinc-400 font-medium">
               Protected by Mahirash 256-bit Security Infrastructure
             </span>
           </div>

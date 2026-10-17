@@ -77,7 +77,7 @@ const ReturnPolicy = () => {
               { step: '03', title: 'Inspect & Refund', desc: 'After quality check at our warehouse, refund is initiated to your original payment method.', icon: CreditCard },
             ].map(({ step, title, desc, icon: Icon }) => (
               <div key={step} className="bg-white border border-zinc-200 p-6 relative">
-                <span className="absolute top-4 right-4 text-[9px] font-black tracking-[0.2em] text-[#b8860b]">{step}</span>
+                <span className="absolute top-4 right-4 text-[12px] font-black tracking-[0.2em] text-[#b8860b]">{step}</span>
                 <div className="w-10 h-10 border border-zinc-300 flex items-center justify-center text-zinc-600 mb-4">
                   <Icon size={18} strokeWidth={1.5} />
                 </div>
@@ -144,7 +144,7 @@ const ReturnPolicy = () => {
               <div key={m.label} className="bg-white border border-zinc-200 p-4 flex flex-col items-center text-center hover:border-black/30 transition-colors">
                 <ShieldCheck size={18} className="text-[#b8860b] mb-2" />
                 <h3 className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 mb-1">{m.label}</h3>
-                <p className="text-[10px] text-zinc-500 leading-snug">{m.desc}</p>
+                <p className="text-[12px] text-zinc-500 leading-snug">{m.desc}</p>
               </div>
             ))}
           </div>
@@ -172,7 +172,7 @@ const ReturnPolicy = () => {
             <h3 className="text-[11px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-2">Need Help With A Return?</h3>
             <p className="text-[13px] md:text-sm text-zinc-600">Reach out to our support team for assistance with returns, exchanges or refund status.</p>
           </div>
-          <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3.5 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-zinc-800 transition-colors shrink-0 self-start md:self-auto">
+          <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3.5 bg-black text-white text-[12px] font-black uppercase tracking-[0.2em] hover:bg-zinc-800 transition-colors shrink-0 self-start md:self-auto">
             Contact Support <ArrowUpRight size={12} />
           </Link>
         </section>

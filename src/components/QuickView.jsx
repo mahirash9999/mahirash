@@ -98,11 +98,11 @@ const QuickView = ({ product, onClose }) => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 {isPreOrder ? (
-                  <div className="absolute top-3 right-3 bg-[#b8860b] text-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
+                  <div className="absolute top-3 right-3 bg-[#b8860b] text-white px-3 py-1 text-[12px] font-extrabold uppercase tracking-wider shadow-sm">
                     PRE-ORDER
                   </div>
                 ) : product.original_price && product.original_price > product.price ? (
-                  <div className="absolute top-3 right-3 bg-[#c9a962] text-black px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
+                  <div className="absolute top-3 right-3 bg-[#c9a962] text-black px-3 py-1 text-[12px] font-bold uppercase tracking-wider">
                     SALE
                   </div>
                 ) : null}
@@ -112,7 +112,7 @@ const QuickView = ({ product, onClose }) => {
             {/* Details Section */}
             <div className="flex flex-col justify-between space-y-5">
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-[#c9a962] font-semibold">
+                <div className="flex items-center gap-2 text-[12px] uppercase tracking-[0.25em] text-[#c9a962] font-semibold">
                   <span className="text-zinc-600 font-extrabold">{product.brand || 'MAHIRASH'}</span>
                   {product.category && <span>• {product.category}</span>}
                 </div>
@@ -170,11 +170,11 @@ const QuickView = ({ product, onClose }) => {
                           >
                             <span className={isVOut && !isSelected ? 'line-through' : ''}>{sp.size}</span>
                             {isVPreOrder ? (
-                              <span className="text-[8px] text-amber-700 font-bold mt-0.5">Pre-Order</span>
+                              <span className="text-[12px] text-amber-700 font-bold mt-0.5">Pre-Order</span>
                             ) : isVOut ? (
-                              <span className="text-[8px] text-red-500 font-semibold mt-0.5">Out of Stock</span>
+                              <span className="text-[12px] text-red-500 font-semibold mt-0.5">Out of Stock</span>
                             ) : vStock <= 5 ? (
-                              <span className="text-[8px] text-amber-600 font-semibold mt-0.5">Only {vStock} left</span>
+                              <span className="text-[12px] text-amber-600 font-semibold mt-0.5">Only {vStock} left</span>
                             ) : null}
                           </button>
                         );

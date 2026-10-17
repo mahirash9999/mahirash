@@ -106,7 +106,7 @@ const AdminProfileSettings = () => {
               </div>
               <div className="text-center sm:text-left space-y-1">
                 <h3 className="text-base   text-zinc-900">{profile.name}</h3>
-                <p className="text-[10px] font-extrabold text-[#b8860b] uppercase tracking-widest">{profile.role}</p>
+                <p className="text-[12px] font-extrabold text-[#b8860b] uppercase tracking-widest">{profile.role}</p>
                 <div className="pt-1">
                   <label className="inline-block px-4 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-[14px]   rounded-lg cursor-pointer transition-colors border border-zinc-300">
                     {uploading ? "Uploading Photo..." : "Change Profile Photo"}

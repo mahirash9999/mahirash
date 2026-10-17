@@ -97,7 +97,7 @@ const Signup = () => {
       <div className="w-full max-w-[1100px] flex justify-start mb-6 z-10">
         <Link
           to="/shop"
-          className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-zinc-500 hover:text-black transition-all duration-300 font-semibold"
+          className="flex items-center gap-1.5 text-[12px] uppercase tracking-[0.25em] text-zinc-500 hover:text-black transition-all duration-300 font-semibold"
         >
           <span className="text-[12px] font-sans">←</span> Collections
         </Link>
@@ -121,7 +121,7 @@ const Signup = () => {
           </div>
 
           <div className="relative z-10 my-auto">
-            <span className="text-[9px] uppercase tracking-[0.35em] text-[#d9a036] font-semibold">Atelier Membership</span>
+            <span className="text-[12px] uppercase tracking-[0.35em] text-[#d9a036] font-semibold">Atelier Membership</span>
             <h1 className="text-3xl md:text-4xl font-extralight text-white tracking-[0.18em] uppercase leading-[1.3] mt-4 mb-6">
               Style<br />Journey
             </h1>
@@ -132,21 +132,21 @@ const Signup = () => {
           </div>
 
           <div className="relative z-10 pt-6">
-            <span className="text-[9px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY ATELIER</span>
+            <span className="text-[12px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY ATELIER</span>
           </div>
         </div>
 
         {/* Right Side: Luxury signup credentials input */}
         <div className="lg:col-span-7 p-8 md:p-12 lg:p-14 flex flex-col justify-between bg-white text-zinc-900 border-t border-zinc-100 lg:border-t-0">
           <div className="relative z-10 h-8 flex items-center">
-            <span className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[#d9a036]">Register Inquiry</span>
+            <span className="text-[12px] uppercase tracking-[0.3em] font-semibold text-[#d9a036]">Register Inquiry</span>
           </div>
 
           {/* Form wrapper */}
           <div className="max-w-[420px] w-full relative z-10 my-auto py-8">
             <div className="mb-8">
               <h2 className="text-2xl font-extralight text-zinc-900 tracking-[0.2em] uppercase">Create Account</h2>
-              <p className="text-[10px] text-zinc-400 tracking-[0.15em] font-medium uppercase mt-2">Join our signature collective</p>
+              <p className="text-[12px] text-zinc-400 tracking-[0.15em] font-medium uppercase mt-2">Join our signature collective</p>
             </div>
 
             <AnimatePresence mode="wait">
@@ -167,7 +167,7 @@ const Signup = () => {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-1.5">
-                <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Full Name</label>
+                <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Full Name</label>
                 <div className="relative">
                   <User size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                   <input
@@ -182,7 +182,7 @@ const Signup = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Email Address</label>
+                <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Email Address</label>
                 <div className="relative">
                   <Mail size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                   <input
@@ -197,7 +197,7 @@ const Signup = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[9px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Password</label>
+                <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Password</label>
                 <div className="relative">
                   <Lock size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                   <input
@@ -221,7 +221,7 @@ const Signup = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold text-[10px] uppercase tracking-[0.25em] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm disabled:opacity-50 mt-2"
+                className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold text-[12px] uppercase tracking-[0.25em] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm disabled:opacity-50 mt-2"
               >
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
@@ -239,7 +239,7 @@ const Signup = () => {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-zinc-200/80"></div>
               </div>
-              <span className="relative bg-white px-3 text-[9px] uppercase tracking-[0.3em] text-zinc-400 font-medium">Or register with</span>
+              <span className="relative bg-white px-3 text-[12px] uppercase tracking-[0.3em] text-zinc-400 font-medium">Or register with</span>
             </div>
 
             {/* Google Social Signup */}
@@ -274,7 +274,7 @@ const Signup = () => {
               Already registered?{" "}
               <Link
                 to={`/login?redirect=${encodeURIComponent(redirectPath)}`}
-                className="text-black hover:text-[#d9a036] transition-colors uppercase text-[10px] tracking-[0.2em] font-semibold ml-1.5"
+                className="text-black hover:text-[#d9a036] transition-colors uppercase text-[12px] tracking-[0.2em] font-semibold ml-1.5"
               >
                 Sign In
               </Link>

@@ -103,7 +103,7 @@ const CategorySection = () => {
 
       {/* Header Container */}
       <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 mb-10 md:mb-12 relative z-10">
-        <p className="text-[10px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
+        <p className="text-[12px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
           <span>OLFACTORY FAMILIES</span>
           <span>•</span>
           <span>BESPOKE SELECTIONS</span>
@@ -139,7 +139,7 @@ const CategorySection = () => {
             {/* Meta Text Content below Image */}
             <div className="pt-5 pb-6 text-center flex flex-col items-center px-4 bg-white">
               {scent.badge && (
-                <span className="text-[9px] uppercase tracking-[0.25em] font-bold text-[#B8860B] mb-1.5">
+                <span className="text-[12px] uppercase tracking-[0.25em] font-bold text-[#B8860B] mb-1.5">
                   {scent.badge}
                 </span>
               )}
@@ -153,7 +153,7 @@ const CategorySection = () => {
               )}
               <Link
                 to={scent.link || `/shop?scent=${encodeURIComponent(scent.name || scent.title)}`}
-                className="text-[10px] text-[#B8860B] tracking-[0.25em] font-bold uppercase mt-3 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1.5"
+                className="text-[12px] text-[#B8860B] tracking-[0.25em] font-bold uppercase mt-3 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1.5"
               >
                 <span>EXPLORE SCENT</span>
                 <span>&rarr;</span>
@@ -202,7 +202,7 @@ const CategorySection = () => {
               {/* Meta Text Content below Image */}
               <div className="py-5 px-3 text-center flex flex-col items-center bg-white">
                 {scent.badge && (
-                  <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-[#B8860B] mb-1">
+                  <span className="text-[12px] uppercase tracking-[0.2em] font-bold text-[#B8860B] mb-1">
                     {scent.badge}
                   </span>
                 )}
@@ -216,7 +216,7 @@ const CategorySection = () => {
                 )}
                 <Link
                   to={scent.link || `/shop?scent=${encodeURIComponent(scent.name || scent.title)}`}
-                  className="text-[10px] text-[#B8860B] tracking-[0.2em] font-bold uppercase mt-2 inline-flex items-center gap-1"
+                  className="text-[12px] text-[#B8860B] tracking-[0.2em] font-bold uppercase mt-2 inline-flex items-center gap-1"
                 >
                   <span>EXPLORE</span>
                   <span>&rarr;</span>

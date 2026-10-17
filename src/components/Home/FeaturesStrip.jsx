@@ -55,7 +55,7 @@ const FeaturesStrip = () => {
                   <span className="text-[11px]   text-zinc-900 tracking-widest uppercase leading-none mb-1">
                     {feature.title}
                   </span>
-                  <span className="text-[10px] text-zinc-500 font-medium leading-tight">
+                  <span className="text-[12px] text-zinc-500 font-medium leading-tight">
                     {feature.desc}
                   </span>
                 </div>

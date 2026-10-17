@@ -218,7 +218,7 @@ const TrackOrder = () => {
                                 <button
                                     type="submit"
                                     disabled={loading || !trackingKey.trim()}
-                                    className="w-full py-2.5 bg-black hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all"
+                                    className="w-full py-2.5 bg-black hover:bg-zinc-800 text-white text-[12px] font-bold uppercase tracking-widest rounded-lg transition-all"
                                 >
                                     Retrieve Updates
                                 </button>
@@ -251,10 +251,10 @@ const TrackOrder = () => {
                                                 className="w-full text-left p-3 rounded-lg border border-zinc-105 hover:bg-zinc-50 transition-all font-mono text-[14px] flex items-center justify-between group"
                                             >
                                                 <div>
-                                                    <p className="text-[10px] font-sans font-bold uppercase tracking-wider text-zinc-800 group-hover:text-black">
+                                                    <p className="text-[12px] font-sans font-bold uppercase tracking-wider text-zinc-800 group-hover:text-black">
                                                         #{order.id.slice(0, 11).toUpperCase()}
                                                     </p>
-                                                    <p className="text-[10px] text-zinc-400 mt-0.5 font-sans font-light">
+                                                    <p className="text-[12px] text-zinc-400 mt-0.5 font-sans font-light">
                                                         {order.createdAt?.toDate
                                                             ? order.createdAt.toDate().toLocaleDateString("en-IN", { day: '2-digit', month: 'short' })
                                                             : "Recent"}
@@ -329,14 +329,14 @@ const TrackOrder = () => {
                                     <div className="bg-white border border-zinc-200 rounded-xl p-6 md:p-8 shadow-sm text-left">
                                         <div className="flex flex-wrap items-start justify-between gap-4 pb-6 border-b border-zinc-150">
                                             <div>
-                                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#b8860b]">
+                                                <span className="text-[12px] font-black uppercase tracking-[0.2em] text-[#b8860b]">
                                                     Tracking Number : {trackingData.awb || trackingKey}
                                                 </span>
                                                 <h2 className="text-xl font-light uppercase tracking-wider font-serif text-zinc-950 mt-1">
                                                     Carrier status: {trackingData.currentStatus}
                                                 </h2>
                                             </div>
-                                            <span className={`px-4 py-1.5 text-[9px] font-extrabold uppercase tracking-widest border rounded-full ${getStatusColor(trackingData.currentStatus)}`}>
+                                            <span className={`px-4 py-1.5 text-[12px] font-extrabold uppercase tracking-widest border rounded-full ${getStatusColor(trackingData.currentStatus)}`}>
                                                 {trackingData.currentStatus}
                                             </span>
                                         </div>
@@ -344,16 +344,16 @@ const TrackOrder = () => {
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 text-[14px] text-left">
                                             {orderData && (
                                                 <div>
-                                                    <span className="text-zinc-400 uppercase tracking-widest text-[9px] block">Customer Name</span>
+                                                    <span className="text-zinc-400 uppercase tracking-widest text-[12px] block">Customer Name</span>
                                                     <span className="text-zinc-900 font-bold block mt-1 font-serif text-sm">{orderData.shipping?.name}</span>
                                                 </div>
                                             )}
                                             <div>
-                                                <span className="text-zinc-400 uppercase tracking-widest text-[9px] block">Courier Partner</span>
+                                                <span className="text-zinc-400 uppercase tracking-widest text-[12px] block">Courier Partner</span>
                                                 <span className="text-zinc-900 font-bold block mt-1 text-sm">{trackingData.provider || "Delhivery"}</span>
                                             </div>
                                             <div>
-                                                <span className="text-zinc-400 uppercase tracking-widest text-[9px] block">Est. Delivery</span>
+                                                <span className="text-zinc-400 uppercase tracking-widest text-[12px] block">Est. Delivery</span>
                                                 <span className="text-zinc-900 font-bold block mt-1 text-sm text-emerald-700">
                                                     {trackingData.estimatedDelivery}
                                                 </span>
@@ -374,7 +374,7 @@ const TrackOrder = () => {
                                                         <span className={`absolute -left-[31px] md:-left-[47px] top-1 w-3 h-3 rounded-full border-2 ${idx === 0 ? "bg-black border-black ring-4 ring-zinc-100" : "bg-white border-zinc-300Group-hover:border-black"} transition-all`} />
 
                                                         <div className="space-y-1">
-                                                            <span className="text-[10px] font-mono text-zinc-400 block">
+                                                            <span className="text-[12px] font-mono text-zinc-400 block">
                                                                 {scan.date}
                                                             </span>
                                                             <h4 className="text-[14px] font-bold text-zinc-900 group-hover:text-black transition-colors uppercase tracking-wide">
@@ -393,7 +393,7 @@ const TrackOrder = () => {
                                                 <div className="relative group">
                                                     <span className="absolute -left-[30px] md:-left-[46px] top-1 w-3 h-3 rounded-full border-2 bg-black border-black" />
                                                     <div className="space-y-1">
-                                                        <span className="text-[10px] font-mono text-zinc-400 block">Just Now</span>
+                                                        <span className="text-[12px] font-mono text-zinc-400 block">Just Now</span>
                                                         <h4 className="text-[14px] font-bold text-zinc-900">Carrier Information Requested</h4>
                                                         <p className="text-[11px] text-zinc-500 font-light">
                                                             Shipping label printed successfully. We are coordinating carrier pickup handoff.
@@ -423,7 +423,7 @@ const TrackOrder = () => {
                                                             </div>
                                                             <div>
                                                                 <p className="font-bold text-zinc-900 font-serif text-sm">{item.name}</p>
-                                                                <p className="text-[10px] text-zinc-400 mt-0.5">
+                                                                <p className="text-[12px] text-zinc-400 mt-0.5">
                                                                     {item.size ? `Size: ${item.size}` : ""} • Qty: {item.quantity || 1}
                                                                 </p>
                                                             </div>

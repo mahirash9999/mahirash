@@ -166,7 +166,7 @@ const Testimonials = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="flex-1 flex flex-col md:flex-row md:items-end gap-6 md:gap-12">
             <div>
-              <p className="text-[10px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
+              <p className="text-[12px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase mb-2 font-bold flex items-center gap-2">
                 <Quote size={13} className="text-[#B8860B]" />
                 {settings.eyebrow}
               </p>
@@ -242,7 +242,7 @@ const Testimonials = () => {
                       </div>
 
                       {/* Verified Badge */}
-                      <span className="inline-flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] font-extrabold text-[#B8860B] bg-[#FAF8F5] border border-[#E5D5B8] px-2.5 py-1 rounded-full shadow-sm">
+                      <span className="inline-flex items-center gap-1.5 text-[12px] uppercase tracking-[0.2em] font-extrabold text-[#B8860B] bg-[#FAF8F5] border border-[#E5D5B8] px-2.5 py-1 rounded-full shadow-sm">
                         <CheckCircle2 size={11} className="text-[#B8860B]" />
                         {item.status || 'Verified Patron'}
                       </span>
@@ -250,7 +250,7 @@ const Testimonials = () => {
 
                     {/* Fragrance Tag */}
                     {item.fragrance && (
-                      <span className="text-[10px] uppercase tracking-[0.25em] font-bold text-[#B8860B] block mb-3">
+                      <span className="text-[12px] uppercase tracking-[0.25em] font-bold text-[#B8860B] block mb-3">
                         {item.fragrance}
                       </span>
                     )}
@@ -275,7 +275,7 @@ const Testimonials = () => {
                         {item.name}
                       </h5>
                       {item.location && (
-                        <span className="text-[10px] text-stone-500 uppercase tracking-wider font-light">
+                        <span className="text-[12px] text-stone-500 uppercase tracking-wider font-light">
                           {item.location}
                         </span>
                       )}
@@ -300,7 +300,7 @@ const Testimonials = () => {
                 <span className="text-xl sm:text-2xl font-bold tracking-wide text-[#0D0D0D] uppercase leading-none mb-1">
                   {st.value}
                 </span>
-                <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-stone-600">
+                <span className="text-[12px] sm:text-[11px] uppercase tracking-[0.2em] font-semibold text-stone-600">
                   {st.label}
                 </span>
               </div>

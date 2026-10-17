@@ -68,7 +68,7 @@ const BenefitsStrip = () => {
             >
               <Icon size={15} strokeWidth={2} className="text-[#B8860B] flex-shrink-0 drop-shadow-sm" />
               {item.text}
-              <span className="text-[#B8860B] text-[10px] ml-3.5 flex-shrink-0 opacity-80">✦</span>
+              <span className="text-[#B8860B] text-[12px] ml-3.5 flex-shrink-0 opacity-80">✦</span>
             </span>
           );
         })}

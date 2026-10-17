@@ -27,7 +27,10 @@ import {
   LogOut,
   X,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Instagram,
+  HelpCircle,
+  Globe
 } from 'lucide-react';
 
 const sidebarSections = [
@@ -69,6 +72,9 @@ const sidebarSections = [
     items: [
       { name: "Hero Video", icon: Video },
       { name: "Home Page Collection", icon: Image },
+      { name: "Shop Miniatures", icon: Package },
+      { name: "Instagram Reels", icon: Instagram },
+      { name: "FAQs", icon: HelpCircle },
       { name: "Shop By Scents", icon: Sparkles },
       { name: "Explore Banner", icon: Image },
       { name: "Global Alert", icon: AlertCircle },
@@ -90,7 +96,8 @@ const sidebarSections = [
     title: "SETTINGS",
     items: [
       { name: "Profile Settings", icon: User },
-      { name: "Store Settings", icon: Settings }
+      { name: "Store Settings", icon: Settings },
+      { name: "SEO & Sitemap", icon: Globe }
     ]
   }
 ];
@@ -176,17 +183,15 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
       <div
         onClick={onClose}
         aria-hidden="true"
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300 lg:hidden ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300 lg:hidden ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
       />
 
       {/* Main Sidebar (Desktop fixed/static & Mobile slide-out drawer) */}
       <aside
         style={{ width: undefined }}
-        className={`fixed top-0 bottom-0 left-0 z-50 w-[285px] max-w-[85vw] bg-white border-r border-zinc-200 text-zinc-700 flex flex-col h-screen shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:static lg:h-screen lg:z-10 lg:translate-x-0 selection:bg-black selection:text-white ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 bottom-0 left-0 z-50 w-[285px] max-w-[85vw] bg-white border-r border-zinc-200 text-zinc-700 flex flex-col h-screen shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:static lg:h-screen lg:z-10 lg:translate-x-0 selection:bg-black selection:text-white ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         {/* Brand Header */}
         <div className="px-5 py-4 sm:px-6 sm:py-5 border-b border-zinc-200/80 sticky top-0 bg-white/95 backdrop-blur z-20 flex items-center justify-between">
@@ -198,7 +203,7 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
               <p className="text-[13px] font-bold font-serif tracking-[0.12em] text-zinc-900 uppercase">
                 MAHIRASH
               </p>
-              <p className="text-[9px] text-[#b8860b] uppercase tracking-[0.2em] font-semibold">Luxury Atelier</p>
+              <p className="text-[12px] text-[#b8860b] uppercase tracking-[0.2em] font-semibold">Luxury Atelier</p>
             </div>
           </div>
 
@@ -217,7 +222,7 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
         <nav className="flex-grow overflow-y-auto px-3.5 py-4 sm:px-4 sm:py-6 space-y-6 scrollbar-thin scrollbar-thumb-zinc-200">
           {sidebarSections.map((section) => (
             <div key={section.title} className="space-y-1">
-              <p className="text-[9px] font-bold text-zinc-400 tracking-[0.25em] px-3 uppercase mb-1.5">
+              <p className="text-[12px] font-bold text-zinc-400 tracking-[0.25em] px-3 uppercase mb-1.5">
                 {section.title}
               </p>
               <div className="space-y-0.5">
@@ -232,11 +237,10 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
                         setActiveItem(item.name);
                         onClose();
                       }}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium tracking-wide transition-all cursor-pointer ${
-                        isActive
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium tracking-wide transition-all cursor-pointer ${isActive
                           ? "bg-black text-white shadow-md shadow-black/10 font-semibold"
                           : "text-zinc-600 hover:bg-zinc-100 hover:text-black border border-transparent"
-                      }`}
+                        }`}
                     >
                       <Icon size={16} strokeWidth={isActive ? 2.2 : 1.8} className={isActive ? "text-[#d4af37]" : "text-zinc-400 group-hover:text-black"} />
                       <span className="truncate">{item.name}</span>

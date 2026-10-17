@@ -75,14 +75,14 @@ const OlfactoryCard = ({ family }) => {
             {family.subtitle}
           </p>
 
-          <div className="text-[10px] bg-zinc-900 border border-zinc-800 text-zinc-300 px-3 py-1 tracking-widest uppercase">
+          <div className="text-[12px] bg-zinc-900 border border-zinc-800 text-zinc-300 px-3 py-1 tracking-widest uppercase">
             {family.tag}
           </div>
         </div>
       </div>
 
       <div className="w-full pt-6 mt-4 flex justify-center">
-        <Link to="/shop" className="relative px-6 py-2.5 bg-white text-black hover:bg-[#b8860b] hover:text-white transition-all duration-300 text-[10px] font-black uppercase tracking-[0.2em]">
+        <Link to="/shop" className="relative px-6 py-2.5 bg-white text-black hover:bg-[#b8860b] hover:text-white transition-all duration-300 text-[12px] font-black uppercase tracking-[0.2em]">
           Explore Notes
         </Link>
       </div>
@@ -102,7 +102,7 @@ const FlavorsSection = () => {
             className="flex items-center gap-4 mb-3"
           >
             <div className="h-[1px] w-12 bg-[#b8860b]/40" />
-            <span className="text-[#b8860b] uppercase text-[10px] font-semibold tracking-[0.3em]">
+            <span className="text-[#b8860b] uppercase text-[12px] font-semibold tracking-[0.3em]">
               THE OLFACTORY MATRIX
             </span>
             <div className="h-[1px] w-12 bg-[#b8860b]/40" />

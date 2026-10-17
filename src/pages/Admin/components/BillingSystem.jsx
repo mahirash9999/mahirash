@@ -72,7 +72,7 @@ const BillingSystem = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-[14px] border-collapse">
               <thead>
-                <tr className="text-[10px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
+                <tr className="text-[12px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
                   <th className="py-3 px-3">Invoice #</th>
                   <th className="py-3 px-3">Customer Name</th>
                   <th className="py-3 px-3">Contact Email & Phone</th>
@@ -105,7 +105,7 @@ const BillingSystem = () => {
                       </td>
                       <td className="py-3.5 px-3">
                         <p className="text-zinc-800 font-semibold">{email}</p>
-                        <p className="text-[10px] text-zinc-400 font-mono">{phone}</p>
+                        <p className="text-[12px] text-zinc-400 font-mono">{phone}</p>
                       </td>
                       <td className="py-3.5 px-3 text-zinc-600 font-medium">{dateStr}</td>
                       <td className="py-3.5 px-3 font-extrabold text-zinc-900">₹{Number(total).toLocaleString('en-IN')}</td>
@@ -168,7 +168,7 @@ const BillingSystem = () => {
                   <h1 className="text-xl font-serif font-light tracking-widest text-black uppercase">
                     MAHIRASH PERFUMES
                   </h1>
-                  <p className="text-[10px] text-zinc-500 uppercase tracking-widest mt-0.5">
+                  <p className="text-[12px] text-zinc-500 uppercase tracking-widest mt-0.5">
                     Official Tax Invoice & Sales Receipt
                   </p>
                   <p className="text-[14px] text-zinc-600 mt-2 font-medium">
@@ -177,7 +177,7 @@ const BillingSystem = () => {
                   <p className="text-[14px] text-zinc-500">Contact: +91 8959041514 | mahirash.help@gmail.com</p>
                 </div>
                 <div className="text-right">
-                  <span className="px-3 py-1 bg-black text-white text-[10px] font-extrabold uppercase tracking-widest rounded-md inline-block mb-2">
+                  <span className="px-3 py-1 bg-black text-white text-[12px] font-extrabold uppercase tracking-widest rounded-md inline-block mb-2">
                     TAX INVOICE
                   </span>
                   <p className="text-[14px]   text-zinc-900">Invoice #: INV-{selectedOrder.id?.slice(0, 8).toUpperCase()}</p>
@@ -190,13 +190,13 @@ const BillingSystem = () => {
               {/* Billed To Details */}
               <div className="grid grid-cols-2 gap-6 bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-[14px]">
                 <div className="space-y-1">
-                  <p className="text-[10px]   text-zinc-400 uppercase tracking-widest">Billed To (Customer):</p>
+                  <p className="text-[12px]   text-zinc-400 uppercase tracking-widest">Billed To (Customer):</p>
                   <p className="  text-zinc-900 text-sm">{selectedOrder.customerName || selectedOrder.shipping?.name || selectedOrder.shippingAddress?.fullName || selectedOrder.name || 'N/A'}</p>
                   <p className="text-zinc-600">{selectedOrder.userEmail || selectedOrder.customerEmail || selectedOrder.email || selectedOrder.shipping?.email || ''}</p>
                   <p className="text-zinc-600">{selectedOrder.phone || selectedOrder.shipping?.phone || selectedOrder.shippingAddress?.phone || selectedOrder.customerPhone || ''}</p>
                 </div>
                 <div className="space-y-1 text-right">
-                  <p className="text-[10px]   text-zinc-400 uppercase tracking-widest">Shipping Address:</p>
+                  <p className="text-[12px]   text-zinc-400 uppercase tracking-widest">Shipping Address:</p>
                   <p className="text-zinc-800 font-medium">
                     {selectedOrder.shipping?.address || selectedOrder.shippingAddress?.street || selectedOrder.shippingAddress?.address || selectedOrder.address || ''}
                   </p>
@@ -212,7 +212,7 @@ const BillingSystem = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-[14px] border-collapse">
                   <thead>
-                    <tr className="text-[10px]   uppercase tracking-widest text-zinc-500 border-b border-zinc-300">
+                    <tr className="text-[12px]   uppercase tracking-widest text-zinc-500 border-b border-zinc-300">
                       <th className="py-2.5 px-2">Item Description</th>
                       <th className="py-2.5 px-2">Volume</th>
                       <th className="py-2.5 px-2 text-center">Qty</th>
@@ -263,7 +263,7 @@ const BillingSystem = () => {
               </div>
 
               {/* Footer Stamp */}
-              <div className="border-t border-zinc-200 pt-6 flex justify-between items-center text-[10px] text-zinc-400 uppercase tracking-widest font-semibold">
+              <div className="border-t border-zinc-200 pt-6 flex justify-between items-center text-[12px] text-zinc-400 uppercase tracking-widest font-semibold">
                 <span>Computer Generated Tax Invoice • Mahirash Perfumes</span>
                 <span>Authorized Signatory</span>
               </div>

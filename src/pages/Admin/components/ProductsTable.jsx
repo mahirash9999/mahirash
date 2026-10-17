@@ -1,8 +1,8 @@
 import React, { useRef, useState, useMemo } from 'react';
-import { 
-  Edit2, Trash2, Tag, Eye, Download, Upload, 
-  ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight, 
-  Search, SlidersHorizontal, Package, RefreshCw 
+import {
+  Edit2, Trash2, Tag, Eye, Download, Upload,
+  ArrowUpDown, ArrowUp, ArrowDown, ChevronLeft, ChevronRight,
+  Search, SlidersHorizontal, Package, RefreshCw
 } from 'lucide-react';
 import OptimizedCloudinaryImage from '../../../components/OptimizedCloudinaryImage';
 import { exportToCSV, parseCSV, csvToJSON } from '../../../utils/exportUtils';
@@ -218,7 +218,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
             try {
               const parsedSp = JSON.parse(row.size_prices);
               if (Array.isArray(parsedSp)) sizePricesArr = parsedSp;
-            } catch (_) {}
+            } catch (_) { }
           }
           if (sizePricesArr.length === 0 && row.sizes) {
             const splitSizes = String(row.sizes).split(',').map(s => s.trim()).filter(Boolean);
@@ -568,20 +568,19 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
                               return (
                                 <span
                                   key={vIdx}
-                                  className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border ${
-                                    vStk === 0 ? 'bg-red-50 text-red-600 border-red-200' :
+                                  className={`text-[12px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded border ${vStk === 0 ? 'bg-red-50 text-red-600 border-red-200' :
                                     vStk <= 5 ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                                    'bg-zinc-100 text-zinc-700 border-zinc-200'
-                                  }`}
+                                      'bg-zinc-100 text-zinc-700 border-zinc-200'
+                                    }`}
                                 >
-                                  {sp.size || `Var ${vIdx+1}`}: {vStk}
+                                  {sp.size || `Var ${vIdx + 1}`}: {vStk}
                                 </span>
                               );
                             })}
                           </div>
                         )}
                         {row.model_image && (
-                          <span className="text-[10px] text-[#b8860b] uppercase tracking-wider block mt-0.5">
+                          <span className="text-[12px] text-[#b8860b] uppercase tracking-wider block mt-0.5">
                             ✦ Model Photo
                           </span>
                         )}
@@ -592,11 +591,10 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
                     {row.category || "—"}
                   </td>
                   <td className="px-5 py-4">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[12px] font-medium ${
-                      row.gender === 'Men' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[12px] font-medium ${row.gender === 'Men' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
                       row.gender === 'Women' ? 'bg-pink-50 text-pink-700 border border-pink-200' :
-                      'bg-zinc-100 text-zinc-700 border border-zinc-200'
-                    }`}>
+                        'bg-zinc-100 text-zinc-700 border border-zinc-200'
+                      }`}>
                       {row.gender || "Unisex"}
                     </span>
                   </td>
@@ -606,7 +604,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
                   <td className="px-5 py-4 text-zinc-900 tabular-nums">
                     <div className="font-semibold text-sm">{row.stock ?? '—'}</div>
                     {Array.isArray(row.size_prices) && row.size_prices.length > 0 && (
-                      <span className="text-[10px] text-zinc-400 font-medium block">Total Units</span>
+                      <span className="text-[12px] text-zinc-400 font-medium block">Total Units</span>
                     )}
                   </td>
                   <td className="px-5 py-4">
@@ -731,11 +729,10 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
                       key={pageNum}
                       type="button"
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`min-w-[32px] h-8 px-2 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
-                        isActive
-                          ? 'bg-black text-white font-semibold shadow-sm'
-                          : 'border border-zinc-200 text-zinc-700 hover:bg-zinc-50'
-                      }`}
+                      className={`min-w-[32px] h-8 px-2 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${isActive
+                        ? 'bg-black text-white font-semibold shadow-sm'
+                        : 'border border-zinc-200 text-zinc-700 hover:bg-zinc-50'
+                        }`}
                     >
                       {pageNum}
                     </button>

@@ -398,7 +398,7 @@ const OrdersTable = ({ onRefresh }) => {
                   <td className="px-6 py-4">
                     <p className="text-zinc-900 font-bold">{order.shipping?.name || "Atelier Guest"}</p>
                     <p className="text-[11px] text-zinc-550 text-zinc-500">{order.userEmail}</p>
-                    {order.shipping?.phone && <p className="text-[10px] text-zinc-400 font-semibold">{order.shipping.phone}</p>}
+                    {order.shipping?.phone && <p className="text-[12px] text-zinc-400 font-semibold">{order.shipping.phone}</p>}
                   </td>
                   <td className="px-6 py-4 text-zinc-900 font-semibold">₹{(order.total || 0).toLocaleString("en-IN")}</td>
                   <td className="px-6 py-4">
@@ -517,7 +517,7 @@ const OrdersTable = ({ onRefresh }) => {
               {/* Header */}
               <div className="px-6 py-5 border-b border-zinc-200 flex items-center justify-between">
                 <div>
-                  <span className="text-[9px] text-zinc-400 font-extrabold uppercase tracking-widest">Courier Partner Live Info</span>
+                  <span className="text-[12px] text-zinc-400 font-extrabold uppercase tracking-widest">Courier Partner Live Info</span>
                   <h3 className="text-sm font-bold text-zinc-900 font-serif uppercase tracking-widest mt-0.5">AWB Tracking Code: {activeTrackingAwb}</h3>
                 </div>
                 <button
@@ -546,19 +546,19 @@ const OrdersTable = ({ onRefresh }) => {
                     {/* Status widget */}
                     <div className="bg-[#FAF9F6] border border-zinc-200 rounded-xl p-5 space-y-3 text-left">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-zinc-400 uppercase tracking-widest block font-bold">Delivery Status</span>
-                        <span className="text-emerald-700 bg-emerald-50 text-[9px] font-black tracking-widest uppercase px-3 py-1 rounded-full border border-emerald-150">
+                        <span className="text-[12px] text-zinc-400 uppercase tracking-widest block font-bold">Delivery Status</span>
+                        <span className="text-emerald-700 bg-emerald-50 text-[12px] font-black tracking-widest uppercase px-3 py-1 rounded-full border border-emerald-150">
                           {trackingData.currentStatus}
                         </span>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 pt-3 border-t border-zinc-150 text-[14px]">
                         <div>
-                          <span className="text-[9px] text-zinc-400 uppercase block font-semibold">Logistics Courier</span>
+                          <span className="text-[12px] text-zinc-400 uppercase block font-semibold">Logistics Courier</span>
                           <span className="text-zinc-950 font-bold block mt-0.5">{trackingData.provider || "Delhivery"}</span>
                         </div>
                         <div>
-                          <span className="text-[9px] text-zinc-400 uppercase block font-semibold">Estimated Delivery</span>
+                          <span className="text-[12px] text-zinc-400 uppercase block font-semibold">Estimated Delivery</span>
                           <span className="text-zinc-950 font-bold block mt-0.5">{trackingData.estimatedDelivery}</span>
                         </div>
                       </div>

@@ -158,7 +158,7 @@ const ReturnsRefundsManager = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-[14px] border-collapse">
               <thead>
-                <tr className="text-[10px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
+                <tr className="text-[12px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
                   <th className="py-3 px-3">Ticket ID</th>
                   <th className="py-3 px-3">Order ID</th>
                   <th className="py-3 px-3">Customer</th>
@@ -176,13 +176,13 @@ const ReturnsRefundsManager = () => {
                     <td className="py-3.5 px-3 font-mono text-zinc-500">{r.orderId}</td>
                     <td className="py-3.5 px-3">
                       <p className="font-semibold text-zinc-900">{r.customerName}</p>
-                      <p className="text-[10px] text-zinc-400">{r.customerEmail}</p>
+                      <p className="text-[12px] text-zinc-400">{r.customerEmail}</p>
                     </td>
                     <td className="py-3.5 px-3 font-semibold text-zinc-800">{r.productName}</td>
                     <td className="py-3.5 px-3 text-zinc-600 max-w-[180px] truncate" title={r.reason}>{r.reason}</td>
                     <td className="py-3.5 px-3   text-zinc-900">₹{(r.amount || 0).toLocaleString('en-IN')}</td>
                     <td className="py-3.5 px-3">
-                      <span className={`px-2.5 py-0.5 rounded text-[9px]   ${r.status === "Refunded" ? "bg-emerald-100 text-emerald-800 border border-emerald-200" :
+                      <span className={`px-2.5 py-0.5 rounded text-[12px]   ${r.status === "Refunded" ? "bg-emerald-100 text-emerald-800 border border-emerald-200" :
                         r.status === "Approved" ? "bg-blue-100 text-blue-800 border border-blue-200" :
                           r.status === "Rejected" ? "bg-red-100 text-red-800 border border-red-200" :
                             "bg-amber-100 text-amber-800 border border-amber-200"
@@ -195,7 +195,7 @@ const ReturnsRefundsManager = () => {
                         {r.status === "Requested" && (
                           <button
                             onClick={() => handleUpdateStatus(r.id, "Approved")}
-                            className="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded text-[10px]   transition-all"
+                            className="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded text-[12px]   transition-all"
                           >
                             Approve
                           </button>
@@ -203,7 +203,7 @@ const ReturnsRefundsManager = () => {
                         {(r.status === "Requested" || r.status === "Approved") && (
                           <button
                             onClick={() => handleUpdateStatus(r.id, "Refunded")}
-                            className="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded text-[10px]   transition-all"
+                            className="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded text-[12px]   transition-all"
                           >
                             Refund
                           </button>

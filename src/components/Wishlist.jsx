@@ -81,7 +81,7 @@ const Wishlist = () => {
       <div className="min-h-screen bg-[#f5f5f5] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border border-zinc-300 border-t-black rounded-full animate-spin" />
-          <p className="text-[10px] uppercase tracking-[0.25em] text-zinc-500">Loading wishlist...</p>
+          <p className="text-[12px] uppercase tracking-[0.25em] text-zinc-500">Loading wishlist...</p>
         </div>
       </div>
     );
@@ -109,14 +109,14 @@ const Wishlist = () => {
             </div>
             <h3 className="text-xl font-light text-zinc-900 tracking-widest uppercase mb-2">Your wishlist is empty</h3>
             <p className="text-[13px] text-zinc-500 leading-relaxed mb-6">Save items you love and come back to them anytime.</p>
-            <Link to="/shop" className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-black text-white font-semibold text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all">
+            <Link to="/shop" className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-black text-white font-semibold text-[12px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all">
               Explore Collection <ArrowRight size={13} />
             </Link>
           </motion.div>
         ) : (
           <div className="space-y-6">
             <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
-              <h2 className="text-[10px] font-semibold uppercase tracking-[0.25em] text-zinc-500">
+              <h2 className="text-[12px] font-semibold uppercase tracking-[0.25em] text-zinc-500">
                 {wishlist.length} {wishlist.length === 1 ? 'Item' : 'Items'} Saved
               </h2>
             </div>
@@ -149,14 +149,14 @@ const Wishlist = () => {
                             <OptimizedCloudinaryImage src={item.image} alt={item.name} preset="product-card" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                             {isOutOfStock && (
                               <div className="absolute inset-0 z-20 bg-black/60 flex items-center justify-center">
-                                <span className="bg-white text-black font-black uppercase text-[9px] tracking-widest px-3 py-1.5 shadow-sm">
+                                <span className="bg-white text-black font-black uppercase text-[12px] tracking-widest px-3 py-1.5 shadow-sm">
                                   Out of Stock
                                 </span>
                               </div>
                             )}
                             {isPreOrder && !isOutOfStock && (
                               <div className="absolute top-3 left-3 z-20">
-                                <span className="bg-[#b8860b] text-white font-black uppercase text-[8px] tracking-[0.2em] px-2.5 py-1 shadow-sm">
+                                <span className="bg-[#b8860b] text-white font-black uppercase text-[12px] tracking-[0.2em] px-2.5 py-1 shadow-sm">
                                   PRE-ORDER
                                 </span>
                               </div>
@@ -164,7 +164,7 @@ const Wishlist = () => {
                           </div>
 
                           <div className="pt-3 flex-grow flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-[0.2em] text-[#b8860b] mb-1">
+                            <div className="flex items-center gap-1.5 text-[12px] uppercase tracking-[0.2em] text-[#b8860b] mb-1">
                               <span className="font-semibold text-zinc-600">{item.brand || 'MAHIRASH'}</span>
                               {item.category && <span>• {item.category}</span>}
                             </div>
@@ -177,7 +177,7 @@ const Wishlist = () => {
                                 <button
                                   type="button"
                                   onClick={() => triggerToast("We will notify you when back in stock!")}
-                                  className="h-8 px-2.5 bg-[#0D0D0D] hover:bg-[#b8860b] text-white text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                                  className="h-8 px-2.5 bg-[#0D0D0D] hover:bg-[#b8860b] text-white text-[12px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                                   title="Notify me when available"
                                 >
                                   <Bell size={12} />
@@ -187,7 +187,7 @@ const Wishlist = () => {
                                 <button
                                   type="button"
                                   onClick={() => navigate(`/product/${item.id}`)}
-                                  className="h-8 px-2.5 bg-[#b8860b] hover:bg-black text-white text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                                  className="h-8 px-2.5 bg-[#b8860b] hover:bg-black text-white text-[12px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                                   title="Pre-order this item"
                                 >
                                   <Clock size={12} />

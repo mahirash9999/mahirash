@@ -89,7 +89,7 @@ const Orders = () => {
             snapEmail.docs.forEach(docSnap => {
               ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
             });
-          } catch (_) {}
+          } catch (_) { }
 
           try {
             const qUserEmail = query(ordersRef, where("userEmail", "==", activeEmail));
@@ -97,7 +97,7 @@ const Orders = () => {
             snapUserEmail.docs.forEach(docSnap => {
               ordersMap.set(docSnap.id, { id: docSnap.id, ...docSnap.data() });
             });
-          } catch (_) {}
+          } catch (_) { }
         }
 
         const ordersList = Array.from(ordersMap.values());
@@ -344,7 +344,7 @@ const Orders = () => {
                 key={tab.id}
                 type="button"
                 onClick={() => setStatusFilter(tab.id)}
-                className={`px-4 py-2 text-[10px] font-extrabold uppercase tracking-widest transition-all rounded-sm ${statusFilter === tab.id
+                className={`px-4 py-2 text-[12px] font-extrabold uppercase tracking-widest transition-all rounded-sm ${statusFilter === tab.id
                   ? "bg-black text-white font-black"
                   : "bg-zinc-100 text-zinc-600 border border-zinc-200 hover:text-black hover:bg-zinc-200"
                   }`}
@@ -392,7 +392,7 @@ const Orders = () => {
             </p>
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 px-7 py-3 bg-black text-white font-extrabold text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all"
+              className="inline-flex items-center gap-2 px-7 py-3 bg-black text-white font-extrabold text-[12px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all"
             >
               Explore Shop <ChevronRight size={12} />
             </Link>
@@ -428,7 +428,7 @@ const Orders = () => {
                         <Package size={18} strokeWidth={1.5} />
                       </div>
                       <div>
-                        <span className="text-[9px] font-black uppercase tracking-[0.25em] text-[#b8860b]">
+                        <span className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b]">
                           Order Reference
                         </span>
                         <h3 className="text-sm   text-zinc-900 uppercase tracking-wider font-mono">
@@ -439,14 +439,14 @@ const Orders = () => {
 
                     <div className="flex flex-wrap items-center gap-3">
                       <div className="text-left sm:text-right mr-2">
-                        <span className="text-[9px] font-extrabold uppercase tracking-widest text-zinc-400 block">
+                        <span className="text-[12px] font-extrabold uppercase tracking-widest text-zinc-400 block">
                           Placed On
                         </span>
                         <span className="text-[14px] text-zinc-700">{formattedDate}</span>
                       </div>
 
                       <span
-                        className={`px-3 py-1 text-[9px] font-extrabold uppercase tracking-widest border flex items-center gap-1.5 ${getStatusProps(order.status).colorClass}`}
+                        className={`px-3 py-1 text-[12px] font-extrabold uppercase tracking-widest border flex items-center gap-1.5 ${getStatusProps(order.status).colorClass}`}
                       >
                         {(() => { const { Icon } = getStatusProps(order.status); return <Icon size={11} />; })()}
                         {order.status || "Confirmed"}
@@ -456,7 +456,7 @@ const Orders = () => {
                       <button
                         type="button"
                         onClick={() => handleDownloadInvoice(order)}
-                        className="px-3.5 py-2 bg-white border border-zinc-300 hover:bg-[#b8860b] hover:text-white text-[#b8860b] text-[9px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2"
+                        className="px-3.5 py-2 bg-white border border-zinc-300 hover:bg-[#b8860b] hover:text-white text-[#b8860b] text-[12px] font-extrabold uppercase tracking-widest transition-all flex items-center gap-2"
                         title="Download official tax invoice PDF"
                       >
                         <Download size={12} />
@@ -467,7 +467,7 @@ const Orders = () => {
                       <button
                         type="button"
                         onClick={() => setSelectedOrder(order)}
-                        className="px-3.5 py-2 bg-black text-white font-extrabold text-[9px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center gap-1.5"
+                        className="px-3.5 py-2 bg-black text-white font-extrabold text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center gap-1.5"
                       >
                         <Eye size={12} />
                         Details
@@ -527,13 +527,13 @@ const Orders = () => {
                       {order.awbCode && (
                         <Link
                           to={`/track?awb=${order.awbCode}`}
-                          className="px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100/80 text-[10px] uppercase font-bold tracking-wider flex items-center gap-1.5 transition"
+                          className="px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100/80 text-[12px] uppercase font-bold tracking-wider flex items-center gap-1.5 transition"
                         >
                           <Truck size={12} className="animate-pulse" /> Track Shipment Live
                         </Link>
                       )}
                       <div className="flex items-center gap-2">
-                        <span className="text-zinc-500 uppercase text-[10px] tracking-wider">
+                        <span className="text-zinc-500 uppercase text-[12px] tracking-wider">
                           Grand Total:
                         </span>
                         <span className="text-sm text-zinc-900 font-mono font-bold">
@@ -570,7 +570,7 @@ const Orders = () => {
               {/* Modal Header */}
               <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
                 <div>
-                  <span className="text-[9px] font-black uppercase tracking-[0.25em] text-[#b8860b]">
+                  <span className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b]">
                     Order Specification
                   </span>
                   <h3 className="text-base   text-zinc-900 uppercase tracking-wider font-mono">
@@ -590,12 +590,12 @@ const Orders = () => {
               {selectedOrder.awbCode && (
                 <div className="bg-emerald-50 border border-emerald-200 p-4 text-[13px] flex items-center justify-between text-left">
                   <div className="space-y-0.5">
-                    <span className="text-[9px] text-emerald-800 uppercase tracking-wider block font-bold">Courier Shipping AWB</span>
+                    <span className="text-[12px] text-emerald-800 uppercase tracking-wider block font-bold">Courier Shipping AWB</span>
                     <span className="text-emerald-950 font-bold font-mono text-sm">{selectedOrder.awbCode} ({selectedOrder.courierName || 'Delhivery'})</span>
                   </div>
                   <Link
                     to={`/track?awb=${selectedOrder.awbCode}`}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-1.5"
+                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[12px] font-extrabold uppercase tracking-widest transition-colors flex items-center gap-1.5"
                   >
                     <Truck size={12} /> Track Live
                   </Link>
@@ -605,7 +605,7 @@ const Orders = () => {
               {/* Shipping & Payment Details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-zinc-50 p-4 border border-zinc-200 text-[14px]">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-[#b8860b]   uppercase tracking-wider text-[10px] mb-1">
+                  <div className="flex items-center gap-1.5 text-[#b8860b]   uppercase tracking-wider text-[12px] mb-1">
                     <MapPin size={12} /> Shipping Address
                   </div>
                   <p className="  text-zinc-900 uppercase">{selectedOrder.shipping?.name || user?.displayName}</p>
@@ -617,7 +617,7 @@ const Orders = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-[#b8860b]   uppercase tracking-wider text-[10px] mb-1">
+                  <div className="flex items-center gap-1.5 text-[#b8860b]   uppercase tracking-wider text-[12px] mb-1">
                     <CreditCard size={12} /> Payment Info
                   </div>
                   <p className="text-zinc-700">Method: <strong className="text-zinc-900 uppercase">{selectedOrder.paymentMethod || 'Online'}</strong></p>
@@ -677,14 +677,14 @@ const Orders = () => {
                 <button
                   type="button"
                   onClick={() => handleDownloadInvoice(selectedOrder)}
-                  className="flex-1 py-3 bg-black text-white font-extrabold text-[10px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2"
+                  className="flex-1 py-3 bg-black text-white font-extrabold text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2"
                 >
                   <Download size={14} /> Download PDF Invoice
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedOrder(null)}
-                  className="px-6 py-3 border border-zinc-300 text-zinc-700   text-[10px] uppercase tracking-widest hover:text-black hover:border-black"
+                  className="px-6 py-3 border border-zinc-300 text-zinc-700   text-[12px] uppercase tracking-widest hover:text-black hover:border-black"
                 >
                   Close
                 </button>

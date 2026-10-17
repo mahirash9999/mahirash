@@ -14,9 +14,14 @@ const parseMl = (str) => {
   return null;
 };
 
-// Check if product is a miniature (<= 10 ml)
+// Check if product is a miniature (<= 10 ml or explicitly marked by admin)
 const isMiniatureProduct = (product) => {
   if (!product) return false;
+
+  // Explicit admin toggle from product form
+  if (product.is_miniature === true || product.isMiniature === true) {
+    return true;
+  }
 
   // Check product name for explicit discovery/miniature/tester mentions
   const nameLower = (product.name || '').toLowerCase();
@@ -136,8 +141,8 @@ const RandomProducts = () => {
             </div>
             <div className="w-28 h-9 bg-zinc-200 animate-pulse rounded-full" />
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {[...Array(4)].map((_, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+            {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-white border border-[#E5D5B8] p-3 space-y-3 rounded-2xl">
                 <div className="aspect-[2/3] bg-zinc-100 animate-pulse rounded-xl" />
                 <div className="h-3 bg-zinc-200 animate-pulse w-2/3 rounded" />
@@ -178,14 +183,14 @@ const RandomProducts = () => {
           <div className="flex-1 flex flex-col md:flex-row md:items-end gap-6 md:gap-12">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <p className="text-[10px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase font-bold flex items-center gap-2">
+                <p className="text-[12px] sm:text-[14px] tracking-[0.3em] text-[#B8860B] uppercase font-bold flex items-center gap-2">
                   <span>POCKET LUXURY</span>
                   <span>•</span>
                   <span>DISCOVERY ESSENTIALS</span>
                 </p>
               </div>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight tracking-[0.15em] text-[#0D0D0D] uppercase whitespace-nowrap">
-               SHOP MINIATURES
+                SHOP MINIATURES
               </h2>
             </div>
             <div className="hidden md:block flex-1 h-[1px] bg-gradient-to-r from-[#B8860B]/40 via-zinc-300 to-transparent mb-3" />
@@ -215,7 +220,7 @@ const RandomProducts = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.35, ease: 'easeOut' }}
-            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6"
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4"
           >
             {randomizedProducts.map((product, idx) => (
               <ProductCard
