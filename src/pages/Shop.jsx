@@ -33,13 +33,15 @@ import ProductCard, { resolveProductVariant, isVariantAvailable } from "../compo
 const INITIAL_FILTERS = {
   brand: "All",
   category: "All",
+  collection: "All",
   gender: "All",
   minPrice: 0,
-  maxPrice: 25000,
+  maxPrice: null,
   colors: [], // Kept for legacy compatibility
   sizes: [],
   families: [],
   concentrations: [],
+  availabilities: [],
   inStockOnly: false,
   onSaleOnly: false,
   minRating: 0
@@ -50,6 +52,10 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [categoriesList, setCategoriesList] = useState(["All"]);
   const [brandsList, setBrandsList] = useState([]);
+  const [dbFragranceFamilies, setDbFragranceFamilies] = useState([]);
+  const [dbFragranceConcentrations, setDbFragranceConcentrations] = useState([]);
+  const [dbCollections, setDbCollections] = useState([]);
+  const [dbAvailabilities, setDbAvailabilities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("newest");
@@ -76,14 +82,24 @@ const Shop = () => {
       }
     }
 
+    const colParam = searchParams.get("collection") || searchParams.get("collections");
+    if (colParam) newFilters.collection = colParam;
+
+    const availParam = searchParams.get("availability") || searchParams.get("availabilities") || searchParams.get("stock");
+    if (availParam) newFilters.availabilities = availParam.split(",").map(a => a.trim()).filter(Boolean);
+
     const gender = searchParams.get("gender");
     if (gender) newFilters.gender = gender;
 
     const minPrice = searchParams.get("minPrice");
-    if (minPrice) newFilters.minPrice = Number(minPrice);
+    if (minPrice && !isNaN(Number(minPrice))) newFilters.minPrice = Number(minPrice);
 
     const maxPrice = searchParams.get("maxPrice");
-    if (maxPrice) newFilters.maxPrice = Number(maxPrice);
+    if (maxPrice && !isNaN(Number(maxPrice))) {
+      newFilters.maxPrice = Number(maxPrice);
+    } else {
+      newFilters.maxPrice = null;
+    }
 
     const colors = searchParams.get("color") || searchParams.get("colors");
     if (colors) newFilters.colors = colors.split(",").map(c => c.trim()).filter(Boolean);
@@ -154,6 +170,66 @@ const Shop = () => {
           console.error("Error fetching brands:", brandErr);
         }
 
+        try {
+          const famSnap = await getDocs(collection(db, "fragrance_families"));
+          if (!famSnap.empty) {
+            const fetchedFams = famSnap.docs
+              .map(doc => doc.data())
+              .filter(f => f.is_active !== false)
+              .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
+              .map(f => f.name)
+              .filter(Boolean);
+            if (fetchedFams.length > 0) setDbFragranceFamilies(fetchedFams);
+          }
+        } catch (famErr) {
+          console.error("Error fetching fragrance families:", famErr);
+        }
+
+        try {
+          const concSnap = await getDocs(collection(db, "fragrance_concentrations"));
+          if (!concSnap.empty) {
+            const fetchedConcs = concSnap.docs
+              .map(doc => doc.data())
+              .filter(c => c.is_active !== false)
+              .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
+              .map(c => c.name)
+              .filter(Boolean);
+            if (fetchedConcs.length > 0) setDbFragranceConcentrations(fetchedConcs);
+          }
+        } catch (concErr) {
+          console.error("Error fetching fragrance concentrations:", concErr);
+        }
+
+        try {
+          const colSnap = await getDocs(collection(db, "collections"));
+          if (!colSnap.empty) {
+            const fetchedCols = colSnap.docs
+              .map(doc => doc.data())
+              .filter(c => c.is_active !== false)
+              .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
+              .map(c => c.name)
+              .filter(Boolean);
+            if (fetchedCols.length > 0) setDbCollections(fetchedCols);
+          }
+        } catch (colErr) {
+          console.error("Error fetching collections:", colErr);
+        }
+
+        try {
+          const availSnap = await getDocs(collection(db, "availabilities"));
+          if (!availSnap.empty) {
+            const fetchedAvail = availSnap.docs
+              .map(doc => doc.data())
+              .filter(a => a.is_active !== false)
+              .sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0))
+              .map(a => a.name)
+              .filter(Boolean);
+            if (fetchedAvail.length > 0) setDbAvailabilities(fetchedAvail);
+          }
+        } catch (availErr) {
+          console.error("Error fetching availabilities:", availErr);
+        }
+
         // Check for coupon in url
         const params = new URLSearchParams(window.location.search);
         const couponParam = params.get("coupon") || params.get("code");
@@ -218,21 +294,49 @@ const Shop = () => {
   }, [products, brandsList]);
 
   const availableFamilies = useMemo(() => {
-    const set = new Set();
+    const set = new Set(dbFragranceFamilies);
     products.forEach(p => {
       if (p.fragrance_family) set.add(p.fragrance_family.trim());
       // legacy fallback
       if (p.colors) p.colors.split(",").forEach(c => set.add(c.trim()));
     });
     return Array.from(set).filter(Boolean);
-  }, [products]);
+  }, [products, dbFragranceFamilies]);
 
   const availableConcentrations = useMemo(() => {
-    const set = new Set();
+    const set = new Set(dbFragranceConcentrations);
     products.forEach(p => {
       if (p.fragrance_concentration) set.add(p.fragrance_concentration.trim());
       // legacy fallback
       if (p.material) set.add(p.material.trim());
+    });
+    return Array.from(set).filter(Boolean);
+  }, [products, dbFragranceConcentrations]);
+
+  const availableCollections = useMemo(() => {
+    const set = new Set(dbCollections);
+    products.forEach(p => {
+      if (p.collection) set.add(p.collection.trim());
+      if (Array.isArray(p.collections)) p.collections.forEach(c => set.add(c.trim()));
+    });
+    return Array.from(set).filter(Boolean);
+  }, [products, dbCollections]);
+
+  const availableAvailabilities = useMemo(() => {
+    const set = new Set(dbAvailabilities);
+    products.forEach(p => {
+      if (p.availability) set.add(p.availability.trim());
+      if (p.stock_status) set.add(p.stock_status.trim());
+    });
+    return Array.from(set).filter(Boolean);
+  }, [products, dbAvailabilities]);
+
+  const availableGenders = useMemo(() => {
+    const set = new Set();
+    products.forEach(p => {
+      if (p.gender && typeof p.gender === "string" && p.gender.trim()) {
+        set.add(p.gender.trim());
+      }
     });
     return Array.from(set).filter(Boolean);
   }, [products]);
@@ -280,12 +384,16 @@ const Shop = () => {
 
     if (filters.brand && filters.brand !== "All") params.set("brand", filters.brand);
     if (filters.category !== "All") params.set("category", filters.category);
+    if (filters.collection && filters.collection !== "All") params.set("collection", filters.collection);
     if (filters.gender !== "All") params.set("gender", filters.gender);
     if (filters.minPrice > 0) params.set("minPrice", String(filters.minPrice));
-    if (filters.maxPrice < maxPriceLimit) params.set("maxPrice", String(filters.maxPrice));
+    if (filters.maxPrice !== null && filters.maxPrice !== undefined && filters.maxPrice < maxPriceLimit) {
+      params.set("maxPrice", String(filters.maxPrice));
+    }
     if (filters.sizes.length > 0) params.set("size", filters.sizes.join(","));
     if (filters.families.length > 0) params.set("family", filters.families.join(","));
     if (filters.concentrations.length > 0) params.set("concentration", filters.concentrations.join(","));
+    if (filters.availabilities && filters.availabilities.length > 0) params.set("availability", filters.availabilities.join(","));
     if (filters.inStockOnly) params.set("inStock", "true");
     if (filters.onSaleOnly) params.set("onSale", "true");
     if (filters.minRating > 0) params.set("minRating", String(filters.minRating));
@@ -298,7 +406,7 @@ const Shop = () => {
 
   const resetFilters = () => {
     setSearchTerm("");
-    setFilters({ ...INITIAL_FILTERS, maxPrice: maxPriceLimit });
+    setFilters({ ...INITIAL_FILTERS, minPrice: 0, maxPrice: null, collection: "All", availabilities: [] });
   };
 
   const filteredProducts = useMemo(() => {
@@ -371,6 +479,19 @@ const Shop = () => {
           }
         }
 
+        // Collection filter matching
+        if (filters.collection && filters.collection !== "All") {
+          const normalizeCol = (str) => (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+          const target = normalizeCol(filters.collection);
+          const pCol = normalizeCol(p.collection);
+          const pCols = Array.isArray(p.collections) ? p.collections.map(normalizeCol) : [];
+          const pCat = normalizeCol(p.category);
+          const pName = normalizeCol(p.name);
+          const pTag = normalizeCol(p.tag);
+          const isMatch = pCol === target || pCols.includes(target) || pCat === target || pName.includes(target) || pTag.includes(target);
+          if (!isMatch) return false;
+        }
+
         // Gender
         if (
           filters.gender !== "All" &&
@@ -384,7 +505,10 @@ const Shop = () => {
         // Price range (evaluated on the active displayed variant given active filter & sort)
         const activeVariant = resolveProductVariant(p, filters.sizes.length > 0 ? filters.sizes : null, sortBy);
         const effectivePrice = activeVariant ? (activeVariant.price ?? p.price ?? 0) : (p.price ?? 0);
-        if (effectivePrice < filters.minPrice || effectivePrice > filters.maxPrice) {
+        if (filters.minPrice > 0 && effectivePrice < filters.minPrice) {
+          return false;
+        }
+        if (filters.maxPrice !== null && filters.maxPrice !== undefined && effectivePrice > filters.maxPrice) {
           return false;
         }
 
@@ -428,6 +552,15 @@ const Shop = () => {
             productConc.includes(m.toLowerCase())
           );
           if (!hasMatMatch) return false;
+        }
+
+        // Availability
+        if (filters.availabilities && filters.availabilities.length > 0) {
+          const pAvail = (p.availability || p.stock_status || (Number(p.stock) > 0 ? "In Stock" : "Out of Stock")).toLowerCase();
+          const hasAvailMatch = filters.availabilities.some(a =>
+            pAvail.includes(a.toLowerCase()) || a.toLowerCase().includes(pAvail)
+          );
+          if (!hasAvailMatch) return false;
         }
 
         // In Stock Only
@@ -476,11 +609,13 @@ const Shop = () => {
     let count = 0;
     if (filters.brand && filters.brand !== "All") count++;
     if (filters.category !== "All") count++;
+    if (filters.collection && filters.collection !== "All") count++;
     if (filters.gender !== "All") count++;
-    if (filters.maxPrice < maxPriceLimit || filters.minPrice > 0) count++;
+    if (filters.minPrice > 0 || (filters.maxPrice !== null && filters.maxPrice !== undefined && filters.maxPrice < maxPriceLimit)) count++;
     if (filters.families && filters.families.length) count += filters.families.length;
     if (filters.sizes.length) count += filters.sizes.length;
     if (filters.concentrations && filters.concentrations.length) count += filters.concentrations.length;
+    if (filters.availabilities && filters.availabilities.length) count += filters.availabilities.length;
     if (filters.inStockOnly) count++;
     if (filters.onSaleOnly) count++;
     if (filters.minRating > 0) count++;
@@ -585,7 +720,7 @@ const Shop = () => {
             )}
 
             {filters.category !== "All" && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px]   uppercase tracking-wider border border-zinc-300">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px] uppercase tracking-wider border border-zinc-300">
                 Category: {filters.category}
                 <button
                   type="button"
@@ -596,6 +731,37 @@ const Shop = () => {
                 </button>
               </span>
             )}
+
+            {filters.collection && filters.collection !== "All" && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px] uppercase tracking-wider border border-zinc-300">
+                Collection: {filters.collection}
+                <button
+                  type="button"
+                  onClick={() => setFilters(p => ({ ...p, collection: "All" }))}
+                  className="hover:text-[#b8860b]"
+                >
+                  <X size={10} />
+                </button>
+              </span>
+            )}
+
+            {filters.availabilities && filters.availabilities.map(avail => (
+              <span
+                key={avail}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px] uppercase tracking-wider border border-zinc-300"
+              >
+                Availability: {avail}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFilters(p => ({ ...p, availabilities: p.availabilities.filter(x => x !== avail) }))
+                  }
+                  className="hover:text-[#b8860b]"
+                >
+                  <X size={10} />
+                </button>
+              </span>
+            ))}
 
             {filters.gender !== "All" && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px]   uppercase tracking-wider border border-zinc-300">
@@ -610,12 +776,13 @@ const Shop = () => {
               </span>
             )}
 
-            {(filters.minPrice > 0 || filters.maxPrice < maxPriceLimit) && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px]   uppercase tracking-wider border border-zinc-300">
-                Max ₹{filters.maxPrice.toLocaleString("en-IN")}
+            {(filters.minPrice > 0 || (filters.maxPrice !== null && filters.maxPrice !== undefined && filters.maxPrice < maxPriceLimit)) && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 text-zinc-800 text-[9px] uppercase tracking-wider border border-zinc-300">
+                {filters.minPrice > 0 ? `₹${filters.minPrice.toLocaleString("en-IN")} - ` : "Max "}
+                ₹{(filters.maxPrice ?? maxPriceLimit).toLocaleString("en-IN")}
                 <button
                   type="button"
-                  onClick={() => setFilters(p => ({ ...p, minPrice: 0, maxPrice: maxPriceLimit }))}
+                  onClick={() => setFilters(p => ({ ...p, minPrice: 0, maxPrice: null }))}
                   className="hover:text-[#b8860b]"
                 >
                   <X size={10} />
@@ -725,6 +892,11 @@ const Shop = () => {
             totalResults={filteredProducts.length}
             allCategories={dynamicCategories}
             availableBrands={availableBrands}
+            availableFamilies={availableFamilies}
+            availableConcentrations={availableConcentrations}
+            availableAvailabilities={availableAvailabilities}
+            availableCollections={availableCollections}
+            availableGenders={availableGenders}
             availableColors={availableFamilies}
             availableSizes={availableSizes}
             availableMaterials={availableConcentrations}

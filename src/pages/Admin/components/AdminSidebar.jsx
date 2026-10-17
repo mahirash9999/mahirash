@@ -26,7 +26,8 @@ import {
   Settings,
   LogOut,
   X,
-  AlertCircle
+  AlertCircle,
+  CheckCircle2
 } from 'lucide-react';
 
 const sidebarSections = [
@@ -48,6 +49,7 @@ const sidebarSections = [
       { name: "Collections", icon: Sparkles },
       { name: "Fragrance Families", icon: Sparkles },
       { name: "Fragrance Concentration", icon: Sparkles },
+      { name: "Availability", icon: CheckCircle2 },
       { name: "Attributes", icon: Sliders },
       { name: "Inventory", icon: ClipboardCheck }
     ]
@@ -66,7 +68,7 @@ const sidebarSections = [
     title: "CONTENT",
     items: [
       { name: "Hero Video", icon: Video },
-      { name: "Gender Banners", icon: Image },
+      { name: "Home Page Collection", icon: Image },
       { name: "Shop By Scents", icon: Sparkles },
       { name: "Explore Banner", icon: Image },
       { name: "Global Alert", icon: AlertCircle },

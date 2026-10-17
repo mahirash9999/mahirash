@@ -1808,6 +1808,20 @@ const Admin = () => {
             defaultItem={{ name: '', slug: '', sort_order: 1, is_active: true }}
           />
         );
+      case "Availability":
+        return (
+          <GenericCRUDManager
+            collectionName="availabilities"
+            title="Availability Management"
+            fields={[
+              { key: 'name', label: 'Availability Status (e.g. In Stock, Pre-Order, Limited Edition)' },
+              { key: 'slug', label: 'Slug' },
+              { key: 'sort_order', label: 'Sort Order', type: 'number' },
+              { key: 'is_active', label: 'Status', type: 'boolean' }
+            ]}
+            defaultItem={{ name: '', slug: '', sort_order: 1, is_active: true }}
+          />
+        );
       case "Attributes":
         return (
           <GenericCRUDManager
@@ -1896,15 +1910,17 @@ const Admin = () => {
             defaultItem={{ image: '', name: 'WOODY', description: 'Cedarwood, Sandalwood & Amber', badge: 'WARM & RICH', link: '/shop?scent=Woody', sort_order: 1, is_active: true }}
           />
         );
+      case "Home Page Collection":
+      case "home page Collection":
       case "Gender Banners":
       case "Shop The Look":
         return (
           <GenericCRUDManager
             collectionName="gender_banners"
-            title="Gender Banners CMS (For Him, For Her & Unisex)"
+            title="Home Page Collection"
             fields={[
               { key: 'image', label: 'Banner Editorial Image', type: 'image' },
-              { key: 'title', label: 'Banner Title (e.g. FOR HIM, FOR HER, UNISEX)' },
+              { key: 'title', label: 'Banner Title (e.g. FOR HIM, FOR HER, UNISEX, etc.)' },
               { key: 'tag', label: 'Tagline / Eyebrow (e.g. MASCULINE SIGNATURES)' },
               { key: 'subtitle', label: 'Description Text' },
               { key: 'cta', label: 'CTA Button Text (e.g. DISCOVER MEN\'S)' },
@@ -1912,7 +1928,7 @@ const Admin = () => {
               { key: 'sort_order', label: 'Sort Order', type: 'number' },
               { key: 'is_active', label: 'Status', type: 'boolean' }
             ]}
-            defaultItem={{ image: '', title: 'UNISEX', tag: 'TIMELESS HARMONY', subtitle: 'Artisanal extraits crafted for all.', cta: 'DISCOVER UNISEX', link: '/shop?gender=Unisex', sort_order: 3, is_active: true }}
+            defaultItem={{ image: '', title: '', tag: '', subtitle: '', cta: 'EXPLORE COLLECTION', link: '/shop', sort_order: 1, is_active: true }}
           />
         );
       case "Explore Banner":

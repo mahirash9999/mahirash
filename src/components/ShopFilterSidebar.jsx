@@ -4,13 +4,6 @@ import { X, ChevronDown, ChevronUp, RotateCcw, Filter, Check, Star } from "lucid
 
 export const DEFAULT_CATEGORIES = [
   "All",
-  "Extrait de Parfum",
-  "Eau de Parfum",
-  "Eau de Toilette",
-  "Oud Collection",
-  "Woody & Amber",
-  "Floral & Fresh",
-  "Gift Sets"
 ];
 
 export const DEFAULT_GENDERS = ["All", "Unisex", "Men", "Women"];
@@ -31,7 +24,7 @@ export const COLOR_MAP = {
   gold: "#c9a962"
 };
 
-const FilterSection = ({ title, children, defaultOpen = true, activeCount = 0 }) => {
+const FilterSection = ({ title, children, defaultOpen = false, activeCount = 0 }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
@@ -42,7 +35,7 @@ const FilterSection = ({ title, children, defaultOpen = true, activeCount = 0 })
         className="w-full flex items-center justify-between text-left group cursor-pointer py-1"
       >
         <div className="flex items-center gap-2">
-          <span className="text-[14px]   uppercase tracking-[0.18em] text-zinc-900 group-hover:text-black transition-colors">
+          <span className="text-[14px] uppercase tracking-[0.18em] text-zinc-900 group-hover:text-black transition-colors font-medium">
             {title}
           </span>
           {activeCount > 0 && (
@@ -85,19 +78,30 @@ const ShopFilterSidebar = ({
   allCategories = DEFAULT_CATEGORIES,
   availableBrands = [],
   availableFamilies = [],
+  availableColors = [],
   availableSizes = DEFAULT_SIZES,
   availableConcentrations = [],
+  availableAvailabilities = [],
+  availableCollections = [],
+  availableGenders = [],
+  availableMaterials = [],
   maxPriceLimit = 25000
 }) => {
+  const familiesList = (availableFamilies && availableFamilies.length > 0) ? availableFamilies : (availableColors || []);
+  const concentrationsList = (availableConcentrations && availableConcentrations.length > 0) ? availableConcentrations : (availableMaterials || []);
+  const genderList = (availableGenders && availableGenders.length > 0) ? availableGenders : DEFAULT_GENDERS.filter(g => g !== "All");
+
   // Count active filters
   const getActiveFilterCount = () => {
     let count = 0;
     if (filters.brand && filters.brand !== "All") count++;
     if (filters.category && filters.category !== "All") count++;
+    if (filters.collection && filters.collection !== "All") count++;
     if (filters.gender && filters.gender !== "All") count++;
-    if (filters.maxPrice < maxPriceLimit || filters.minPrice > 0) count++;
+    if (filters.minPrice > 0 || (filters.maxPrice !== null && filters.maxPrice !== undefined && filters.maxPrice < maxPriceLimit)) count++;
     if (filters.families && filters.families.length > 0) count += filters.families.length;
     if (filters.sizes && filters.sizes.length > 0) count += filters.sizes.length;
+    if (filters.availabilities && filters.availabilities.length > 0) count += filters.availabilities.length;
     if (filters.inStockOnly) count++;
     if (filters.onSaleOnly) count++;
     if (filters.minRating > 0) count++;
@@ -123,7 +127,7 @@ const ShopFilterSidebar = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Filter size={15} className="text-[#b8860b]" />
-            <h2 className="text-[14px]   uppercase tracking-[0.2em] text-zinc-900">
+            <h2 className="text-[14px] uppercase tracking-[0.2em] text-zinc-900 font-semibold">
               Refine By
             </h2>
           </div>
@@ -148,7 +152,7 @@ const ShopFilterSidebar = ({
             <button
               type="button"
               onClick={resetFilters}
-              className="text-[9px]   uppercase tracking-wider text-zinc-500 hover:text-black"
+              className="text-[9px] uppercase tracking-wider text-zinc-500 hover:text-black"
             >
               Clear
             </button>
@@ -159,11 +163,11 @@ const ShopFilterSidebar = ({
       {/* Filter Sections Scroll Container */}
       <div className="flex-1 overflow-y-auto pr-1 text-[14px] scrollbar-hide space-y-1">
 
-        {/* Brand Filter */}
+        {/* 1. Perfume Brands Filter */}
         {availableBrands && availableBrands.length > 0 && (
           <FilterSection
             title="Perfume Brands"
-            defaultOpen={true}
+            defaultOpen={false}
             activeCount={filters.brand && filters.brand !== "All" ? 1 : 0}
           >
             <div className="space-y-0">
@@ -174,10 +178,11 @@ const ShopFilterSidebar = ({
                     key={b}
                     type="button"
                     onClick={() => setFilters(prev => ({ ...prev, brand: b }))}
-                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
-                      ? "text-zinc-900 font-semibold"
-                      : "text-zinc-500 hover:text-black"
-                      }`}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
+                      isSelected
+                        ? "text-zinc-900 font-semibold"
+                        : "text-zinc-500 hover:text-black"
+                    }`}
                   >
                     <span className="shop-sidebar-label">{b}</span>
                     {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
@@ -188,10 +193,10 @@ const ShopFilterSidebar = ({
           </FilterSection>
         )}
 
-        {/* Category Filter */}
+        {/* 2. Categories Filter */}
         <FilterSection
           title="Categories"
-          defaultOpen={true}
+          defaultOpen={false}
           activeCount={filters.category !== "All" ? 1 : 0}
         >
           <div className="space-y-0">
@@ -202,10 +207,11 @@ const ShopFilterSidebar = ({
                   key={cat}
                   type="button"
                   onClick={() => setFilters(prev => ({ ...prev, category: cat }))}
-                  className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
-                    ? "text-zinc-900 font-semibold"
-                    : "text-zinc-500 hover:text-black"
-                    }`}
+                  className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
+                    isSelected
+                      ? "text-zinc-900 font-semibold"
+                      : "text-zinc-500 hover:text-black"
+                  }`}
                 >
                   <span className="shop-sidebar-label">{cat}</span>
                   {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
@@ -214,138 +220,176 @@ const ShopFilterSidebar = ({
             })}
           </div>
         </FilterSection>
-        {/* Available Content: In Stock / Out of Stock */}
-        <FilterSection
-          title="Availability"
-          defaultOpen={false}
-          activeCount={(filters.inStockOnly ? 1 : 0) + (filters.onSaleOnly ? 1 : 0)}
-        >
-          <div className="space-y-0">
-            <button
-              onClick={() => setFilters(prev => ({ ...prev, inStockOnly: !prev.inStockOnly }))}
-              className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${filters.inStockOnly
-                ? "text-zinc-900 font-semibold"
-                : "text-zinc-500 hover:text-black"
-                }`}
-            >
-              <span className="shop-sidebar-label">In Stock Only</span>
-              {filters.inStockOnly && <Check size={13} className="text-[#b8860b] shrink-0" />}
-            </button>
 
-            <button
-              onClick={() => setFilters(prev => ({ ...prev, onSaleOnly: !prev.onSaleOnly }))}
-              className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${filters.onSaleOnly
-                ? "text-zinc-900 font-semibold"
-                : "text-zinc-500 hover:text-black"
-                }`}
-            >
-              <span className="shop-sidebar-label">On Sale / Discounted</span>
-              {filters.onSaleOnly && <Check size={13} className="text-[#b8860b] shrink-0" />}
-            </button>
-          </div>
-        </FilterSection>
-
-        {/* Gender / Target Filter */}
-        <FilterSection
-          title="Gender"
-          defaultOpen={true}
-          activeCount={filters.gender !== "All" ? 1 : 0}
-        >
-          <div className="space-y-0">
-            {DEFAULT_GENDERS.map(g => {
-              const isSelected = filters.gender === g;
-              return (
-                <button
-                  key={g}
-                  type="button"
-                  onClick={() => setFilters(prev => ({ ...prev, gender: g }))}
-                  className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
-                    ? "text-zinc-900 font-semibold"
-                    : "text-zinc-500 hover:text-black"
+        {/* Collections Filter */}
+        {availableCollections && availableCollections.length > 0 && (
+          <FilterSection
+            title="Collections"
+            defaultOpen={false}
+            activeCount={filters.collection && filters.collection !== "All" ? 1 : 0}
+          >
+            <div className="space-y-0">
+              {["All", ...availableCollections].map(col => {
+                const isSelected = (filters.collection || "All").toLowerCase() === col.toLowerCase();
+                return (
+                  <button
+                    key={col}
+                    type="button"
+                    onClick={() => setFilters(prev => ({ ...prev, collection: col }))}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
+                      isSelected
+                        ? "text-zinc-900 font-semibold"
+                        : "text-zinc-500 hover:text-black"
                     }`}
-                >
-                  <span className="shop-sidebar-label">{g}</span>
-                  {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
-                </button>
-              );
-            })}
-          </div>
-        </FilterSection>
+                  >
+                    <span className="shop-sidebar-label">{col}</span>
+                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          </FilterSection>
+        )}
 
-        {/* Fragrance Family Filter */}
-        {
-          availableFamilies.length > 0 && (
-            <FilterSection
-              title="Fragrance Families"
-              defaultOpen={true}
-              activeCount={filters.families?.length || 0}
-            >
-              <div className="space-y-0">
-                {availableFamilies.map(familyName => {
-                  const isSelected = filters.families?.includes(familyName);
+        {/* 3. Fragrance Families Filter (Positioned dynamically under Categories) */}
+        {familiesList && familiesList.length > 0 && (
+          <FilterSection
+            title="Fragrance Families"
+            defaultOpen={false}
+            activeCount={filters.families?.length || 0}
+          >
+            <div className="space-y-0">
+              {familiesList.map(familyName => {
+                const isSelected = filters.families?.includes(familyName);
 
-                  return (
-                    <button
-                      key={familyName}
-                      type="button"
-                      onClick={() => toggleArrayFilter("families", familyName)}
-                      className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
+                return (
+                  <button
+                    key={familyName}
+                    type="button"
+                    onClick={() => toggleArrayFilter("families", familyName)}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
+                      isSelected
                         ? "text-zinc-900 font-semibold"
                         : "text-zinc-500 hover:text-black"
-                        }`}
-                    >
-                      <span className="shop-sidebar-label">{familyName}</span>
-                      {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </FilterSection>
-          )
-        }
+                    }`}
+                  >
+                    <span className="shop-sidebar-label">{familyName}</span>
+                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          </FilterSection>
+        )}
 
-        {/* Concentration Filter */}
-        {
-          availableConcentrations.length > 0 && (
-            <FilterSection
-              title="Fragrance Concentration"
-              defaultOpen={false}
-              activeCount={filters.concentrations?.length || 0}
-            >
-              <div className="space-y-0">
-                {availableConcentrations.map(mat => {
-                  const isSelected = filters.concentrations?.includes(mat);
-                  return (
-                    <button
-                      key={mat}
-                      type="button"
-                      onClick={() => toggleArrayFilter("concentrations", mat)}
-                      className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${isSelected
+        {/* 4. Fragrance Concentration Filter (Positioned dynamically under Families) */}
+        {concentrationsList && concentrationsList.length > 0 && (
+          <FilterSection
+            title="Fragrance Concentration"
+            defaultOpen={false}
+            activeCount={filters.concentrations?.length || 0}
+          >
+            <div className="space-y-0">
+              {concentrationsList.map(mat => {
+                const isSelected = filters.concentrations?.includes(mat);
+                return (
+                  <button
+                    key={mat}
+                    type="button"
+                    onClick={() => toggleArrayFilter("concentrations", mat)}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
+                      isSelected
                         ? "text-zinc-900 font-semibold"
                         : "text-zinc-500 hover:text-black"
-                        }`}
-                    >
-                      <span className="shop-sidebar-label">{mat}</span>
-                      {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </FilterSection>
-          )
-        }
+                    }`}
+                  >
+                    <span className="shop-sidebar-label">{mat}</span>
+                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          </FilterSection>
+        )}
 
-        {/* Price Slider & Presets */}
+        {/* 5. Availability Filter (Dynamic from Admin / Database) */}
+        {availableAvailabilities && availableAvailabilities.length > 0 && (
+          <FilterSection
+            title="Availability"
+            defaultOpen={false}
+            activeCount={filters.availabilities?.length || 0}
+          >
+            <div className="space-y-0">
+              {availableAvailabilities.map(avail => {
+                const isSelected = filters.availabilities?.includes(avail);
+                return (
+                  <button
+                    key={avail}
+                    type="button"
+                    onClick={() => toggleArrayFilter("availabilities", avail)}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
+                      isSelected
+                        ? "text-zinc-900 font-semibold"
+                        : "text-zinc-500 hover:text-black"
+                    }`}
+                  >
+                    <span className="shop-sidebar-label">{avail}</span>
+                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          </FilterSection>
+        )}
+
+        {/* 6. Gender / Target Filter */}
+        {genderList && genderList.length > 0 && (
+          <FilterSection
+            title="Gender"
+            defaultOpen={false}
+            activeCount={filters.gender && filters.gender !== "All" ? 1 : 0}
+          >
+            <div className="space-y-0">
+              {["All", ...genderList].map(g => {
+                const isSelected = (filters.gender || "All").toLowerCase() === g.toLowerCase();
+                return (
+                  <button
+                    key={g}
+                    type="button"
+                    onClick={() => setFilters(prev => ({ ...prev, gender: g }))}
+                    className={`w-full flex items-center justify-between py-3 text-left uppercase transition-all border-b border-zinc-200 last:border-b-0 ${
+                      isSelected
+                        ? "text-zinc-900 font-semibold"
+                        : "text-zinc-500 hover:text-black"
+                    }`}
+                  >
+                    <span className="shop-sidebar-label">{g}</span>
+                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          </FilterSection>
+        )}
+
+        {/* 7. Price Range: Slider & Presets */}
         <FilterSection
           title="Price Range"
-          defaultOpen={true}
-          activeCount={filters.maxPrice < maxPriceLimit || filters.minPrice > 0 ? 1 : 0}
+          defaultOpen={false}
+          activeCount={
+            filters.minPrice > 0 ||
+            (filters.maxPrice !== null && filters.maxPrice !== undefined && filters.maxPrice < maxPriceLimit)
+              ? 1
+              : 0
+          }
         >
           <div className="space-y-3.5">
             {/* Price values readout */}
             <div className="flex items-center justify-between text-[14px] font-mono text-zinc-700">
               <span>₹{filters.minPrice?.toLocaleString("en-IN")}</span>
-              <span className="text-[#b8860b]  ">₹{filters.maxPrice?.toLocaleString("en-IN")}</span>
+              <span className="text-[#b8860b]">
+                ₹{(filters.maxPrice ?? maxPriceLimit)?.toLocaleString("en-IN")}
+              </span>
             </div>
 
             {/* Slider */}
@@ -355,10 +399,14 @@ const ShopFilterSidebar = ({
                 min={0}
                 max={maxPriceLimit}
                 step={500}
-                value={filters.maxPrice || maxPriceLimit}
-                onChange={e =>
-                  setFilters(prev => ({ ...prev, maxPrice: Number(e.target.value) }))
-                }
+                value={filters.maxPrice !== null && filters.maxPrice !== undefined ? filters.maxPrice : maxPriceLimit}
+                onChange={e => {
+                  const val = Number(e.target.value);
+                  setFilters(prev => ({
+                    ...prev,
+                    maxPrice: val >= maxPriceLimit ? null : val
+                  }));
+                }}
                 onMouseDown={e => e.stopPropagation()}
                 onTouchStart={e => e.stopPropagation()}
                 onTouchMove={e => e.stopPropagation()}
@@ -367,32 +415,40 @@ const ShopFilterSidebar = ({
               />
             </div>
 
-
             {/* Price Presets */}
             <div className="grid grid-cols-2 gap-2 pt-1">
               {[
-                { label: "Under ₹2,500", max: 2500, min: 0 },
+                { label: "Under ₹2,500", min: 0, max: 2500 },
                 { label: "₹2,500 – ₹5,000", min: 2500, max: 5000 },
                 { label: "₹5,000 – ₹10,000", min: 5000, max: 10000 },
                 { label: "Above ₹10,000", min: 10000, max: maxPriceLimit }
               ].map(preset => {
                 const isSelected =
-                  filters.minPrice === preset.min && filters.maxPrice === preset.max;
+                  filters.minPrice === preset.min &&
+                  (preset.max === maxPriceLimit
+                    ? (filters.maxPrice === null || filters.maxPrice === maxPriceLimit)
+                    : filters.maxPrice === preset.max);
+
                 return (
                   <button
                     key={preset.label}
                     type="button"
-                    onClick={() =>
-                      setFilters(prev => ({
-                        ...prev,
-                        minPrice: preset.min,
-                        maxPrice: preset.max
-                      }))
-                    }
-                    className={`py-2 px-2 border text-center uppercase transition-all rounded-sm flex items-center justify-center ${isSelected
-                      ? "border-[#b8860b] bg-[#b8860b]/10 text-[#b8860b]  "
-                      : "border-zinc-300 text-zinc-600 hover:border-black hover:text-black"
-                      }`}
+                    onClick={() => {
+                      if (isSelected) {
+                        setFilters(prev => ({ ...prev, minPrice: 0, maxPrice: null }));
+                      } else {
+                        setFilters(prev => ({
+                          ...prev,
+                          minPrice: preset.min,
+                          maxPrice: preset.max === maxPriceLimit ? null : preset.max
+                        }));
+                      }
+                    }}
+                    className={`py-2 px-2 border text-center uppercase transition-all rounded-sm flex items-center justify-center ${
+                      isSelected
+                        ? "border-[#b8860b] bg-[#b8860b]/10 text-[#b8860b]"
+                        : "border-zinc-300 text-zinc-600 hover:border-black hover:text-black"
+                    }`}
                   >
                     <span className="shop-sidebar-preset-btn">{preset.label}</span>
                   </button>
@@ -402,10 +458,10 @@ const ShopFilterSidebar = ({
           </div>
         </FilterSection>
 
-        {/* Volume Filter (now Sizes) */}
+        {/* 8. Size Filter */}
         <FilterSection
           title="Size"
-          defaultOpen={true}
+          defaultOpen={false}
           activeCount={filters.sizes?.length || 0}
         >
           <div className="space-y-2 pt-1">
@@ -432,8 +488,8 @@ const ShopFilterSidebar = ({
           </div>
         </FilterSection>
 
-        {/* Minimum Rating */}
-        < FilterSection
+        {/* 9. Rating Filter */}
+        <FilterSection
           title="Rating"
           defaultOpen={false}
           activeCount={filters.minRating > 0 ? 1 : 0}
@@ -451,10 +507,11 @@ const ShopFilterSidebar = ({
                       minRating: isSelected ? 0 : stars
                     }))
                   }
-                  className={`w-full flex items-center justify-between py-2 px-3 uppercase transition-colors rounded-sm ${isSelected
-                    ? "bg-zinc-100 text-zinc-900  "
-                    : "text-zinc-600 hover:text-black hover:bg-zinc-50"
-                    }`}
+                  className={`w-full flex items-center justify-between py-2 px-3 uppercase transition-colors rounded-sm ${
+                    isSelected
+                      ? "bg-zinc-100 text-zinc-900"
+                      : "text-zinc-600 hover:text-black hover:bg-zinc-50"
+                  }`}
                 >
                   <div className="flex items-center gap-1.5 text-[#b8860b]">
                     <Star size={12} fill="currentColor" />
@@ -465,9 +522,9 @@ const ShopFilterSidebar = ({
               );
             })}
           </div>
-        </FilterSection >
+        </FilterSection>
 
-      </div >
+      </div>
     </div >
   );
 

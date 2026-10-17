@@ -462,15 +462,6 @@ const Header = () => {
 
             {/* Mobile Right Action Icons */}
             <div className="flex lg:hidden justify-end items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => setIsSearchActive(!isSearchActive)}
-                className="p-2 text-zinc-800 hover:text-black relative"
-                aria-label="Search"
-              >
-                <Search size={21} strokeWidth={1.6} />
-              </button>
-
               <Link to="/wishlist" className="p-2 text-zinc-800 hover:text-black relative" aria-label="Wishlist">
                 <Heart size={21} strokeWidth={1.6} />
                 {wishlistCount > 0 && (

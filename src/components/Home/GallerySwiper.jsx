@@ -21,10 +21,22 @@ const GallerySwiper = () => {
   useEffect(() => {
     const fetchRecent = async () => {
       try {
-        const q = query(collection(db, "products"), orderBy("createdAt", "desc"), limit(8));
-        const snap = await getDocs(q);
+        const snap = await getDocs(collection(db, "products"));
         const fetched = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setProducts(fetched);
+        fetched.sort((a, b) => {
+          const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAt ? new Date(a.createdAt).getTime() : 0);
+          const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAt ? new Date(b.createdAt).getTime() : 0);
+          return timeB - timeA;
+        });
+
+        const activeList = fetched.filter(p => p.is_active !== false);
+        const newArrivals = activeList.filter(p =>
+          p.is_new_arrival === true ||
+          p.is_new === true ||
+          (Array.isArray(p.tags) && p.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toLowerCase().includes('new arrival')))
+        );
+
+        setProducts(newArrivals.length > 0 ? newArrivals : activeList.slice(0, 8));
       } catch (err) {
         console.error("Error loading gallery products:", err);
       } finally {
@@ -82,7 +94,7 @@ const GallerySwiper = () => {
 
         <SectionHeader
           subtitle="HAUTE PARFUMERIE SHOWCASE"
-          title="RECENT ARRIVALS & ATELIER EDITIONS"
+          title="Recent Arrivals"
         />
 
         {/* Swiper Container */}

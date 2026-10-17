@@ -34,7 +34,11 @@ const BestsellerProducts = () => {
           return timeB - timeA;
         });
         const activeList = list.filter(item => item.is_active !== false);
-        setProducts(activeList);
+        const bestsellers = activeList.filter(p =>
+          p.is_bestseller === true ||
+          (Array.isArray(p.tags) && p.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toLowerCase().includes('bestseller')))
+        );
+        setProducts(bestsellers.length > 0 ? bestsellers : activeList);
       } catch (err) {
         console.error("Error loading bestseller products:", err);
       } finally {
@@ -86,7 +90,7 @@ const BestsellerProducts = () => {
                 <span>CURATED EXTRAITS</span>
               </p>
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight tracking-[0.15em] text-[#0D0D0D] uppercase whitespace-nowrap">
-                FRESH DROPS & BESTSELLERS
+                Bestseller
               </h2>
             </div>
             <div className="hidden md:block flex-1 h-[1px] bg-gradient-to-r from-[#B8860B]/40 via-zinc-300 to-transparent mb-3" />

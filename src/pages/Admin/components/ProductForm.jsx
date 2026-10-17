@@ -40,6 +40,8 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
   const [dbAttributes, setDbAttributes] = useState([]);
   const [dbFragranceFamilies, setDbFragranceFamilies] = useState([]);
   const [dbFragranceConcentrations, setDbFragranceConcentrations] = useState([]);
+  const [dbAvailabilities, setDbAvailabilities] = useState([]);
+  const [dbGenders, setDbGenders] = useState(["Unisex", "Men", "Women"]);
 
   // Multi-select collection tags state
   const [selectedCollections, setSelectedCollections] = useState(
@@ -48,6 +50,29 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
       : (product?.collection ? [product.collection] : [])
   );
   const [selectedTags, setSelectedTags] = useState(normalizeTags(product?.tags || product?.tag));
+
+  // Featured home showcase flags
+  const [isBestseller, setIsBestseller] = useState(
+    product?.is_bestseller ?? (
+      Array.isArray(product?.tags)
+        ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'BESTSELLER')
+        : (product?.tag?.toUpperCase?.() === 'BESTSELLER')
+    )
+  );
+  const [isNewArrival, setIsNewArrival] = useState(
+    product?.is_new_arrival ?? (
+      Array.isArray(product?.tags)
+        ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase()?.includes('NEW'))
+        : (product?.tag?.toUpperCase?.()?.includes('NEW'))
+    )
+  );
+  const [isAtelierEdition, setIsAtelierEdition] = useState(
+    product?.is_atelier_edition ?? (
+      Array.isArray(product?.tags)
+        ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase()?.includes('ATELIER'))
+        : (product?.tag?.toUpperCase?.()?.includes('ATELIER'))
+    )
+  );
 
   const [customTagLabel, setCustomTagLabel] = useState("");
   const [customTagBg, setCustomTagBg] = useState("#000000");
@@ -63,60 +88,64 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         const catSnap = await getDocs(collection(db, "categories"));
         if (!catSnap.empty) {
           setDbCategories(catSnap.docs.map(doc => doc.data().name).filter(Boolean));
-        } else {
-          setDbCategories(["Extrait de Parfum", "Eau de Parfum", "Oud Collection", "Woody & Amber", "Floral & Fresh", "Gift Sets"]);
         }
 
         const brandSnap = await getDocs(collection(db, "brands"));
         if (!brandSnap.empty) {
           setDbBrands(brandSnap.docs.map(doc => doc.data().name).filter(Boolean));
-        } else {
-          setDbBrands(["MAHIRASH", "Roja Parfums", "House of Creed", "Maison Francis Kurkdjian", "Tom Ford Private Blend"]);
         }
 
         const subSnap = await getDocs(collection(db, "subcategories"));
         if (!subSnap.empty) {
           setDbSubcategories(subSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        } else {
-          setDbSubcategories([
-            { name: "Signature Oud", parent_category: "Oud Collection" },
-            { name: "Royal Extraits", parent_category: "Extrait de Parfum" },
-            { name: "Amber & Spice", parent_category: "Woody & Amber" },
-            { name: "Zesty Citrus", parent_category: "Floral & Fresh" },
-            { name: "Discovery Set", parent_category: "Gift Sets" }
-          ]);
         }
 
         const colSnap = await getDocs(collection(db, "collections"));
         if (!colSnap.empty) {
           setDbCollections(colSnap.docs.map(doc => doc.data().name).filter(Boolean));
-        } else {
-          setDbCollections(["New Launches", "Bestselling Scents", "The Royal Edition", "Private Reserve"]);
         }
 
         const attrSnap = await getDocs(collection(db, "attributes"));
         if (!attrSnap.empty) {
           setDbAttributes(attrSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        } else {
-          setDbAttributes([
-            { name: "Size", values: "50ml, 100ml, 200ml, Sample Set" },
-            { name: "Color", values: "Oud, Woody, Amber, Floral, Citrus, Vanilla, Leather, Spice" },
-            { name: "Material", values: "Extrait de Parfum (30%), Eau de Parfum (20%), Eau de Toilette (15%)" }
-          ]);
         }
 
         const famSnap = await getDocs(collection(db, "fragrance_families"));
         if (!famSnap.empty) {
           setDbFragranceFamilies(famSnap.docs.map(doc => doc.data().name).filter(Boolean));
-        } else {
-          setDbFragranceFamilies(["Aromatic", "Citrus", "Floral", "Fougere", "Fruity", "Leather", "Woody", "Warm & Spicy"]);
         }
 
         const concSnap = await getDocs(collection(db, "fragrance_concentrations"));
         if (!concSnap.empty) {
           setDbFragranceConcentrations(concSnap.docs.map(doc => doc.data().name).filter(Boolean));
-        } else {
-          setDbFragranceConcentrations(["Eau de Toilette (EDT)", "Eau de Parfum (EDP)", "Extrait de Parfum", "Parfum", "Eau de Cologne (EDC)"]);
+        }
+
+        const availSnap = await getDocs(collection(db, "availabilities"));
+        if (!availSnap.empty) {
+          setDbAvailabilities(availSnap.docs.map(doc => doc.data().name).filter(Boolean));
+        }
+
+        const genderSnap = await getDocs(collection(db, "gender_banners"));
+        if (!genderSnap.empty) {
+          const bannerGenders = genderSnap.docs
+            .map(doc => {
+              const d = doc.data();
+              let g = d.title || "";
+              if (g.toUpperCase().startsWith("FOR ")) g = g.replace(/FOR /i, "");
+              if (d.link && d.link.includes("gender=")) {
+                try {
+                  const url = new URL(d.link, "http://dummy.com");
+                  const qg = url.searchParams.get("gender");
+                  if (qg) return qg;
+                } catch (e) {}
+              }
+              return g.trim();
+            })
+            .filter(Boolean)
+            .map(g => g.charAt(0).toUpperCase() + g.slice(1).toLowerCase());
+          if (bannerGenders.length > 0) {
+            setDbGenders(Array.from(new Set(["Unisex", "Men", "Women", ...bannerGenders])));
+          }
         }
       } catch (err) {
         console.error("Error fetching catalog data for product form:", err);
@@ -177,18 +206,33 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
           : [{ size: "", price: 0, original_price: 0, stock: 10, is_preorder: false, images: [] }]
       );
       setSelectedTags(normalizeTags(product.tags || product.tag));
+      const hasBestsellerTag = Array.isArray(product.tags)
+        ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'BESTSELLER')
+        : (product.tag?.toUpperCase?.() === 'BESTSELLER');
+      const hasNewArrivalTag = Array.isArray(product.tags)
+        ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase()?.includes('NEW'))
+        : (product.tag?.toUpperCase?.()?.includes('NEW'));
+      const hasAtelierTag = Array.isArray(product.tags)
+        ? product.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase()?.includes('ATELIER'))
+        : (product.tag?.toUpperCase?.()?.includes('ATELIER'));
+
+      setIsBestseller(product.is_bestseller !== undefined ? Boolean(product.is_bestseller) : Boolean(hasBestsellerTag));
+      setIsNewArrival(product.is_new_arrival !== undefined ? Boolean(product.is_new_arrival) : Boolean(hasNewArrivalTag));
+      setIsAtelierEdition(product.is_atelier_edition !== undefined ? Boolean(product.is_atelier_edition) : Boolean(hasAtelierTag));
+
       reset({
         name: product.name || "",
         brand: product.brand || "MAHIRASH",
         category: product.category || "",
         subcategory: product.subcategory || "",
-        collection: product.collection || "",
+        collection: product.collection || (Array.isArray(product.collections) && product.collections[0]) || "",
         gender: product.gender || "Unisex",
         description: product.description || "",
         price: product.price || 0,
         original_price: product.original_price || 0,
         stock: product.stock ?? 10,
-        stock_status: product.stock_status || "In Stock",
+        stock_status: product.stock_status || product.availability || "In Stock",
+        availability: product.availability || product.stock_status || "In Stock",
         sizes: product.sizes || "",
         top_notes: product.top_notes || "",
         heart_notes: product.heart_notes || "",
@@ -204,6 +248,9 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         shipping_height: product.shipping?.height || 5,
       });
     } else {
+      setIsBestseller(false);
+      setIsNewArrival(false);
+      setIsAtelierEdition(false);
       setSizePrices([{ size: "", price: 0, original_price: 0, stock: 10, is_preorder: false, images: [] }]);
       reset({
         name: "",
@@ -217,6 +264,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         original_price: 0,
         stock: 10,
         stock_status: "In Stock",
+        availability: "In Stock",
         sizes: "",
         top_notes: "",
         heart_notes: "",
@@ -308,6 +356,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
       const totalVariantStock = validSizePrices.reduce((sum, sp) => sum + (Number(sp.stock) || 0), 0);
       const stockQty = totalVariantStock;
       const autoStatus = stockQty === 0 ? "Out of Stock" : stockQty <= 5 ? "Low Stock" : "In Stock";
+      const chosenAvailability = values.availability || values.stock_status || autoStatus;
 
       const docData = {
         name: values.name,
@@ -315,15 +364,17 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         category: values.category,
         subcategory: values.subcategory || "",
         collection: values.collection || "",
+        collections: values.collection ? [values.collection] : selectedCollections,
         gender: values.gender || "Unisex",
         fragrance_family: values.fragrance_family || "",
         fragrance_concentration: values.fragrance_concentration || "",
+        availability: chosenAvailability,
+        stock_status: chosenAvailability,
         description: values.description,
         price: defaultPrice,
         original_price: defaultOriginalPrice,
         size_prices: validSizePrices,
         stock: stockQty,
-        stock_status: autoStatus,
         sizes: validSizePrices.map(sp => sp.size).join(", "),
         top_notes: values.top_notes || "",
         heart_notes: values.heart_notes || "",
@@ -333,7 +384,28 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         rating: Number(values.rating) || 4.5,
         images: allVariantImages.length > 0 ? allVariantImages : [],
         image: allVariantImages[0] || "",
-        tags: selectedTags,
+        is_bestseller: Boolean(isBestseller),
+        is_new_arrival: Boolean(isNewArrival),
+        is_atelier_edition: Boolean(isAtelierEdition),
+        tags: (() => {
+          let tagsToSave = [...selectedTags];
+          if (isBestseller && !tagsToSave.some(t => t.label?.toUpperCase() === 'BESTSELLER')) {
+            tagsToSave.push({ label: 'BESTSELLER', bg: '#dc2626', text: '#ffffff' });
+          } else if (!isBestseller) {
+            tagsToSave = tagsToSave.filter(t => t.label?.toUpperCase() !== 'BESTSELLER');
+          }
+          if (isNewArrival && !tagsToSave.some(t => t.label?.toUpperCase() === 'NEW ARRIVAL')) {
+            tagsToSave.push({ label: 'NEW ARRIVAL', bg: '#b8860b', text: '#ffffff' });
+          } else if (!isNewArrival) {
+            tagsToSave = tagsToSave.filter(t => t.label?.toUpperCase() !== 'NEW ARRIVAL');
+          }
+          if (isAtelierEdition && !tagsToSave.some(t => t.label?.toUpperCase() === 'ATELIER EDITION')) {
+            tagsToSave.push({ label: 'ATELIER EDITION', bg: '#18181b', text: '#d4af37' });
+          } else if (!isAtelierEdition) {
+            tagsToSave = tagsToSave.filter(t => t.label?.toUpperCase() !== 'ATELIER EDITION');
+          }
+          return tagsToSave;
+        })(),
         shipping: {
           weight: Number(values.shipping_weight) || 0.5,
           length: Number(values.shipping_length) || 30,
@@ -443,9 +515,9 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             value={watch("gender") || "Unisex"}
             onChange={(e) => setValue("gender", e.target.value, { shouldValidate: true, shouldDirty: true })}
           >
-            <option value="Unisex">Unisex</option>
-            <option value="Men">Men</option>
-            <option value="Women">Women</option>
+            {dbGenders.map((g) => (
+              <option key={g} value={g}>{g}</option>
+            ))}
           </select>
         </div>
 
@@ -481,6 +553,137 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
               <option key={conc} value={conc}>{conc}</option>
             ))}
           </select>
+        </div>
+
+        {/* Collection Selector */}
+        <div className="space-y-1.5 md:col-span-1 lg:col-span-3">
+          <label className="text-[14px] text-zinc-600 uppercase tracking-wide flex items-center justify-between">
+            <span>Collection</span>
+            <span className="text-[10px] text-[#b8860b] font-semibold">Select Collection</span>
+          </label>
+          <select
+            className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:border-[#c9a962] focus:ring-1 focus:ring-[#c9a962] outline-none transition-all text-sm bg-white cursor-pointer"
+            value={watch("collection") || ""}
+            onChange={(e) => setValue("collection", e.target.value, { shouldValidate: true, shouldDirty: true })}
+          >
+            <option value="">None / Standard</option>
+            {dbCollections.map((col) => (
+              <option key={col} value={col}>{col}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Availability Status Selector */}
+        <div className="space-y-1.5 md:col-span-1 lg:col-span-3">
+          <label className="text-[14px] text-zinc-600 uppercase tracking-wide flex items-center justify-between">
+            <span>Availability Status</span>
+            <span className="text-[10px] text-[#b8860b] font-semibold">Managed from Admin</span>
+          </label>
+          <select
+            className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:border-[#c9a962] focus:ring-1 focus:ring-[#c9a962] outline-none transition-all text-sm bg-white cursor-pointer"
+            value={watch("availability") || watch("stock_status") || "In Stock"}
+            onChange={(e) => {
+              setValue("availability", e.target.value, { shouldValidate: true, shouldDirty: true });
+              setValue("stock_status", e.target.value, { shouldValidate: true, shouldDirty: true });
+            }}
+          >
+            {dbAvailabilities.length > 0 ? (
+              dbAvailabilities.map((avail) => (
+                <option key={avail} value={avail}>{avail}</option>
+              ))
+            ) : (
+              <>
+                <option value="In Stock">In Stock</option>
+                <option value="Out of Stock">Out of Stock</option>
+                <option value="Pre-Order">Pre-Order</option>
+                <option value="Limited Edition">Limited Edition</option>
+              </>
+            )}
+          </select>
+        </div>
+
+        {/* Featured Showcase Badges (Bestseller, New Arrivals, Atelier Editions) */}
+        <div className="space-y-2 md:col-span-2 lg:col-span-6 bg-gradient-to-r from-amber-50/80 via-stone-50 to-amber-50/40 border border-[#E5D5B8] p-4 rounded-xl mt-1 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <label className="text-[13px] font-bold text-zinc-900 uppercase tracking-wide flex items-center gap-2">
+              <Sparkles size={15} className="text-[#b8860b]" />
+              Home Page Showcases & Badges
+            </label>
+            <span className="text-[11px] text-[#b8860b] font-semibold">
+              Select which home page sections this product will display in
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            {/* Bestseller Checkbox */}
+            <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+              isBestseller
+                ? 'bg-red-50/90 border-red-300 shadow-sm ring-1 ring-red-400/30'
+                : 'bg-white border-zinc-200 hover:border-zinc-300'
+            }`}>
+              <input
+                type="checkbox"
+                checked={isBestseller}
+                onChange={e => setIsBestseller(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded text-red-600 focus:ring-red-500 accent-red-600 cursor-pointer"
+              />
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-zinc-900 uppercase tracking-wider flex items-center gap-1.5">
+                  Bestseller
+                  <span className="text-[9px] bg-red-600 text-white px-1.5 py-0.5 rounded font-black tracking-normal">HOT</span>
+                </span>
+                <span className="text-[11px] text-zinc-500 mt-0.5">
+                  Display in home "Bestseller" section
+                </span>
+              </div>
+            </label>
+
+            {/* New Arrivals Checkbox */}
+            <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+              isNewArrival
+                ? 'bg-amber-50/90 border-[#b8860b] shadow-sm ring-1 ring-[#b8860b]/30'
+                : 'bg-white border-zinc-200 hover:border-zinc-300'
+            }`}>
+              <input
+                type="checkbox"
+                checked={isNewArrival}
+                onChange={e => setIsNewArrival(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded text-[#b8860b] focus:ring-[#b8860b] accent-[#b8860b] cursor-pointer"
+              />
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-zinc-900 uppercase tracking-wider flex items-center gap-1.5">
+                  New Arrival
+                  <span className="text-[9px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">NEW</span>
+                </span>
+                <span className="text-[11px] text-zinc-500 mt-0.5">
+                  Display in "Recent Arrivals" showcase
+                </span>
+              </div>
+            </label>
+
+            {/* Atelier Editions Checkbox */}
+            <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+              isAtelierEdition
+                ? 'bg-stone-900 border-zinc-900 text-white shadow-sm ring-1 ring-amber-400/30'
+                : 'bg-white border-zinc-200 hover:border-zinc-300'
+            }`}>
+              <input
+                type="checkbox"
+                checked={isAtelierEdition}
+                onChange={e => setIsAtelierEdition(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded text-zinc-900 focus:ring-zinc-900 accent-zinc-900 cursor-pointer"
+              />
+              <div className="flex flex-col">
+                <span className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${isAtelierEdition ? 'text-amber-300' : 'text-zinc-900'}`}>
+                  Atelier Edition
+                  <span className="text-[9px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">ATELIER</span>
+                </span>
+                <span className={`text-[11px] mt-0.5 ${isAtelierEdition ? 'text-stone-300' : 'text-zinc-500'}`}>
+                  Display in Atelier Editions collection
+                </span>
+              </div>
+            </label>
+          </div>
         </div>
 
         {/* Product Tags / Labels */}

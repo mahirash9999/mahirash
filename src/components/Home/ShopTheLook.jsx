@@ -6,44 +6,8 @@ import { db } from '../../components/Firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
 import OptimizedCloudinaryImage from '../OptimizedCloudinaryImage';
 
-const DEFAULT_GENDER_BANNERS = [
-  {
-    id: 'banner_men',
-    title: 'FOR HIM',
-    tag: 'MASCULINE SIGNATURES',
-    subtitle: 'Bold, intense, and magnetic extraits formulated for commanding presence.',
-    cta: "DISCOVER MEN'S",
-    image: 'https://res.cloudinary.com/djmfxpemz/image/upload/v1792132433/wgbpfdnhmnbe4bpqi1w0.jpg',
-    link: '/shop?gender=Men',
-    sort_order: 1,
-    is_active: true
-  },
-  {
-    id: 'banner_women',
-    title: 'FOR HER',
-    tag: 'FEMININE ESSENCES',
-    subtitle: 'Sensual, elegant, and floral extraits crafted to leave a lasting, hypnotic sillage.',
-    cta: "DISCOVER WOMEN'S",
-    image: 'https://res.cloudinary.com/djmfxpemz/image/upload/v1792132433/m4fvjsmxzeqgkwcx9qem.jpg',
-    link: '/shop?gender=Women',
-    sort_order: 2,
-    is_active: true
-  },
-  {
-    id: 'banner_unisex',
-    title: 'UNISEX',
-    tag: 'TIMELESS HARMONY',
-    subtitle: 'Boundary-defying artisanal extraits designed to transcend convention.',
-    cta: "DISCOVER UNISEX",
-    image: 'https://res.cloudinary.com/djmfxpemz/image/upload/v1792132434/yx5mbymas6q8k0wpkqz0.jpg',
-    link: '/shop?gender=Unisex',
-    sort_order: 3,
-    is_active: true
-  }
-];
-
 const ShopTheLook = () => {
-  const [banners, setBanners] = useState(DEFAULT_GENDER_BANNERS);
+  const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -58,7 +22,7 @@ const ShopTheLook = () => {
             .map(doc => ({ id: doc.id, ...doc.data() }))
             .filter(item => item.is_active !== false);
           list.sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
-          setBanners(list.length > 0 ? list : DEFAULT_GENDER_BANNERS);
+          setBanners(list);
         } else {
           // 2. Fallback check shop_the_look collection
           const qLook = query(collection(db, 'shop_the_look'));
@@ -67,12 +31,15 @@ const ShopTheLook = () => {
             const list = snapLook.docs
               .map(doc => ({ id: doc.id, ...doc.data() }))
               .filter(item => item.is_active !== false);
-            setBanners(list.length > 0 ? list : DEFAULT_GENDER_BANNERS);
+            list.sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
+            setBanners(list);
+          } else {
+            setBanners([]);
           }
         }
       } catch (error) {
-        console.warn("Using default gender banners fallback:", error);
-        setBanners(DEFAULT_GENDER_BANNERS);
+        console.error("Error loading collection banners:", error);
+        setBanners([]);
       } finally {
         setLoading(false);
       }
@@ -81,9 +48,7 @@ const ShopTheLook = () => {
     fetchBanners();
   }, []);
 
-  if (loading && banners.length === 0) return null;
-
-  const displayBanners = banners.length > 0 ? banners : DEFAULT_GENDER_BANNERS;
+  if (loading || banners.length === 0) return null;
 
   return (
     <section className="py-14 md:py-20 bg-[#FAF8F5] overflow-hidden relative border-t border-[#E5D5B8]/40">
@@ -100,29 +65,29 @@ const ShopTheLook = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-8">
           <div className="flex items-center flex-1 min-w-0">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extralight tracking-[0.15em] text-[#0D0D0D] uppercase whitespace-nowrap">
-              FOR HIM, FOR HER & UNISEX
+              Collection
             </h2>
             <div className="hidden md:block flex-1 h-[1px] bg-gradient-to-r from-[#B8860B]/40 via-[#E5D5B8] to-transparent ml-8 mr-4 self-center mt-1" />
           </div>
         </div>
       </div>
 
-      {/* 3 Banners Grid: For Him, For Her, and Unisex */}
+      {/* Dynamic Collection Banners Grid (3 per row) */}
       <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {displayBanners.slice(0, 3).map((banner, index) => {
-            const defaultLink = index === 0 ? '/shop?gender=Men' : index === 1 ? '/shop?gender=Women' : '/shop?gender=Unisex';
+          {banners.map((banner, index) => {
+            const destinationLink = banner.link || banner.path || '/shop';
             return (
               <motion.div
                 key={banner.id || index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.7, delay: index * 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
+                transition={{ duration: 0.7, delay: (index % 3) * 0.15, ease: [0.25, 0.46, 0.45, 0.94] }}
                 className="relative w-full"
               >
                 <Link
-                  to={banner.link || defaultLink}
+                  to={destinationLink}
                   className="relative group block overflow-hidden bg-stone-100 aspect-[4/5] sm:aspect-[16/10] md:aspect-[4/5] lg:aspect-[3/4] w-full rounded-2xl shadow-xl border border-[#E5D5B8] hover:border-[#B8860B] hover:shadow-[0_20px_45px_rgba(184,134,11,0.2)] transition-all duration-500"
                 >
                   {/* Editorial Background Image */}
@@ -131,7 +96,7 @@ const ShopTheLook = () => {
                     alt={banner.title || 'Collection banner'}
                     preset="banner"
                     quality="auto:best"
-                    priority={true}
+                    priority={index < 3}
                     className="absolute inset-0 w-full h-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105 group-hover:opacity-100"
                   />
 
@@ -158,7 +123,7 @@ const ShopTheLook = () => {
                     )}
 
                     <div className="inline-flex items-center justify-center gap-2.5 bg-[#0D0D0D] text-white px-6 py-3 text-[10px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase transition-all duration-300 shrink-0 shadow-lg pointer-events-auto rounded-full group-hover:bg-[#B8860B] group-hover:text-black">
-                      <span>{banner.cta || 'EXPLORE COLLECTION'}</span>
+                      <span>{banner.cta || banner.buttonText || 'EXPLORE COLLECTION'}</span>
                       <ArrowRight size={13} className="group-hover:translate-x-1.5 transition-transform" />
                     </div>
                   </div>
@@ -173,3 +138,4 @@ const ShopTheLook = () => {
 };
 
 export default ShopTheLook;
+
