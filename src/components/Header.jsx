@@ -855,7 +855,7 @@ const Header = () => {
 
                   <div className="flex items-center gap-3.5 text-zinc-300 hover:text-white transition-colors">
                     <HelpCircle size={17} className="text-[#c9a962]" />
-                    <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-[14px] uppercase tracking-wider font-medium">Help & Concierge</Link>
+                    <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-[14px] uppercase tracking-wider font-medium">Help & Support</Link>
                   </div>
                 </div>
 

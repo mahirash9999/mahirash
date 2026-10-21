@@ -922,7 +922,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
       {/* Fragrance Pyramids & Notes Section */}
       <div className="space-y-3 bg-zinc-900 text-white p-4 rounded-xl border border-zinc-800">
         <label className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 text-[#c9a962]">
-          <Sparkles size={16} /> Olfactory Notes & Fragrance Pyramid
+          <Sparkles size={16} /> Fragrance Notes & Pyramid
         </label>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -962,10 +962,10 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-[12px] uppercase tracking-wider text-zinc-400 font-semibold">Sillage / Projection</label>
+            <label className="text-[12px] uppercase tracking-wider text-zinc-400 font-semibold">Strength & Projection</label>
             <input
               className="w-full px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-white text-[14px] outline-none focus:border-[#c9a962]"
-              placeholder="e.g. Intense / Heavy Sillage"
+              placeholder="e.g. Intense / Long Projection"
               {...register("sillage")}
             />
           </div>

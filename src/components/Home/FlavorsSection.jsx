@@ -102,8 +102,8 @@ const FlavorsSection = () => {
             className="flex items-center gap-4 mb-3"
           >
             <div className="h-[1px] w-12 bg-[#b8860b]/40" />
-            <span className="text-[#b8860b] uppercase text-[12px] font-semibold tracking-[0.3em]">
-              THE OLFACTORY MATRIX
+            <span className="text-[#b8860b] uppercase text-[12px] md:text-[13px] font-semibold tracking-[0.3em]">
+              SIGNATURE FRAGRANCE FAMILIES
             </span>
             <div className="h-[1px] w-12 bg-[#b8860b]/40" />
           </motion.div>

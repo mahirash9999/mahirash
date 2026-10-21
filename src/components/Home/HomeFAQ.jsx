@@ -9,16 +9,16 @@ export const DEFAULT_FAQS = [
     id: "faq-1",
     question: "What makes Mahirash Extrait de Parfum different from regular perfumes?",
     answer:
-      "Our Extrait de Parfum formulations feature an exceptional 25%–30% concentration of pure artisanal perfume oils and aged Cambodian agarwood. This high concentration ensures rich multi-layered projection, 12+ hours of longevity, and an undeniable sillage that evolves uniquely with your body chemistry.",
+      "Our Extrait de Parfum formulations feature an exceptional 25%–30% concentration of pure artisanal perfume oils and aged Cambodian agarwood. This high concentration ensures rich multi-layered projection, 12+ hours of longevity, and lasting projection that evolves uniquely with your body chemistry.",
     category: "Fragrance & Artisanship",
     sort_order: 1,
     is_active: true,
   },
   {
     id: "faq-2",
-    question: "How should I store my luxury perfume to preserve its olfactory notes?",
+    question: "How should I store my luxury perfume to preserve its fragrance notes?",
     answer:
-      "We recommend storing your fragrance bottles in a cool, dark place away from direct sunlight, excessive heat, and bathroom humidity. Keeping your flacons at a stable room temperature prevents the delicate top notes like bergamot and pink pepper from oxidizing.",
+      "We recommend storing your fragrance bottles in a cool, dark place away from direct sunlight, excessive heat, and bathroom humidity. Keeping your perfume bottles at a stable room temperature prevents the delicate top notes like bergamot and pink pepper from oxidizing.",
     category: "Fragrance Care",
     sort_order: 2,
     is_active: true,
@@ -27,7 +27,7 @@ export const DEFAULT_FAQS = [
     id: "faq-3",
     question: "Are Mahirash fragrances unisex or gender-specific?",
     answer:
-      "Haute perfumerie celebrates personal resonance over boundaries. While we curate masculine woods, regal ouds, and graceful florals, our compositions are crafted so that anyone can wear them. The fragrance interacts with individual skin warmth to create a truly bespoke signature.",
+      "Luxury perfumery celebrates personal taste over rigid boundaries. While we curate masculine woods, regal ouds, and graceful florals, our compositions are crafted so that anyone can wear them. The fragrance interacts with individual skin warmth to create a truly unique signature.",
     category: "Scent Selection",
     sort_order: 3,
     is_active: true,
@@ -107,7 +107,7 @@ const HomeFAQ = () => {
               FREQUENTLY ASKED <span className="text-[#B8860B] italic font-serif">QUESTIONS</span>
             </h2>
             <p className="text-zinc-600 text-sm sm:text-base font-light leading-relaxed max-w-md pt-2">
-              Everything you need to know about our handcrafted artisanal extraits, fragrance care, longevity, and worldwide concierge shipping.
+              Everything you need to know about our handcrafted artisanal extraits, fragrance care, longevity, and fast express shipping.
             </p>
           </div>
 

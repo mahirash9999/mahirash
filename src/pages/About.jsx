@@ -41,14 +41,14 @@ const About = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       <SEOHead
-        title="Our Story & Atelier Philosophy | Mahirash"
-        description="Discover the story behind Mahirash. Crafted with rare botanical extraits, unyielding luxury standards, and haute parfumerie heritage."
+        title="Our Story & Philosophy | Mahirash"
+        description="Discover the story behind Mahirash. Crafted with rare botanical extraits, unyielding luxury standards, and rich perfume heritage."
         url="https://mahirash.com/about"
-        keywords="Mahirash story, about Mahirash, luxury perfume brand India, haute parfumerie philosophy"
+        keywords="Mahirash story, about Mahirash, luxury perfume brand India, perfume heritage"
       />
       <PageHeader
-        title="Our Atelier Story"
-        subtitle="Crafted with rare botanical extraits, designed for the olfactory connoisseur."
+        title="Our Story"
+        subtitle="Crafted with rare botanical essences, designed for true perfume lovers."
         breadcrumbItems={[
           { label: 'Home', path: '/' },
           { label: 'About Us' },

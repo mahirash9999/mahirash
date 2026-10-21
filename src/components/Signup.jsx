@@ -139,18 +139,18 @@ const Signup = () => {
           </div>
 
           <div className="relative z-10 my-auto">
-            <span className="text-[12px] uppercase tracking-[0.35em] text-[#d9a036] font-semibold">Atelier Membership</span>
+            <span className="text-[12px] md:text-[14px] uppercase tracking-[0.35em] text-[#d9a036] font-semibold">Member Account</span>
             <h1 className="text-3xl md:text-4xl font-extralight text-white tracking-[0.18em] uppercase leading-[1.3] mt-4 mb-6">
               Style<br />Journey
             </h1>
             <div className="w-12 h-[1px] bg-[#d9a036]/60" />
-            <p className="text-[13px] text-zinc-300 leading-relaxed mt-6 max-w-xs font-light">
+            <p className="text-[13px] md:text-[14px] text-zinc-300 leading-relaxed mt-6 max-w-xs font-light">
               Create an exclusive account to track shipments, compile wishlist edits, and expedite checkout.
             </p>
           </div>
 
           <div className="relative z-10 pt-6">
-            <span className="text-[12px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY ATELIER</span>
+            <span className="text-[12px] md:text-[13px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY PERFUMES</span>
           </div>
         </div>
 
@@ -194,37 +194,37 @@ const Signup = () => {
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Wade Warren"
                     required
-                    className="w-full pl-10 pr-4 py-3.5 bg-zinc-50/50 border border-zinc-200 text-[13px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all duration-300 placeholder:text-zinc-400 rounded-none font-medium"
+                    className="w-full pl-10 pr-4 py-3.5 bg-zinc-50/50 border border-zinc-200 text-[14px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all duration-300 placeholder:text-zinc-400 rounded-none font-medium"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Email Address</label>
+                <label className="text-[12px] md:text-[13px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Email Address</label>
                 <div className="relative">
-                  <Mail size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value.toLowerCase())}
                     placeholder="name@email.com"
                     required
-                    className="w-full pl-10 pr-4 py-3.5 bg-zinc-50/50 border border-zinc-200 text-[13px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all duration-300 placeholder:text-zinc-400 lowercase tracking-wider rounded-none"
+                    className="w-full pl-10 pr-4 py-3.5 bg-zinc-50/50 border border-zinc-200 text-[14px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all duration-300 placeholder:text-zinc-400 lowercase tracking-wider rounded-none"
                   />
                 </div>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Password</label>
+                <label className="text-[12px] md:text-[13px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Password</label>
                 <div className="relative">
-                  <Lock size={13} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full pl-10 pr-10 py-3.5 bg-zinc-50/50 border border-zinc-200 text-[13px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all duration-300 placeholder:text-zinc-450 rounded-none"
+                    className="w-full pl-10 pr-10 py-3.5 bg-zinc-50/50 border border-zinc-200 text-[14px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all duration-300 placeholder:text-zinc-450 rounded-none"
                   />
                   <button
                     type="button"

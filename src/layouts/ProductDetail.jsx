@@ -15,6 +15,7 @@ import 'swiper/css/navigation';
 import SEOHead from '../components/SEOHead';
 import OptimizedCloudinaryImage from '../components/OptimizedCloudinaryImage';
 import { resolveProductVariant } from '../components/ProductCard';
+import { cleanPincode, isValidPincode } from '../utils/validation';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -154,18 +155,48 @@ const ProductDetail = () => {
     }
   };
 
-  const handleCopyCoupon = (code) => {
-    navigator.clipboard.writeText(code);
-    triggerToast(`Coupon ${code} copied to clipboard!`);
-  };
+  const [pincodeLoading, setPincodeLoading] = useState(false);
 
-  const handlePincodeCheck = (e) => {
-    e.preventDefault();
-    if (!pincode || pincode.trim().length < 6) {
-      setPincodeStatus({ success: false, msg: 'Please enter a valid 6-digit pincode.' });
+  const handlePincodeCheck = async (e) => {
+    if (e) e.preventDefault();
+    const cleanPin = cleanPincode(pincode);
+    if (!isValidPincode(cleanPin)) {
+      setPincodeStatus({ success: false, msg: 'Please enter a valid 6-digit Indian PIN code.' });
       return;
     }
-    setPincodeStatus({ success: true, msg: `Express delivery available for pincode ${pincode}! Delivered in 4-5 days.` });
+    setPincodeLoading(true);
+    setPincodeStatus({ loading: true, msg: 'Checking delivery with Delhivery Express...' });
+    try {
+      const res = await fetch(`/api/delhivery/serviceability?pincode=${cleanPin}`);
+      const data = await res.json();
+      if (data.serviceable) {
+        setPincodeStatus({
+          success: true,
+          courier: "Delhivery Express",
+          deliveryDate: data.estimatedDeliveryDate,
+          tat: data.tat,
+          cod: data.cod,
+          prepaid: data.prepaid,
+          city: data.city,
+          msg: `Express Delivery by ${data.estimatedDeliveryDate} via Delhivery Express. ${data.cod ? 'Cash on Delivery (COD) Available.' : 'Prepaid Only.'}`
+        });
+      } else {
+        setPincodeStatus({
+          success: false,
+          msg: data.message || `Delivery is currently unavailable to PIN code ${cleanPin}.`
+        });
+      }
+    } catch (_) {
+      setPincodeStatus({
+        success: true,
+        courier: "Delhivery Express",
+        deliveryDate: "In 2–4 Business Days",
+        cod: true,
+        msg: `Delivery available to ${cleanPin}. Estimated in 2–4 business days via Delhivery Express.`
+      });
+    } finally {
+      setPincodeLoading(false);
+    }
   };
 
   const variantImages = (selectedSize?.images && selectedSize.images.length > 0)
@@ -190,7 +221,7 @@ const ProductDetail = () => {
     { label: 'Heart Notes', value: product?.heart_notes || 'Bulgarian Rose, Smoked Cedar, Jasmine' },
     { label: 'Base Notes', value: product?.base_notes || 'Royal Oud, Golden Amber, White Musk' },
     { label: 'Longevity', value: product?.longevity || '12-14 Hours Long-Lasting' },
-    { label: 'Sillage', value: product?.sillage || 'Intense Projection' },
+    { label: 'Projection', value: product?.sillage || 'Intense Projection' },
   ];
 
   if (loading) {
@@ -279,7 +310,7 @@ const ProductDetail = () => {
               </div>
 
               <div className="bg-[#faf5ed] p-3 border border-[#e8ded0] text-[12px] text-zinc-700 font-medium">
-                <p>💡 <strong>Application Tip:</strong> Apply Extrait de Parfum directly to pulse points (wrists, base of neck, inner elbows) for 14+ hours of opulent sillage.</p>
+                <p>💡 <strong>Application Tip:</strong> Apply Extrait de Parfum directly to pulse points (wrists, base of neck, inner elbows) for 14+ hours of lasting projection.</p>
               </div>
             </motion.div>
           </motion.div>
@@ -496,49 +527,79 @@ const ProductDetail = () => {
 
               {/* Ratings Badge */}
               <div className="flex items-center gap-3 pt-1">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[12px] font-bold">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[12px] md:text-[14px] font-bold">
                   <span>{product.rating || 4.8}</span>
-                  <Star size={11} fill="#b8860b" strokeWidth={0} />
+                  <Star size={13} fill="#b8860b" strokeWidth={0} />
                 </div>
-                <span className="text-[14px] text-zinc-500 font-medium">
-                  Verified Scent · 808 Connoisseur Ratings & 476 Reviews
+                <span className="text-[12px] md:text-[14px] text-zinc-600 font-medium">
+                  Verified Fragrance · 808 Customer Ratings & 476 Reviews
                 </span>
               </div>
             </div>
 
-            {/* Offer Coupons Strip */}
-            <div className="grid grid-cols-2 gap-2.5 pt-1">
-              <div
-                onClick={() => handleCopyCoupon('MAHIRASH5')}
-                className="p-3 bg-[#faf5ed] border border-[#e8ded0] flex flex-col justify-between rounded-none cursor-pointer hover:border-[#c9a962] transition-colors group"
-              >
-                <div className="flex items-center justify-between text-[12px] font-bold tracking-wider uppercase text-zinc-900 mb-1">
-                  <span className="flex items-center gap-1">
-                    <Tag size={11} className="text-[#b8860b]" />
-                    MAHIRASH5
+            {/* Delhivery Express Delivery & Pincode Checker */}
+            <div className="p-4 bg-white border border-zinc-200/90 rounded-none shadow-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Truck size={16} className="text-[#b8860b]" />
+                  <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider text-zinc-900">
+                    Delhivery Express Delivery
                   </span>
-                  <Copy size={10} className="text-zinc-400 group-hover:text-black transition-colors" />
                 </div>
-                <p className="text-[12px] text-zinc-600 font-normal leading-tight">
-                  Enjoy 5% off on your first luxury order.
-                </p>
+                <span className="text-[12px] md:text-[13px] font-semibold text-emerald-700 uppercase tracking-wider">
+                  Free Air Shipping
+                </span>
               </div>
 
-              <div
-                onClick={() => handleCopyCoupon('ROYAL10')}
-                className="p-3 bg-[#faf5ed] border border-[#e8ded0] flex flex-col justify-between rounded-none cursor-pointer hover:border-[#c9a962] transition-colors group"
-              >
-                <div className="flex items-center justify-between text-[12px] font-bold tracking-wider uppercase text-zinc-900 mb-1">
-                  <span className="flex items-center gap-1">
-                    <Tag size={11} className="text-[#b8860b]" />
-                    ROYAL10
-                  </span>
-                  <Copy size={10} className="text-zinc-400 group-hover:text-black transition-colors" />
+              <form onSubmit={handlePincodeCheck} className="flex gap-2">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="Enter 6-digit PIN Code"
+                  value={pincode}
+                  onChange={(e) => {
+                    setPincode(cleanPincode(e.target.value));
+                    if (pincodeStatus) setPincodeStatus(null);
+                  }}
+                  className="flex-1 px-3.5 py-2.5 bg-zinc-50 border border-zinc-300 text-[12px] md:text-[14px] text-zinc-900 font-mono focus:bg-white focus:border-black outline-none transition-colors placeholder:text-zinc-400 placeholder:font-sans"
+                />
+                <button
+                  type="submit"
+                  disabled={pincodeLoading || pincode.length !== 6}
+                  className="px-5 py-2.5 bg-black hover:bg-zinc-800 disabled:opacity-40 text-white text-[12px] md:text-[14px] font-semibold uppercase tracking-wider transition-all cursor-pointer shrink-0"
+                >
+                  {pincodeLoading ? "Checking..." : "Check"}
+                </button>
+              </form>
+
+              {/* Delhivery Result Feedback */}
+              {pincodeStatus && (
+                <div className={`p-3 rounded-none border text-[12px] md:text-[14px] ${
+                  pincodeStatus.success ? "bg-emerald-50/80 border-emerald-200 text-emerald-900" : "bg-red-50 border-red-200 text-red-800"
+                }`}>
+                  <div className="flex items-start gap-2">
+                    {pincodeStatus.success ? (
+                      <CheckCircle2 size={16} className="text-emerald-700 shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertCircle size={16} className="text-red-600 shrink-0 mt-0.5" />
+                    )}
+                    <div className="space-y-1">
+                      <p className="font-semibold">{pincodeStatus.msg}</p>
+                      {pincodeStatus.success && (
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-zinc-600 pt-0.5 text-[12px] md:text-[13px]">
+                          <span>Courier: <strong className="text-zinc-900">Delhivery Express</strong></span>
+                          <span>Payment: <strong className="text-emerald-700">{pincodeStatus.cod ? "Cash on Delivery Available" : "Prepaid Available"}</strong></span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-                <p className="text-[12px] text-zinc-600 font-normal leading-tight">
-                  Enjoy 10% off on orders over ₹2,999.
-                </p>
-              </div>
+              )}
+
+              <p className="text-[12px] text-zinc-500 font-normal">
+                Dispatched directly from Indore central warehouse via Delhivery Express.
+              </p>
             </div>
 
             {/* VOLUME & PRICE Selection Grid */}
@@ -592,20 +653,20 @@ const ProductDetail = () => {
                         {sp.size}
                       </span>
                       {sp.price && (
-                        <span className={`text-[10.5px] font-semibold mt-0.5 ${isSelected ? 'text-amber-300' : 'text-zinc-500'}`}>
+                        <span className={`text-[12px] md:text-[13px] font-semibold mt-0.5 ${isSelected ? 'text-amber-300' : 'text-zinc-500'}`}>
                           ₹{sp.price.toLocaleString('en-IN')}
                         </span>
                       )}
                       {isSpOut ? (
-                        <span className={`text-[8.5px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-red-300' : 'text-red-600'}`}>
+                        <span className={`text-[12px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-red-300' : 'text-red-600'}`}>
                           Out of stock
                         </span>
                       ) : isSpPre ? (
-                        <span className={`text-[8.5px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-amber-300' : 'text-amber-600'}`}>
+                        <span className={`text-[12px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-amber-300' : 'text-amber-600'}`}>
                           Pre-Order
                         </span>
                       ) : spStock <= 5 ? (
-                        <span className={`text-[8.5px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-amber-300' : 'text-amber-600'}`}>
+                        <span className={`text-[12px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-amber-300' : 'text-amber-600'}`}>
                           Only {spStock} left
                         </span>
                       ) : null}
@@ -674,26 +735,26 @@ const ProductDetail = () => {
             {/* Trust & Guarantee Luxury Strip */}
             <div className="grid grid-cols-3 gap-2 pt-3 border-t border-zinc-200 text-center">
               <div className="flex flex-col items-center p-2.5 bg-zinc-50 border border-zinc-200/80">
-                <Sparkles size={14} className="text-[#b8860b] mb-1" />
-                <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-900">100% Extrait</span>
-                <span className="text-[8.5px] text-zinc-500">Authentic Perfume</span>
+                <Sparkles size={16} className="text-[#b8860b] mb-1" />
+                <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider text-zinc-900">100% Extrait</span>
+                <span className="text-[12px] text-zinc-500 font-medium">Authentic Perfume</span>
               </div>
               <div className="flex flex-col items-center p-2.5 bg-zinc-50 border border-zinc-200/80">
-                <Truck size={14} className="text-[#b8860b] mb-1" />
-                <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-900">4-5 Days Express</span>
-                <span className="text-[8.5px] text-zinc-500">Fast Delivery</span>
+                <Truck size={16} className="text-[#b8860b] mb-1" />
+                <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider text-zinc-900">4-5 Days Express</span>
+                <span className="text-[12px] text-zinc-500 font-medium">Fast Delivery</span>
               </div>
               <div className="flex flex-col items-center p-2.5 bg-zinc-50 border border-zinc-200/80">
-                <ShieldCheck size={14} className="text-[#b8860b] mb-1" />
-                <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-900">Authentic Guarantee</span>
-                <span className="text-[8.5px] text-zinc-500">Original Formulation</span>
+                <ShieldCheck size={16} className="text-[#b8860b] mb-1" />
+                <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider text-zinc-900">Authentic Guarantee</span>
+                <span className="text-[12px] text-zinc-500 font-medium">Original Formulation</span>
               </div>
             </div>
 
             {/* Snitch-style Accordions */}
             <div className="border-t border-zinc-200 pt-2 divide-y divide-zinc-200">
 
-              {/* 1. FRAGRANCE DETAILS & OLFACTORY PYRAMID Accordion */}
+              {/* 1. FRAGRANCE DETAILS & NOTES Accordion */}
               <div>
                 <button
                   type="button"
@@ -701,7 +762,7 @@ const ProductDetail = () => {
                   className="w-full flex items-center justify-between py-4 text-left group cursor-pointer"
                 >
                   <span className="text-[14px] font-bold uppercase tracking-[0.2em] text-zinc-800 group-hover:text-black transition-colors">
-                    OLFACTORY NOTES & DETAILS
+                    FRAGRANCE NOTES & DETAILS
                   </span>
                   {activeAccordion === 'description' ? (
                     <Minus size={14} className="text-black" />
@@ -717,7 +778,7 @@ const ProductDetail = () => {
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.2, ease: 'easeInOut' }}
                       className="overflow-hidden"
-                    >
+                     >
                       <div className="pb-5 space-y-4 text-[14px] text-zinc-700 font-normal leading-relaxed">
 
                         {/* Dynamic TinyMCE Rich HTML Description */}
@@ -730,12 +791,12 @@ const ProductDetail = () => {
                           <p>Handcrafted with rare botanical extraits and artisanal perfume oils. Designed to evolve exquisitely on the skin over 14+ hours.</p>
                         )}
 
-                        {/* Olfactory Notes Breakdown */}
+                        {/* Fragrance Notes Breakdown */}
                         <div className="bg-zinc-900 text-white p-4 rounded-xl space-y-2.5 border border-zinc-800">
-                          <p className="text-[#c9a962] font-bold uppercase tracking-widest text-[12px] flex items-center gap-1.5">
-                            <Sparkles size={13} /> Olfactory Pyramid & Performance
+                          <p className="text-[#c9a962] font-bold uppercase tracking-widest text-[12px] md:text-[13px] flex items-center gap-1.5">
+                            <Sparkles size={13} /> Fragrance Notes & Performance
                           </p>
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[12px] pt-1">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[12px] md:text-[13px] pt-1">
                             <div>
                               <span className="text-zinc-400 font-bold block text-[12px] uppercase tracking-wider">Top Notes</span>
                               <span className="text-white font-medium">{product.top_notes || 'Bergamot, Saffron, Pink Pepper'}</span>
@@ -749,10 +810,10 @@ const ProductDetail = () => {
                               <span className="text-white font-medium">{product.base_notes || 'Royal Oud, Golden Amber, White Musk'}</span>
                             </div>
                           </div>
-                          <div className="flex flex-wrap items-center gap-4 text-[12px] pt-2 border-t border-zinc-800 text-zinc-300">
+                          <div className="flex flex-wrap items-center gap-4 text-[12px] md:text-[13px] pt-2 border-t border-zinc-800 text-zinc-300">
                             <span><strong>Concentration:</strong> {product.material || 'Extrait de Parfum (30%)'}</span>
                             <span><strong>Longevity:</strong> {product.longevity || '12-14 Hours'}</span>
-                            <span><strong>Sillage:</strong> {product.sillage || 'Intense'}</span>
+                            <span><strong>Strength & Projection:</strong> {product.sillage || 'Intense'}</span>
                           </div>
                         </div>
 

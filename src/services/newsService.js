@@ -25,7 +25,7 @@ export const DEFAULT_REELS = [
   {
     id: "reel-2",
     isDefault: true,
-    title: "Sillage That Lingers | Handcrafted Extrait Formulations",
+    title: "Scents That Linger | Handcrafted Extrait Formulations",
     video: "https://assets.mixkit.co/videos/preview/mixkit-spray-of-a-bottle-of-perfume-41273-large.mp4",
     url: "https://www.instagram.com/mahirashparfumerie/",
     tag: "Luxury Edit",
@@ -38,7 +38,7 @@ export const DEFAULT_REELS = [
     title: "The Alchemy of Floral Elegance & Velvety Bourbon Vanilla",
     video: "https://assets.mixkit.co/videos/preview/mixkit-perfume-bottle-surrounded-by-fresh-flowers-41274-large.mp4",
     url: "https://www.instagram.com/mahirashparfumerie/",
-    tag: "Atelier Signature",
+    tag: "Brand Signature",
     duration: "0:35",
     order: 3,
   },
@@ -55,7 +55,7 @@ export const DEFAULT_REELS = [
   {
     id: "reel-5",
     isDefault: true,
-    title: "Behind The Atelier | The Crafting of Intense Long-Lasting Extraits",
+    title: "Behind The Craft | The Making of Intense Long-Lasting Extraits",
     video: "https://assets.mixkit.co/videos/preview/mixkit-droplets-of-water-on-a-black-perfume-bottle-41276-large.mp4",
     url: "https://www.instagram.com/mahirashparfumerie/",
     tag: "Private Reserve",

@@ -27,7 +27,7 @@ const CollectionHighlights = () => {
     {
       id: '03',
       tag: 'Handmade',
-      title: 'The Artisanal Atelier',
+      title: 'The Artisanal Studio',
       desc: 'Small-batch pieces featuring hand-finished selvedge edges and mother-of-pearl buttons, crafted by master artisans.',
       image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1000&auto=format&fit=crop',
       link: '/shop?collection=atelier'

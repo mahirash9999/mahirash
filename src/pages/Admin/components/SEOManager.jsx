@@ -29,8 +29,8 @@ const SEOManager = () => {
   });
 
   const [seoSettings, setSeoSettings] = useState({
-    defaultTitle: "Mahirash | Haute Parfumerie & Luxury Artisan Extraits",
-    defaultDescription: "Discover Mahirash luxury fragrances, rare botanical extraits de parfum, artisanal Cambodian oud, and bespoke olfactory signatures designed to leave an undeniable sillage.",
+    defaultTitle: "Mahirash | Luxury Perfumes & Artisan Extraits",
+    defaultDescription: "Discover Mahirash luxury fragrances, rare botanical extraits de parfum, artisanal Cambodian oud, and signature perfumes designed to leave a lasting impression.",
     defaultKeywords: "Mahirash, Mahirash perfumes, luxury perfumes, extrait de parfum, royal oud, fine fragrances, artisanal scents, luxury fragrance house India",
     defaultAuthor: "Mahirash Parfumerie",
     canonicalDomain: "https://mahirash.com"

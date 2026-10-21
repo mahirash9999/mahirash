@@ -14,7 +14,7 @@ const IconMap = {
 const DEFAULT_BENEFITS = [
   { id: 'b_1', icon: 'Truck', text: 'Complimentary Express Shipping Over ₹1999', sort_order: 1, is_active: true },
   { id: 'b_2', icon: 'ShieldCheck', text: '100% Authentic Extraits de Parfum', sort_order: 2, is_active: true },
-  { id: 'b_3', icon: 'Zap', text: 'Long-Lasting Sillage Guaranteed', sort_order: 3, is_active: true },
+  { id: 'b_3', icon: 'Zap', text: 'Long-Lasting Projection Guaranteed', sort_order: 3, is_active: true },
   { id: 'b_4', icon: 'ShieldCheck', text: 'Secure Encryption Checkout', sort_order: 4, is_active: true },
   { id: 'b_5', icon: 'Truck', text: 'Rare Artisanal Formulations', sort_order: 5, is_active: true },
   { id: 'b_6', icon: 'Zap', text: 'Handcrafted Packaging & Sealing', sort_order: 6, is_active: true }
@@ -64,11 +64,11 @@ const BenefitsStrip = () => {
           return (
             <span
               key={i}
-              className="inline-flex items-center gap-3.5 px-10 text-[12px] font-bold uppercase tracking-[0.25em] text-[#1A1A1A]"
+              className="inline-flex items-center gap-3.5 px-10 text-[12px] md:text-[14px] font-bold uppercase tracking-[0.25em] text-[#1A1A1A]"
             >
-              <Icon size={15} strokeWidth={2} className="text-[#B8860B] flex-shrink-0 drop-shadow-sm" />
+              <Icon size={16} strokeWidth={2} className="text-[#B8860B] flex-shrink-0 drop-shadow-sm" />
               {item.text}
-              <span className="text-[#B8860B] text-[12px] ml-3.5 flex-shrink-0 opacity-80">✦</span>
+              <span className="text-[#B8860B] text-[12px] md:text-[14px] ml-3.5 flex-shrink-0 opacity-80">✦</span>
             </span>
           );
         })}

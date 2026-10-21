@@ -98,9 +98,9 @@ const Contact = () => {
   const displayEmail = siteSettings?.email || "care@mahirash.com";
 
   const communicationChannels = [
-    { icon: Mail, label: 'Email Concierge', val: displayEmail, href: `mailto:${displayEmail}`, desc: 'Personal response within 24 hours' },
-    { icon: Phone, label: 'Concierge Direct', val: displayPhone, href: `tel:${rawNumber}`, desc: 'Mon–Sat, 10:00 AM – 7:00 PM IST' },
-    { icon: MapPin, label: 'Atelier Shipping', val: 'Express Pan-India Delivery', href: '/shop', desc: 'Securely packaged in royal presentation boxes' }
+    { icon: Mail, label: 'Email Support', val: displayEmail, href: `mailto:${displayEmail}`, desc: 'Personal response within 24 hours' },
+    { icon: Phone, label: 'Support Direct', val: displayPhone, href: `tel:${rawNumber}`, desc: 'Mon–Sat, 10:00 AM – 7:00 PM IST' },
+    { icon: MapPin, label: 'Express Shipping', val: 'Express Pan-India Delivery', href: '/shop', desc: 'Securely packaged in royal presentation boxes' }
   ];
 
   const fadeUp = {
@@ -114,7 +114,7 @@ const Contact = () => {
     <div className="min-h-screen bg-[#f5f5f5]">
       <SEOHead
         title="Contact Us | Mahirash Customer Support"
-        description="Have questions or need support? Contact Mahirash official support at care@mahirash.com or call our concierge. Worldwide online store."
+        description="Have questions or need support? Contact Mahirash official customer care at care@mahirash.com or WhatsApp support. Fast Pan-India delivery."
         url="https://mahirash.com/contact"
         keywords="Mahirash contact, Mahirash customer care, Mahirash email, Mahirash phone number, mahirash.com help"
       />
@@ -133,8 +133,8 @@ const Contact = () => {
           >
             <CheckCircle size={18} className="text-[#B8860B]" />
             <div>
-              <p className="text-[13px] font-bold uppercase tracking-wider text-white">Message Dispatched!</p>
-              <p className="text-[11px] text-zinc-300">Our fragrance concierge will contact you within 24 hours.</p>
+              <p className="text-[13px] md:text-[14px] font-bold uppercase tracking-wider text-white">Message Dispatched!</p>
+              <p className="text-[12px] text-zinc-300">Our customer support team will contact you within 24 hours.</p>
             </div>
             <button onClick={() => setFormSubmitted(false)} className="opacity-60 hover:opacity-100 ml-3 cursor-pointer"><X size={15} /></button>
           </motion.div>
@@ -152,7 +152,7 @@ const Contact = () => {
                 We're Here<br />to Help
               </h2>
               <p className="text-[14px] text-zinc-600 mt-4 leading-relaxed max-w-sm">
-                Whether you have a question about fragrance notes, need bespoke selection advice, or want to discuss a custom order — our concierge team is at your service.
+                Whether you have a question about fragrance notes, need perfume selection advice, or want to discuss a custom order — our customer support team is at your service.
               </p>
             </div>
 
@@ -171,9 +171,9 @@ const Contact = () => {
                       <Icon size={16} strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-0.5">{item.label}</p>
+                      <p className="text-[12px] md:text-[13px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-0.5">{item.label}</p>
                       <p className="text-[15px] text-zinc-900 truncate">{item.val}</p>
-                      <p className="text-[12px] text-zinc-500 mt-0.5">{item.desc}</p>
+                      <p className="text-[12px] md:text-[13px] text-zinc-500 mt-0.5">{item.desc}</p>
                     </div>
                     <ArrowUpRight size={15} className={`text-zinc-400 transition-all duration-300 shrink-0 ${activeChannel === i ? 'rotate-45 text-black' : ''}`} />
                   </a>
@@ -182,9 +182,9 @@ const Contact = () => {
             </div>
 
             <div className="flex items-start gap-3 p-4 bg-white border border-zinc-200 shadow-sm">
-              <Clock size={14} className="text-zinc-500 shrink-0 mt-0.5" />
+              <Clock size={16} className="text-zinc-500 shrink-0 mt-0.5" />
               <div>
-                <p className="text-[12px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-1">Concierge Hours</p>
+                <p className="text-[12px] md:text-[13px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-1">Support Hours</p>
                 <p className="text-[14px] text-zinc-700 font-medium">Monday – Saturday: 10:00 AM – 7:00 PM IST</p>
                 <p className="text-[14px] text-zinc-500">Sunday: Closed</p>
               </div>

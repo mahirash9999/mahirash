@@ -315,18 +315,18 @@ const Login = () => {
           </div>
 
           <div className="relative z-10 my-auto">
-            <span className="text-[12px] uppercase tracking-[0.35em] text-[#d9a036] font-semibold">Concierge Access</span>
+            <span className="text-[12px] md:text-[14px] uppercase tracking-[0.35em] text-[#d9a036] font-semibold">Customer Account</span>
             <h1 className="text-3xl md:text-4xl font-extralight text-white tracking-[0.18em] uppercase leading-[1.3] mt-4 mb-6">
               Sensory<br />Sanctuary
             </h1>
             <div className="w-12 h-[1px] bg-[#d9a036]/60" />
-            <p className="text-[13px] text-zinc-300 leading-relaxed mt-6 max-w-xs font-light">
+            <p className="text-[13px] md:text-[14px] text-zinc-300 leading-relaxed mt-6 max-w-xs font-light">
               Log in securely to view curated extraits, review your bespoke order history, and track real-time delivery timelines.
             </p>
           </div>
 
           <div className="relative z-10 pt-6">
-            <span className="text-[12px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY ATELIER</span>
+            <span className="text-[12px] md:text-[13px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY PERFUMES</span>
           </div>
         </div>
 
@@ -345,12 +345,12 @@ const Login = () => {
               <h2 className="text-2xl font-extralight text-zinc-900 tracking-[0.2em] uppercase">
                 {step === STEP.NEW_USER_SETUP ? "Set Password" : step === STEP.OTP_VERIFY ? "Enter Code" : "Sign In"}
               </h2>
-              <p className="text-[12px] text-zinc-400 tracking-[0.15em] font-medium uppercase mt-2">
+              <p className="text-[12px] md:text-[13px] text-zinc-400 tracking-[0.15em] font-medium uppercase mt-2">
                 {step === STEP.OTP_VERIFY
                   ? `Sent to ${email}`
                   : step === STEP.NEW_USER_SETUP
                     ? "Email verified successfully! Optional faster login"
-                    : "Continuous access for connoisseurs"}
+                    : "Seamless access for customers"}
               </p>
             </div>
 
@@ -363,7 +363,7 @@ const Login = () => {
                   exit={{ opacity: 0, y: -8 }}
                   className="mb-6"
                 >
-                  <div className="p-3.5 bg-red-50 border border-red-100 flex items-start gap-3 text-red-700 text-[12px]">
+                  <div className="p-3.5 bg-red-50 border border-red-100 flex items-start gap-3 text-red-700 text-[12px] md:text-[13px]">
                     <AlertCircle size={15} className="shrink-0 mt-0.5 text-red-600" />
                     <span>{error}</span>
                   </div>
@@ -375,18 +375,18 @@ const Login = () => {
             {step === STEP.OTP_REQUEST && (
               <form onSubmit={handleRequestOtp} className="space-y-5">
                 <div className="space-y-1.5">
-                  <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">
+                  <label className="text-[12px] md:text-[13px] uppercase tracking-[0.3em] font-semibold text-zinc-500">
                     Email Address
                   </label>
                   <div className="relative">
-                    <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                    <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="connoisseur@mahirash.com"
+                      placeholder="customer@mahirash.com"
                       required
-                      className="w-full pl-10 pr-4 py-3.5 bg-zinc-50/50 border border-zinc-200 text-[13px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all duration-300 placeholder:text-zinc-400 font-medium"
+                      className="w-full pl-10 pr-4 py-3.5 bg-zinc-50/50 border border-zinc-200 text-[14px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all duration-300 placeholder:text-zinc-400 font-medium"
                     />
                   </div>
                 </div>
@@ -508,16 +508,16 @@ const Login = () => {
             {step === STEP.PASSWORD_LOGIN && (
               <form onSubmit={handlePasswordLogin} className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Email Address</label>
+                  <label className="text-[12px] md:text-[13px] uppercase tracking-[0.3em] font-semibold text-zinc-500">Email Address</label>
                   <div className="relative">
-                    <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                    <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="connoisseur@mahirash.com"
+                      placeholder="customer@mahirash.com"
                       required
-                      className="w-full pl-10 pr-4 py-3 bg-zinc-50/50 border border-zinc-200 text-[13px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all font-medium"
+                      className="w-full pl-10 pr-4 py-3 bg-zinc-50/50 border border-zinc-200 text-[14px] text-zinc-900 outline-none focus:border-black focus:bg-white transition-all font-medium"
                     />
                   </div>
                 </div>

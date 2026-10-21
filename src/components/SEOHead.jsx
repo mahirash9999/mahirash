@@ -6,11 +6,11 @@ const BASE_URL = "https://mahirash.com";
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=1200&auto=format&fit=crop";
 
 const SEOHead = ({
-  title = "Mahirash | Haute Parfumerie & Luxury Artisan Extraits",
-  description = "Discover Mahirash luxury fragrances, rare botanical extraits de parfum, artisanal Cambodian oud, and bespoke olfactory signatures designed to leave an undeniable sillage.",
+  title = "Mahirash | Luxury Perfumes & Artisan Extraits",
+  description = "Discover Mahirash luxury fragrances, rare botanical extraits de parfum, artisanal Cambodian oud, and signature perfumes designed to leave a lasting impression.",
   keywords = "Mahirash, Mahirash perfumes, luxury perfumes, extrait de parfum, royal oud, fine fragrances, artisanal scents, luxury fragrance house India, buy perfume online",
   image = DEFAULT_IMAGE,
-  imageAlt = "Mahirash Haute Parfumerie Luxury Artisanal Fragrance",
+  imageAlt = "Mahirash Luxury Artisanal Fragrance",
   url = BASE_URL,
   type = "website",
   robots = "index, follow",
@@ -31,7 +31,7 @@ const SEOHead = ({
     "name": "Mahirash Parfumerie",
     "url": BASE_URL,
     "logo": `${BASE_URL}/logom.webp`,
-    "description": "Mahirash Parfumerie is a modern haute perfumerie atelier crafting rare botanical extraits de parfum, royal Cambodian ouds, and bespoke olfactory signatures.",
+    "description": "Mahirash is a luxury fragrance house crafting rare botanical extraits de parfum, royal Cambodian ouds, and signature perfumes.",
     "email": "cares@belvish.com",
     "telephone": "+91-8588996969",
     "address": {

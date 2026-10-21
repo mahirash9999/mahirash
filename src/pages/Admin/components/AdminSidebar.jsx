@@ -58,8 +58,9 @@ const sidebarSections = [
     ]
   },
   {
-    title: "SALES",
+    title: "SALES & FULFILMENT",
     items: [
+      { name: "Orders & Shipping", icon: Truck },
       { name: "Orders", icon: ShoppingCart },
       { name: "Billing & Invoices", icon: Printer },
       { name: "Returns / Refunds", icon: Undo2 },

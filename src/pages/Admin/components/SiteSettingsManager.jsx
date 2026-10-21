@@ -234,7 +234,7 @@ const SiteSettingsManager = () => {
                             Google Gemini API Key
                         </label>
                         <p className="text-[12px] text-zinc-500">
-                            Powers the floating AI Fragrance Concierge on the bottom right of the website. Leave blank to use built-in smart assistant mode.
+                            Powers the floating AI Fragrance Assistant on the bottom right of the website. Leave blank to use built-in smart assistant mode.
                         </p>
                         <input
                             type="password"

@@ -14,7 +14,7 @@ const FlavorsOverview = () => {
   return (
     <section className="bg-white rounded-2xl border border-zinc-200 shadow-sm p-6">
       <h2 className="text-lg font-serif tracking-wider uppercase text-zinc-900 mb-1.5">
-        Olfactory Families &amp; Fragrance Catalog
+        Fragrance Families &amp; Product Catalog
       </h2>
       <p className="text-sm text-zinc-500 mb-6">
         Overview of live fragrance families and active extraits catalog

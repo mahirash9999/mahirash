@@ -71,12 +71,12 @@ const Footer = () => {
                   alt="MAHIRASH"
                   className="h-9 md:h-12 w-auto object-contain brightness-0 invert mb-1"
                 />
-                <span className="text-[12px] uppercase tracking-[0.4em] text-[#c9a962] font-semibold">
-                  HAUTE PARFUMERIE · PARIS & DUBAI
+                <span className="text-[12px] md:text-[13px] uppercase tracking-[0.4em] text-[#c9a962] font-semibold">
+                  LUXURY PERFUMES · HANDCRAFTED EXTRAITS
                 </span>
               </Link>
               <p className="text-zinc-300 text-sm leading-relaxed font-light">
-                Mahirash Parfumerie is a modern luxury fragrance house crafting rare botanical extraits de parfum, royal Cambodian ouds, and bespoke olfactory signatures designed to leave an undeniable sillage.
+                Mahirash is a modern luxury fragrance house crafting rare botanical extraits de parfum, royal Cambodian ouds, and signature fragrances designed to leave an unforgettable lasting impression.
               </p>
             </div>
 

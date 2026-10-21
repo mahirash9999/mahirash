@@ -232,7 +232,7 @@ export const StoreProvider = ({ children }) => {
     }
 
     if (isPreOrder) {
-      console.warn("Pre-order items cannot be added to cart. Use concierge pre-order booking.");
+      console.warn("Pre-order items cannot be added to cart. Use support pre-order booking.");
       return { success: false, reason: "preorder", message: "Pre-order items cannot be added to cart." };
     }
 

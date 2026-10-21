@@ -86,12 +86,12 @@ const DEFAULT_SEED_DATA = {
   ],
   collections: [
     { id: 'col_new', name: 'New Launches', slug: 'new-launches', description: 'Fresh drops for the new season', is_active: true, sort_order: 1 },
-    { id: 'col_bestsellers', name: 'Bestselling Scents', slug: 'bestsellers', description: 'Most loved fragrances by connoisseurs', is_active: true, sort_order: 2 },
+    { id: 'col_bestsellers', name: 'Bestselling Scents', slug: 'bestsellers', description: 'Most loved fragrances by customers', is_active: true, sort_order: 2 },
     { id: 'col_royal', name: 'The Royal Edition', slug: 'the-royal-edition', description: 'Limited handcrafted extraits', is_active: true, sort_order: 3 },
     { id: 'col_private', name: 'Private Reserve', slug: 'private-reserve', description: 'Exclusive rare botanical formulations', is_active: true, sort_order: 4 }
   ],
   brands: [
-    { id: 'brand_mahirash', name: 'MAHIRASH', slug: 'mahirash', description: 'Haute Perfumerie Atelier', is_active: true, sort_order: 1 },
+    { id: 'brand_mahirash', name: 'MAHIRASH', slug: 'mahirash', description: 'Luxury Perfumes Brand', is_active: true, sort_order: 1 },
     { id: 'brand_roja', name: 'Roja Parfums', slug: 'roja-parfums', description: 'Haute Luxe Perfumery', is_active: true, sort_order: 2 },
     { id: 'brand_creed', name: 'House of Creed', slug: 'house-of-creed', description: 'Artisan Perfume Heritage', is_active: true, sort_order: 3 },
     { id: 'brand_maison', name: 'Maison Francis Kurkdjian', slug: 'maison-francis-kurkdjian', description: 'Parisian Niche Parfums', is_active: true, sort_order: 4 },
@@ -1717,6 +1717,8 @@ const Admin = () => {
           </>
         );
       case "Orders":
+      case "Orders & Shipping":
+      case "Shipping":
         return (
           <>
             <OrdersTable onRefresh={loadData} />

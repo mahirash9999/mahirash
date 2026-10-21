@@ -17,10 +17,10 @@ const IconMap = {
 };
 
 const DEFAULT_COMMUNITY_SETTINGS = {
-  eyebrow: 'WORDS FROM CONNOISSEURS',
+  eyebrow: 'WORDS FROM VERIFIED CUSTOMERS',
   heading: 'THE MAHIRASH EXPERIENCE',
-  description_line_1: 'Real patrons. Authentic sillage. Verified reviews.',
-  description_line_2: 'See why connoisseurs choose Mahirash Parfumerie.',
+  description_line_1: 'Real customers. Authentic fragrance. Verified reviews.',
+  description_line_2: 'See why perfume lovers choose Mahirash.',
   is_active: true
 };
 
@@ -31,9 +31,9 @@ const DEFAULT_TEXT_REVIEWS = [
     location: 'Mumbai',
     rating: 5,
     fragrance: 'Oud Noir Extrait (50ml)',
-    title: 'Unrivaled Sillage & Longevity',
+    title: 'Unrivaled Strength & Longevity',
     review: 'Mahirash Oud Noir is absolute royalty. Just two sprays on my pulse points lasted over 18 hours. The depth of genuine Cambodian oud combined with warm amber gathers compliments wherever I go.',
-    status: 'Verified Patron',
+    status: 'Verified Buyer',
     sort_order: 1,
     is_active: true
   },
@@ -92,16 +92,16 @@ const DEFAULT_TEXT_REVIEWS = [
     rating: 5,
     fragrance: 'Midnight Vanilla Extrait (50ml)',
     title: 'Sensual & Long-Lasting',
-    review: 'Smoky, dark vanilla with subtle wood accents. Far superior to standard luxury EDPs. The sillage projection is immaculate and the gold detail on the bottle is pure luxury.',
-    status: 'Verified Patron',
+    review: 'Smoky, dark vanilla with subtle wood accents. Far superior to standard luxury EDPs. The fragrance projection is immaculate and the gold detail on the bottle is pure luxury.',
+    status: 'Verified Buyer',
     sort_order: 6,
     is_active: true
   }
 ];
 
 const DEFAULT_COMMUNITY_STATS = [
-  { id: 'stat_1', icon: 'Star', value: '15,000+', label: 'Fragrance Connoisseurs', sort_order: 1, is_active: true },
-  { id: 'stat_2', icon: 'Award', value: '4.9/5', label: 'Avg Sillage Rating', sort_order: 2, is_active: true },
+  { id: 'stat_1', icon: 'Star', value: '15,000+', label: 'Happy Customers', sort_order: 1, is_active: true },
+  { id: 'stat_2', icon: 'Award', value: '4.9/5', label: 'Avg Projection Rating', sort_order: 2, is_active: true },
   { id: 'stat_3', icon: 'MessageSquare', value: '2,500+', label: 'Verified Reviews', sort_order: 3, is_active: true },
   { id: 'stat_4', icon: 'RefreshCw', value: '98%', label: 'Recommend Us', sort_order: 4, is_active: true }
 ];

@@ -424,10 +424,10 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
             {/* Info Area */}
             <div className="pt-3 sm:pt-4 pb-3.5 sm:pb-5 px-3 sm:px-4 flex flex-col text-left bg-white">
                 <div className="flex flex-col gap-0.5 mb-1.5">
-                    <span className="text-[#B8860B] text-[10.5px] sm:text-[12px] font-bold uppercase tracking-[0.2em]">{product.brand || 'MAHIRASH'}</span>
-                    <span className="text-zinc-500 text-[10.5px] sm:text-[12px] font-semibold uppercase tracking-[0.25em]">{product.category || 'EXTRAIT DE PARFUM'}</span>
+                    <span className="text-[#B8860B] text-[12px] md:text-[13px] font-bold uppercase tracking-[0.2em]">{product.brand || 'MAHIRASH'}</span>
+                    <span className="text-zinc-500 text-[12px] md:text-[13px] font-semibold uppercase tracking-[0.25em]">{product.category || 'EXTRAIT DE PARFUM'}</span>
                 </div>
-                <h3 className="text-[13px] sm:text-[14px] md:text-sm font-semibold text-[#0D0D0D] uppercase tracking-wider line-clamp-1 leading-snug mb-2 group-hover:text-[#B8860B] transition-colors">
+                <h3 className="text-[13px] sm:text-[14px] md:text-[15px] font-semibold text-[#0D0D0D] uppercase tracking-wider line-clamp-1 leading-snug mb-2 group-hover:text-[#B8860B] transition-colors">
                     {product.name}
                 </h3>
 
@@ -447,7 +447,7 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
                                         e.stopPropagation();
                                         setSelectedVariant(v);
                                     }}
-                                    className={`px-2 py-0.5 rounded text-[12px] font-semibold tracking-wider uppercase transition-all cursor-pointer ${isCurrent
+                                    className={`px-2 py-0.5 rounded text-[12px] md:text-[13px] font-semibold tracking-wider uppercase transition-all cursor-pointer ${isCurrent
                                         ? 'bg-black text-white border border-black shadow-xs'
                                         : vOut
                                             ? 'bg-zinc-100 text-zinc-400 border border-zinc-200 line-through opacity-75 hover:border-zinc-400 hover:text-zinc-600'
@@ -466,10 +466,10 @@ const ProductCard = ({ product, triggerToast, idx, preferredSize, sortBy }) => {
 
                 {/* Prices */}
                 <div className="flex items-baseline gap-2.5">
-                    <span className="text-[13px] text-zinc-400 line-through font-light">
+                    <span className="text-[13px] md:text-[14px] text-zinc-400 line-through font-light">
                         ₹{Number(originalPrice).toLocaleString('en-IN')}
                     </span>
-                    <span className={`text-sm font-bold tracking-wide ${savingsPercent > 0 ? 'text-[#e53e3e]' : 'text-[#B8860B]'}`}>
+                    <span className={`text-[14px] md:text-base font-bold tracking-wide ${savingsPercent > 0 ? 'text-[#e53e3e]' : 'text-[#B8860B]'}`}>
                         ₹{Number(displayPrice).toLocaleString('en-IN')}
                     </span>
                     {savingsPercent > 0 && (

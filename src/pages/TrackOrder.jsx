@@ -128,7 +128,7 @@ const TrackOrder = () => {
                             {
                                 date: order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString("en-IN") : "Just now",
                                 activity: activityLabel,
-                                location: "Mahirash Atelier",
+                                location: "Mahirash Central Hub",
                                 status: order.fulfillmentStatus || "Pending Handover"
                             }
                         ]

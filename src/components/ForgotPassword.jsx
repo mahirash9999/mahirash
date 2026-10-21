@@ -271,7 +271,7 @@ const ForgotPassword = () => {
                 <div className="lg:col-span-7 p-8 md:p-12 lg:p-14 flex flex-col justify-between bg-white text-zinc-900">
                     {/* Header metadata */}
                     <div className="relative z-10 h-9 flex items-center">
-                        <span className="text-[12px] uppercase tracking-[0.25em] font-medium text-zinc-400">ATELIER MEMBERSHIP</span>
+                        <span className="text-[12px] md:text-[13px] uppercase tracking-[0.25em] font-medium text-zinc-400">CUSTOMER ACCOUNT</span>
                     </div>
 
                     <div className="max-w-[420px] w-full relative z-10 my-auto py-8">

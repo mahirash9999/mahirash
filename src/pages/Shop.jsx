@@ -615,8 +615,8 @@ const Shop = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       <SEOHead
-        title={filters.category !== "All" ? `Shop ${filters.category} Collection | Mahirash` : "Shop All Haute Parfumerie & Luxury Scents | Mahirash"}
-        description="Browse Mahirash's complete collection of artisanal extraits, eau de parfum, royal oud reserves, and discovery vaults. Filter by olfactory family, volume, and fragrance notes."
+        title={filters.category !== "All" ? `Shop ${filters.category} Collection | Mahirash` : "Shop All Luxury Perfumes & Scents | Mahirash"}
+        description="Browse Mahirash's complete collection of artisanal extraits, eau de parfum, royal oud reserves, and discovery vaults. Filter by fragrance family, volume, and fragrance notes."
         url="https://mahirash.com/shop"
         keywords="Mahirash luxury perfumes, Mahirash fragrance collection, royal oud extrait, buy luxury perfume India, mahirash.com shop"
       />

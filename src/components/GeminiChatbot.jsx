@@ -6,7 +6,7 @@ import { useStore } from './StoreProvider';
 const INITIAL_MESSAGES = [
   {
     role: 'assistant',
-    text: "Welcome to Mahirash Parfumerie. I am your Olfactory Concierge powered by Google Gemini. How may I guide your fragrance journey today?",
+    text: "Welcome to Mahirash. I am your Fragrance Assistant powered by Google Gemini. How may I help you choose your fragrance today?",
     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 ];
@@ -72,7 +72,7 @@ const GeminiChatbot = () => {
     try {
       if (apiKey) {
         // Query Google Gemini API
-        const systemPrompt = `You are the official AI Olfactory Concierge for Mahirash Parfumerie (mahirash.com), an ultra-luxury haute fragrance house. Mahirash specializes in rare botanical extraits de parfum, royal Cambodian ouds, and long-lasting bespoke signatures. Be polite, concise, and helpful. Mention that delivery across India is express within 4-5 days. If asked about return policy, mention that due to the personal hygiene of luxury extraits, returns are not accepted once opened, but transit damages are replaced immediately upon contacting concierge. Keep answers elegant and between 2-4 sentences.`;
+        const systemPrompt = `You are the official AI Fragrance Assistant for Mahirash (mahirash.com), a luxury perfume brand. Mahirash specializes in authentic long-lasting perfumes, pure Cambodian ouds, and signature fragrances. Be polite, clear, and helpful. Mention that delivery across India is express within 4-5 days via Delhivery. If asked about return policy, mention that due to the hygiene of luxury perfumes, returns are not accepted once opened, but transit damages are replaced immediately upon contacting customer support. Keep answers clear, genuine, and between 2-4 sentences.`;
 
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
@@ -159,7 +159,7 @@ const GeminiChatbot = () => {
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
           className="relative w-14 h-14 rounded-full bg-[#0D0D0D] border-2 border-[#B8860B] text-white flex items-center justify-center shadow-[0_12px_30px_rgba(184,134,11,0.35)] hover:shadow-[0_16px_40px_rgba(184,134,11,0.55)] transition-all duration-300 cursor-pointer group"
-          aria-label="Open AI Olfactory Concierge"
+          aria-label="Open AI Fragrance Assistant"
         >
           {/* Ambient Gold Radial Glow */}
           <div className="absolute inset-0 rounded-full bg-[#B8860B] opacity-20 animate-pulse pointer-events-none" />
@@ -170,7 +170,7 @@ const GeminiChatbot = () => {
           </div>
 
           {/* Floating Pill Badge */}
-          <span className="absolute -top-1.5 -right-1.5 px-2 py-0.5 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-black font-black text-[9px] uppercase tracking-wider rounded-full shadow-md border border-black/40">
+          <span className="absolute -top-1.5 -right-1.5 px-2 py-0.5 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-black font-black text-[10px] uppercase tracking-wider rounded-full shadow-md border border-black/40">
             AI
           </span>
         </motion.button>
@@ -194,16 +194,16 @@ const GeminiChatbot = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <h3 className="text-[13px] font-bold uppercase tracking-wider text-white">
-                      Mahirash Concierge
+                    <h3 className="text-[14px] font-bold uppercase tracking-wider text-white">
+                      Mahirash Assistant
                     </h3>
-                    <span className="px-1.5 py-0.5 rounded text-[8.5px] font-bold bg-[#B8860B]/20 text-[#D4AF37] border border-[#B8860B]/30 uppercase tracking-widest">
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#B8860B]/20 text-[#D4AF37] border border-[#B8860B]/30 uppercase tracking-widest">
                       Gemini
                     </span>
                   </div>
-                  <p className="text-[11px] text-zinc-400 font-light flex items-center gap-1.5">
+                  <p className="text-[12px] text-zinc-400 font-light flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Online • Olfactory AI Assistant
+                    Online • AI Fragrance Guide
                   </p>
                 </div>
               </div>

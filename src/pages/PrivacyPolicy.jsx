@@ -33,7 +33,7 @@ const PrivacyPolicy = () => {
             2. Information We Collect
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
-            When you interact with our platform, we collect information necessary to fulfill your orders and enhance your atelier experience:
+            When you interact with our platform, we collect information necessary to fulfill your orders and enhance your shopping experience:
           </p>
           <ul className="list-disc list-inside text-[14px] md:text-sm text-zinc-600 space-y-2 pl-2">
             <li><strong className="text-zinc-900">Account Data:</strong> Name, email address, phone number, and delivery addresses provided upon registration or checkout.</li>
@@ -53,7 +53,7 @@ const PrivacyPolicy = () => {
           <ul className="list-disc list-inside text-[14px] md:text-sm text-zinc-600 space-y-2 pl-2">
             <li>Processing, fulfilling, and shipping your luxury fragrance orders.</li>
             <li>Sending real-time shipment tracking status and invoice documentation.</li>
-            <li>Responding to customer support requests and providing personal olfactory recommendations.</li>
+            <li>Responding to customer support requests and providing personal fragrance recommendations.</li>
             <li>Maintaining platform security and preventing fraudulent transactions.</li>
           </ul>
         </section>

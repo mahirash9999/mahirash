@@ -31,7 +31,7 @@ const Home = () => {
           "logo": "/logom.webp",
           "email": "help@mahirash.com",
           "telephone": "+91-8959041514",
-          "description": "Mahirash Parfumerie is a modern haute perfumerie atelier offering rare extrait de parfums, artisan botanical blends, and royal ouds with express worldwide shipping."
+          "description": "Mahirash is a modern luxury fragrance house offering rare extrait de parfums, artisan botanical blends, and royal ouds with express shipping across India."
         }}
       />
       <div className="relative z-10">

@@ -1,51 +1,142 @@
-import React, { useState, useEffect, useCallback } from "react";
-import MiniLoader from "../components/MiniLoader";
-import { useAuth } from "../components/useAuth";
-import { useCustomerAuth } from "../components/CustomerAuthProvider";
-import { auth, db } from "../components/Firebase";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { doc, getDoc, collection, getDocs, query, where, updateDoc, setDoc, addDoc, deleteDoc, serverTimestamp } from "firebase/firestore";
 import { updateProfile } from "firebase/auth";
-import { doc, getDoc, collection, getDocs, query, where, updateDoc, setDoc, addDoc, deleteDoc } from "firebase/firestore";
-import { useNavigate, Link, useSearchParams } from "react-router-dom";
-import Preloader from "./Preloader";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   User, Package, Heart, LogOut, ChevronRight, Settings, ShoppingBag,
   CreditCard, MapPin, Bell, Camera, Plus, Trash2, Edit3, Check, X,
-  ShieldCheck, Truck, RotateCcw, Download, Printer, Phone, CheckCircle2, Clock, AlertCircle
+  ShieldCheck, Truck, RotateCcw, Download, Printer, Phone, CheckCircle2,
+  Clock, AlertCircle, Sparkles, Star, Award, Compass, Search, Copy,
+  ExternalLink, ArrowRight, MessageSquare, HelpCircle, RefreshCw, KeyRound,
+  Sliders, Tag, CheckSquare, Gift, ShieldAlert, Mail
 } from "lucide-react";
+
+import MiniLoader from "../components/MiniLoader";
 import SEOHead from "../components/SEOHead";
+import { auth, db } from "../components/Firebase";
+import { useAuth } from "../components/useAuth";
+import { useCustomerAuth } from "../components/CustomerAuthProvider";
+import { useStore } from "../components/StoreProvider";
 import uploadToCloudinary from "../utils/cloudinary";
 import OptimizedCloudinaryImage from "../components/OptimizedCloudinaryImage";
 import { cleanPhone, isValidPhone, cleanPincode, isValidPincode, isValidName, sanitizeText } from "../utils/validation";
 
-const Account = () => {
-  const { customer, customerLogout } = useCustomerAuth();   // OTP-based customer session
-  const { logout: firebaseLogout } = useAuth();              // Firebase Auth sign-out
+// Fragrance Family definitions for Mahirash signature differentiator
+const FRAGRANCE_FAMILIES = [
+  { id: "woody", label: "Woody & Smoky", notes: "Cedarwood, Sandalwood, Agarwood / Oud, Vetiver" },
+  { id: "oriental", label: "Amber & Oriental", notes: "Ambergris, Warm Vanilla, Spiced Cardamom, Saffron" },
+  { id: "floral", label: "Rare Florals", notes: "Damask Rose, Grasse Jasmine, Neroli, Ylang-Ylang" },
+  { id: "citrus", label: "Zesty Citrus", notes: "Italian Bergamot, Blood Orange, Mandora, Grapefruit" },
+  { id: "fresh", label: "Fresh Aquatic", notes: "Sea Salt, Dewy Rain, Mineral Accord, Juniper" },
+  { id: "gourmand", label: "Sweet Gourmand", notes: "Bourbon Vanilla, Toasted Almond, Dark Chocolate, Tonka" }
+];
 
-  const activeEmail = customer?.email || null;
+const OCCASIONS = [
+  { id: "daily", label: "Daily Signature" },
+  { id: "office", label: "Executive / Boardroom" },
+  { id: "evening", label: "Evening Gala & Soirée" },
+  { id: "celebration", label: "Royal Occasions & Weddings" }
+];
+
+const INTENSITIES = [
+  { id: "subtle", label: "Subtle & Intimate (EDC / Cologne)" },
+  { id: "moderate", label: "Balanced Sillage (Eau de Parfum 15-20%)" },
+  { id: "intense", label: "Potent & Long-Lasting (Extrait de Parfum 30%+)" }
+];
+
+const CURATED_PERFUMES = [
+  {
+    id: "mhr-oud-royale",
+    name: "Oud Royale Extrait",
+    brand: "MAHIRASH",
+    collection: "Royal Edition",
+    concentration: "Extrait de Parfum (30%)",
+    price: 4999,
+    originalPrice: 6500,
+    rating: 4.9,
+    family: "Woody & Amber",
+    notes: "Assam Agarwood, Bulgarian Rose, Smoked Leather, Ambergris",
+    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    id: "mhr-bergamot-reserve",
+    name: "Tuscan Bergamot & Cedar",
+    brand: "MAHIRASH",
+    collection: "Private Reserve",
+    concentration: "Eau de Parfum (20%)",
+    price: 3499,
+    originalPrice: 4200,
+    rating: 4.8,
+    family: "Citrus & Woody",
+    notes: "Calabrian Bergamot, Pink Peppercorn, Haitian Vetiver, White Amber",
+    image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&q=80&w=800"
+  },
+  {
+    id: "mhr-velvet-amber",
+    name: "Velvet Amber & Vanilla",
+    brand: "MAHIRASH",
+    collection: "Signature Reserve",
+    concentration: "Extrait de Parfum (32%)",
+    price: 4299,
+    originalPrice: 5500,
+    rating: 5.0,
+    family: "Oriental Amber",
+    notes: "Golden Amber, Madagascar Bourbon Vanilla, Tonka, Frankincense",
+    image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&q=80&w=800"
+  }
+];
+
+const FAQS = [
+  {
+    q: "How does Mahirash ship orders & what is the delivery timeline?",
+    a: "All orders are hand-inspected, bottled, securely packaged with custom foam padding, and shipped via Shiprocket premium air couriers (Delhivery, Blue Dart, DTDC). Metro deliveries arrive within 2–3 business days; other locations within 3–5 business days."
+  },
+  {
+    q: "How should I store my artisanal Extrait de Parfum?",
+    a: "Store your luxury perfume in a cool, dark environment away from direct sunlight, humidity, and extreme temperature variations to maintain fragrance freshness and longevity."
+  },
+  {
+    q: "What is the return & replacement policy for fragrances?",
+    a: "To ensure highest hygiene and authenticity standards, we offer replacements for any item damaged in transit. We also provide a 7-day unopened return policy if the outer cellophane seal remains completely intact."
+  },
+  {
+    q: "Are Mahirash fragrances certified authentic?",
+    a: "Yes. Every Mahirash creation comes with an embossed batch serial number, tamper-evident security seal, and official certificate of formulation authenticity."
+  }
+];
+
+const Account = () => {
+  const { customer, customerLogout } = useCustomerAuth();
+  const { logout: firebaseLogout, user: firebaseUser } = useAuth();
+  const { cart, wishlist, removeFromCart, updateQuantity, removeFromWishlist, addToCart } = useStore();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const activeEmail = (customer?.email || firebaseUser?.email || "").toLowerCase().trim();
+  const activeTab = searchParams.get("tab") || "overview";
+  const setActiveTab = (tab) => {
+    setSearchParams({ tab }, { replace: true });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [recentOrders, setRecentOrders] = useState([]);
-  const [stats, setStats] = useState({ cart: 0, wishlist: 0, orders: 0 });
-  const [loading, setLoading] = useState(true);
-  // Tab driven by URL ?tab= query param
-  const activeTab = searchParams.get("tab") || "overview";
-  const setActiveTab = (tab) => setSearchParams({ tab }, { replace: true });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  // Modals & Feedback
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [savingProfile, setSavingProfile] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
-  // Profile Forms
+  // Profile fields
   const [displayName, setDisplayName] = useState("");
   const [phone, setPhone] = useState("");
   const [bio, setBio] = useState("");
+  const [dob, setDob] = useState("");
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
-  // Saved Addresses
+  // Addresses
   const [addresses, setAddresses] = useState([]);
+  const [showAddressForm, setShowAddressForm] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState(null);
   const [addressForm, setAddressForm] = useState({
     name: "",
@@ -54,56 +145,83 @@ const Account = () => {
     flat: "",
     street: "",
     landmark: "",
-    address: "",
     city: "",
     state: "",
     pincode: "",
     type: "Home",
     isDefault: false
   });
-  const [showAddressForm, setShowAddressForm] = useState(false);
 
-  // Stored Payments
-  const [payments, setPayments] = useState([
-    { id: "p1", cardHolder: "MEMBER USER", cardNumber: "•••• •••• •••• 4242", expiry: "12/29", brand: "Visa" }
-  ]);
-  const [newCard, setNewCard] = useState({ cardHolder: "", cardNumber: "", expiry: "", brand: "Visa" });
-  const [showCardForm, setShowCardForm] = useState(false);
+  // Fragrance Preferences (Mahirash differentiator)
+  const [preferences, setPreferences] = useState({
+    families: ["woody", "oriental"],
+    occasion: "daily",
+    intensity: "intense",
+    notes: ["Royal Oud", "Italian Bergamot", "Mysore Sandalwood"]
+  });
+  const [savingPreferences, setSavingPreferences] = useState(false);
 
-  // Notifications Preferences
+  // Modals & Order Tracking
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [activeTrackingAwb, setActiveTrackingAwb] = useState(null);
+  const [trackingModalData, setTrackingModalData] = useState(null);
+  const [loadingTrackingModal, setLoadingTrackingModal] = useState(false);
+
+  // Order status filter & search
+  const [orderFilter, setOrderFilter] = useState("all");
+  const [orderSearchQuery, setOrderSearchQuery] = useState("");
+
+  // Customer Reviews state
+  const [reviews, setReviews] = useState([]);
+  const [newReview, setNewReview] = useState({ productName: "", rating: 5, comment: "" });
+  const [submittingReview, setSubmittingReview] = useState(false);
+
+  // Notification toggles
   const [notifications, setNotifications] = useState({
     orderUpdates: true,
+    whatsappUpdates: true,
     promotionalOffers: false,
     newsletter: true,
     securityAlerts: true
   });
 
-  const showToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3500);
+  const showToast = (msg, type = "success") => {
+    setToastMessage({ msg, type });
+    setTimeout(() => setToastMessage(null), 3800);
   };
 
+  // Fetch all user account details
   const fetchData = useCallback(async (email) => {
     if (!email) return;
+    setLoading(true);
     try {
       const cleanEmail = email.toLowerCase().trim();
       const customerDocId = cleanEmail.replace(/[^a-z0-9]/g, "_");
+
+      // 1. Fetch customer document
       const customerSnap = await getDoc(doc(db, "customers", customerDocId));
       if (customerSnap.exists()) {
         const d = customerSnap.data();
         setUserData(d);
-        setDisplayName(d.name || customer?.name || "");
+        setDisplayName(d.name || customer?.name || firebaseUser?.displayName || "");
         setPhone(d.phone || customer?.phone || "");
         setBio(d.bio || d.shortBio || "");
+        setDob(d.dob || "");
+        if (d.preferences) {
+          setPreferences(prev => ({ ...prev, ...d.preferences }));
+        }
+        if (d.notifications) {
+          setNotifications(prev => ({ ...prev, ...d.notifications }));
+        }
       } else {
-        setDisplayName(customer?.name || "");
+        setDisplayName(customer?.name || firebaseUser?.displayName || "");
         setPhone(customer?.phone || "");
       }
 
-      // Fetch orders reliably via server API (guaranteed to bypass Firestore client permission restrictions)
+      // 2. Fetch orders via server API
       let ordersList = [];
       try {
-        const apiRes = await fetch(`/api/get-orders?email=${encodeURIComponent(cleanEmail)}&userId=${encodeURIComponent(customer?.uid || customer?.id || "")}`);
+        const apiRes = await fetch(`/api/get-orders?email=${encodeURIComponent(cleanEmail)}&userId=${encodeURIComponent(customer?.uid || firebaseUser?.uid || "")}`);
         if (apiRes.ok) {
           const apiData = await apiRes.json();
           if (Array.isArray(apiData.orders)) {
@@ -111,7 +229,7 @@ const Account = () => {
           }
         }
       } catch (apiErr) {
-        console.warn("Account orders API notice:", apiErr);
+        console.warn("Orders fetch server notice:", apiErr);
       }
 
       if (ordersList.length === 0) {
@@ -123,74 +241,68 @@ const Account = () => {
             const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0);
             return tB - tA;
           });
-        } catch (_) { }
+        } catch (_) {}
       }
-
       setRecentOrders(ordersList);
-      setStats(prev => ({ ...prev, orders: ordersList.length }));
 
-      // Load addresses from customers sub-collection
+      // 3. Fetch addresses
       try {
         const addrSnap = await getDocs(collection(db, "customers", customerDocId, "addresses"));
         const addrsList = addrSnap.docs.map(aDoc => ({ id: aDoc.id, ...aDoc.data() }));
-        const d = customerSnap.exists() ? customerSnap.data() : null;
-        if (addrsList.length === 0 && d && d.address) {
-          addrsList.push({
-            id: 'legacy-root-address',
-            name: d.name || customer?.name || "",
-            phone: d.phone || customer?.phone || "",
-            address: d.address || "",
-            city: d.city || "",
-            state: d.state || "",
-            pincode: d.pincode || "",
-            type: "Home",
-            isDefault: true
-          });
+        if (addrsList.length === 0 && customerSnap.exists()) {
+          const cd = customerSnap.data();
+          if (cd.address) {
+            addrsList.push({
+              id: "legacy-root-address",
+              name: cd.name || displayName || "Client",
+              phone: cd.phone || phone || "",
+              address: cd.address || "",
+              city: cd.city || "",
+              state: cd.state || "",
+              pincode: cd.pincode || "",
+              type: "Home",
+              isDefault: true
+            });
+          }
         }
         setAddresses(addrsList);
-      } catch (_) { }
+      } catch (_) {}
 
-      // Load saved cards
+      // 4. Fetch customer reviews
       try {
-        const cardsSnap = await getDocs(collection(db, "customers", customerDocId, "payments"));
-        const cardsList = cardsSnap.docs.map(td => ({ id: td.id, ...td.data() }));
-        if (cardsList.length > 0) setPayments(cardsList);
-        else setPayments([]);
-      } catch (_) { setPayments([]); }
+        const revSnap = await getDocs(query(collection(db, "reviews"), where("userEmail", "==", cleanEmail)));
+        setReviews(revSnap.docs.map(rd => ({ id: rd.id, ...rd.data() })));
+      } catch (_) {}
 
-    } catch (error) {
-      console.error("Error loading account data:", error);
+    } catch (err) {
+      console.error("Account data load error:", err);
     } finally {
       setLoading(false);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [customer?.name, customer?.phone, customer?.uid, firebaseUser?.displayName, firebaseUser?.uid]);
 
-  // Use email string as dep (not customer object) to avoid re-fetch loop on profile saves
   useEffect(() => {
-    if (!customer?.email) {
-      navigate("/login");
+    if (!customer?.email && !firebaseUser?.email) {
+      navigate("/login?redirect=account");
       return;
     }
-    fetchData(customer.email);
-  }, [customer?.email, navigate, fetchData]);
+    fetchData(activeEmail);
+  }, [activeEmail, fetchData, navigate, customer?.email, firebaseUser?.email]);
 
   const handleLogout = async () => {
-    if (window.confirm("Are you sure you want to logout?")) {
+    if (window.confirm("Are you sure you wish to log out from your Mahirash account?")) {
       try {
-        // Clear OTP customer session first
         customerLogout();
-        // Also sign out Firebase Auth so CustomerAuthProvider doesn't re-populate customer
         if (firebaseLogout) await firebaseLogout();
         navigate("/");
-      } catch (error) {
-        console.error("Logout failed:", error);
-        // Still navigate away even if Firebase signOut fails
+      } catch (err) {
+        console.error("Logout notice:", err);
         navigate("/");
       }
     }
   };
 
-  // Avatar Upload directly to Cloudinary
+  // Avatar upload
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -200,29 +312,28 @@ const Account = () => {
       if (auth.currentUser) {
         await updateProfile(auth.currentUser, { photoURL: imageUrl });
       }
-      const docId = (customer.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_");
+      const docId = activeEmail.replace(/[^a-z0-9]/g, "_");
       await setDoc(doc(db, "customers", docId), { photoURL: imageUrl }, { merge: true });
       setUserData(prev => ({ ...prev, photoURL: imageUrl }));
-      showToast("Profile picture updated!");
+      showToast("Profile avatar updated successfully!");
     } catch (err) {
-      showToast("Avatar update failed: " + err.message);
+      showToast("Avatar update failed: " + err.message, "error");
     } finally {
       setUploadingAvatar(false);
     }
   };
 
-  // Profile fields submit
+  // Profile update
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     const cleanDName = sanitizeText(displayName, 60);
     if (!cleanDName || !isValidName(cleanDName)) {
-      showToast("Please enter a valid full name (letters only, min 2 characters)", "error");
+      showToast("Please enter a valid full name (at least 2 letters)", "error");
       return;
     }
-
     const cleanP = cleanPhone(phone);
     if (cleanP && !isValidPhone(cleanP)) {
-      showToast("Please enter a valid 10-digit mobile number (starts with 6, 7, 8, or 9)", "error");
+      showToast("Please enter a valid 10-digit mobile number", "error");
       return;
     }
 
@@ -231,22 +342,39 @@ const Account = () => {
       if (auth.currentUser) {
         await updateProfile(auth.currentUser, { displayName: cleanDName });
       }
-      // OTP customer → write to customers collection
-      const docId = (customer.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_");
+      const docId = activeEmail.replace(/[^a-z0-9]/g, "_");
       await setDoc(doc(db, "customers", docId), {
-        name: cleanDName, phone: cleanP, shortBio: sanitizeText(bio, 250),
-        email: customer.email,
-        updatedAt: new Date()
+        name: cleanDName,
+        phone: cleanP,
+        shortBio: sanitizeText(bio, 250),
+        dob,
+        email: activeEmail,
+        updatedAt: serverTimestamp()
       }, { merge: true });
-      // Also update the local customer session
-      const updated = { ...JSON.parse(localStorage.getItem("pasoja_customer_session") || "{}"), name: cleanDName, phone: cleanP };
-      localStorage.setItem("pasoja_customer_session", JSON.stringify(updated));
-      setUserData(prev => ({ ...prev, displayName: cleanDName, name: cleanDName, phone: cleanP, bio }));
-      showToast("Profile details updated successfully!");
+
+      setUserData(prev => ({ ...prev, name: cleanDName, phone: cleanP, bio, dob }));
+      showToast("Profile information saved!");
     } catch (err) {
-      showToast("Error saving profile: " + err.message);
+      showToast("Error updating profile: " + err.message, "error");
     } finally {
       setSavingProfile(false);
+    }
+  };
+
+  // Fragrance Preferences save
+  const handleSavePreferences = async () => {
+    setSavingPreferences(true);
+    try {
+      const docId = activeEmail.replace(/[^a-z0-9]/g, "_");
+      await setDoc(doc(db, "customers", docId), {
+        preferences,
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+      showToast("Fragrance preferences updated! Your recommendations are refreshed.");
+    } catch (err) {
+      showToast("Failed to save fragrance preferences: " + err.message, "error");
+    } finally {
+      setSavingPreferences(false);
     }
   };
 
@@ -259,7 +387,6 @@ const Account = () => {
       flat: "",
       street: "",
       landmark: "",
-      address: "",
       city: "",
       state: "",
       pincode: "",
@@ -272,28 +399,14 @@ const Account = () => {
 
   const handleSaveAddress = async (e) => {
     e.preventDefault();
-    if (!addressForm.name || !addressForm.phone || (!addressForm.flat && !addressForm.address) || !addressForm.city || !addressForm.state || !addressForm.pincode) {
-      showToast("Please fill all required address fields", "error");
-      return;
-    }
-
     const cleanP = cleanPhone(addressForm.phone);
     if (!isValidPhone(cleanP)) {
-      showToast("Please enter a valid 10-digit mobile number", "error");
+      showToast("Please enter a valid 10-digit phone number", "error");
       return;
     }
-
-    if (addressForm.alternatePhone) {
-      const cleanAlt = cleanPhone(addressForm.alternatePhone);
-      if (!isValidPhone(cleanAlt)) {
-        showToast("Alternate phone must be a valid 10-digit mobile number", "error");
-        return;
-      }
-    }
-
     const cleanPin = cleanPincode(addressForm.pincode);
     if (!isValidPincode(cleanPin)) {
-      showToast("Please enter a valid 6-digit delivery PIN code", "error");
+      showToast("Please enter a valid 6-digit Indian PIN code", "error");
       return;
     }
 
@@ -301,7 +414,7 @@ const Account = () => {
       addressForm.flat,
       addressForm.street,
       addressForm.landmark ? `Near ${addressForm.landmark}` : null
-    ].filter(Boolean).join(", ") || addressForm.address;
+    ].filter(Boolean).join(", ");
 
     const payload = {
       ...addressForm,
@@ -312,511 +425,633 @@ const Account = () => {
     };
 
     try {
-      const addrCollection = collection(db, "customers", (customer.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_"), "addresses");
+      const docId = activeEmail.replace(/[^a-z0-9]/g, "_");
+      const colRef = collection(db, "customers", docId, "addresses");
 
       if (editingAddressId) {
-        if (editingAddressId === 'legacy-root-address') {
-          const docRef = await addDoc(addrCollection, payload);
-          setAddresses(prev => prev.map(a => a.id === editingAddressId ? { id: docRef.id, ...payload } : a));
-          showToast("Address updated!");
+        if (editingAddressId === "legacy-root-address") {
+          const newDoc = await addDoc(colRef, payload);
+          setAddresses(prev => prev.map(a => a.id === editingAddressId ? { id: newDoc.id, ...payload } : a));
         } else {
-          const addrRef = doc(db, "customers", (customer.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_"), "addresses", editingAddressId);
-          await updateDoc(addrRef, payload);
+          await updateDoc(doc(db, "customers", docId, "addresses", editingAddressId), payload);
           setAddresses(prev => prev.map(a => a.id === editingAddressId ? { ...a, ...payload } : a));
-          showToast("Address updated!");
         }
+        showToast("Address updated successfully!");
       } else {
-        const docRef = await addDoc(addrCollection, payload);
+        const docRef = await addDoc(colRef, payload);
         setAddresses(prev => [...prev, { id: docRef.id, ...payload }]);
-        showToast("New address added!");
+        showToast("New delivery address added!");
       }
       resetAddressForm();
     } catch (err) {
-      console.error(err);
-      showToast("Failed to save address: " + err.message);
+      showToast("Failed to save address: " + err.message, "error");
     }
   };
 
-  const handleEditAddressInit = (addr) => {
-    setAddressForm({
-      name: addr.name || "",
-      phone: addr.phone || "",
-      alternatePhone: addr.alternatePhone || "",
-      flat: addr.flat || "",
-      street: addr.street || addr.address || "",
-      landmark: addr.landmark || "",
-      address: addr.address || "",
-      city: addr.city || "",
-      state: addr.state || "",
-      pincode: addr.pincode || "",
-      type: addr.type || "Home",
-      isDefault: addr.isDefault || false
-    });
-    setEditingAddressId(addr.id);
-    setShowAddressForm(true);
-  };
-
   const handleDeleteAddress = async (id) => {
-    if (!window.confirm("Delete this address?")) return;
+    if (!window.confirm("Remove this address from your profile?")) return;
     try {
-      if (id === 'legacy-root-address') {
-        setAddresses(prev => prev.filter(a => a.id !== id));
-        showToast("Address deleted");
-        return;
+      const docId = activeEmail.replace(/[^a-z0-9]/g, "_");
+      if (id !== "legacy-root-address") {
+        await deleteDoc(doc(db, "customers", docId, "addresses", id));
       }
-      const addrRef = doc(db, "customers", (customer?.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_"), "addresses", id);
-      await deleteDoc(addrRef);
       setAddresses(prev => prev.filter(a => a.id !== id));
       showToast("Address deleted");
     } catch (err) {
-      console.error(err);
+      showToast("Error deleting address: " + err.message, "error");
     }
   };
 
   const handleSetDefaultAddress = async (id) => {
     try {
-      const updatedList = addresses.map(a => ({ ...a, isDefault: a.id === id }));
-      setAddresses(updatedList);
-      for (const a of updatedList) {
-        if (a.id === 'legacy-root-address') continue;
-        const addrRef = doc(db, "customers", (customer?.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_"), "addresses", a.id);
-        await updateDoc(addrRef, { isDefault: a.id === id });
+      const updated = addresses.map(a => ({ ...a, isDefault: a.id === id }));
+      setAddresses(updated);
+      const docId = activeEmail.replace(/[^a-z0-9]/g, "_");
+      for (const a of updated) {
+        if (a.id === "legacy-root-address") continue;
+        await updateDoc(doc(db, "customers", docId, "addresses", a.id), { isDefault: a.id === id });
       }
-      showToast("Default address updated!");
+      showToast("Primary shipping address updated!");
     } catch (err) {
-      console.error(err);
+      console.warn("Error setting default address:", err);
     }
   };
 
-  // Payment Cards
-  const handleAddCard = async (e) => {
-    e.preventDefault();
-    if (!newCard.cardNumber || !newCard.cardHolder) return;
-    const maskedCard = `•••• •••• •••• ${newCard.cardNumber.slice(-4)}`;
-    const cardData = { ...newCard, cardNumber: maskedCard };
+  // Live Tracking Modal
+  const openTrackingModal = async (order) => {
+    setSelectedOrder(order);
+    const awb = order.awbCode;
+    setActiveTrackingAwb(awb || order.id);
+    setLoadingTrackingModal(true);
 
     try {
-      const docId = (customer.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_");
-      const paymentsCol = collection(db, "customers", docId, "payments");
-      const docRef = await addDoc(paymentsCol, cardData);
-      setPayments(prev => [...prev, { id: docRef.id, ...cardData }]);
-      setNewCard({ cardHolder: "", cardNumber: "", expiry: "", brand: "Visa" });
-      setShowCardForm(false);
-      showToast("Card saved to profile!");
+      const url = awb ? `/api/shipping/track?awb=${encodeURIComponent(awb)}` : `/api/shipping/track?orderId=${encodeURIComponent(order.id)}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        setTrackingModalData(data);
+      } else {
+        setTrackingModalData(null);
+      }
     } catch (err) {
-      showToast("Failed to save card");
+      console.warn("Tracking fetch notice:", err);
+    } finally {
+      setLoadingTrackingModal(false);
     }
   };
 
-  const handleDeleteCard = async (cardId) => {
-    if (!window.confirm("Remove this card?")) return;
-    try {
-      const docId = (customer.email || "").toLowerCase().replace(/[^a-z0-9]/g, "_");
-      await deleteDoc(doc(db, "customers", docId, "payments", cardId));
-      setPayments(prev => prev.filter(p => p.id !== cardId));
-      showToast("Card removed");
-    } catch (err) {
-      showToast("Failed to remove card");
-    }
-  };
-
-  // INVOICE GENERATION & PRINT
+  // Printable tax invoice
   const handleDownloadInvoice = (order) => {
-    const invoiceWindow = window.open('', '_blank', 'width=850,height=950');
+    const invoiceWindow = window.open("", "_blank", "width=850,height=950");
     if (!invoiceWindow) {
-      alert("Please allow popups to download or print your invoice.");
+      alert("Please allow popups to view or print the official tax invoice.");
       return;
     }
 
     const orderDate = order.createdAt?.toDate
-      ? order.createdAt.toDate().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-      : (order.createdAt?.toMillis
-        ? new Date(order.createdAt.toMillis()).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
-        : 'Recent Date');
+      ? order.createdAt.toDate().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
+      : "Recent";
 
-    const itemsList = order.items || [];
-    const itemsRows = itemsList.map((item, idx) => `
+    const itemsRows = (order.items || []).map((item, idx) => `
       <tr>
-        <td style="padding: 12px 14px; border-bottom: 1px solid #eeeeee; font-size: 12px; color: #555;">${idx + 1}</td>
-        <td style="padding: 12px 14px; border-bottom: 1px solid #eeeeee; font-size: 12px; font-weight: 600; color: #111;">
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; color: #555;">${idx + 1}</td>
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; font-weight: 600; color: #111;">
           ${item.name}
-          ${item.size ? `<span style="font-size:10px; color:#777; font-weight: normal; margin-left: 6px;">(Size: ${item.size})</span>` : ''}
+          ${item.size ? `<span style="font-size:10px; color:#888; margin-left: 6px;">(${item.size})</span>` : ""}
         </td>
-        <td style="padding: 12px 14px; border-bottom: 1px solid #eeeeee; font-size: 12px; text-align: center; color: #333;">${item.quantity || 1}</td>
-        <td style="padding: 12px 14px; border-bottom: 1px solid #eeeeee; font-size: 12px; text-align: right; color: #333;">₹${(item.price || 0).toLocaleString()}</td>
-        <td style="padding: 12px 14px; border-bottom: 1px solid #eeeeee; font-size: 12px; text-align: right; font-weight: 700; color: #000;">₹${((item.price || 0) * (item.quantity || 1)).toLocaleString()}</td>
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; text-align: center; color: #333;">${item.quantity || item.units || 1}</td>
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; text-align: right; color: #333;">₹${(item.price || 0).toLocaleString()}</td>
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; text-align: right; font-weight: 700; color: #000;">₹${((item.price || 0) * (item.quantity || item.units || 1)).toLocaleString()}</td>
       </tr>
-    `).join('');
+    `).join("");
 
-    const shippingAddr = order.shipping || {};
-    const recipientName = shippingAddr.name || displayName || userData?.displayName || customer?.name || 'Valued Customer';
-    const recipientPhone = shippingAddr.phone || phone || 'N/A';
-
-    const invoiceHtml = `
+    invoiceWindow.document.write(`
       <!DOCTYPE html>
       <html>
-        <head>
-          <meta charset="utf-8" />
-          <title>Invoice #${order.id.toUpperCase()} - MAHIRASH PARFUMERIE</title>
-          <style>
-            * { box-sizing: border-box; }
-            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1a1a1a; margin: 0; padding: 40px; background: #fafafa; }
-            .container { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 40px; border: 1px solid #e5e5e5; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
-            .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #111111; padding-bottom: 24px; margin-bottom: 32px; }
-            .brand { font-size: 28px; font-weight: 900; letter-spacing: 5px; text-transform: uppercase; color: #000; margin: 0; }
-            .tagline { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #888; margin-top: 4px; }
-            .inv-meta { text-align: right; }
-            .inv-meta h2 { margin: 0; font-size: 20px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; color: #111; }
-            .inv-meta p { margin: 4px 0 0; font-size: 11px; color: #666; }
-            .addresses { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 36px; }
-            .address-box { width: 48%; font-size: 12px; line-height: 1.6; }
-            .address-box h3 { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #888; margin: 0 0 10px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-            th { background: #f5f5f5; padding: 12px 14px; text-align: left; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #444; border-bottom: 1px solid #ddd; }
-            .summary { display: flex; justify-content: flex-end; margin-bottom: 30px; }
-            .summary-table { width: 320px; font-size: 12px; }
-            .summary-table td { padding: 8px 12px; }
-            .total-row { font-weight: 800; font-size: 15px; border-top: 2px solid #111; border-bottom: 2px solid #111; color: #000; }
-            .footer { border-top: 1px solid #eee; padding-top: 20px; margin-top: 40px; text-align: center; font-size: 11px; color: #888; }
-            .actions { margin-bottom: 24px; text-align: right; }
-            .btn-print { background: #000; color: #fff; border: none; padding: 12px 24px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; border-radius: 2px; }
-            .btn-print:hover { background: #222; }
-            @media print {
-              body { padding: 0; background: #fff; }
-              .container { border: none; shadow: none; padding: 0; }
-              .actions { display: none; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="actions">
-            <button class="btn-print" onclick="window.print()">Print / Save PDF Invoice</button>
+      <head>
+        <title>Tax Invoice - #${order.id.toUpperCase()} | MAHIRASH</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 40px; color: #111; background: #fff; }
+          .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 25px; border-bottom: 2px solid #b8860b; }
+          .logo { font-size: 24px; font-weight: 300; letter-spacing: 0.25em; text-transform: uppercase; color: #111; }
+          .logo span { color: #b8860b; font-weight: 600; }
+          .badge { background: #faf5eb; color: #b8860b; border: 1px solid #e5d5b8; font-size: 10px; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; }
+          .table { width: 100%; border-collapse: collapse; margin-top: 25px; }
+          .table th { background: #faf8f5; border-bottom: 1px solid #d4af37; padding: 10px 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #444; }
+          .total-box { margin-top: 30px; display: flex; justify-content: flex-end; }
+          .total-table { width: 280px; font-size: 12px; }
+          .total-table td { padding: 6px 0; }
+          .final-price { font-size: 16px; font-weight: bold; color: #b8860b; border-top: 1px solid #ddd; padding-top: 8px; }
+          .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid #eee; font-size: 10px; color: #777; text-align: center; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <div class="logo">MAHI<span>RASH</span></div>
+            <p style="font-size: 11px; color: #666; margin: 4px 0 0 0; text-transform: uppercase; letter-spacing: 0.1em;">Luxury Perfumes Store</p>
           </div>
-          <div class="container">
-            <div class="header">
-              <div>
-                <h1 class="brand">MAHIRASH</h1>
-                <div class="tagline">Haute Parfumerie & Luxury Extraits</div>
-              </div>
-              <div class="inv-meta">
-                <h2>TAX INVOICE</h2>
-                <p>Invoice #: <strong>INV-${order.id.toUpperCase()}</strong></p>
-                <p>Date: ${orderDate}</p>
-                <p>Status: <strong style="color: #10B981;">PAID</strong></p>
-              </div>
-            </div>
-
-            <div class="addresses">
-              <div class="address-box">
-                <h3>Billed & Shipped To</h3>
-                <strong>${recipientName}</strong><br />
-                ${shippingAddr.address || 'Standard Address'}<br />
-                ${shippingAddr.city ? `${shippingAddr.city}, ${shippingAddr.state} - ${shippingAddr.pincode}` : ''}<br />
-                Phone: ${recipientPhone}<br />
-                Email: ${customer?.email || 'N/A'}
-              </div>
-              <div class="address-box" style="text-align: right;">
-                <h3>Order Info</h3>
-                Order Reference: #${order.id.toUpperCase()}<br />
-                Payment Method: ${(order.paymentMethod || 'Online').toUpperCase()}<br />
-                Fulfillment Status: <strong>${(order.status || 'Confirmed').toUpperCase()}</strong><br />
-                Shipping Standard: Free Priority Delivery
-              </div>
-            </div>
-
-            <table>
-              <thead>
-                <tr>
-                  <th style="width: 40px;">#</th>
-                  <th>Item Specification</th>
-                  <th style="text-align: center; width: 60px;">Qty</th>
-                  <th style="text-align: right; width: 110px;">Unit Price</th>
-                  <th style="text-align: right; width: 110px;">Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${itemsRows}
-              </tbody>
-            </table>
-
-            <div class="summary">
-              <table class="summary-table">
-                <tr>
-                  <td>Items Subtotal</td>
-                  <td style="text-align: right;">₹${(order.total || 0).toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td>Express Shipping</td>
-                  <td style="text-align: right; color: #10B981; font-weight: 600;">FREE</td>
-                </tr>
-                <tr>
-                  <td>Estimated GST (Included)</td>
-                  <td style="text-align: right;">₹0</td>
-                </tr>
-                <tr class="total-row">
-                  <td style="padding-top: 12px; padding-bottom: 12px;">Grand Total</td>
-                  <td style="text-align: right; padding-top: 12px; padding-bottom: 12px;">₹${(order.total || 0).toLocaleString()}</td>
-                </tr>
-              </table>
-            </div>
-
-            <div class="footer">
-              <p>Thank you for choosing MAHIRASH PARFUMERIE. For support, returns, or queries regarding this invoice, please reach us at help@mahirash.com</p>
-            </div>
+          <div style="text-align: right;">
+            <span class="badge">Official Tax Invoice</span>
+            <p style="font-size: 12px; font-family: monospace; margin: 8px 0 0 0; font-weight: bold;">#${order.id.toUpperCase()}</p>
+            <p style="font-size: 11px; color: #666; margin: 2px 0 0 0;">Date: ${orderDate}</p>
           </div>
-        </body>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 30px; font-size: 12px; line-height: 1.6;">
+          <div>
+            <strong style="text-transform: uppercase; font-size: 10px; color: #888; letter-spacing: 0.1em;">Billed & Shipped To:</strong>
+            <p style="margin: 4px 0 0 0; font-weight: bold; text-transform: uppercase;">${order.shipping?.name || order.customerName || displayName || "Client"}</p>
+            <p style="margin: 2px 0 0 0; color: #555;">${order.shipping?.address || "Delivery Address"}</p>
+            <p style="margin: 2px 0 0 0; color: #555;">${order.shipping?.city || "Indore"}, ${order.shipping?.state || "MP"} - ${order.shipping?.pincode || "452001"}</p>
+            <p style="margin: 2px 0 0 0; color: #b8860b; font-weight: bold;">Phone: ${order.shipping?.phone || order.customerPhone || ""}</p>
+          </div>
+          <div style="text-align: right;">
+            <strong style="text-transform: uppercase; font-size: 10px; color: #888; letter-spacing: 0.1em;">Payment & Fulfillment:</strong>
+            <p style="margin: 4px 0 0 0;">Mode: <strong style="text-transform: uppercase;">${order.paymentMethod || "Online"}</strong></p>
+            <p style="margin: 2px 0 0 0;">Status: <strong style="color: #059669;">${(order.paymentStatus || "Paid").toUpperCase()}</strong></p>
+            ${order.awbCode ? `<p style="margin: 2px 0 0 0; color: #555;">AWB: <span style="font-family: monospace;">${order.awbCode}</span></p>` : ""}
+          </div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="text-align: left;">#</th>
+              <th style="text-align: left;">Fragrance Formulation</th>
+              <th>Qty</th>
+              <th style="text-align: right;">Unit Price</th>
+              <th style="text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsRows}
+          </tbody>
+        </table>
+
+        <div class="total-box">
+          <table class="total-table">
+            <tr>
+              <td>Subtotal</td>
+              <td style="text-align: right;">₹${(order.subtotal || order.total || 0).toLocaleString()}</td>
+            </tr>
+            <tr>
+              <td>Express Insured Shipping</td>
+              <td style="text-align: right; color: #059669; font-weight: bold;">COMPLIMENTARY</td>
+            </tr>
+            ${order.discount ? `
+            <tr>
+              <td>Member Discount</td>
+              <td style="text-align: right; color: #b8860b;">-₹${order.discount.toLocaleString()}</td>
+            </tr>` : ""}
+            <tr class="final-price">
+              <td>Total Amount Paid</td>
+              <td style="text-align: right;">₹${(order.total || 0).toLocaleString()}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="footer">
+          <p>Thank you for shopping with Mahirash Luxury Perfumes.</p>
+          <p>For customer support queries, write to care@mahirash.com or WhatsApp +91 9584826112.</p>
+        </div>
+      </body>
       </html>
-    `;
-
-    invoiceWindow.document.write(invoiceHtml);
+    `);
     invoiceWindow.document.close();
+    setTimeout(() => {
+      invoiceWindow.focus();
+      invoiceWindow.print();
+    }, 500);
   };
 
+  // Submit product review
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!newReview.productName.trim() || !newReview.comment.trim()) {
+      showToast("Please provide both product title and feedback text", "error");
+      return;
+    }
+    setSubmittingReview(true);
+    try {
+      const reviewPayload = {
+        userEmail: activeEmail,
+        userName: displayName || "Customer",
+        productName: newReview.productName.trim(),
+        rating: Number(newReview.rating) || 5,
+        comment: sanitizeText(newReview.comment, 500),
+        status: "approved",
+        createdAt: serverTimestamp()
+      };
+      await addDoc(collection(db, "reviews"), reviewPayload);
+      setReviews(prev => [reviewPayload, ...prev]);
+      setNewReview({ productName: "", rating: 5, comment: "" });
+      showToast("Thank you! Your fragrance review has been recorded.");
+    } catch (err) {
+      showToast("Error recording review: " + err.message, "error");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  // Derived counts
+  const activeOrdersCount = useMemo(() => {
+    return recentOrders.filter(o => {
+      const s = (o.shipmentStatus || o.status || "").toLowerCase();
+      return s !== "delivered" && s !== "cancelled" && s !== "failed";
+    }).length;
+  }, [recentOrders]);
+
+  const activeShipment = useMemo(() => {
+    return recentOrders.find(o => {
+      const s = (o.shipmentStatus || o.status || "").toLowerCase();
+      return s !== "delivered" && s !== "cancelled" && s !== "failed";
+    }) || recentOrders[0] || null;
+  }, [recentOrders]);
+
+  // Filtered orders
+  const filteredOrders = useMemo(() => {
+    return recentOrders.filter(order => {
+      const s = (order.shipmentStatus || order.status || "").toLowerCase();
+      if (orderFilter === "active" && (s === "delivered" || s === "cancelled")) return false;
+      if (orderFilter === "delivered" && s !== "delivered") return false;
+      if (orderFilter === "cancelled" && s !== "cancelled") return false;
+      if (orderSearchQuery.trim()) {
+        const q = orderSearchQuery.toLowerCase().trim();
+        const matchesId = order.id.toLowerCase().includes(q);
+        const matchesItems = (order.items || []).some(it => it.name?.toLowerCase().includes(q));
+        if (!matchesId && !matchesItems) return false;
+      }
+      return true;
+    });
+  }, [recentOrders, orderFilter, orderSearchQuery]);
+
+  // Navigation menu items
+  const NAV_ITEMS = [
+    { id: "overview", label: "Dashboard Overview", icon: Compass },
+    { id: "orders", label: "My Orders & Tracking", icon: Package, badge: activeOrdersCount > 0 ? activeOrdersCount : null, badgeColor: "bg-[#b8860b]" },
+    { id: "wishlist", label: "Saved Fragrances", icon: Heart, badge: wishlist.length > 0 ? wishlist.length : null },
+    { id: "cart", label: "Shopping Bag", icon: ShoppingBag, badge: cart.length > 0 ? cart.length : null },
+    { id: "preferences", label: "Fragrance Profile", icon: Sliders, badge: "Custom", badgeColor: "bg-emerald-600" },
+    { id: "profile", label: "Personal Information", icon: User },
+    { id: "addresses", label: "Shipping Addresses", icon: MapPin },
+    { id: "payments", label: "Payment History", icon: CreditCard },
+    { id: "reviews", label: "Reviews & Ratings", icon: Star },
+    { id: "rewards", label: "Offers & Club Rewards", icon: Award },
+    { id: "notifications", label: "Notification Settings", icon: Bell },
+    { id: "support", label: "Customer Support & Help", icon: MessageSquare },
+    { id: "settings", label: "Account Security", icon: Settings }
+  ];
+
   if (loading) {
-    return <MiniLoader message="Loading Account" />;
+    return (
+      <div className="min-h-screen bg-[#faf8f5] flex items-center justify-center pt-28">
+        <SEOHead title="Customer Dashboard | Mahirash" />
+        <div className="text-center space-y-3">
+          <div className="w-8 h-8 border border-zinc-300 border-t-[#b8860b] animate-spin mx-auto rounded-full" />
+          <p className="text-[12px] md:text-[14px] uppercase tracking-[0.2em] text-zinc-500 font-light">
+            Entering Mahirash Portal...
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] text-zinc-900 pt-[145px] md:pt-[105px] pb-24 px-4 sm:px-6 md:px-10 lg:px-14 font-sans select-none">
-      <SEOHead
-        title="My Account | Mahirash Parfumerie"
-        description="Manage your account profile, orders, and addresses on Mahirash Parfumerie."
-        robots="noindex, follow"
-        url="https://mahirash.com/account"
-      />
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-8 right-8 z-[100] bg-black text-white px-6 py-3.5 shadow-2xl flex items-center gap-3 border border-zinc-800 animate-bounce">
-          <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-          <p className="text-[12px]   uppercase tracking-wider">{toastMessage}</p>
-        </div>
-      )}
+    <div className="min-h-screen bg-[#faf8f5] text-zinc-900 pt-28 pb-20 selection:bg-[#b8860b] selection:text-white">
+      <SEOHead title="Customer Dashboard | Mahirash" />
 
-      <div className="max-w-7xl mx-auto pt-8 md:pt-12">
+      {/* Floating Toast Notification */}
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className={`fixed top-24 right-4 z-50 px-5 py-3 rounded border shadow-xl flex items-center gap-2.5 text-xs uppercase tracking-wider font-semibold ${
+              toastMessage.type === "error"
+                ? "bg-red-50 text-red-800 border-red-300"
+                : "bg-black text-white border-[#b8860b]"
+            }`}
+          >
+            {toastMessage.type === "error" ? <AlertCircle size={15} /> : <CheckCircle2 size={15} className="text-[#b8860b]" />}
+            <span>{toastMessage.msg}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        {/* PROFILE HEADER CARD */}
-        <div className="bg-white border border-zinc-200 p-6 sm:p-8 md:p-10 mb-8 relative overflow-hidden shadow-sm">
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left w-full md:w-auto">
-              <div className="relative group">
-                <div className="w-24 h-24 bg-zinc-100 border border-zinc-300 flex items-center justify-center text-zinc-800 overflow-hidden relative rounded-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* ─── LUXURY CLIENT HEADER BANNER ─────────────────────────────────── */}
+        <div className="bg-white border border-zinc-200/90 shadow-sm p-6 md:p-8 mb-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-full bg-gradient-to-l from-[#faf5eb]/80 to-transparent pointer-events-none" />
+
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+            {/* User Profile Card Left */}
+            <div className="flex items-center gap-5">
+              <div className="relative group shrink-0">
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-[#b8860b]/40 overflow-hidden bg-zinc-100 flex items-center justify-center shadow-inner">
                   {userData?.photoURL ? (
-                    <OptimizedCloudinaryImage src={userData.photoURL} alt="Profile" preset="avatar" className="w-full h-full object-cover" />
+                    <img src={userData.photoURL} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
-                    <User size={40} strokeWidth={1.2} className="text-zinc-400" />
-                  )}
-                  {uploadingAvatar && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                      <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                    </div>
+                    <span className="text-2xl font-light text-[#b8860b] uppercase font-serif">
+                      {(displayName || activeEmail || "M")[0]}
+                    </span>
                   )}
                 </div>
-                <label className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity rounded-full">
-                  <Camera size={20} className="text-white" />
-                  <input type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
+                <label
+                  htmlFor="avatar-input"
+                  className="absolute bottom-0 right-0 p-1.5 bg-black text-white hover:bg-[#b8860b] rounded-full cursor-pointer transition-all shadow-md"
+                  title="Upload avatar"
+                >
+                  <Camera size={12} />
+                  <input
+                    id="avatar-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                    disabled={uploadingAvatar}
+                  />
                 </label>
               </div>
 
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-center md:justify-start gap-3">
-                  <h1 className="text-2xl font-light text-zinc-900 uppercase tracking-widest">
-                    {userData?.displayName || userData?.name || customer?.name || "Atelier Guest"}
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h1 className="text-xl md:text-2xl font-light text-zinc-950 uppercase tracking-widest font-serif">
+                    {displayName || "Valued Customer"}
                   </h1>
-                  <span className="px-2.5 py-0.5 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[12px] font-black uppercase tracking-widest">Client Member</span>
+                  <span className="px-2.5 py-0.5 bg-[#faf5eb] border border-[#e5d5b8] text-[#b8860b] text-[12px] uppercase font-bold tracking-widest inline-flex items-center gap-1 rounded-xs">
+                    <Sparkles size={12} /> Privilege Member
+                  </span>
                 </div>
-                <p className="text-[14px] text-zinc-500">{activeEmail}</p>
+                <p className="text-xs text-zinc-500 font-mono tracking-wide">{activeEmail}</p>
                 {phone && (
-                  <p className="text-[12px] text-[#b8860b] flex items-center justify-center md:justify-start gap-1 font-semibold">
-                    <Phone size={10} /> {phone}
+                  <p className="text-xs text-zinc-500 flex items-center gap-1.5 font-mono">
+                    <Phone size={10} className="text-[#b8860b]" /> {phone}
                   </p>
                 )}
-                {userData?.bio && <p className="text-[12px] text-zinc-500 italic max-w-sm leading-relaxed">{userData.bio}</p>}
               </div>
             </div>
 
+            {/* Actions Right */}
             <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-              {/* Mobile Menu Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 border border-zinc-300 text-zinc-600 hover:bg-zinc-100 rounded"
+                className="lg:hidden px-4 py-2 border border-zinc-300 text-xs uppercase tracking-wider font-semibold text-zinc-700 hover:bg-zinc-100 transition-colors flex items-center gap-2"
               >
-                {mobileMenuOpen ? <X size={20} /> : <Settings size={20} />}
+                <Sliders size={13} />
+                <span>Dashboard Menu</span>
               </button>
 
-              <button onClick={handleLogout}
-                className="h-10 px-5 bg-zinc-100 border border-zinc-300 text-zinc-700   text-[12px] uppercase tracking-[0.2em] hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-all flex items-center gap-2"
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 border border-zinc-300 bg-zinc-50 text-zinc-700 text-xs uppercase tracking-widest font-medium hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-2"
               >
-                <LogOut size={12} strokeWidth={2} />
-                Logout
+                <LogOut size={12} />
+                <span>Logout</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* CONTAINER GRID */}
-        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+        {/* ─── DASHBOARD GRID: SIDEBAR & MAIN BODY ──────────────────────────── */}
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
 
-          {/* Mobile Drawer Backdrop */}
+          {/* Mobile Backdrop */}
           {mobileMenuOpen && (
             <div
               onClick={() => setMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/60 z-30 lg:hidden"
+              className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-xs"
             />
           )}
 
-          {/* SIDEBAR NAVIGATION */}
-          <aside className={`lg:col-span-3 space-y-4 fixed inset-y-0 left-0 z-40 w-64 border-r border-zinc-200 bg-white text-zinc-600 flex flex-col h-screen shrink-0 transition-transform duration-300 lg:static lg:translate-x-0 lg:border-none lg:bg-transparent lg:h-auto ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-
-            {/* Mobile Header */}
-            <div className="lg:hidden px-6 py-5 border-b border-zinc-200 sticky top-0 bg-white z-10 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-lg bg-black text-white flex items-center justify-center shadow-md">
-                  <User size={18} strokeWidth={2.5} />
-                </div>
-                <div>
-                  <p className="text-sm font-poppins   tracking-wider text-zinc-900 uppercase">
-                    ACCOUNT
-                  </p>
-                  <p className="text-[12px] text-zinc-500 uppercase tracking-widest font-semibold">Panel</p>
-                </div>
+          {/* ─── SIDEBAR NAVIGATION (NO HORIZONTAL OVERFLOW) ────────────────── */}
+          <aside
+            className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-zinc-200 p-6 flex flex-col h-screen overflow-y-auto transition-transform duration-300 lg:static lg:translate-x-0 lg:w-full lg:h-auto lg:p-0 lg:border-none lg:bg-transparent lg:col-span-3 ${
+              mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
+            {/* Mobile Sidebar Header */}
+            <div className="lg:hidden flex items-center justify-between pb-4 mb-4 border-b border-zinc-200">
+              <div className="flex items-center gap-2">
+                <Compass size={16} className="text-[#b8860b]" />
+                <span className="text-xs uppercase tracking-widest font-bold text-zinc-900">
+                  Client Navigation
+                </span>
               </div>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 hover:bg-zinc-100 text-zinc-500 hover:text-black rounded"
-              >
-                <X size={16} />
+              <button onClick={() => setMobileMenuOpen(false)} className="p-1 text-zinc-400 hover:text-black">
+                <X size={18} />
               </button>
             </div>
 
-            {/* Navigation */}
-            <nav className="flex-grow overflow-y-auto px-4 py-6 space-y-4 lg:space-y-4 lg:px-0 lg:py-0">
-              {/* Mobile Only - Quick Metrics & Nav */}
-              <div className="lg:hidden space-y-4">
-                <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                  <Link to="/cart" onClick={() => setMobileMenuOpen(false)} className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
-                    <div className="w-8 h-8 border border-zinc-300 flex items-center justify-center text-zinc-500 mb-2 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all mx-auto sm:mx-0">
-                      <ShoppingBag size={13} strokeWidth={1.5} />
-                    </div>
-                    <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.cart}</p>
-                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">In Cart</p>
-                  </Link>
-
-                  <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)} className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
-                    <div className="w-8 h-8 border border-zinc-300 flex items-center justify-center text-zinc-500 mb-2 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all mx-auto sm:mx-0">
-                      <Heart size={13} strokeWidth={1.5} />
-                    </div>
-                    <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.wishlist}</p>
-                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">Wishlist</p>
-                  </Link>
-
-                  <button onClick={() => { setActiveTab("orders"); setMobileMenuOpen(false); }} className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
-                    <div className="w-8 h-8 border border-zinc-300 flex items-center justify-center text-zinc-500 mb-2 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all mx-auto sm:mx-0">
-                      <Package size={13} strokeWidth={1.5} />
-                    </div>
-                    <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.orders}</p>
-                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">Orders</p>
-                  </button>
-                </div>
-
-                <div className="bg-white border border-zinc-200 p-1.5 shadow-sm">
-                  <span className="block px-3 py-2 text-[12px]   text-zinc-400 uppercase tracking-[0.3em]">Account Panel</span>
-                  {[
-                    { id: "profile", icon: Settings, label: "Profile & Phone" },
-                    { id: "orders", icon: Package, label: "Orders & Invoices" },
-                    { id: "addresses", icon: MapPin, label: "Shipping Addresses" },
-                    { id: "payments", icon: CreditCard, label: "Saved Cards" },
-                    { id: "notifications", icon: Bell, label: "Notification Preferences" },
-                  ].map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => { setActiveTab(item.id); setMobileMenuOpen(false); }}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold tracking-wide transition-all ${activeTab === item.id ? 'bg-black text-white shadow-sm' : 'text-zinc-600 hover:bg-zinc-100 hover:text-black border border-transparent'}`}
-                    >
-                      <item.icon size={14} strokeWidth={2} />
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
-                </div>
+            {/* Sidebar Card */}
+            <div className="bg-white border border-zinc-200 shadow-sm p-3 rounded-xs space-y-1">
+              <div className="px-3 py-2 border-b border-zinc-100 mb-1">
+                <span className="text-[12px] font-bold text-zinc-400 uppercase tracking-[0.2em] block">
+                  Customer Menu
+                </span>
               </div>
 
-              {/* Desktop Only - Quick Metrics & Nav */}
-              <div className="hidden lg:block space-y-4">
-                <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                  <Link to="/cart" className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
-                    <div className="w-8 h-8 border border-zinc-300 flex items-center justify-center text-zinc-500 mb-2 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all mx-auto sm:mx-0">
-                      <ShoppingBag size={13} strokeWidth={1.5} />
+              {NAV_ITEMS.map((item) => {
+                const isActive = activeTab === item.id;
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs md:text-sm font-medium uppercase tracking-wider transition-all rounded-xs text-left cursor-pointer ${
+                      isActive
+                        ? "bg-black text-white shadow-sm font-semibold"
+                        : "text-zinc-600 hover:bg-[#faf8f5] hover:text-black"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 truncate">
+                      <Icon size={15} className={isActive ? "text-[#b8860b]" : "text-zinc-400"} />
+                      <span className="truncate">{item.label}</span>
                     </div>
-                    <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.cart}</p>
-                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">In Cart</p>
-                  </Link>
 
-                  <Link to="/wishlist" className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
-                    <div className="w-8 h-8 border border-zinc-300 flex items-center justify-center text-zinc-500 mb-2 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all mx-auto sm:mx-0">
-                      <Heart size={13} strokeWidth={1.5} />
-                    </div>
-                    <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.wishlist}</p>
-                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">Wishlist</p>
-                  </Link>
-
-                  <button onClick={() => setActiveTab("orders")} className="group bg-white border border-zinc-200 p-4 hover:border-black/30 transition-all text-center sm:text-left shadow-sm">
-                    <div className="w-8 h-8 border border-zinc-300 flex items-center justify-center text-zinc-500 mb-2 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all mx-auto sm:mx-0">
-                      <Package size={13} strokeWidth={1.5} />
-                    </div>
-                    <p className="text-xl font-light text-zinc-900 tracking-wider">{stats.orders}</p>
-                    <p className="text-[12px]   text-zinc-500 uppercase tracking-widest mt-0.5">Orders</p>
+                    {item.badge !== null && item.badge !== undefined && (
+                      <span
+                        className={`px-1.5 py-0.2 text-[11px] md:text-[12px] font-bold rounded-full ${
+                          isActive
+                            ? "bg-[#b8860b] text-white"
+                            : "bg-zinc-200 text-zinc-800"
+                        }`}
+                      >
+                        {item.badge}
+                      </span>
+                    )}
                   </button>
-                </div>
+                );
+              })}
+            </div>
 
-                <div className="bg-white border border-zinc-200 p-1.5 shadow-sm">
-                  <span className="block px-3 py-2 text-[12px]   text-zinc-400 uppercase tracking-[0.3em]">Account Panel</span>
-                  {[
-                    { id: "profile", icon: Settings, label: "Profile & Phone" },
-                    { id: "orders", icon: Package, label: "Orders & Invoices" },
-                    { id: "addresses", icon: MapPin, label: "Shipping Addresses" },
-                    { id: "payments", icon: CreditCard, label: "Saved Cards" },
-                    { id: "notifications", icon: Bell, label: "Notification Preferences" },
-                  ].map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => setActiveTab(item.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] font-semibold tracking-wide transition-all ${activeTab === item.id ? 'bg-black text-white shadow-sm' : 'text-zinc-600 hover:bg-zinc-100 hover:text-black border border-transparent'}`}
-                    >
-                      <item.icon size={14} strokeWidth={2} />
-                      <span>{item.label}</span>
-                    </button>
-                  ))}
-                </div>
+            {/* Customer Support Card */}
+            <div className="mt-4 p-4 bg-gradient-to-br from-[#faf5eb] to-[#f4ebe1] border border-[#e5d5b8] rounded-xs space-y-2">
+              <div className="flex items-center gap-2 text-[#b8860b]">
+                <Sparkles size={16} />
+                <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider">Customer Support</span>
               </div>
-            </nav>
-
-            {/* Logout button */}
-            <div className="p-4 border-t border-zinc-200 bg-zinc-50 lg:hidden">
-              <button
-                onClick={handleLogout}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-[14px]   text-red-600 hover:bg-red-50 hover:text-red-700 transition-all border border-red-200"
+              <p className="text-[12px] text-zinc-600 leading-relaxed">
+                Need fragrance advice or bottle gifting recommendations? Speak directly with our team.
+              </p>
+              <a
+                href="https://wa.me/919584826112?text=Hello%20Mahirash%20Support,%20I%20would%20like%20assistance%20with%20my%20order."
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-[12px] md:text-[13px] font-bold text-zinc-900 uppercase tracking-wider hover:text-[#b8860b] transition-colors"
               >
-                <LogOut size={14} />
-                <span>LOGOUT</span>
-              </button>
+                <span>WhatsApp Support</span>
+                <ArrowRight size={12} />
+              </a>
             </div>
           </aside>
 
-          {/* MAIN DYNAMIC CONTENT */}
-          <div className="lg:col-span-9 lg:pl-8">
+          {/* ─── MAIN CONTENT AREA ────────────────────────────────────────── */}
+          <main className="lg:col-span-9 space-y-8 min-w-0">
 
-            {/* TAB: OVERVIEW */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 1: OVERVIEW                                                */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
             {activeTab === "overview" && (
-              <div className="space-y-6">
-                {/* Recent Orders Overview */}
-                <div className="bg-white border border-zinc-200 p-6 md:p-8 shadow-sm">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-zinc-200">
+              <div className="space-y-8 animate-fadeIn">
+
+                {/* 1. Ultra-Luxurious Spacious 4-Metric Stats Bar */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* Total Orders */}
+                  <div
+                    onClick={() => setActiveTab("orders")}
+                    className="group bg-white border border-zinc-200/90 p-5 hover:border-black transition-all cursor-pointer shadow-xs rounded-xs"
+                  >
+                    <div className="w-10 h-10 border border-zinc-200 flex items-center justify-center text-zinc-600 mb-3 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">
+                      <Package size={16} strokeWidth={1.5} />
+                    </div>
+                    <p className="text-2xl font-light text-zinc-950 font-serif">{recentOrders.length}</p>
+                    <p className="text-xs font-semibold text-zinc-800 uppercase tracking-widest mt-1">Total Orders</p>
+                    <p className="text-[12px] text-zinc-400 mt-0.5">Lifetime purchases</p>
+                  </div>
+
+                  {/* Active Orders */}
+                  <div
+                    onClick={() => setActiveTab("orders")}
+                    className="group bg-white border border-zinc-200/90 p-5 hover:border-[#b8860b] transition-all cursor-pointer shadow-xs rounded-xs"
+                  >
+                    <div className="w-10 h-10 border border-[#e5d5b8] bg-[#faf5eb] flex items-center justify-center text-[#b8860b] mb-3 group-hover:bg-[#b8860b] group-hover:text-white transition-all">
+                      <Truck size={16} strokeWidth={1.5} />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-2xl font-light text-zinc-950 font-serif">{activeOrdersCount}</p>
+                      {activeOrdersCount > 0 && (
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                      )}
+                    </div>
+                    <p className="text-xs font-semibold text-zinc-800 uppercase tracking-widest mt-1">Active Shipments</p>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">In transit or preparing</p>
+                  </div>
+
+                  {/* Wishlist */}
+                  <div
+                    onClick={() => setActiveTab("wishlist")}
+                    className="group bg-white border border-zinc-200/90 p-5 hover:border-black transition-all cursor-pointer shadow-xs rounded-xs"
+                  >
+                    <div className="w-10 h-10 border border-zinc-200 flex items-center justify-center text-zinc-600 mb-3 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">
+                      <Heart size={16} strokeWidth={1.5} />
+                    </div>
+                    <p className="text-2xl font-light text-zinc-950 font-serif">{wishlist.length}</p>
+                    <p className="text-xs font-semibold text-zinc-800 uppercase tracking-widest mt-1">Wishlist</p>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">Curated saved fragrances</p>
+                  </div>
+
+                  {/* Shopping Bag */}
+                  <Link
+                    to="/cart"
+                    className="group bg-white border border-zinc-200/90 p-5 hover:border-black transition-all shadow-xs rounded-xs"
+                  >
+                    <div className="w-10 h-10 border border-zinc-200 flex items-center justify-center text-zinc-600 mb-3 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all">
+                      <ShoppingBag size={16} strokeWidth={1.5} />
+                    </div>
+                    <p className="text-2xl font-light text-zinc-950 font-serif">{cart.length}</p>
+                    <p className="text-xs font-semibold text-zinc-800 uppercase tracking-widest mt-1">In Bag</p>
+                    <p className="text-[11px] text-zinc-400 mt-0.5">Ready for checkout</p>
+                  </Link>
+                </div>
+
+                {/* 2. Live Shipment Tracker Card (If there's an active order) */}
+                {activeShipment && (
+                  <div className="bg-white border border-zinc-200/90 p-6 shadow-sm rounded-xs space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-150">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="text-[11px] font-bold uppercase tracking-widest text-[#b8860b]">
+                            Active Shipment Status
+                          </span>
+                        </div>
+                        <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-900 mt-0.5">
+                          Order #{activeShipment.id.toUpperCase()}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => openTrackingModal(activeShipment)}
+                          className="px-3.5 py-1.5 bg-black text-white hover:bg-zinc-800 text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5"
+                        >
+                          <Truck size={12} />
+                          <span>Track Live</span>
+                        </button>
+                        <button
+                          onClick={() => handleDownloadInvoice(activeShipment)}
+                          className="px-3 py-1.5 border border-zinc-300 text-zinc-700 hover:border-black hover:text-black text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1"
+                        >
+                          <Download size={11} /> Invoice
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                      <div>
+                        <span className="text-zinc-400 uppercase tracking-wider block">Shipment Stage</span>
+                        <span className="font-semibold text-zinc-900 uppercase mt-0.5 block">
+                          {activeShipment.shipmentStatus || activeShipment.status || "Processing at Warehouse"}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-zinc-400 uppercase tracking-wider block">Courier & AWB</span>
+                        <span className="font-mono text-zinc-800 mt-0.5 block">
+                          {activeShipment.courierName || "Delhivery"} {activeShipment.awbCode ? `(${activeShipment.awbCode})` : "· AWB Generating"}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-zinc-400 uppercase tracking-wider block">Order Total</span>
+                        <span className="font-semibold text-zinc-950 mt-0.5 block">
+                          ₹{(activeShipment.total || 0).toLocaleString()} · {activeShipment.paymentMethod || "Prepaid"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. Recent Purchases */}
+                <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-zinc-200">
                     <div>
-                      <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Recent Purchases</h3>
-                      <p className="text-[12px] text-zinc-500 mt-0.5">Track shipment timeline & download tax invoices</p>
+                      <h3 className="text-base font-light text-zinc-950 uppercase tracking-widest font-serif">
+                        Recent Purchases
+                      </h3>
+                      <p className="text-xs text-zinc-500 mt-0.5">
+                        Track shipment checkpoints, AWB details & download verified GST invoices
+                      </p>
                     </div>
                     {recentOrders.length > 0 && (
-                      <button onClick={() => setActiveTab("orders")} className="h-8 px-4 border border-zinc-300 text-[12px] font-semibold text-zinc-600 uppercase tracking-wider hover:border-black hover:text-black transition-all flex items-center">
-                        View All ({recentOrders.length})
+                      <button
+                        onClick={() => setActiveTab("orders")}
+                        className="px-4 py-2 border border-zinc-300 text-xs font-semibold uppercase tracking-wider text-zinc-700 hover:border-black hover:text-black transition-all"
+                      >
+                        View All Orders ({recentOrders.length})
                       </button>
                     )}
                   </div>
@@ -824,52 +1059,48 @@ const Account = () => {
                   {recentOrders.length > 0 ? (
                     <div className="divide-y divide-zinc-200">
                       {recentOrders.slice(0, 3).map((order) => (
-                        <div key={order.id}
-                          className="group py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                        >
-                          <div className="flex items-center gap-4 cursor-pointer" onClick={() => setSelectedOrder(order)}>
-                            <div className="w-10 h-10 border border-zinc-300 flex items-center justify-center text-zinc-500 group-hover:border-black group-hover:text-black transition-all">
-                              <Package size={16} strokeWidth={1.5} />
+                        <div key={order.id} className="py-4 first:pt-0 last:pb-0 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                          <div className="flex items-center gap-4 cursor-pointer" onClick={() => openTrackingModal(order)}>
+                            <div className="w-12 h-12 border border-zinc-200 bg-zinc-50 flex items-center justify-center text-zinc-500 shrink-0">
+                              <Package size={18} strokeWidth={1.5} />
                             </div>
                             <div>
-                              <p className="text-[13px]   text-zinc-800 group-hover:text-black transition-colors">
+                              <p className="text-xs font-mono font-bold text-zinc-900 hover:text-[#b8860b] transition-colors">
                                 #{order.id.toUpperCase()}
                               </p>
-                              <p className="text-[12px] text-zinc-500">
-                                {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
+                              <p className="text-xs text-zinc-500 mt-0.5">
+                                {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" }) : "Recently placed"}
+                                {" · "}
+                                <span className="font-semibold text-zinc-700">{order.items?.length || 1} item(s)</span>
                               </p>
                             </div>
                           </div>
 
-                          <div className="w-full sm:w-auto flex sm:flex-row items-center justify-between sm:justify-end gap-3">
+                          <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                             <div className="text-right">
-                              <p className="text-sm   text-zinc-900">₹{order.total?.toLocaleString()}</p>
-                              <span className={`inline-block px-2 py-0.5 text-[12px]   uppercase tracking-wider border ${order.status === 'confirmed' || order.status === 'delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                                : order.status === 'failed' ? 'bg-red-50 text-red-700 border-red-300'
-                                  : 'bg-amber-50 text-amber-700 border-amber-300'
-                                }`}>{order.status || 'Confirmed'}</span>
+                              <p className="text-sm font-semibold text-zinc-900">₹{(order.total || 0).toLocaleString()}</p>
+                              <span className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border rounded-xs ${
+                                order.status === "delivered"
+                                  ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                  : order.status === "failed" || order.status === "cancelled"
+                                  ? "bg-red-50 text-red-700 border-red-300"
+                                  : "bg-amber-50 text-amber-800 border-amber-300"
+                              }`}>
+                                {order.shipmentStatus || order.status || "Confirmed"}
+                              </span>
                             </div>
 
-                            <div className="flex gap-2">
-                              {order.awbCode && (
-                                <Link
-                                  to={`/track?awb=${order.awbCode}`}
-                                  className="p-2 border border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all flex items-center"
-                                  title="Track Shipment Live"
-                                >
-                                  <Truck size={13} />
-                                </Link>
-                              )}
+                            <div className="flex items-center gap-1.5">
                               <button
-                                onClick={() => setSelectedOrder(order)}
-                                className="px-3 py-2 bg-zinc-100 border border-zinc-300 text-zinc-800 text-[12px]   uppercase tracking-wider hover:bg-black hover:text-white transition-all"
+                                onClick={() => openTrackingModal(order)}
+                                className="px-3 py-1.5 bg-zinc-100 hover:bg-black hover:text-white text-zinc-800 text-xs font-semibold uppercase tracking-wider transition-all"
                               >
                                 Details
                               </button>
                               <button
                                 onClick={() => handleDownloadInvoice(order)}
-                                className="p-2 border border-zinc-300 text-[#b8860b] hover:bg-[#b8860b] hover:text-white transition-all"
-                                title="Download Invoice"
+                                className="p-1.5 border border-zinc-300 hover:border-[#b8860b] text-[#b8860b] hover:bg-[#b8860b] hover:text-white transition-all"
+                                title="Download invoice"
                               >
                                 <Download size={13} />
                               </button>
@@ -879,252 +1110,809 @@ const Account = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-12">
-                      <div className="w-12 h-12 border border-zinc-300 flex items-center justify-center text-zinc-400 mx-auto mb-3">
-                        <ShoppingBag size={20} strokeWidth={1.5} />
+                    <div className="text-center py-12 space-y-3">
+                      <div className="w-12 h-12 border border-zinc-200 flex items-center justify-center text-zinc-400 mx-auto">
+                        <ShoppingBag size={20} />
                       </div>
-                      <h4 className="text-sm font-light text-zinc-900 uppercase tracking-widest mb-1">No orders yet</h4>
-                      <p className="text-[12px] text-zinc-500 mb-4">Start exploring the shop to place your first order.</p>
-                      <Link to="/shop" className="inline-flex items-center gap-2 px-5 py-2.5 bg-black text-white   text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all">
-                        Explore Shop <ChevronRight size={11} />
+                      <h4 className="text-sm font-light text-zinc-900 uppercase tracking-widest font-serif">
+                        No orders recorded yet
+                      </h4>
+                      <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                        Discover our rare artisanal Extraits de Parfum and handcrafted discovery sets.
+                      </p>
+                      <Link
+                        to="/shop"
+                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-black text-white text-xs uppercase tracking-widest hover:bg-zinc-800 transition-all font-semibold"
+                      >
+                        Explore Boutique <ChevronRight size={12} />
                       </Link>
                     </div>
                   )}
                 </div>
 
-                {/* Primary Shipping Address Overview */}
-                <div className="bg-white border border-zinc-200 p-6 md:p-8 shadow-sm">
-                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-200">
+                {/* 4. Fragrance Discovery Quiz Banner (Mahirash differentiator) */}
+                <div className="bg-gradient-to-r from-zinc-950 via-zinc-900 to-black text-white p-6 md:p-8 rounded-xs border border-zinc-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+                  <div className="absolute right-0 top-0 w-96 h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#b8860b]/20 to-transparent pointer-events-none" />
+                  <div className="space-y-1.5 max-w-xl">
+                    <span className="text-[12px] uppercase font-bold text-[#b8860b] tracking-[0.25em] flex items-center gap-1.5">
+                      <Sparkles size={12} /> Fragrance Preferences
+                    </span>
+                    <h3 className="text-lg md:text-xl font-light font-serif uppercase tracking-widest text-zinc-100">
+                      Curate Your Signature Scent Profile
+                    </h3>
+                    <p className="text-xs text-zinc-400 leading-relaxed font-light">
+                      Customize your preferred scent families (Woody, Amber, Citrus, Florals) and intensity to receive tailored perfume formulations crafted for your lifestyle.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setActiveTab("preferences")}
+                    className="px-6 py-3 bg-[#b8860b] hover:bg-[#d4af37] text-white text-xs font-semibold uppercase tracking-widest transition-all shrink-0 shadow-md flex items-center gap-2 cursor-pointer"
+                  >
+                    <span>Tune Fragrance Profile</span>
+                    <ArrowRight size={12} />
+                  </button>
+                </div>
+
+                {/* 5. Primary Shipping Address Preview */}
+                <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs">
+                  <div className="flex items-center justify-between pb-3 mb-4 border-b border-zinc-200">
                     <div className="flex items-center gap-2">
-                      <MapPin size={14} className="text-[#b8860b]" />
-                      <h4 className="text-[14px]   text-zinc-900 uppercase tracking-widest">Primary Shipping Address</h4>
+                      <MapPin size={15} className="text-[#b8860b]" />
+                      <h4 className="text-xs font-semibold text-zinc-900 uppercase tracking-widest">
+                        Primary Shipping Address
+                      </h4>
                     </div>
-                    <button onClick={() => setActiveTab("addresses")} className="text-[12px] text-[#b8860b] font-semibold hover:underline uppercase tracking-wider">
-                      Manage Addresses ({addresses.length})
+                    <button
+                      onClick={() => setActiveTab("addresses")}
+                      className="text-xs text-[#b8860b] font-semibold hover:underline uppercase tracking-wider"
+                    >
+                      Manage All ({addresses.length})
                     </button>
                   </div>
 
                   {addresses.length > 0 ? (
                     (() => {
-                      const defaultAddr = addresses.find(a => a.isDefault) || addresses[0];
+                      const def = addresses.find(a => a.isDefault) || addresses[0];
                       return (
-                        <div className="text-[14px] text-zinc-700 space-y-1">
-                          <p className="  text-zinc-900 uppercase tracking-wider">{defaultAddr.name}</p>
-                          <p className="text-zinc-500">{defaultAddr.address}, {defaultAddr.city}, {defaultAddr.state} - {defaultAddr.pincode}</p>
-                          <p className="text-[12px] text-[#b8860b] font-semibold">Contact: {defaultAddr.phone}</p>
+                        <div className="text-xs text-zinc-700 space-y-1">
+                          <p className="font-semibold uppercase tracking-wide text-zinc-900">{def.name}</p>
+                          <p className="text-zinc-600">{def.address || def.street}, {def.city}, {def.state} - <span className="font-mono">{def.pincode}</span></p>
+                          <p className="text-zinc-500 font-mono">Contact: {def.phone}</p>
                         </div>
                       );
                     })()
                   ) : (
-                    <div className="flex items-center justify-between text-[14px] text-zinc-500">
-                      <p>No saved addresses.</p>
-                      <button onClick={() => { setActiveTab("addresses"); setShowAddressForm(true); }} className="text-[12px] text-zinc-900 underline uppercase  ">Add Address</button>
+                    <div className="flex items-center justify-between text-xs text-zinc-500">
+                      <p>No saved addresses in your address book.</p>
+                      <button
+                        onClick={() => {
+                          setActiveTab("addresses");
+                          setShowAddressForm(true);
+                        }}
+                        className="text-zinc-900 underline uppercase font-semibold text-xs"
+                      >
+                        + Add Address
+                      </button>
                     </div>
                   )}
                 </div>
+
               </div>
             )}
 
-            {/* TAB: PROFILE & PHONE */}
-            {activeTab === "profile" && (
-              <div className="bg-white border border-zinc-200 p-6 md:p-8 space-y-6 shadow-sm">
-                <div className="pb-4 border-b border-zinc-200">
-                  <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Personal Information</h3>
-                  <p className="text-[12px] text-zinc-500">Update your profile name, contact number, and biography</p>
-                </div>
-
-                <form onSubmit={handleUpdateProfile} className="space-y-5">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
-                      <label className="text-[12px]   text-zinc-500 uppercase tracking-widest">Profile Name</label>
-                      <input
-                        type="text"
-                        value={displayName}
-                        onChange={(e) => setDisplayName(e.target.value)}
-                        required
-                        placeholder="Your Full Name"
-                        className="w-full px-4 py-3 bg-zinc-50 border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[12px] text-zinc-500 uppercase tracking-widest">Contact Phone Number (10 digits)</label>
-                      <input
-                        type="tel"
-                        maxLength={10}
-                        inputMode="numeric"
-                        value={phone}
-                        onChange={(e) => setPhone(cleanPhone(e.target.value))}
-                        placeholder="10-digit phone number"
-                        className="w-full px-4 py-3 bg-zinc-50 border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none transition-colors font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-[12px]   text-zinc-400 uppercase tracking-widest">Registered Email (Read-only)</label>
-                    <input
-                      type="email"
-                      value={activeEmail || ""}
-                      disabled
-                      className="w-full px-4 py-3 bg-zinc-100 border border-zinc-200 text-[14px] text-zinc-500 cursor-not-allowed outline-none"
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-[12px]   text-zinc-500 uppercase tracking-widest">Short Bio</label>
-                    <textarea
-                      value={bio}
-                      onChange={(e) => setBio(e.target.value)}
-                      placeholder="Share your fashion preferences..."
-                      rows={3}
-                      className="w-full px-4 py-3 bg-zinc-50 border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none transition-colors resize-none"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={savingProfile}
-                    className="px-8 py-3.5 bg-black text-white text-[12px]   uppercase tracking-widest hover:bg-zinc-800 transition-colors disabled:opacity-50"
-                  >
-                    {savingProfile ? "Saving Details..." : "Save Profile Changes"}
-                  </button>
-                </form>
-              </div>
-            )}
-
-            {/* TAB: ORDERS & INVOICES */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 2: MY ORDERS & TRACKING                                    */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
             {activeTab === "orders" && (
-              <div className="bg-white border border-zinc-200 p-6 md:p-8 space-y-6 shadow-sm">
-                <div className="pb-4 border-b border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-zinc-200">
                   <div>
-                    <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Order History & Invoices</h3>
-                    <p className="text-[12px] text-zinc-500">Track shipments and download official invoices</p>
+                    <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                      Order Management & Tracking
+                    </h3>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                      Review complete order history, verify live courier checkpoints, and download tax invoices
+                    </p>
                   </div>
-                  <span className="text-[12px] text-zinc-500 font-mono">Total Orders: {recentOrders.length}</span>
+                  <span className="text-xs font-mono text-zinc-500">Total Orders: {recentOrders.length}</span>
                 </div>
 
-                {recentOrders.length > 0 ? (
-                  <div className="space-y-4">
-                    {recentOrders.map((order) => (
-                      <div
-                        key={order.id}
-                        className="p-5 bg-zinc-50 border border-zinc-200 hover:border-zinc-400 transition-all rounded space-y-4"
+                {/* Filter and Search Bar */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
+                    {[
+                      { id: "all", label: "All Orders" },
+                      { id: "active", label: "In Progress / Active" },
+                      { id: "delivered", label: "Delivered" },
+                      { id: "cancelled", label: "Cancelled" }
+                    ].map(f => (
+                      <button
+                        key={f.id}
+                        onClick={() => setOrderFilter(f.id)}
+                        className={`px-3 py-1.5 text-xs font-medium uppercase tracking-wider rounded-xs border transition-all ${
+                          orderFilter === f.id
+                            ? "bg-black text-white border-black"
+                            : "bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-black"
+                        }`}
                       >
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-200">
-                          <div>
-                            <span className="text-[12px] text-[#b8860b] font-black uppercase tracking-widest">Order Reference</span>
-                            <h4 className="text-[14px]   text-zinc-900 uppercase tracking-wider">#{order.id.toUpperCase()}</h4>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className={`px-2.5 py-0.5 text-[12px]   uppercase tracking-widest border ${order.status === 'confirmed' || order.status === 'delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
-                              : order.status === 'failed' ? 'bg-red-50 text-red-700 border-red-300'
-                                : 'bg-amber-50 text-amber-700 border-amber-300'
-                              }`}>{order.status || 'Confirmed'}</span>
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
 
+                  <div className="relative w-full sm:w-64">
+                    <Search size={13} className="absolute left-3 top-3 text-zinc-400" />
+                    <input
+                      type="text"
+                      value={orderSearchQuery}
+                      onChange={(e) => setOrderSearchQuery(e.target.value)}
+                      placeholder="Search order ID or fragrance..."
+                      className="w-full pl-9 pr-3 py-2 bg-zinc-50 border border-zinc-200 text-xs text-zinc-900 focus:bg-white focus:border-black outline-none transition-all placeholder:text-zinc-400 font-sans"
+                    />
+                  </div>
+                </div>
+
+                {/* Orders List */}
+                {filteredOrders.length > 0 ? (
+                  <div className="space-y-4">
+                    {filteredOrders.map((order) => {
+                      const isDelivered = (order.shipmentStatus || order.status || "").toLowerCase() === "delivered";
+                      const isCancelled = (order.shipmentStatus || order.status || "").toLowerCase() === "cancelled";
+
+                      return (
+                        <div
+                          key={order.id}
+                          className="p-5 bg-[#faf8f5]/60 border border-zinc-200/90 hover:border-zinc-400 transition-all rounded-xs space-y-4"
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-200">
+                            <div>
+                              <span className="text-[10px] text-[#b8860b] font-bold uppercase tracking-widest">
+                                Order Reference
+                              </span>
+                              <h4 className="text-xs font-mono font-bold text-zinc-900 uppercase">
+                                #{order.id.toUpperCase()}
+                              </h4>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              {/* Separate Status Badges */}
+                              <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border rounded-xs ${
+                                isDelivered
+                                  ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                  : isCancelled
+                                  ? "bg-red-50 text-red-700 border-red-300"
+                                  : "bg-amber-50 text-amber-800 border-amber-300"
+                              }`}>
+                                {order.shipmentStatus || order.status || "Confirmed"}
+                              </span>
+
+                              <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-zinc-100 text-zinc-600 border border-zinc-200">
+                                {order.paymentStatus || "Paid"}
+                              </span>
+
+                              <button
+                                onClick={() => handleDownloadInvoice(order)}
+                                className="px-3 py-1 bg-white border border-zinc-300 hover:border-[#b8860b] hover:text-[#b8860b] text-zinc-700 text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5"
+                              >
+                                <Download size={11} /> Invoice
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Order Details Grid */}
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-zinc-600">
+                            <div>
+                              <span className="block text-[10px] uppercase tracking-wider text-zinc-400 font-bold mb-0.5">Date Placed</span>
+                              <span className="text-zinc-900 font-mono">
+                                {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString("en-IN") : "Recent"}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="block text-[10px] uppercase tracking-wider text-zinc-400 font-bold mb-0.5">Total Amount</span>
+                              <span className="text-zinc-900 font-semibold font-mono">₹{(order.total || 0).toLocaleString()}</span>
+                            </div>
+                            <div>
+                              <span className="block text-[10px] uppercase tracking-wider text-zinc-400 font-bold mb-0.5">Payment Method</span>
+                              <span className="text-zinc-900 uppercase">{order.paymentMethod || "Prepaid"}</span>
+                            </div>
+                            <div>
+                              <span className="block text-[10px] uppercase tracking-wider text-zinc-400 font-bold mb-0.5">Logistics Courier</span>
+                              <span className="text-zinc-900 font-mono">{order.courierName || "Delhivery Air"}</span>
+                            </div>
+                          </div>
+
+                          {/* Items Preview */}
+                          {order.items && order.items.length > 0 && (
+                            <div className="pt-2 border-t border-zinc-150">
+                              <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block mb-2">Formulations in Package:</span>
+                              <div className="flex flex-wrap gap-2">
+                                {order.items.map((it, idx) => (
+                                  <span key={idx} className="px-2.5 py-1 bg-white border border-zinc-200 text-xs text-zinc-800 rounded-xs">
+                                    {it.name} {it.size ? `(${it.size})` : ""} × {it.quantity || it.units || 1}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Action Footer */}
+                          <div className="pt-2 flex flex-wrap justify-between items-center gap-3">
+                            {order.awbCode ? (
+                              <button
+                                onClick={() => openTrackingModal(order)}
+                                className="text-xs text-emerald-800 hover:text-emerald-950 font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer"
+                              >
+                                <Truck size={13} className="text-emerald-600 animate-pulse" />
+                                <span>Track Live Courier Timeline (AWB: {order.awbCode})</span>
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => openTrackingModal(order)}
+                                className="text-xs text-zinc-500 hover:text-zinc-900 font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-colors cursor-pointer"
+                              >
+                                <Clock size={12} />
+                                <span>Quality Inspection & Packing</span>
+                              </button>
+                            )}
+
+                            <div className="flex items-center gap-3">
+                              {/* Eligible for cancellation only if not yet dispatched */}
+                              {(!order.shipmentStatus || order.shipmentStatus === "Not Created" || order.status === "confirmed") && (
+                                <button
+                                  onClick={async () => {
+                                    const reason = prompt("Please provide reason for order cancellation:");
+                                    if (!reason) return;
+                                    try {
+                                      await updateDoc(doc(db, "orders", order.id), {
+                                        status: "cancelled",
+                                        shipmentStatus: "Cancelled",
+                                        cancelReason: reason,
+                                        cancelledAt: new Date().toISOString()
+                                      });
+                                      showToast("Cancellation request submitted.");
+                                      fetchData(activeEmail);
+                                    } catch (err) {
+                                      showToast("Cancellation failed: " + err.message, "error");
+                                    }
+                                  }}
+                                  className="text-[11px] text-red-600 hover:text-red-800 uppercase tracking-wider font-semibold transition-colors"
+                                >
+                                  Cancel Order
+                                </button>
+                              )}
+
+                              <button
+                                onClick={() => openTrackingModal(order)}
+                                className="text-xs font-semibold uppercase tracking-wider text-zinc-900 hover:text-[#b8860b] flex items-center gap-1 transition-colors cursor-pointer"
+                              >
+                                Full Details <ChevronRight size={12} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-16 space-y-3">
+                    <p className="text-xs text-zinc-500 uppercase tracking-widest font-light">
+                      No orders match your filter criteria.
+                    </p>
+                    <button
+                      onClick={() => { setOrderFilter("all"); setOrderSearchQuery(""); }}
+                      className="px-5 py-2 border border-zinc-300 text-xs uppercase tracking-wider font-semibold hover:border-black"
+                    >
+                      Clear Filters
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 3: SAVED FRAGRANCES (WISHLIST)                             */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "wishlist" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
+                <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
+                  <div>
+                    <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                      Saved Fragrances ({wishlist.length})
+                    </h3>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                      Your personal wishlisted perfumes, private extraits, and gift discovery sets
+                    </p>
+                  </div>
+                </div>
+
+                {wishlist.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {wishlist.map((item) => (
+                      <div key={item.id} className="group border border-zinc-200 p-4 rounded-xs flex flex-col justify-between hover:border-black transition-all bg-[#faf8f5]/40">
+                        <div className="space-y-3">
+                          <div className="aspect-square w-full bg-zinc-100 overflow-hidden relative">
+                            {item.image ? (
+                              <img src={item.image} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                                <Package size={24} />
+                              </div>
+                            )}
                             <button
-                              onClick={() => handleDownloadInvoice(order)}
-                              className="px-3 py-1 bg-white border border-zinc-300 hover:bg-[#b8860b] hover:text-white text-[#b8860b] text-[12px]   uppercase tracking-wider transition-all flex items-center gap-1.5"
+                              onClick={() => removeFromWishlist(item.id)}
+                              className="absolute top-2 right-2 p-1.5 bg-white/90 hover:bg-black hover:text-white rounded-full transition-colors shadow-xs"
+                              title="Remove from wishlist"
                             >
-                              <Download size={11} /> Invoice
+                              <X size={12} />
                             </button>
                           </div>
-                        </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-[12px] text-zinc-600">
-                          <div>
-                            <span className="block text-[12px] uppercase tracking-wider text-zinc-500   mb-0.5">Date Placed</span>
-                            <span className="text-zinc-900">{order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString('en-IN') : 'Recent'}</span>
-                          </div>
-                          <div>
-                            <span className="block text-[12px] uppercase tracking-wider text-zinc-500   mb-0.5">Total Amount</span>
-                            <span className="text-zinc-900  ">₹{order.total?.toLocaleString()}</span>
-                          </div>
-                          <div>
-                            <span className="block text-[12px] uppercase tracking-wider text-zinc-500   mb-0.5">Payment Method</span>
-                            <span className="text-zinc-900 uppercase">{order.paymentMethod || 'Online'}</span>
-                          </div>
-                          <div>
-                            <span className="block text-[12px] uppercase tracking-wider text-zinc-500   mb-0.5">Items</span>
-                            <span className="text-zinc-900">{order.items?.length || 1} Item(s)</span>
+                          <div className="space-y-1">
+                            <span className="text-[10px] text-[#b8860b] uppercase font-bold tracking-widest block">
+                              {item.brand || "MAHIRASH"}
+                            </span>
+                            <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-900 group-hover:text-black">
+                              {item.name}
+                            </h4>
+                            <p className="text-sm font-semibold text-zinc-900">
+                              ₹{(item.price || 0).toLocaleString()}
+                            </p>
                           </div>
                         </div>
 
-                        <div className="pt-2 flex justify-between items-center">
-                          {order.awbCode ? (
-                            <Link
-                              to={`/track?awb=${order.awbCode}`}
-                              className="text-[12px] text-emerald-700 hover:text-emerald-800 font-bold uppercase tracking-wider flex items-center gap-1"
-                            >
-                              <Truck size={12} className="animate-pulse" /> Track Shipment Live
-                            </Link>
-                          ) : (
-                            <Link
-                              to={`/track?orderId=${order.id}`}
-                              className="text-[12px] text-zinc-500 hover:text-zinc-800 font-semibold uppercase tracking-wider flex items-center gap-1"
-                            >
-                              <Clock size={11} /> View Packing Status
-                            </Link>
-                          )}
+                        <div className="pt-4 border-t border-zinc-200 mt-3 flex items-center gap-2">
                           <button
-                            onClick={() => setSelectedOrder(order)}
-                            className="text-[12px] text-zinc-600 hover:text-black uppercase tracking-widest flex items-center gap-1 transition-colors"
+                            onClick={async () => {
+                              await addToCart(item);
+                              await removeFromWishlist(item.id);
+                              showToast(`Moved ${item.name} to Shopping Bag!`);
+                            }}
+                            className="w-full py-2 bg-black hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest transition-all flex items-center justify-center gap-1.5"
                           >
-                            Details <ChevronRight size={11} />
+                            <ShoppingBag size={12} />
+                            <span>Move to Bag</span>
                           </button>
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-16">
-                    <p className="text-zinc-500 text-[14px] uppercase tracking-widest mb-3">No order history available.</p>
-                    <Link to="/shop" className="px-6 py-3 bg-black text-white   text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all inline-block">
-                      Browse Shop
+                  <div className="text-center py-16 space-y-3">
+                    <Heart size={28} className="mx-auto text-zinc-300" />
+                    <h4 className="text-sm font-light text-zinc-900 uppercase tracking-widest font-serif">
+                      Your fragrance wishlist is empty
+                    </h4>
+                    <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                      Explore our handcrafted botanical extraits and save your favorites here.
+                    </p>
+                    <Link
+                      to="/shop"
+                      className="inline-block px-6 py-2.5 bg-black text-white text-xs font-semibold uppercase tracking-widest hover:bg-zinc-800 transition-all"
+                    >
+                      Browse Boutique
                     </Link>
                   </div>
                 )}
               </div>
             )}
 
-            {/* TAB: SHIPPING ADDRESSES */}
-            {activeTab === "addresses" && (
-              <div className="bg-white border border-zinc-200 p-6 md:p-8 space-y-6 shadow-sm">
-                <div className="pb-4 border-b border-zinc-200 flex justify-between items-center">
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 4: SHOPPING BAG (CART)                                     */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "cart" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
+                <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
                   <div>
-                    <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Saved Addresses</h3>
-                    <p className="text-[12px] text-zinc-500">Manage your shipping destinations & contact numbers</p>
+                    <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                      Shopping Bag ({cart.length})
+                    </h3>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                      Review fragrances currently reserved in your bag before proceeding to secure checkout
+                    </p>
+                  </div>
+                  <Link
+                    to="/cart"
+                    className="text-xs font-semibold uppercase tracking-wider text-[#b8860b] hover:underline"
+                  >
+                    Open Full Cart Page →
+                  </Link>
+                </div>
+
+                {cart.length > 0 ? (
+                  <div className="space-y-4">
+                    <div className="divide-y divide-zinc-200">
+                      {cart.map((item) => (
+                        <div key={item.cartId || item.id} className="py-4 first:pt-0 flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 bg-zinc-100 border border-zinc-200 overflow-hidden shrink-0">
+                              {item.image ? (
+                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                                  <Package size={16} />
+                                </div>
+                              )}
+                            </div>
+                            <div className="space-y-0.5">
+                              <span className="text-[10px] text-[#b8860b] uppercase font-bold tracking-widest">
+                                {item.brand || "MAHIRASH"}
+                              </span>
+                              <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-900">
+                                {item.name}
+                              </h4>
+                              {item.size && (
+                                <p className="text-[11px] text-zinc-500">Volume: {item.size}</p>
+                              )}
+                              <p className="text-xs font-semibold text-zinc-900">
+                                ₹{(item.price || 0).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-4">
+                            {/* Quantity controls */}
+                            <div className="flex items-center border border-zinc-300">
+                              <button
+                                onClick={() => updateQuantity(item.cartId || item.id, -1)}
+                                className="px-2 py-1 text-xs hover:bg-zinc-100 transition-colors font-mono"
+                              >
+                                -
+                              </button>
+                              <span className="px-3 py-1 text-xs font-mono font-semibold">{item.quantity || 1}</span>
+                              <button
+                                onClick={() => updateQuantity(item.cartId || item.id, 1)}
+                                className="px-2 py-1 text-xs hover:bg-zinc-100 transition-colors font-mono"
+                              >
+                                +
+                              </button>
+                            </div>
+
+                            <button
+                              onClick={() => removeFromCart(item.cartId || item.id)}
+                              className="p-1.5 text-zinc-400 hover:text-red-600 transition-colors"
+                              title="Remove item"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="pt-4 border-t border-zinc-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <div>
+                        <span className="text-xs text-zinc-500 uppercase tracking-wider">Bag Subtotal:</span>
+                        <p className="text-xl font-light text-zinc-950 font-serif">
+                          ₹{cart.reduce((sum, it) => sum + (it.price || 0) * (it.quantity || 1), 0).toLocaleString()}
+                        </p>
+                      </div>
+
+                      <Link
+                        to="/checkout"
+                        className="w-full sm:w-auto px-8 py-3 bg-black hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest transition-all text-center flex items-center justify-center gap-2"
+                      >
+                        <ShieldCheck size={14} className="text-[#b8860b]" />
+                        <span>Proceed to Checkout</span>
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-16 space-y-3">
+                    <ShoppingBag size={28} className="mx-auto text-zinc-300" />
+                    <h4 className="text-sm font-light text-zinc-900 uppercase tracking-widest font-serif">
+                      Your shopping bag is currently empty
+                    </h4>
+                    <Link
+                      to="/shop"
+                      className="inline-block px-6 py-2.5 bg-black text-white text-xs font-semibold uppercase tracking-widest hover:bg-zinc-800 transition-all"
+                    >
+                      Discover Perfumes
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 5: FRAGRANCE PREFERENCES (MAHIRASH DIFFERENTIATOR)        */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "preferences" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-8 animate-fadeIn">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-zinc-200">
+                  <div>
+                    <div className="flex items-center gap-2 text-[#b8860b] mb-1">
+                      <Sparkles size={14} />
+                      <span className="text-[12px] font-bold uppercase tracking-[0.25em]">Mahirash Signature Selection</span>
+                    </div>
+                    <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                      Personalized Fragrance Profile & Scent Notes
+                    </h3>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                      Fine-tune your preferred scent families, occasion profiles, and concentration intensity
+                    </p>
+                  </div>
+                </div>
+
+                {/* Section 1: Fragrance Families */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-zinc-800 uppercase tracking-wider block">
+                    1. Preferred Fragrance Families (Select up to 3)
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {FRAGRANCE_FAMILIES.map((fam) => {
+                      const isSelected = preferences.families.includes(fam.id);
+                      return (
+                        <div
+                          key={fam.id}
+                          onClick={() => {
+                            setPreferences(prev => {
+                              const exists = prev.families.includes(fam.id);
+                              const updated = exists
+                                ? prev.families.filter(f => f !== fam.id)
+                                : [...prev.families, fam.id].slice(0, 3);
+                              return { ...prev, families: updated };
+                            });
+                          }}
+                          className={`p-4 border rounded-xs cursor-pointer transition-all ${
+                            isSelected
+                              ? "bg-black text-white border-black shadow-xs"
+                              : "bg-[#faf8f5]/60 border-zinc-200 text-zinc-800 hover:border-black"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-xs font-semibold uppercase tracking-wider">{fam.label}</span>
+                            {isSelected && <Check size={13} className="text-[#b8860b]" />}
+                          </div>
+                          <p className={`text-[11px] leading-relaxed ${isSelected ? "text-zinc-300" : "text-zinc-500"}`}>
+                            {fam.notes}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Section 2: Preferred Occasions */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-zinc-800 uppercase tracking-wider block">
+                    2. Primary Wearing Occasion
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {OCCASIONS.map((occ) => {
+                      const isSelected = preferences.occasion === occ.id;
+                      return (
+                        <button
+                          key={occ.id}
+                          type="button"
+                          onClick={() => setPreferences(prev => ({ ...prev, occasion: occ.id }))}
+                          className={`p-3 text-xs font-medium uppercase tracking-wider rounded-xs border transition-all text-center ${
+                            isSelected
+                              ? "bg-black text-white border-black font-semibold"
+                              : "bg-white text-zinc-700 border-zinc-200 hover:border-black"
+                          }`}
+                        >
+                          {occ.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Section 3: Intensity & Concentration */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-zinc-800 uppercase tracking-wider block">
+                    3. Preferred Scent Intensity & Concentration
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {INTENSITIES.map((int) => {
+                      const isSelected = preferences.intensity === int.id;
+                      return (
+                        <button
+                          key={int.id}
+                          type="button"
+                          onClick={() => setPreferences(prev => ({ ...prev, intensity: int.id }))}
+                          className={`p-3 text-xs font-medium uppercase tracking-wider rounded-xs border transition-all text-left ${
+                            isSelected
+                              ? "bg-black text-white border-black font-semibold"
+                              : "bg-white text-zinc-700 border-zinc-200 hover:border-black"
+                          }`}
+                        >
+                          {int.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Save button */}
+                <div className="pt-4 border-t border-zinc-200 flex items-center justify-between">
+                  <p className="text-xs text-zinc-500">
+                    Your profile automatically updates customized discovery recommendations.
+                  </p>
+                  <button
+                    onClick={handleSavePreferences}
+                    disabled={savingPreferences}
+                    className="px-6 py-2.5 bg-black hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest transition-all disabled:opacity-50"
+                  >
+                    {savingPreferences ? "Saving Profile..." : "Save Fragrance Profile"}
+                  </button>
+                </div>
+
+                {/* Tailored Fragrance Recommendations Based on Profile */}
+                <div className="pt-6 border-t border-zinc-200 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] text-[#b8860b] font-bold uppercase tracking-widest block">Curated Formulation</span>
+                      <h4 className="text-sm font-light font-serif uppercase tracking-widest text-zinc-950">
+                        Tailored Recommendations For You
+                      </h4>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {CURATED_PERFUMES.map((perfume) => (
+                      <div key={perfume.id} className="border border-zinc-200 p-4 rounded-xs bg-[#faf8f5]/50 flex flex-col justify-between hover:border-black transition-all">
+                        <div className="space-y-3">
+                          <div className="aspect-square w-full bg-zinc-100 overflow-hidden relative">
+                            <img src={perfume.image} alt={perfume.name} className="w-full h-full object-cover" />
+                            <span className="absolute top-2 left-2 px-2 py-0.5 bg-black text-white text-[9px] uppercase font-bold tracking-widest">
+                              {perfume.collection}
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-[#b8860b] font-semibold uppercase">{perfume.concentration}</span>
+                            <h5 className="text-xs font-bold uppercase tracking-wider text-zinc-900 mt-0.5">{perfume.name}</h5>
+                            <p className="text-[11px] text-zinc-500 mt-1 line-clamp-2">Notes: {perfume.notes}</p>
+                            <p className="text-xs font-semibold text-zinc-900 mt-1.5">₹{perfume.price.toLocaleString()}</p>
+                          </div>
+                        </div>
+
+                        <div className="pt-3 border-t border-zinc-200 mt-3">
+                          <button
+                            onClick={async () => {
+                              await addToCart(perfume);
+                              showToast(`Added ${perfume.name} to Shopping Bag!`);
+                            }}
+                            className="w-full py-2 bg-black hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5"
+                          >
+                            <ShoppingBag size={12} />
+                            <span>Add to Bag</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 6: PERSONAL INFORMATION (PROFILE)                          */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "profile" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
+                <div className="pb-4 border-b border-zinc-200">
+                  <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                    Personal Account Information
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Update profile name, registered contact number, date of birth, and biography
+                  </p>
+                </div>
+
+                <form onSubmit={handleUpdateProfile} className="space-y-5">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Full Name *</label>
+                      <input
+                        type="text"
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        required
+                        placeholder="Your Full Name"
+                        className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 text-xs text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Mobile Phone (10 digits) *</label>
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        inputMode="numeric"
+                        value={phone}
+                        onChange={(e) => setPhone(cleanPhone(e.target.value))}
+                        placeholder="10-digit mobile number"
+                        className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 text-xs text-zinc-900 focus:bg-white focus:border-black outline-none transition-all font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Registered Email (Read-only)</label>
+                      <input
+                        type="email"
+                        value={activeEmail}
+                        disabled
+                        className="w-full px-4 py-2.5 bg-zinc-100 border border-zinc-200 text-xs text-zinc-500 cursor-not-allowed outline-none font-mono"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Date of Birth (For Birthday Gift)</label>
+                      <input
+                        type="date"
+                        value={dob}
+                        onChange={(e) => setDob(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 text-xs text-zinc-900 focus:bg-white focus:border-black outline-none transition-all font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-zinc-600 uppercase tracking-wider">Biography & Style Notes</label>
+                    <textarea
+                      value={bio}
+                      onChange={(e) => setBio(e.target.value)}
+                      placeholder="Share your personal aesthetic or fragrance journey..."
+                      rows={3}
+                      className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 text-xs text-zinc-900 focus:bg-white focus:border-black outline-none transition-all resize-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={savingProfile}
+                    className="px-8 py-3 bg-black hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest transition-all disabled:opacity-50"
+                  >
+                    {savingProfile ? "Saving Profile..." : "Save Profile Details"}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 7: SHIPPING ADDRESSES                                      */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "addresses" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
+                <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
+                  <div>
+                    <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                      Delivery Addresses ({addresses.length})
+                    </h3>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                      Manage your delivery destinations with 6-digit Indian PIN verification
+                    </p>
                   </div>
                   <button
                     onClick={() => {
                       if (showAddressForm) resetAddressForm();
                       else setShowAddressForm(true);
                     }}
-                    className="h-9 px-4 border border-zinc-300 text-[12px]   text-[#b8860b] uppercase tracking-widest hover:bg-black hover:text-white hover:border-black transition-all flex items-center gap-1.5"
+                    className="px-4 py-2 bg-black hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5"
                   >
-                    <Plus size={12} /> {showAddressForm ? "Cancel" : "Add New Address"}
+                    <Plus size={12} />
+                    <span>{showAddressForm ? "Cancel" : "Add Address"}</span>
                   </button>
                 </div>
 
-                {/* ADDRESS FORM */}
-                {/* ADDRESS FORM */}
+                {/* Inline Address Form */}
                 {showAddressForm && (
-                  <form onSubmit={handleSaveAddress} className="bg-zinc-50 border border-zinc-200 p-6 space-y-4 rounded-xl">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-zinc-200">
-                      <h4 className="text-[14px] font-bold uppercase tracking-widest text-[#b8860b]">
-                        {editingAddressId ? "Edit Shipping Address" : "New Shipping Address Details"}
+                  <form onSubmit={handleSaveAddress} className="p-6 bg-[#faf8f5] border border-zinc-200 rounded-xs space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-zinc-200">
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-[#b8860b]">
+                        {editingAddressId ? "Edit Delivery Address" : "New Delivery Address Details"}
                       </h4>
-                      {/* Address Type Selector */}
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[12px] font-semibold text-zinc-500 uppercase tracking-wider mr-1">Type:</span>
+                        <span className="text-xs text-zinc-500 uppercase mr-1">Type:</span>
                         {["Home", "Office", "Other"].map((t) => (
                           <button
                             key={t}
                             type="button"
                             onClick={() => setAddressForm(p => ({ ...p, type: t }))}
-                            className={`px-2.5 py-1 text-[12px] font-semibold uppercase tracking-wider rounded border transition-all cursor-pointer ${addressForm.type === t
-                              ? "bg-black text-white border-black shadow-xs"
-                              : "bg-white text-zinc-600 border-zinc-300 hover:border-black hover:text-black"
-                              }`}
+                            className={`px-2.5 py-1 text-xs font-semibold uppercase tracking-wider border rounded-xs ${
+                              addressForm.type === t ? "bg-black text-white border-black" : "bg-white text-zinc-600 border-zinc-200"
+                            }`}
                           >
                             {t}
                           </button>
@@ -1134,180 +1922,155 @@ const Account = () => {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Contact Person Full Name *</label>
+                        <label className="text-xs font-bold text-zinc-600 uppercase">Contact Name *</label>
                         <input
                           type="text"
+                          required
                           value={addressForm.name}
                           onChange={(e) => setAddressForm({ ...addressForm, name: e.target.value })}
-                          required
-                          placeholder="e.g. John Doe"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                          placeholder="Recipient Name"
+                          className="w-full px-3 py-2 bg-white border border-zinc-200 text-xs text-zinc-900 outline-none focus:border-black"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Primary Mobile Phone (10 digits) *</label>
+                        <label className="text-xs font-bold text-zinc-600 uppercase">Primary Phone (10 digits) *</label>
                         <input
                           type="tel"
+                          required
                           maxLength={10}
                           inputMode="numeric"
                           value={addressForm.phone}
                           onChange={(e) => setAddressForm({ ...addressForm, phone: cleanPhone(e.target.value) })}
-                          required
                           placeholder="10-digit mobile number"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded font-mono"
+                          className="w-full px-3 py-2 bg-white border border-zinc-200 text-xs text-zinc-900 outline-none focus:border-black font-mono"
                         />
                       </div>
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Alternate Phone (Optional)</label>
-                        <input
-                          type="tel"
-                          maxLength={10}
-                          inputMode="numeric"
-                          value={addressForm.alternatePhone || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, alternatePhone: cleanPhone(e.target.value) })}
-                          placeholder="Secondary 10-digit mobile"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded font-mono"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Flat, House No., Building, Apartment *</label>
+                        <label className="text-xs font-bold text-zinc-600 uppercase">Flat / House No. / Building *</label>
                         <input
                           type="text"
-                          value={addressForm.flat || ""}
+                          required
+                          value={addressForm.flat}
                           onChange={(e) => setAddressForm({ ...addressForm, flat: e.target.value })}
-                          required
-                          placeholder="e.g. Flat 402, Royal Residency, Tower B"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                          placeholder="e.g. Flat 402, Royal Residency"
+                          className="w-full px-3 py-2 bg-white border border-zinc-200 text-xs text-zinc-900 outline-none focus:border-black"
                         />
                       </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Area, Street, Sector, Locality *</label>
+                        <label className="text-xs font-bold text-zinc-600 uppercase">Street / Locality *</label>
                         <input
                           type="text"
-                          value={addressForm.street || ""}
+                          required
+                          value={addressForm.street}
                           onChange={(e) => setAddressForm({ ...addressForm, street: e.target.value })}
-                          required
-                          placeholder="e.g. MG Road, Scheme 54, Vijay Nagar"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Landmark (Optional)</label>
-                        <input
-                          type="text"
-                          value={addressForm.landmark || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, landmark: e.target.value })}
-                          placeholder="e.g. Near Apollo Hospital / Opp. City Center"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                          placeholder="e.g. MG Road, Scheme 54"
+                          className="w-full px-3 py-2 bg-white border border-zinc-200 text-xs text-zinc-900 outline-none focus:border-black"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">City / District *</label>
+                        <label className="text-xs font-bold text-zinc-600 uppercase">City *</label>
                         <input
                           type="text"
+                          required
                           value={addressForm.city}
                           onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
-                          required
                           placeholder="e.g. Indore"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                          className="w-full px-3 py-2 bg-white border border-zinc-200 text-xs text-zinc-900 outline-none focus:border-black"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">State *</label>
+                        <label className="text-xs font-bold text-zinc-600 uppercase">State *</label>
                         <input
                           type="text"
+                          required
                           value={addressForm.state}
                           onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
-                          required
                           placeholder="e.g. Madhya Pradesh"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded"
+                          className="w-full px-3 py-2 bg-white border border-zinc-200 text-xs text-zinc-900 outline-none focus:border-black"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[12px] font-bold text-zinc-500 uppercase tracking-wider">Pincode (6 digits) *</label>
+                        <label className="text-xs font-bold text-zinc-600 uppercase">PIN Code (6 digits) *</label>
                         <input
                           type="text"
-                          value={addressForm.pincode}
-                          onChange={(e) => setAddressForm({ ...addressForm, pincode: cleanPincode(e.target.value) })}
                           required
                           maxLength={6}
                           inputMode="numeric"
-                          placeholder="6-digit Pincode"
-                          className="w-full px-3 py-2.5 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none rounded font-mono"
+                          value={addressForm.pincode}
+                          onChange={(e) => setAddressForm({ ...addressForm, pincode: cleanPincode(e.target.value) })}
+                          placeholder="6-digit PIN code"
+                          className="w-full px-3 py-2 bg-white border border-zinc-200 text-xs text-zinc-900 outline-none focus:border-black font-mono"
                         />
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 pt-2">
-                      <label className="flex items-center gap-2 cursor-pointer text-[14px] text-zinc-700">
+                    <div className="flex items-center gap-2 pt-2">
+                      <label className="flex items-center gap-2 cursor-pointer text-xs text-zinc-700">
                         <input
                           type="checkbox"
                           checked={addressForm.isDefault}
                           onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
-                          className="rounded text-[#b8860b] focus:ring-0 w-4 h-4 cursor-pointer border-zinc-300"
+                          className="rounded text-[#b8860b] focus:ring-0 w-4 h-4 cursor-pointer"
                         />
-                        Set as Default Address
+                        <span>Set as Default Delivery Address</span>
                       </label>
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <button type="submit" className="px-5 py-2.5 bg-black text-white text-[12px] font-bold uppercase tracking-wider hover:bg-zinc-800 transition-colors rounded">
+                      <button
+                        type="submit"
+                        className="px-6 py-2 bg-black hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-wider transition-all"
+                      >
                         {editingAddressId ? "Update Address" : "Save Address"}
                       </button>
-                      <button type="button" onClick={resetAddressForm} className="px-5 py-2.5 border border-zinc-300 text-zinc-600 text-[12px] font-bold uppercase tracking-wider hover:text-black transition-colors rounded">
+                      <button
+                        type="button"
+                        onClick={resetAddressForm}
+                        className="px-5 py-2 border border-zinc-300 text-zinc-700 text-xs font-semibold uppercase tracking-wider hover:bg-zinc-100 transition-all"
+                      >
                         Cancel
                       </button>
                     </div>
                   </form>
                 )}
 
-                {/* ADDRESS LIST */}
+                {/* Address Cards Grid */}
                 <div className="grid md:grid-cols-2 gap-4">
                   {addresses.map((a) => (
-                    <div key={a.id} className={`p-5 bg-zinc-50 border ${a.isDefault ? 'border-[#b8860b]' : 'border-zinc-200'} rounded-xl flex flex-col justify-between space-y-4 relative shadow-xs`}>
+                    <div
+                      key={a.id}
+                      className={`p-5 bg-[#faf8f5]/60 border ${a.isDefault ? "border-[#b8860b]" : "border-zinc-200"} rounded-xs flex flex-col justify-between space-y-4`}
+                    >
                       <div className="flex items-center justify-between">
-                        <span className="px-2.5 py-0.5 bg-zinc-200 text-zinc-800 text-[12px] font-bold uppercase tracking-wider rounded">
+                        <span className="px-2 py-0.5 bg-zinc-200 text-zinc-800 text-[10px] font-bold uppercase tracking-wider rounded-xs">
                           {a.type || "Home"}
                         </span>
                         {a.isDefault && (
-                          <span className="px-2 py-0.5 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[12px] font-bold uppercase tracking-wider rounded">
+                          <span className="px-2 py-0.5 bg-[#faf5eb] border border-[#e5d5b8] text-[#b8860b] text-[10px] font-bold uppercase tracking-wider rounded-xs">
                             Default
                           </span>
                         )}
                       </div>
 
-                      <div className="space-y-1.5 text-[14px]">
-                        <h4 className="font-bold text-zinc-900 tracking-wide uppercase">{a.name}</h4>
-                        {a.flat && <p className="text-zinc-800 font-medium text-xs">{a.flat}</p>}
-                        <p className="text-zinc-600 leading-relaxed text-xs">{a.street || a.address}</p>
-                        {a.landmark && <p className="text-zinc-500 text-[12px]">Landmark: {a.landmark}</p>}
-                        <p className="text-zinc-600 text-xs">{a.city}, {a.state} - <span className="font-mono font-semibold">{a.pincode}</span></p>
-                        <div className="pt-1.5 flex flex-col gap-0.5 text-[12px] text-zinc-700">
-                          <p className="flex items-center gap-1.5 font-semibold text-[#b8860b]">
-                            <Phone size={11} /> {a.phone}
-                          </p>
-                          {a.alternatePhone && (
-                            <p className="text-zinc-500 pl-4 text-[12px]">
-                              Alt: {a.alternatePhone}
-                            </p>
-                          )}
-                        </div>
+                      <div className="text-xs space-y-1">
+                        <h4 className="font-bold text-zinc-900 uppercase tracking-wide">{a.name}</h4>
+                        {a.flat && <p className="text-zinc-800 font-medium">{a.flat}</p>}
+                        <p className="text-zinc-600 leading-relaxed">{a.street || a.address}</p>
+                        <p className="text-zinc-600">{a.city}, {a.state} - <span className="font-mono font-semibold">{a.pincode}</span></p>
+                        <p className="text-[#b8860b] font-mono font-semibold pt-1">Phone: {a.phone}</p>
                       </div>
 
                       <div className="flex items-center justify-between pt-3 border-t border-zinc-200">
                         {!a.isDefault ? (
                           <button
                             onClick={() => handleSetDefaultAddress(a.id)}
-                            className="text-[12px] text-zinc-500 hover:text-[#b8860b] uppercase tracking-wider transition-colors  "
+                            className="text-xs text-zinc-500 hover:text-[#b8860b] uppercase tracking-wider font-semibold"
                           >
                             Set Default
                           </button>
@@ -1315,7 +2078,23 @@ const Account = () => {
 
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => handleEditAddressInit(a)}
+                            onClick={() => {
+                              setAddressForm({
+                                name: a.name || "",
+                                phone: a.phone || "",
+                                alternatePhone: a.alternatePhone || "",
+                                flat: a.flat || "",
+                                street: a.street || a.address || "",
+                                landmark: a.landmark || "",
+                                city: a.city || "",
+                                state: a.state || "",
+                                pincode: a.pincode || "",
+                                type: a.type || "Home",
+                                isDefault: a.isDefault || false
+                              });
+                              setEditingAddressId(a.id);
+                              setShowAddressForm(true);
+                            }}
                             className="p-1.5 text-zinc-500 hover:text-black transition-colors"
                             title="Edit"
                           >
@@ -1332,163 +2111,305 @@ const Account = () => {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
 
-                  {addresses.length === 0 && !showAddressForm && (
-                    <div className="col-span-2 text-center py-12 border border-dashed border-zinc-300 rounded">
-                      <MapPin size={24} className="mx-auto text-zinc-400 mb-2" />
-                      <p className="text-zinc-500 text-[14px] uppercase tracking-widest mb-3">No saved addresses found.</p>
-                      <button
-                        onClick={() => setShowAddressForm(true)}
-                        className="px-4 py-2 border border-zinc-400 text-zinc-900 text-[12px]   uppercase tracking-widest hover:bg-black hover:text-white transition-all"
-                      >
-                        Add Your First Address
-                      </button>
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 8: PAYMENT HISTORY                                         */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "payments" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
+                <div className="pb-4 border-b border-zinc-200 flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                      Payment History & Invoices
+                    </h3>
+                    <p className="text-xs text-zinc-500 mt-0.5">
+                      Verified transaction logs, gateway references, and tax receipts
+                    </p>
+                  </div>
+                </div>
+
+                {/* RBI Tokenization / Security Reassurance Box */}
+                <div className="p-4 bg-[#faf5eb]/70 border border-[#e5d5b8] rounded-xs flex items-start gap-3">
+                  <ShieldCheck size={18} className="text-[#b8860b] shrink-0 mt-0.5" />
+                  <div className="text-xs space-y-1">
+                    <p className="font-semibold text-zinc-900 uppercase tracking-wider">
+                      RBI-Compliant Gateway Security
+                    </p>
+                    <p className="text-zinc-600 leading-relaxed font-light">
+                      Mahirash uses PCI-DSS Level 1 certified payment gateways with 256-bit encryption. We never store card CVVs, PINs, or raw bank details on our servers.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Transactions Table */}
+                {recentOrders.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-[#faf8f5] text-zinc-500 uppercase tracking-wider font-semibold border-b border-zinc-200">
+                        <tr>
+                          <th className="py-3 px-4">Date</th>
+                          <th className="py-3 px-4">Order Reference</th>
+                          <th className="py-3 px-4">Payment Method</th>
+                          <th className="py-3 px-4">Amount</th>
+                          <th className="py-3 px-4">Status</th>
+                          <th className="py-3 px-4 text-right">Receipt</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-200">
+                        {recentOrders.map((order) => (
+                          <tr key={order.id} className="hover:bg-zinc-50/80 transition-colors">
+                            <td className="py-3.5 px-4 font-mono text-zinc-600">
+                              {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString("en-IN") : "Recent"}
+                            </td>
+                            <td className="py-3.5 px-4 font-mono font-bold text-zinc-900">
+                              #{order.id.slice(0, 10).toUpperCase()}
+                            </td>
+                            <td className="py-3.5 px-4 uppercase text-zinc-800">
+                              {order.paymentMethod || "Online"}
+                            </td>
+                            <td className="py-3.5 px-4 font-semibold text-zinc-900 font-mono">
+                              ₹{(order.total || 0).toLocaleString()}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xs">
+                                {order.paymentStatus || "Paid"}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4 text-right">
+                              <button
+                                onClick={() => handleDownloadInvoice(order)}
+                                className="text-xs font-semibold text-[#b8860b] hover:underline uppercase tracking-wider"
+                              >
+                                Invoice
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-xs text-zinc-500 uppercase tracking-widest font-light">
+                    No payment transactions recorded yet.
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 9: REVIEWS & RATINGS                                       */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "reviews" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
+                <div className="pb-4 border-b border-zinc-200">
+                  <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                    My Reviews & Fragrance Ratings
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Share your feedback on delivered Mahirash fragrances
+                  </p>
+                </div>
+
+                {/* Write Review Form */}
+                <form onSubmit={handleReviewSubmit} className="p-5 bg-[#faf8f5] border border-zinc-200 rounded-xs space-y-4">
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-[#b8860b]">
+                    Write a Fragrance Review
+                  </h4>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-zinc-600 uppercase">Fragrance Formulation *</label>
+                      <input
+                        type="text"
+                        required
+                        value={newReview.productName}
+                        onChange={(e) => setNewReview({ ...newReview, productName: e.target.value })}
+                        placeholder="e.g. Oud Royale Extrait / Tuscan Bergamot"
+                        className="w-full px-3 py-2 bg-white border border-zinc-200 text-xs text-zinc-900 outline-none focus:border-black"
+                      />
                     </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-bold text-zinc-600 uppercase">Rating (1 to 5 Stars)</label>
+                      <div className="flex items-center gap-1.5 pt-1.5">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setNewReview({ ...newReview, rating: star })}
+                            className="p-1 text-zinc-300 hover:text-[#b8860b] transition-colors cursor-pointer"
+                          >
+                            <Star
+                              size={18}
+                              className={star <= newReview.rating ? "text-[#b8860b] fill-[#b8860b]" : ""}
+                            />
+                          </button>
+                        ))}
+                        <span className="text-xs font-mono font-bold text-zinc-700 ml-2">{newReview.rating} / 5</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-zinc-600 uppercase">Your Review & Sillage Experience *</label>
+                    <textarea
+                      required
+                      rows={3}
+                      value={newReview.comment}
+                      onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                      placeholder="Describe the projection, dry-down notes, longevity, and your impressions..."
+                      className="w-full px-3 py-2 bg-white border border-zinc-200 text-xs text-zinc-900 outline-none focus:border-black resize-none"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submittingReview}
+                    className="px-6 py-2.5 bg-black hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-widest transition-all disabled:opacity-50"
+                  >
+                    {submittingReview ? "Submitting Review..." : "Submit Review"}
+                  </button>
+                </form>
+
+                {/* Submitted Reviews List */}
+                <div className="space-y-3 pt-4 border-t border-zinc-200">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-800">Your Past Reviews ({reviews.length})</h4>
+                  {reviews.length > 0 ? (
+                    <div className="space-y-3">
+                      {reviews.map((rev, idx) => (
+                        <div key={idx} className="p-4 bg-zinc-50 border border-zinc-200 rounded-xs space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-bold uppercase text-zinc-900">{rev.productName}</span>
+                            <div className="flex items-center gap-0.5">
+                              {[...Array(rev.rating || 5)].map((_, i) => (
+                                <Star key={i} size={11} className="text-[#b8860b] fill-[#b8860b]" />
+                              ))}
+                            </div>
+                          </div>
+                          <p className="text-xs text-zinc-600 leading-relaxed font-light">{rev.comment}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-zinc-500 font-light">No reviews posted yet.</p>
                   )}
                 </div>
               </div>
             )}
 
-            {/* TAB: PAYMENT METHODS */}
-            {activeTab === "payments" && (
-              <div className="bg-white border border-zinc-200 p-6 md:p-8 space-y-6 shadow-sm">
-                <div className="pb-4 border-b border-zinc-200 flex justify-between items-center">
-                  <div>
-                    <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Saved Payment Cards</h3>
-                    <p className="text-[12px] text-zinc-500">Manage cards saved for express checkout</p>
-                  </div>
-                  <button
-                    onClick={() => setShowCardForm(!showCardForm)}
-                    className="h-8 px-4 border border-zinc-300 text-[12px]   text-[#b8860b] uppercase tracking-widest hover:bg-black hover:text-white hover:border-black transition-all flex items-center gap-1.5"
-                  >
-                    <Plus size={11} /> {showCardForm ? "Cancel" : "Add Card"}
-                  </button>
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 10: OFFERS, COUPONS & CLUB REWARDS                         */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "rewards" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
+                <div className="pb-4 border-b border-zinc-200">
+                  <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                    Offers, Coupons & Member Rewards
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Exclusive customer privilege vouchers and Mahirash Club points
+                  </p>
                 </div>
 
-                {showCardForm && (
-                  <form onSubmit={handleAddCard} className="bg-zinc-50 border border-zinc-200 p-5 space-y-4 rounded">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <label className="text-[12px]   text-zinc-500 uppercase tracking-wider">Cardholder Name</label>
-                        <input
-                          type="text"
-                          value={newCard.cardHolder}
-                          onChange={(e) => setNewCard({ ...newCard, cardHolder: e.target.value })}
-                          required
-                          placeholder="John Doe"
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[12px]   text-zinc-500 uppercase tracking-wider">Card Number</label>
-                        <input
-                          type="text"
-                          value={newCard.cardNumber}
-                          onChange={(e) => setNewCard({ ...newCard, cardNumber: e.target.value })}
-                          required
-                          maxLength={16}
-                          placeholder="4242 4242 4242 4242"
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <label className="text-[12px]   text-zinc-500 uppercase tracking-wider">Expiry Date</label>
-                        <input
-                          type="text"
-                          value={newCard.expiry}
-                          onChange={(e) => setNewCard({ ...newCard, expiry: e.target.value })}
-                          required
-                          placeholder="MM/YY"
-                          maxLength={5}
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[12px]   text-zinc-500 uppercase tracking-wider">Card Network</label>
-                        <select
-                          value={newCard.brand}
-                          onChange={(e) => setNewCard({ ...newCard, brand: e.target.value })}
-                          className="w-full px-3 py-2 bg-white border border-zinc-300 text-[14px] text-zinc-900 focus:border-zinc-500 outline-none"
-                        >
-                          <option value="Visa">Visa</option>
-                          <option value="Mastercard">Mastercard</option>
-                          <option value="Rupay">Rupay</option>
-                          <option value="Amex">American Express</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="flex gap-2 pt-2">
-                      <button type="submit" className="px-4 py-2 bg-black text-white text-[12px]   uppercase tracking-wider hover:bg-zinc-800 transition-colors">
-                        Save Card
-                      </button>
-                      <button type="button" onClick={() => setShowCardForm(false)} className="px-4 py-2 border border-zinc-300 text-zinc-600 text-[12px]   uppercase tracking-wider hover:text-black transition-colors">
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                )}
+                {/* Loyalty Tier Box */}
+                <div className="p-6 bg-gradient-to-r from-zinc-950 via-zinc-900 to-black text-white rounded-xs border border-zinc-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div className="space-y-2">
+                    <span className="text-[12px] text-[#b8860b] font-bold uppercase tracking-[0.25em] flex items-center gap-1">
+                      <Award size={13} /> Mahirash Privilege Club
+                    </span>
+                    <h4 className="text-xl font-light font-serif uppercase tracking-widest">
+                      Gold Member Tier
+                    </h4>
+                    <p className="text-xs text-zinc-400 font-light">
+                      Earn 50 reward points per ₹1,000 spent. Redeemable against discovery vaults & private reserves.
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-[11px] text-zinc-400 uppercase tracking-widest block">Accumulated Points</span>
+                    <span className="text-2xl font-mono font-light text-[#b8860b]">
+                      {recentOrders.length * 250} PTS
+                    </span>
+                  </div>
+                </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  {payments.map((p) => (
-                    <div key={p.id} className="p-5 bg-gradient-to-br from-zinc-900 to-black text-white border border-zinc-800 rounded relative overflow-hidden flex flex-col justify-between h-40 shadow-md">
-                      <div className="flex justify-between items-start">
-                        <span className="text-[12px]   text-[#c9a962] tracking-[0.25em] uppercase">{p.brand}</span>
-                        <div className="flex items-center gap-2">
-                          <CreditCard size={18} strokeWidth={1.2} className="text-white/40" />
-                          <button onClick={() => handleDeleteCard(p.id)} className="text-white/40 hover:text-red-400 transition-colors">
-                            <Trash2 size={13} />
+                {/* Available Coupons */}
+                <div className="space-y-3 pt-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-800">
+                    Active Privilege Coupons
+                  </h4>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {[
+                      { code: "WELCOME10", discount: "10% OFF", desc: "Applicable on your next order", min: "Min. spend ₹1,999" },
+                      { code: "ROYAL15", discount: "15% OFF", desc: "Valid on Royal Edition Extraits de Parfum", min: "Min. spend ₹4,999" },
+                      { code: "FREESHIP", discount: "FREE AIR SHIPPING", desc: "Express insured air transit nationwide", min: "No minimum spend" }
+                    ].map((coupon) => (
+                      <div key={coupon.code} className="p-4 border border-zinc-200 bg-[#faf8f5]/60 rounded-xs space-y-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="px-2 py-0.5 bg-black text-white text-[10px] font-mono font-bold tracking-widest">
+                            {coupon.code}
+                          </span>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(coupon.code);
+                              showToast(`Copied coupon code: ${coupon.code}!`);
+                            }}
+                            className="text-zinc-400 hover:text-black transition-colors"
+                            title="Copy code"
+                          >
+                            <Copy size={13} />
                           </button>
                         </div>
+                        <p className="text-sm font-bold text-zinc-900">{coupon.discount}</p>
+                        <p className="text-xs text-zinc-600 leading-relaxed font-light">{coupon.desc}</p>
+                        <span className="text-[10px] text-zinc-400 block pt-1 font-mono">{coupon.min}</span>
                       </div>
-                      <div className="space-y-2">
-                        <p className="text-sm font-mono tracking-widest text-white">{p.cardNumber}</p>
-                        <div className="flex justify-between items-end">
-                          <div>
-                            <span className="block text-[7px] uppercase tracking-wider text-zinc-400  ">Holder</span>
-                            <span className="text-[12px]   text-white/80">{p.cardHolder}</span>
-                          </div>
-                          <div>
-                            <span className="block text-[7px] uppercase tracking-wider text-zinc-400  ">Expiry</span>
-                            <span className="text-[12px] font-mono   text-white/80">{p.expiry}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* TAB: NOTIFICATION PREFERENCES */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 11: NOTIFICATION PREFERENCES                               */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
             {activeTab === "notifications" && (
-              <div className="bg-white border border-zinc-200 p-6 md:p-8 space-y-6 shadow-sm">
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
                 <div className="pb-4 border-b border-zinc-200">
-                  <h3 className="text-lg font-light text-zinc-900 uppercase tracking-widest">Notification Settings</h3>
-                  <p className="text-[12px] text-zinc-500">Manage your communication channels and alert preferences</p>
+                  <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                    Notification Settings & Alerts
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Manage real-time shipment updates, WhatsApp delivery alerts, and editorial drops
+                  </p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {[
-                    { key: "orderUpdates", title: "Order Timeline & Tracking Alerts", sub: "Receive real-time SMS & email notifications when shipment status changes" },
-                    { key: "promotionalOffers", title: "Exclusive Drops & Offers", sub: "Be first to know about capsule collection releases and exclusive client discounts" },
-                    { key: "newsletter", title: "Editorial Newsletter", sub: "Curated brand stories and style guidance" },
-                    { key: "securityAlerts", title: "Account Security Alerts", sub: "Instant notifications for password updates or login location flags" }
+                    { key: "orderUpdates", title: "Order Timeline & Tracking Alerts", sub: "Receive real-time email notifications whenever shipment status changes" },
+                    { key: "whatsappUpdates", title: "WhatsApp Shipment Alerts", sub: "Get direct WhatsApp updates when your parcel is dispatched and out for delivery" },
+                    { key: "promotionalOffers", title: "Private Reserve & New Drops", sub: "Priority notification when handcrafted limited edition extraits become available" },
+                    { key: "newsletter", title: "Fragrance Digest & Stories", sub: "Curated brand stories, ingredient harvesting diaries, and fragrance guides" },
+                    { key: "securityAlerts", title: "Account Security Flags", sub: "Instant email notification for new logins or profile setting changes" }
                   ].map((notif) => (
-                    <div key={notif.key} className="flex justify-between items-center p-4 bg-zinc-50 border border-zinc-200 rounded">
-                      <div className="max-w-[80%] space-y-0.5">
-                        <h4 className="text-[14px]   text-zinc-900 uppercase tracking-wider">{notif.title}</h4>
-                        <p className="text-[12px] text-zinc-500 leading-relaxed">{notif.sub}</p>
+                    <div key={notif.key} className="flex justify-between items-center p-4 bg-[#faf8f5]/60 border border-zinc-200 rounded-xs">
+                      <div className="max-w-[85%] space-y-0.5">
+                        <h4 className="text-xs font-bold text-zinc-900 uppercase tracking-wider">{notif.title}</h4>
+                        <p className="text-xs text-zinc-500 font-light leading-relaxed">{notif.sub}</p>
                       </div>
                       <input
                         type="checkbox"
                         checked={notifications[notif.key]}
                         onChange={(e) => {
-                          setNotifications({ ...notifications, [notif.key]: e.target.checked });
+                          const updated = { ...notifications, [notif.key]: e.target.checked };
+                          setNotifications(updated);
+                          const docId = activeEmail.replace(/[^a-z0-9]/g, "_");
+                          setDoc(doc(db, "customers", docId), { notifications: updated }, { merge: true });
                           showToast("Preference updated");
                         }}
-                        className="rounded text-[#b8860b] focus:ring-0 w-4 h-4 cursor-pointer border-zinc-300"
+                        className="rounded text-[#b8860b] focus:ring-0 w-4 h-4 cursor-pointer"
                       />
                     </div>
                   ))}
@@ -1496,126 +2417,245 @@ const Account = () => {
               </div>
             )}
 
-          </div>
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 12: CUSTOMER SUPPORT & HELP                                */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "support" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-8 animate-fadeIn">
+                <div className="pb-4 border-b border-zinc-200">
+                  <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                    Customer Support & Help
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Connect directly with our customer care team for order support or perfume guidance
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* WhatsApp Box */}
+                  <div className="p-6 bg-[#faf8f5] border border-zinc-200 rounded-xs space-y-3">
+                    <div className="flex items-center gap-2 text-emerald-700">
+                      <MessageSquare size={16} />
+                      <span className="text-xs font-bold uppercase tracking-wider">Direct WhatsApp Support</span>
+                    </div>
+                    <p className="text-xs text-zinc-600 leading-relaxed font-light">
+                      Chat directly with our team for real-time order inquiries and fragrance recommendations.
+                    </p>
+                    <a
+                      href="https://wa.me/919584826112?text=Hello%20Mahirash%20Support,%20I%20need%20assistance%20with%20my%20order."
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold uppercase tracking-wider transition-all"
+                    >
+                      <ExternalLink size={12} />
+                      <span>Open WhatsApp Chat</span>
+                    </a>
+                  </div>
+
+                  {/* Email Support Box */}
+                  <div className="p-6 bg-[#faf8f5] border border-zinc-200 rounded-xs space-y-3">
+                    <div className="flex items-center gap-2 text-[#b8860b]">
+                      <Mail size={16} />
+                      <span className="text-xs font-bold uppercase tracking-wider">Official Email Support</span>
+                    </div>
+                    <p className="text-xs text-zinc-600 leading-relaxed font-light">
+                      Response within 2 hours during store operating hours (Mon–Sat, 10:00 AM – 08:00 PM IST).
+                    </p>
+                    <a
+                      href="mailto:care@mahirash.com?subject=Mahirash%20Customer%20Inquiry"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-zinc-800 text-white text-xs font-semibold uppercase tracking-wider transition-all"
+                    >
+                      <Mail size={12} />
+                      <span>Email care@mahirash.com</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* FAQs */}
+                <div className="space-y-3 pt-4 border-t border-zinc-200">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-800">Frequently Asked Questions</h4>
+                  <div className="space-y-3">
+                    {FAQS.map((faq, idx) => (
+                      <div key={idx} className="p-4 bg-zinc-50 border border-zinc-200 rounded-xs space-y-1">
+                        <p className="text-xs font-bold text-zinc-900 uppercase tracking-wide">{faq.q}</p>
+                        <p className="text-xs text-zinc-600 leading-relaxed font-light">{faq.a}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {/* TAB 13: ACCOUNT SECURITY & SETTINGS                            */}
+            {/* ═══════════════════════════════════════════════════════════════ */}
+            {activeTab === "settings" && (
+              <div className="bg-white border border-zinc-200/90 p-6 md:p-8 shadow-sm rounded-xs space-y-6 animate-fadeIn">
+                <div className="pb-4 border-b border-zinc-200">
+                  <h3 className="text-lg font-light text-zinc-950 uppercase tracking-widest font-serif">
+                    Account Security & Privacy Settings
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-0.5">
+                    Manage authentication credentials, password reset, and privacy policies
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Reset Password */}
+                  <div className="p-5 bg-zinc-50 border border-zinc-200 rounded-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-0.5">
+                      <h4 className="text-xs font-bold text-zinc-900 uppercase tracking-wider">Account Password</h4>
+                      <p className="text-xs text-zinc-500 font-light">Request password change email or reset instructions</p>
+                    </div>
+                    <Link
+                      to="/forgot-password"
+                      className="px-5 py-2 border border-zinc-300 hover:border-black text-xs font-semibold uppercase tracking-wider text-zinc-900 transition-colors text-center"
+                    >
+                      Reset Password
+                    </Link>
+                  </div>
+
+                  {/* Active Login Provider */}
+                  <div className="p-5 bg-zinc-50 border border-zinc-200 rounded-xs space-y-1">
+                    <h4 className="text-xs font-bold text-zinc-900 uppercase tracking-wider">Login Identity & Session</h4>
+                    <p className="text-xs text-zinc-600 font-light font-mono">
+                      Authenticated as: <strong className="text-zinc-900">{activeEmail}</strong>
+                    </p>
+                  </div>
+
+                  {/* Policies Links */}
+                  <div className="p-5 bg-zinc-50 border border-zinc-200 rounded-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <span className="text-zinc-600 font-light">Mahirash Terms & Privacy Standards</span>
+                    <div className="flex items-center gap-4">
+                      <Link to="/terms" className="text-zinc-900 font-semibold hover:underline uppercase">Terms of Service</Link>
+                      <Link to="/privacy" className="text-zinc-900 font-semibold hover:underline uppercase">Privacy Policy</Link>
+                    </div>
+                  </div>
+
+                  {/* Logout Action */}
+                  <div className="pt-2">
+                    <button
+                      onClick={handleLogout}
+                      className="w-full sm:w-auto px-6 py-2.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+                    >
+                      <LogOut size={13} />
+                      <span>Sign Out from All Devices</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </main>
         </div>
       </div>
 
-      {/* TRACKING & ORDER DETAILS MODAL */}
+      {/* ─── LIVE TRACKING & ORDER DETAILS MODAL ──────────────────────────── */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white border border-zinc-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded shadow-2xl text-zinc-900">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+          <div className="bg-white border border-zinc-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-xs shadow-2xl text-zinc-900">
 
             {/* Modal Header */}
             <div className="px-6 py-5 border-b border-zinc-200 flex items-center justify-between sticky top-0 bg-white z-10">
               <div>
-                <span className="text-[12px] text-[#b8860b] font-black uppercase tracking-widest">Order Details & Tracking</span>
-                <h3 className="text-[14px]   uppercase tracking-widest text-zinc-900 mt-0.5">
+                <span className="text-[10px] text-[#b8860b] font-bold uppercase tracking-widest">
+                  Order Details & Live Shipment
+                </span>
+                <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 mt-0.5">
                   Order #{selectedOrder.id.toUpperCase()}
                 </h3>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleDownloadInvoice(selectedOrder)}
-                  className="px-3 py-1.5 bg-black text-white text-[12px]   uppercase tracking-wider hover:bg-zinc-800 transition-all flex items-center gap-1.5"
+                  className="px-3 py-1.5 bg-black text-white hover:bg-zinc-800 text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5"
                 >
                   <Download size={11} /> Invoice
                 </button>
-                <button onClick={() => setSelectedOrder(null)} className="p-1 hover:bg-zinc-100 rounded text-zinc-500 hover:text-black">
+                <button
+                  onClick={() => setSelectedOrder(null)}
+                  className="p-1 hover:bg-zinc-100 text-zinc-500 hover:text-black rounded"
+                >
                   <X size={18} />
                 </button>
               </div>
             </div>
 
-            <div className="p-6 space-y-6 text-[14px]">
-              {/* STEPPER TIMELINE */}
-              <div className="space-y-4 bg-zinc-50 border border-[#e4e4e7] p-5 rounded">
-                <div className="flex justify-between items-center">
-                  <span className="text-[12px] text-zinc-500 uppercase tracking-widest">Shipment status</span>
-                  <div className="flex items-center gap-2">
-                    {selectedOrder.awbCode && (
-                      <Link
-                        to={`/track?awb=${selectedOrder.awbCode}`}
-                        className="px-2.5 py-0.5 text-[12px] font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded uppercase tracking-wider transition"
-                      >
-                        Track Live Shipment
-                      </Link>
-                    )}
-                    <span className="px-2.5 py-0.5 text-[12px] font-black uppercase tracking-wider border border-[#b8860b]/40 text-[#b8860b] bg-[#b8860b]/10 rounded">
-                      {selectedOrder.status || 'Confirmed'}
-                    </span>
-                  </div>
-                </div>
+            <div className="p-6 space-y-6 text-xs">
 
-                <div className="relative pt-2">
-                  <div className="h-1 bg-zinc-200 w-full rounded" />
-                  <div className={`absolute top-2 h-1 bg-[#b8860b] rounded transition-all duration-500 ${selectedOrder.status === 'delivered' ? 'w-full' : selectedOrder.status === 'shipped' || selectedOrder.status === 'shipping' ? 'w-2/3' : 'w-1/3'
-                    }`} />
-                  <div className="flex justify-between text-[12px] uppercase tracking-wider mt-3 text-zinc-500  ">
-                    <span className="text-zinc-900 flex items-center gap-1"><CheckCircle2 size={10} className="text-[#b8860b]" /> Confirmed</span>
-                    <span className={selectedOrder.status === 'shipped' || selectedOrder.status === 'delivered' ? 'text-zinc-900 flex items-center gap-1' : ''}>
-                      <Truck size={10} /> Shipped
-                    </span>
-                    <span className={selectedOrder.status === 'delivered' ? 'text-zinc-900 flex items-center gap-1' : ''}>
-                      <Package size={10} /> Delivered
-                    </span>
-                  </div>
+              {/* Status and Courier Partner */}
+              <div className="p-4 bg-[#faf8f5] border border-zinc-200 rounded-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold block">Current Stage</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-950 mt-0.5 block">
+                    {selectedOrder.shipmentStatus || selectedOrder.status || "Order Confirmed"}
+                  </span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider font-bold block">AWB Tracking Code</span>
+                  <span className="text-xs font-mono font-bold text-[#b8860b] mt-0.5 block">
+                    {selectedOrder.awbCode || "Generating AWB"}
+                  </span>
                 </div>
               </div>
 
-              {/* PURCHASED ITEMS */}
+              {/* Scans Timeline */}
               <div className="space-y-3">
-                <span className="text-[12px]   text-zinc-500 uppercase tracking-widest block">Purchased Items ({selectedOrder.items?.length || 1})</span>
-                <div className="space-y-2">
-                  {selectedOrder.items?.map((item, i) => (
-                    <div key={i} className="flex gap-4 items-center bg-zinc-50 border border-zinc-200 p-3.5 rounded">
-                      <div className="w-12 h-14 bg-zinc-100 border border-zinc-200 overflow-hidden shrink-0">
-                        <OptimizedCloudinaryImage src={item.image} alt={item.name} preset="avatar" className="w-full h-full object-cover" />
+                <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-800">Shipment Activity Log</h4>
+                {loadingTrackingModal ? (
+                  <div className="py-8 text-center text-zinc-400 space-y-2">
+                    <RefreshCw size={20} className="animate-spin mx-auto text-[#b8860b]" />
+                    <p className="text-[11px] uppercase tracking-wider">Syncing Shiprocket tracking logs...</p>
+                  </div>
+                ) : trackingModalData?.scans && trackingModalData.scans.length > 0 ? (
+                  <div className="relative border-l-2 border-zinc-200 ml-3 pl-4 space-y-4 py-2">
+                    {trackingModalData.scans.map((scan, idx) => (
+                      <div key={idx} className="relative">
+                        <span className={`absolute -left-[23px] top-1 w-2.5 h-2.5 rounded-full border-2 ${
+                          idx === 0 ? "bg-black border-black ring-4 ring-zinc-100" : "bg-white border-zinc-300"
+                        }`} />
+                        <div>
+                          <span className="text-[10px] font-mono text-zinc-400 block">{scan.date}</span>
+                          <p className="text-xs font-semibold text-zinc-900 mt-0.5">{scan.activity}</p>
+                          {scan.location && (
+                            <p className="text-[11px] text-zinc-500 font-mono mt-0.5">Location: {scan.location}</p>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="  text-zinc-900 truncate uppercase tracking-wider">{item.name}</h4>
-                        <p className="text-[12px] text-zinc-500 uppercase mt-0.5">Qty: {item.quantity || 1} {item.size && `| Size: ${item.size}`}</p>
-                      </div>
-                      <span className="  text-zinc-900 text-sm">₹{((item.price || 0) * (item.quantity || 1)).toLocaleString()}</span>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xs text-zinc-600 leading-relaxed font-light">
+                    Your fragrance formulation is undergoing batch inspection and tamper-resistant packing at Mahirash. Real-time courier air transit checkpoints will appear here once picked up.
+                  </div>
+                )}
               </div>
 
-              {/* SHIPPING & SUMMARY INFO */}
-              <div className="grid sm:grid-cols-2 gap-6 pt-4 border-t border-zinc-200">
-                <div className="space-y-1.5">
-                  <span className="block text-[12px] uppercase tracking-wider text-zinc-500  ">Shipping Destination</span>
-                  <p className="text-zinc-700 leading-relaxed">
-                    <strong>{selectedOrder.shipping?.name || displayName || 'Valued Customer'}</strong><br />
-                    {selectedOrder.shipping?.address}, {selectedOrder.shipping?.city}, {selectedOrder.shipping?.state} - {selectedOrder.shipping?.pincode}<br />
-                    Phone: {selectedOrder.shipping?.phone || phone || 'N/A'}
-                  </p>
+              {/* Delivery Address & Summary */}
+              <div className="pt-4 border-t border-zinc-200 grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block">Recipient & Address</span>
+                  <p className="font-semibold text-zinc-900 uppercase">{selectedOrder.shipping?.name || selectedOrder.customerName || displayName}</p>
+                  <p className="text-zinc-600">{selectedOrder.shipping?.address || "Delivery Address"}</p>
+                  <p className="text-zinc-600">{selectedOrder.shipping?.city}, {selectedOrder.shipping?.state} - {selectedOrder.shipping?.pincode}</p>
+                  <p className="text-zinc-600 font-mono">Contact: {selectedOrder.shipping?.phone || selectedOrder.customerPhone}</p>
                 </div>
-                <div className="space-y-2 text-right">
-                  <div>
-                    <span className="block text-[12px] uppercase tracking-wider text-zinc-500  ">Payment Status</span>
-                    <span className="text-emerald-700   uppercase">PAID ({selectedOrder.paymentMethod || 'Online'})</span>
-                  </div>
-                  <div>
-                    <span className="block text-[12px] uppercase tracking-wider text-zinc-500  ">Grand Total</span>
-                    <span className="text-lg   text-zinc-900">₹{(selectedOrder.total || 0).toLocaleString()}</span>
-                  </div>
+                <div className="space-y-1 sm:text-right">
+                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block">Payment Breakdown</span>
+                  <p className="text-zinc-600">Subtotal: ₹{(selectedOrder.subtotal || selectedOrder.total || 0).toLocaleString()}</p>
+                  <p className="text-emerald-700 font-semibold">Shipping: COMPLIMENTARY</p>
+                  <p className="text-sm font-bold text-zinc-950 pt-1">Total: ₹{(selectedOrder.total || 0).toLocaleString()}</p>
+                  <span className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xs">
+                    {selectedOrder.paymentStatus || "Paid"}
+                  </span>
                 </div>
-              </div>
-
-              <div className="pt-2 flex justify-end">
-                <button
-                  onClick={() => handleDownloadInvoice(selectedOrder)}
-                  className="w-full py-3 bg-black text-white   text-[12px] uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2"
-                >
-                  <Download size={13} /> Print / Download Tax Invoice
-                </button>
               </div>
 
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 };

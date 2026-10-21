@@ -12,7 +12,7 @@ const TermsConditions = () => {
       />
       <PageHeader
         title="Terms & Conditions"
-        subtitle="Please read our terms of service carefully before using our atelier services."
+        subtitle="Please read our terms of service carefully before using our store services."
         breadcrumbItems={[{ label: 'Home', path: '/' }, { label: 'Terms & Conditions' }]}
       />
 
@@ -23,7 +23,7 @@ const TermsConditions = () => {
             1. Overview & Agreement
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
-            Welcome to MAHIRASH PARFUMERIE. By accessing or browsing our digital platform, placing an order, or utilizing any of our atelier services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you should discontinue use of our platform immediately.
+            Welcome to MAHIRASH. By accessing or browsing our digital platform, placing an order, or utilizing any of our services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you should discontinue use of our platform immediately.
           </p>
         </section>
 
@@ -66,7 +66,7 @@ const TermsConditions = () => {
             5. Authenticity Guarantee & Quality Commitment
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
-            All Mahirash creations are 100% authentic, handcrafted extraits de parfum created with precious botanical ingredients and royal Cambodian ouds. Due to the personal and artisanal nature of haute perfumerie, we do not accept product returns. In the rare event that a package arrives damaged in transit, our concierge team will immediately assist with verification and replacement.
+            All Mahirash creations are 100% authentic, handcrafted extraits de parfum created with precious botanical ingredients and royal Cambodian ouds. Due to personal hygiene and the nature of luxury perfumes, we do not accept product returns once opened. In the rare event that a package arrives damaged in transit, our customer support team will immediately assist with verification and replacement.
           </p>
         </section>
 
