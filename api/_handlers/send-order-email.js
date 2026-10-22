@@ -1,5 +1,5 @@
-import { sendEmail, renderOrderConfirmationEmail, renderAdminNewOrderEmail, getAdminEmail } from "./_lib/email.js";
-import { getFirestoreDb } from "./_lib/firestoreClient.js";
+import { sendEmail, renderOrderConfirmationEmail, renderAdminNewOrderEmail, getAdminEmail } from "../_lib/email.js";
+import { getFirestoreDb } from "../_lib/firestoreClient.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -43,7 +43,7 @@ export default async function handler(req, res) {
 
   // 1. Authoritative Server-side Stock Deduction in Firestore
   try {
-    const { deductOrderStock } = await import("./_lib/stockManager.js");
+    const { deductOrderStock } = await import("../_lib/stockManager.js");
     if (Array.isArray(authoritativeOrder.items) && authoritativeOrder.items.length > 0) {
       await deductOrderStock(authoritativeOrder.items);
     }
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
     console.error("Customer confirmation email error:", custErr.message);
   }
 
-  // 2. Send Admin New Order Notification Email
+  // 3. Send Admin New Order Notification Email
   try {
     const adminEmail = getAdminEmail();
     const adminHtml = renderAdminNewOrderEmail({ order: authoritativeOrder });
@@ -78,7 +78,7 @@ export default async function handler(req, res) {
     console.error("Admin notification email error:", admErr.message);
   }
 
-  // 3. Update order document with delivery status if Firestore doc available
+  // 4. Update order document with delivery status if Firestore doc available
   if (orderDocRef) {
     try {
       const { updateDoc, serverTimestamp } = await import("firebase/firestore");

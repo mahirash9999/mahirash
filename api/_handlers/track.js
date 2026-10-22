@@ -1,4 +1,4 @@
-import { trackShiprocketAwb } from "./_lib/shiprocketClient.js";
+import { trackShiprocketAwb } from "../_lib/shiprocketClient.js";
 
 export default async function handler(req, res) {
   const awb = req.query?.awb || req.body?.awb;

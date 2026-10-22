@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     totalAmount,
     items,
     packageInfo
-  } = req.body;
+  } = req.body || {};
 
   if (!orderId) {
     return res.status(400).json({ error: "orderId is required" });

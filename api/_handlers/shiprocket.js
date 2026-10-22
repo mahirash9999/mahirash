@@ -1,4 +1,4 @@
-import { createShiprocketOrder } from "./_lib/shiprocketClient.js";
+import { createShiprocketOrder } from "../_lib/shiprocketClient.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     totalAmount,
     items,
     packageInfo
-  } = req.body;
+  } = req.body || {};
 
   try {
     const nameParts = (customerName || "Customer").split(" ");

@@ -1,5 +1,5 @@
-import { normalizeEmail, verifyClientIdentity } from "./_lib/firebaseAdmin.js";
-import { getFirestoreDb } from "./_lib/firestoreClient.js";
+import { normalizeEmail, verifyClientIdentity } from "../_lib/firebaseAdmin.js";
+import { getFirestoreDb } from "../_lib/firestoreClient.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Database service temporarily unavailable" });
     }
 
-    const { collection, query, where, getDocs, doc, updateDoc, writeBatch } = await import("firebase/firestore");
+    const { collection, query, where, getDocs, doc, updateDoc } = await import("firebase/firestore");
 
     // Query orders matching this email by customerEmail or userEmail
     const ordersRef = collection(db, "orders");

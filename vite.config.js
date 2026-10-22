@@ -25,25 +25,34 @@ const vercelApiPlugin = (mode = 'development') => ({
               Object.assign(process.env, freshEnv);
 
               if (body && req.headers['content-type']?.includes('application/json')) {
-                req.body = JSON.parse(body);
+                try {
+                  req.body = JSON.parse(body);
+                } catch (_) {}
               }
 
-              const modulePath = path.resolve(process.cwd(), 'api', `${apiPath}.js`);
-              if (fs.existsSync(modulePath)) {
-                // Mock Vercel response object properties
-                res.status = (code) => { res.statusCode = code; return res; };
-                res.json = (data) => {
-                  res.setHeader('Content-Type', 'application/json');
-                  res.end(JSON.stringify(data));
-                };
-                res.send = (data) => {
-                  res.end(data);
-                };
+              req.query = Object.fromEntries(urlObj.searchParams.entries());
 
-                // Dynamic import with timestamp cache-buster to allow live reloading
+              // Mock Vercel response object properties
+              res.status = (code) => { res.statusCode = code; return res; };
+              res.json = (data) => {
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify(data));
+              };
+              res.send = (data) => {
+                res.end(data);
+              };
+
+              // Check if master index.js dispatcher exists
+              const indexPath = path.resolve(process.cwd(), 'api', 'index.js');
+              const modulePath = path.resolve(process.cwd(), 'api', `${apiPath}.js`);
+
+              if (fs.existsSync(indexPath)) {
+                const apiModule = await import(`file://${indexPath}?t=${Date.now()}`);
+                const handler = apiModule.default || apiModule;
+                await handler(req, res);
+              } else if (fs.existsSync(modulePath)) {
                 const apiModule = await import(`file://${modulePath}?t=${Date.now()}`);
                 const handler = apiModule.default || apiModule;
-
                 await handler(req, res);
               } else {
                 res.statusCode = 404;

@@ -1,4 +1,4 @@
-import { getFirestoreDb } from "./_lib/firestoreClient.js";
+import { getFirestoreDb } from "../_lib/firestoreClient.js";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 export default async function handler(req, res) {
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     shipmentStatus,
     paymentStatus,
     returnStatus
-  } = req.body;
+  } = req.body || {};
 
   if (!orderId) {
     return res.status(400).json({ error: "orderId is required" });

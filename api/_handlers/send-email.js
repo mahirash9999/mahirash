@@ -1,4 +1,4 @@
-import { sendEmail, renderOtpEmail, renderOrderConfirmationEmail } from "./_lib/email.js";
+import { sendEmail, renderOtpEmail, renderOrderConfirmationEmail } from "../_lib/email.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

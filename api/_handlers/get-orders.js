@@ -1,6 +1,6 @@
 import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
-import { normalizeEmail, verifyClientIdentity } from "./_lib/firebaseAdmin.js";
-import { getFirestoreDb } from "./_lib/firestoreClient.js";
+import { normalizeEmail, verifyClientIdentity } from "../_lib/firebaseAdmin.js";
+import { getFirestoreDb } from "../_lib/firestoreClient.js";
 
 export default async function handler(req, res) {
   // Support both GET and POST

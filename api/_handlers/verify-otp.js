@@ -1,5 +1,5 @@
-import { normalizeEmail, verifyOtpRecord, createFirebaseAuthBridge } from "./_lib/firebaseAdmin.js";
-import { getFirestoreDb } from "./_lib/firestoreClient.js";
+import { normalizeEmail, verifyOtpRecord, createFirebaseAuthBridge } from "../_lib/firebaseAdmin.js";
+import { getFirestoreDb } from "../_lib/firestoreClient.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
