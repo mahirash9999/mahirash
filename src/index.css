@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
 @import "tailwindcss";
 
@@ -10,18 +11,14 @@
   --color-brand-gray: #F3EFE6;
   --color-brand-gray-dark: #1A1A1A;
 
-  --font-serif: "Instrument Sans", sans-serif;
+  --font-serif: "GFS Didot", Didot, serif;
   --font-sans: "Instrument Sans", sans-serif;
-  --font-heading: "Instrument Sans", sans-serif;
+  --font-heading: "GFS Didot", Didot, serif;
+  --font-subheading: "GFS Didot", Didot, serif;
+  --font-didot: "GFS Didot", Didot, serif;
 }
 
 @layer base {
-
-  *,
-  *::before,
-  *::after {
-    font-family: "Instrument Sans", sans-serif;
-  }
 
   html {
     scroll-behavior: smooth;
@@ -30,12 +27,12 @@
     overflow-x: clip;
     background-color: #FAF8F5;
     color: #111111;
-    font-family: "Instrument Sans", sans-serif;
+    font-family: var(--font-sans);
   }
 
   body {
     @apply bg-[#FAF8F5] text-[#111111] antialiased min-h-screen text-[14px];
-    font-family: "Instrument Sans", sans-serif !important;
+    font-family: var(--font-sans);
     overflow-x: clip;
   }
 
@@ -46,11 +43,27 @@
   h5,
   h6 {
     @apply text-[#0D0D0D];
-    font-family: "Instrument Sans", sans-serif !important;
+    font-family: "GFS Didot", Didot, serif !important;
+  }
+
+  h1 *,
+  h2 *,
+  h3 *,
+  h4 *,
+  h5 *,
+  h6 * {
+    font-family: inherit;
+  }
+
+  .subheading,
+  .sub-heading,
+  .font-subheading,
+  [data-subheading] {
+    font-family: "GFS Didot", Didot, serif !important;
   }
 
   p {
-    font-family: "Instrument Sans", sans-serif !important;
+    font-family: var(--font-sans);
     letter-spacing: 0.012em;
   }
 
@@ -58,6 +71,24 @@
     background-color: #B8860B;
     color: #ffffff;
   }
+}
+
+/* Explicit heading and subheading typography classes for Didot */
+.font-heading,
+.font-subheading,
+.font-didot,
+.font-serif,
+.heading-didot,
+.subheading-didot {
+  font-family: "GFS Didot", Didot, serif !important;
+}
+
+.font-sans {
+  font-family: "Instrument Sans", sans-serif !important;
+}
+
+.font-mono {
+  font-family: monospace, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 /* Luxury Light Shimmer & Glow Helpers */
