@@ -241,7 +241,7 @@ const Account = () => {
             const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0);
             return tB - tA;
           });
-        } catch (_) {}
+        } catch (_) { }
       }
       setRecentOrders(ordersList);
 
@@ -266,13 +266,13 @@ const Account = () => {
           }
         }
         setAddresses(addrsList);
-      } catch (_) {}
+      } catch (_) { }
 
       // 4. Fetch customer reviews
       try {
         const revSnap = await getDocs(query(collection(db, "reviews"), where("userEmail", "==", cleanEmail)));
         setReviews(revSnap.docs.map(rd => ({ id: rd.id, ...rd.data() })));
-      } catch (_) {}
+      } catch (_) { }
 
     } catch (err) {
       console.error("Account data load error:", err);
@@ -535,7 +535,7 @@ const Account = () => {
           .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 25px; border-bottom: 2px solid #b8860b; }
           .logo { font-size: 24px; font-weight: 300; letter-spacing: 0.25em; text-transform: uppercase; color: #111; }
           .logo span { color: #b8860b; font-weight: 600; }
-          .badge { background: #faf5eb; color: #b8860b; border: 1px solid #e5d5b8; font-size: 10px; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; }
+          .badge { background: #faf5eb; color: #b8860b; border: 1px solid #faf8f5; font-size: 10px; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; }
           .table { width: 100%; border-collapse: collapse; margin-top: 25px; }
           .table th { background: #faf8f5; border-bottom: 1px solid #d4af37; padding: 10px 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #444; }
           .total-box { margin-top: 30px; display: flex; justify-content: flex-end; }
@@ -728,11 +728,10 @@ const Account = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className={`fixed top-24 right-4 z-50 px-5 py-3 rounded border shadow-xl flex items-center gap-2.5 text-xs uppercase tracking-wider font-semibold ${
-              toastMessage.type === "error"
-                ? "bg-red-50 text-red-800 border-red-300"
-                : "bg-black text-white border-[#b8860b]"
-            }`}
+            className={`fixed top-24 right-4 z-50 px-5 py-3 rounded border shadow-xl flex items-center gap-2.5 text-xs uppercase tracking-wider font-semibold ${toastMessage.type === "error"
+              ? "bg-red-50 text-red-800 border-red-300"
+              : "bg-black text-white border-[#b8860b]"
+              }`}
           >
             {toastMessage.type === "error" ? <AlertCircle size={15} /> : <CheckCircle2 size={15} className="text-[#b8860b]" />}
             <span>{toastMessage.msg}</span>
@@ -750,18 +749,18 @@ const Account = () => {
             {/* User Profile Card Left */}
             <div className="flex items-center gap-5">
               <div className="relative group shrink-0">
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-[#b8860b]/40 overflow-hidden bg-zinc-100 flex items-center justify-center shadow-inner">
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border-2 border-[#800020]/40 overflow-hidden bg-zinc-100 flex items-center justify-center shadow-inner">
                   {userData?.photoURL ? (
                     <img src={userData.photoURL} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-2xl font-light text-[#b8860b] uppercase font-serif">
+                    <span className="text-2xl font-light text-[#800020] uppercase font-serif">
                       {(displayName || activeEmail || "M")[0]}
                     </span>
                   )}
                 </div>
                 <label
                   htmlFor="avatar-input"
-                  className="absolute bottom-0 right-0 p-1.5 bg-black text-white hover:bg-[#b8860b] rounded-full cursor-pointer transition-all shadow-md"
+                  className="absolute bottom-0 right-0 p-1.5 bg-black text-white hover:bg-[#800020] rounded-full cursor-pointer transition-all shadow-md"
                   title="Upload avatar"
                 >
                   <Camera size={12} />
@@ -781,7 +780,7 @@ const Account = () => {
                   <h1 className="text-xl md:text-2xl font-light text-zinc-950 uppercase tracking-widest font-serif">
                     {displayName || "Valued Customer"}
                   </h1>
-                  <span className="px-2.5 py-0.5 bg-[#faf5eb] border border-[#e5d5b8] text-[#b8860b] text-[12px] uppercase font-bold tracking-widest inline-flex items-center gap-1 rounded-xs">
+                  <span className="px-2.5 py-0.5 bg-[#faf5eb] border border-[#faf8f5] text-[#b8860b] text-[12px] uppercase font-bold tracking-widest inline-flex items-center gap-1 rounded-xs">
                     <Sparkles size={12} /> Privilege Member
                   </span>
                 </div>
@@ -828,9 +827,8 @@ const Account = () => {
 
           {/* ─── SIDEBAR NAVIGATION (NO HORIZONTAL OVERFLOW) ────────────────── */}
           <aside
-            className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-zinc-200 p-6 flex flex-col h-screen overflow-y-auto transition-transform duration-300 lg:static lg:translate-x-0 lg:w-full lg:h-auto lg:p-0 lg:border-none lg:bg-transparent lg:col-span-3 ${
-              mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
+            className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-zinc-200 p-6 flex flex-col h-screen overflow-y-auto transition-transform duration-300 lg:static lg:translate-x-0 lg:w-full lg:h-auto lg:p-0 lg:border-none lg:bg-transparent lg:col-span-3 ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+              }`}
           >
             {/* Mobile Sidebar Header */}
             <div className="lg:hidden flex items-center justify-between pb-4 mb-4 border-b border-zinc-200">
@@ -863,11 +861,10 @@ const Account = () => {
                       setActiveTab(item.id);
                       setMobileMenuOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs md:text-sm font-medium uppercase tracking-wider transition-all rounded-xs text-left cursor-pointer ${
-                      isActive
-                        ? "bg-black text-white shadow-sm font-semibold"
-                        : "text-zinc-600 hover:bg-[#faf8f5] hover:text-black"
-                    }`}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 text-xs md:text-sm font-medium uppercase tracking-wider transition-all rounded-xs text-left cursor-pointer ${isActive
+                      ? "bg-black text-white shadow-sm font-semibold"
+                      : "text-zinc-600 hover:bg-[#faf8f5] hover:text-black"
+                      }`}
                   >
                     <div className="flex items-center gap-2.5 truncate">
                       <Icon size={15} className={isActive ? "text-[#b8860b]" : "text-zinc-400"} />
@@ -876,11 +873,10 @@ const Account = () => {
 
                     {item.badge !== null && item.badge !== undefined && (
                       <span
-                        className={`px-1.5 py-0.2 text-[11px] md:text-[12px] font-bold rounded-full ${
-                          isActive
-                            ? "bg-[#b8860b] text-white"
-                            : "bg-zinc-200 text-zinc-800"
-                        }`}
+                        className={`px-1.5 py-0.2 text-[11px] md:text-[12px] font-bold rounded-full ${isActive
+                          ? "bg-[#b8860b] text-white"
+                          : "bg-zinc-200 text-zinc-800"
+                          }`}
                       >
                         {item.badge}
                       </span>
@@ -891,7 +887,7 @@ const Account = () => {
             </div>
 
             {/* Customer Support Card */}
-            <div className="mt-4 p-4 bg-gradient-to-br from-[#faf5eb] to-[#f4ebe1] border border-[#e5d5b8] rounded-xs space-y-2">
+            <div className="mt-4 p-4 bg-gradient-to-br from-[#faf5eb] to-[#f4ebe1] border border-[#faf8f5] rounded-xs space-y-2">
               <div className="flex items-center gap-2 text-[#b8860b]">
                 <Sparkles size={16} />
                 <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider">Customer Support</span>
@@ -940,7 +936,7 @@ const Account = () => {
                     onClick={() => setActiveTab("orders")}
                     className="group bg-white border border-zinc-200/90 p-5 hover:border-[#b8860b] transition-all cursor-pointer shadow-xs rounded-xs"
                   >
-                    <div className="w-10 h-10 border border-[#e5d5b8] bg-[#faf5eb] flex items-center justify-center text-[#b8860b] mb-3 group-hover:bg-[#b8860b] group-hover:text-white transition-all">
+                    <div className="w-10 h-10 border border-[#faf8f5] bg-[#faf5eb] flex items-center justify-center text-[#b8860b] mb-3 group-hover:bg-[#b8860b] group-hover:text-white transition-all">
                       <Truck size={16} strokeWidth={1.5} />
                     </div>
                     <div className="flex items-center gap-2">
@@ -1079,13 +1075,12 @@ const Account = () => {
                           <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                             <div className="text-right">
                               <p className="text-sm font-semibold text-zinc-900">₹{(order.total || 0).toLocaleString()}</p>
-                              <span className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border rounded-xs ${
-                                order.status === "delivered"
-                                  ? "bg-emerald-50 text-emerald-800 border-emerald-300"
-                                  : order.status === "failed" || order.status === "cancelled"
+                              <span className={`inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider border rounded-xs ${order.status === "delivered"
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                : order.status === "failed" || order.status === "cancelled"
                                   ? "bg-red-50 text-red-700 border-red-300"
                                   : "bg-amber-50 text-amber-800 border-amber-300"
-                              }`}>
+                                }`}>
                                 {order.shipmentStatus || order.status || "Confirmed"}
                               </span>
                             </div>
@@ -1229,11 +1224,10 @@ const Account = () => {
                       <button
                         key={f.id}
                         onClick={() => setOrderFilter(f.id)}
-                        className={`px-3 py-1.5 text-xs font-medium uppercase tracking-wider rounded-xs border transition-all ${
-                          orderFilter === f.id
-                            ? "bg-black text-white border-black"
-                            : "bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-black"
-                        }`}
+                        className={`px-3 py-1.5 text-xs font-medium uppercase tracking-wider rounded-xs border transition-all ${orderFilter === f.id
+                          ? "bg-black text-white border-black"
+                          : "bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-black"
+                          }`}
                       >
                         {f.label}
                       </button>
@@ -1276,13 +1270,12 @@ const Account = () => {
 
                             <div className="flex items-center gap-2">
                               {/* Separate Status Badges */}
-                              <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border rounded-xs ${
-                                isDelivered
-                                  ? "bg-emerald-50 text-emerald-800 border-emerald-300"
-                                  : isCancelled
+                              <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border rounded-xs ${isDelivered
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                                : isCancelled
                                   ? "bg-red-50 text-red-700 border-red-300"
                                   : "bg-amber-50 text-amber-800 border-amber-300"
-                              }`}>
+                                }`}>
                                 {order.shipmentStatus || order.status || "Confirmed"}
                               </span>
 
@@ -1653,11 +1646,10 @@ const Account = () => {
                               return { ...prev, families: updated };
                             });
                           }}
-                          className={`p-4 border rounded-xs cursor-pointer transition-all ${
-                            isSelected
-                              ? "bg-black text-white border-black shadow-xs"
-                              : "bg-[#faf8f5]/60 border-zinc-200 text-zinc-800 hover:border-black"
-                          }`}
+                          className={`p-4 border rounded-xs cursor-pointer transition-all ${isSelected
+                            ? "bg-black text-white border-black shadow-xs"
+                            : "bg-[#faf8f5]/60 border-zinc-200 text-zinc-800 hover:border-black"
+                            }`}
                         >
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-xs font-semibold uppercase tracking-wider">{fam.label}</span>
@@ -1685,11 +1677,10 @@ const Account = () => {
                           key={occ.id}
                           type="button"
                           onClick={() => setPreferences(prev => ({ ...prev, occasion: occ.id }))}
-                          className={`p-3 text-xs font-medium uppercase tracking-wider rounded-xs border transition-all text-center ${
-                            isSelected
-                              ? "bg-black text-white border-black font-semibold"
-                              : "bg-white text-zinc-700 border-zinc-200 hover:border-black"
-                          }`}
+                          className={`p-3 text-xs font-medium uppercase tracking-wider rounded-xs border transition-all text-center ${isSelected
+                            ? "bg-black text-white border-black font-semibold"
+                            : "bg-white text-zinc-700 border-zinc-200 hover:border-black"
+                            }`}
                         >
                           {occ.label}
                         </button>
@@ -1711,11 +1702,10 @@ const Account = () => {
                           key={int.id}
                           type="button"
                           onClick={() => setPreferences(prev => ({ ...prev, intensity: int.id }))}
-                          className={`p-3 text-xs font-medium uppercase tracking-wider rounded-xs border transition-all text-left ${
-                            isSelected
-                              ? "bg-black text-white border-black font-semibold"
-                              : "bg-white text-zinc-700 border-zinc-200 hover:border-black"
-                          }`}
+                          className={`p-3 text-xs font-medium uppercase tracking-wider rounded-xs border transition-all text-left ${isSelected
+                            ? "bg-black text-white border-black font-semibold"
+                            : "bg-white text-zinc-700 border-zinc-200 hover:border-black"
+                            }`}
                         >
                           {int.label}
                         </button>
@@ -1910,9 +1900,8 @@ const Account = () => {
                             key={t}
                             type="button"
                             onClick={() => setAddressForm(p => ({ ...p, type: t }))}
-                            className={`px-2.5 py-1 text-xs font-semibold uppercase tracking-wider border rounded-xs ${
-                              addressForm.type === t ? "bg-black text-white border-black" : "bg-white text-zinc-600 border-zinc-200"
-                            }`}
+                            className={`px-2.5 py-1 text-xs font-semibold uppercase tracking-wider border rounded-xs ${addressForm.type === t ? "bg-black text-white border-black" : "bg-white text-zinc-600 border-zinc-200"
+                              }`}
                           >
                             {t}
                           </button>
@@ -2052,7 +2041,7 @@ const Account = () => {
                           {a.type || "Home"}
                         </span>
                         {a.isDefault && (
-                          <span className="px-2 py-0.5 bg-[#faf5eb] border border-[#e5d5b8] text-[#b8860b] text-[10px] font-bold uppercase tracking-wider rounded-xs">
+                          <span className="px-2 py-0.5 bg-[#faf5eb] border border-[#faf8f5] text-[#b8860b] text-[10px] font-bold uppercase tracking-wider rounded-xs">
                             Default
                           </span>
                         )}
@@ -2132,7 +2121,7 @@ const Account = () => {
                 </div>
 
                 {/* RBI Tokenization / Security Reassurance Box */}
-                <div className="p-4 bg-[#faf5eb]/70 border border-[#e5d5b8] rounded-xs flex items-start gap-3">
+                <div className="p-4 bg-[#faf5eb]/70 border border-[#faf8f5] rounded-xs flex items-start gap-3">
                   <ShieldCheck size={18} className="text-[#b8860b] shrink-0 mt-0.5" />
                   <div className="text-xs space-y-1">
                     <p className="font-semibold text-zinc-900 uppercase tracking-wider">
@@ -2611,9 +2600,8 @@ const Account = () => {
                   <div className="relative border-l-2 border-zinc-200 ml-3 pl-4 space-y-4 py-2">
                     {trackingModalData.scans.map((scan, idx) => (
                       <div key={idx} className="relative">
-                        <span className={`absolute -left-[23px] top-1 w-2.5 h-2.5 rounded-full border-2 ${
-                          idx === 0 ? "bg-black border-black ring-4 ring-zinc-100" : "bg-white border-zinc-300"
-                        }`} />
+                        <span className={`absolute -left-[23px] top-1 w-2.5 h-2.5 rounded-full border-2 ${idx === 0 ? "bg-black border-black ring-4 ring-zinc-100" : "bg-white border-zinc-300"
+                          }`} />
                         <div>
                           <span className="text-[10px] font-mono text-zinc-400 block">{scan.date}</span>
                           <p className="text-xs font-semibold text-zinc-900 mt-0.5">{scan.activity}</p>

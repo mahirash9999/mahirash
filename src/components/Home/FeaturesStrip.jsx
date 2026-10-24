@@ -47,12 +47,12 @@ const FeaturesStrip = () => {
               >
                 {/* Icon */}
                 <div className="text-zinc-800 shrink-0 flex items-center justify-center">
-                  <Icon size={24} strokeWidth={1.5} className="text-[#b8860b]" />
+                  <Icon size={24} strokeWidth={1.5} className="text-[#800020]" />
                 </div>
 
                 {/* Details */}
                 <div className="flex flex-col text-left">
-                  <span className="text-[12px]   text-zinc-900 tracking-widest uppercase leading-none mb-1">
+                  <span className="text-[12px]   text-zinc-900 tracking-wider uppercase leading-none mb-1">
                     {feature.title}
                   </span>
                   <span className="text-[12px] text-zinc-500 font-medium leading-tight">

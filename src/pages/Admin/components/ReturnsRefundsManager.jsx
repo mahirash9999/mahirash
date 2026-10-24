@@ -92,58 +92,58 @@ const ReturnsRefundsManager = () => {
   });
 
   return (
-    <div className="space-y-6 text-zinc-900 font-['Inter',sans-serif]">
+    <div className="space-y-6 text-[#30231F] font-['Inter',sans-serif]">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#FCF9F4] p-6 rounded-2xl border border-[#E9DCCB] shadow-xs">
         <div>
-          <h2 className="text-xl   font-poppins text-zinc-900 uppercase tracking-wider flex items-center gap-2">
-            <Undo2 className="text-[#b8860b]" size={22} /> Customer Returns & Refund Operations
+          <h2 className="text-xl font-serif text-[#30231F] font-bold tracking-wide flex items-center gap-2">
+            <Undo2 className="text-[#800020]" size={22} /> Customer Returns & Refund Operations
           </h2>
-          <p className="text-[14px] text-zinc-500 mt-1">Manage return tickets, review customer dispute claims, and authorize refunds.</p>
+          <p className="text-[14px] text-[#75665D] mt-1">Manage return tickets, review customer dispute claims, and authorize refunds.</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-zinc-800 text-white   text-[14px] rounded-xl shadow-md transition-all cursor-pointer"
+          className="flex items-center gap-2 px-5 py-2.5 bg-[#800020] hover:bg-[#650018] text-white font-semibold text-[14px] rounded-xl shadow-md shadow-[#800020]/25 transition-all cursor-pointer"
         >
           <Plus size={15} /> Create Return Ticket
         </button>
       </div>
 
       {/* Filter Tabs & Search */}
-      <div className="bg-white p-4 rounded-2xl border border-zinc-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-[#FCF9F4] p-4 rounded-2xl border border-[#E9DCCB] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="relative flex-1 w-full">
-          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#75665D]" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search return by ticket ID, order ID, or customer name..."
-            className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-300 rounded-xl text-[14px] outline-none focus:border-black focus:bg-white transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E9DCCB] rounded-xl text-[14px] text-[#30231F] outline-none focus:border-[#800020] transition-all"
           />
         </div>
 
-        <div className="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
+        <div className="flex items-center gap-1.5 bg-[#E9DCCB]/40 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
           <button
             onClick={() => setStatusFilter("all")}
-            className={`px-3.5 py-1.5 text-[14px]   rounded-lg transition-all ${statusFilter === "all" ? "bg-white text-black shadow-sm" : "text-zinc-500 hover:text-black"}`}
+            className={`px-3.5 py-1.5 text-[14px] font-semibold rounded-lg transition-all ${statusFilter === "all" ? "bg-[#800020] text-white shadow-sm" : "text-[#75665D] hover:text-[#800020]"}`}
           >
             All
           </button>
           <button
             onClick={() => setStatusFilter("requested")}
-            className={`px-3.5 py-1.5 text-[14px]   rounded-lg transition-all ${statusFilter === "requested" ? "bg-amber-500 text-white shadow-sm" : "text-amber-700 hover:bg-amber-100"}`}
+            className={`px-3.5 py-1.5 text-[14px] font-semibold rounded-lg transition-all ${statusFilter === "requested" ? "bg-[#800020] text-white shadow-sm" : "text-[#75665D] hover:text-[#800020]"}`}
           >
             Requested
           </button>
           <button
             onClick={() => setStatusFilter("approved")}
-            className={`px-3.5 py-1.5 text-[14px]   rounded-lg transition-all ${statusFilter === "approved" ? "bg-blue-600 text-white shadow-sm" : "text-blue-700 hover:bg-blue-100"}`}
+            className={`px-3.5 py-1.5 text-[14px] font-semibold rounded-lg transition-all ${statusFilter === "approved" ? "bg-[#800020] text-white shadow-sm" : "text-[#75665D] hover:text-[#800020]"}`}
           >
             Approved
           </button>
           <button
             onClick={() => setStatusFilter("refunded")}
-            className={`px-3.5 py-1.5 text-[14px]   rounded-lg transition-all ${statusFilter === "refunded" ? "bg-emerald-600 text-white shadow-sm" : "text-emerald-700 hover:bg-emerald-100"}`}
+            className={`px-3.5 py-1.5 text-[14px] font-semibold rounded-lg transition-all ${statusFilter === "refunded" ? "bg-[#800020] text-white shadow-sm" : "text-[#75665D] hover:text-[#800020]"}`}
           >
             Refunded
           </button>
@@ -151,14 +151,14 @@ const ReturnsRefundsManager = () => {
       </div>
 
       {/* Returns Table */}
-      <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
+      <div className="bg-white p-6 rounded-2xl border border-[#E9DCCB] shadow-xs">
         {loading ? (
-          <div className="py-12 text-center text-[14px] text-zinc-500">Loading returns tickets...</div>
+          <div className="py-12 text-center text-[14px] text-[#75665D]">Loading returns tickets...</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-[14px] border-collapse">
               <thead>
-                <tr className="text-[12px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
+                <tr className="text-[12px] font-semibold uppercase tracking-wider text-[#75665D] bg-[#FCF9F4] border-b border-[#E9DCCB]">
                   <th className="py-3 px-3">Ticket ID</th>
                   <th className="py-3 px-3">Order ID</th>
                   <th className="py-3 px-3">Customer</th>
@@ -169,23 +169,23 @@ const ReturnsRefundsManager = () => {
                   <th className="py-3 px-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100">
+              <tbody className="divide-y divide-[#E9DCCB]/50">
                 {filteredReturns.map((r) => (
-                  <tr key={r.id} className="hover:bg-zinc-50/80 transition-colors">
-                    <td className="py-3.5 px-3 font-mono   text-zinc-900">{r.id}</td>
-                    <td className="py-3.5 px-3 font-mono text-zinc-500">{r.orderId}</td>
+                  <tr key={r.id} className="hover:bg-[#FCF9F4]/70 transition-colors">
+                    <td className="py-3.5 px-3 font-mono text-[#30231F] font-semibold">{r.id}</td>
+                    <td className="py-3.5 px-3 font-mono text-[#75665D]">{r.orderId}</td>
                     <td className="py-3.5 px-3">
-                      <p className="font-semibold text-zinc-900">{r.customerName}</p>
-                      <p className="text-[12px] text-zinc-400">{r.customerEmail}</p>
+                      <p className="font-semibold text-[#30231F]">{r.customerName}</p>
+                      <p className="text-[12px] text-[#75665D]">{r.customerEmail}</p>
                     </td>
-                    <td className="py-3.5 px-3 font-semibold text-zinc-800">{r.productName}</td>
-                    <td className="py-3.5 px-3 text-zinc-600 max-w-[180px] truncate" title={r.reason}>{r.reason}</td>
-                    <td className="py-3.5 px-3   text-zinc-900">₹{(r.amount || 0).toLocaleString('en-IN')}</td>
+                    <td className="py-3.5 px-3 font-semibold text-[#30231F]">{r.productName}</td>
+                    <td className="py-3.5 px-3 text-[#75665D] max-w-[180px] truncate" title={r.reason}>{r.reason}</td>
+                    <td className="py-3.5 px-3 font-semibold text-[#30231F]">₹{(r.amount || 0).toLocaleString('en-IN')}</td>
                     <td className="py-3.5 px-3">
-                      <span className={`px-2.5 py-0.5 rounded text-[12px]   ${r.status === "Refunded" ? "bg-emerald-100 text-emerald-800 border border-emerald-200" :
-                        r.status === "Approved" ? "bg-blue-100 text-blue-800 border border-blue-200" :
-                          r.status === "Rejected" ? "bg-red-100 text-red-800 border border-red-200" :
-                            "bg-amber-100 text-amber-800 border border-amber-200"
+                      <span className={`px-2.5 py-0.5 rounded text-[12px] font-semibold ${r.status === "Refunded" ? "bg-[#800020]/10 text-[#800020] border border-[#800020]/25" :
+                        r.status === "Approved" ? "bg-[#800020]/10 text-[#800020] border border-[#800020]/25" :
+                          r.status === "Rejected" ? "bg-stone-100 text-[#75665D] border border-[#E9DCCB]" :
+                            "bg-[#B88D46]/15 text-[#B88D46] border border-[#B88D46]/30"
                         }`}>
                         {r.status?.toUpperCase()}
                       </span>
@@ -195,7 +195,7 @@ const ReturnsRefundsManager = () => {
                         {r.status === "Requested" && (
                           <button
                             onClick={() => handleUpdateStatus(r.id, "Approved")}
-                            className="px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded text-[12px]   transition-all"
+                            className="px-2.5 py-1 bg-[#800020]/10 text-[#800020] border border-[#800020]/25 hover:bg-[#800020]/15 rounded text-[12px] font-semibold transition-all"
                           >
                             Approve
                           </button>
@@ -203,14 +203,14 @@ const ReturnsRefundsManager = () => {
                         {(r.status === "Requested" || r.status === "Approved") && (
                           <button
                             onClick={() => handleUpdateStatus(r.id, "Refunded")}
-                            className="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded text-[12px]   transition-all"
+                            className="px-2.5 py-1 bg-[#800020] hover:bg-[#650018] text-white rounded text-[12px] font-semibold transition-all shadow-xs"
                           >
                             Refund
                           </button>
                         )}
                         <button
                           onClick={() => handleDeleteReturn(r.id)}
-                          className="p-1.5 text-zinc-400 hover:text-red-600 rounded hover:bg-red-50 transition-colors"
+                          className="p-1.5 text-[#75665D] hover:text-[#800020] rounded hover:bg-[#800020]/10 transition-colors"
                         >
                           <Trash2 size={13} />
                         </button>
@@ -220,7 +220,7 @@ const ReturnsRefundsManager = () => {
                 ))}
                 {filteredReturns.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-zinc-500 text-[14px]">No return records found.</td>
+                    <td colSpan={8} className="py-8 text-center text-[#75665D] text-[14px]">No return records found.</td>
                   </tr>
                 )}
               </tbody>
@@ -232,44 +232,44 @@ const ReturnsRefundsManager = () => {
       {/* Add Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <form onSubmit={handleCreateSubmit} className="bg-white border border-zinc-200 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex justify-between items-center border-b border-zinc-200 pb-3">
-              <h3 className="text-sm   uppercase tracking-wider text-zinc-900">Create Return Ticket</h3>
-              <button type="button" onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-black p-1 rounded-full">
+          <form onSubmit={handleCreateSubmit} className="bg-[#FCF9F4] border border-[#E9DCCB] rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div className="flex justify-between items-center border-b border-[#E9DCCB] pb-3">
+              <h3 className="text-sm font-serif font-bold uppercase tracking-wider text-[#30231F]">Create Return Ticket</h3>
+              <button type="button" onClick={() => setIsModalOpen(false)} className="text-[#75665D] hover:text-[#800020] p-1 rounded-full">
                 <X size={16} />
               </button>
             </div>
 
             <div className="space-y-3 text-[14px]">
               <div className="space-y-1">
-                <label className="  text-zinc-500 uppercase tracking-wider block">Order ID</label>
-                <input type="text" value={formData.orderId} onChange={e => setFormData(prev => ({ ...prev, orderId: e.target.value }))} required className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg" placeholder="ORD-9842" />
+                <label className="text-xs font-semibold text-[#75665D] uppercase tracking-wider block">Order ID</label>
+                <input type="text" value={formData.orderId} onChange={e => setFormData(prev => ({ ...prev, orderId: e.target.value }))} required className="w-full px-3 py-2 bg-white border border-[#E9DCCB] text-[#30231F] rounded-lg outline-none focus:border-[#800020]" placeholder="ORD-9842" />
               </div>
               <div className="space-y-1">
-                <label className="  text-zinc-500 uppercase tracking-wider block">Customer Name</label>
-                <input type="text" value={formData.customerName} onChange={e => setFormData(prev => ({ ...prev, customerName: e.target.value }))} required className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg" placeholder="Aarav Sharma" />
+                <label className="text-xs font-semibold text-[#75665D] uppercase tracking-wider block">Customer Name</label>
+                <input type="text" value={formData.customerName} onChange={e => setFormData(prev => ({ ...prev, customerName: e.target.value }))} required className="w-full px-3 py-2 bg-white border border-[#E9DCCB] text-[#30231F] rounded-lg outline-none focus:border-[#800020]" placeholder="Aarav Sharma" />
               </div>
               <div className="space-y-1">
-                <label className="  text-zinc-500 uppercase tracking-wider block">Customer Email</label>
-                <input type="email" value={formData.customerEmail} onChange={e => setFormData(prev => ({ ...prev, customerEmail: e.target.value }))} required className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg" placeholder="aarav@gmail.com" />
+                <label className="text-xs font-semibold text-[#75665D] uppercase tracking-wider block">Customer Email</label>
+                <input type="email" value={formData.customerEmail} onChange={e => setFormData(prev => ({ ...prev, customerEmail: e.target.value }))} required className="w-full px-3 py-2 bg-white border border-[#E9DCCB] text-[#30231F] rounded-lg outline-none focus:border-[#800020]" placeholder="aarav@gmail.com" />
               </div>
               <div className="space-y-1">
-                <label className="  text-zinc-500 uppercase tracking-wider block">Product Name</label>
-                <input type="text" value={formData.productName} onChange={e => setFormData(prev => ({ ...prev, productName: e.target.value }))} required className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg" placeholder="Oversized Cotton Tee" />
+                <label className="text-xs font-semibold text-[#75665D] uppercase tracking-wider block">Product Name</label>
+                <input type="text" value={formData.productName} onChange={e => setFormData(prev => ({ ...prev, productName: e.target.value }))} required className="w-full px-3 py-2 bg-white border border-[#E9DCCB] text-[#30231F] rounded-lg outline-none focus:border-[#800020]" placeholder="Royal Oud Extrait" />
               </div>
               <div className="space-y-1">
-                <label className="  text-zinc-500 uppercase tracking-wider block">Refund Amount (₹)</label>
-                <input type="number" value={formData.amount} onChange={e => setFormData(prev => ({ ...prev, amount: e.target.value }))} required className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg" placeholder="1499" />
+                <label className="text-xs font-semibold text-[#75665D] uppercase tracking-wider block">Refund Amount (₹)</label>
+                <input type="number" value={formData.amount} onChange={e => setFormData(prev => ({ ...prev, amount: e.target.value }))} required className="w-full px-3 py-2 bg-white border border-[#E9DCCB] text-[#30231F] rounded-lg outline-none focus:border-[#800020]" placeholder="3999" />
               </div>
               <div className="space-y-1">
-                <label className="  text-zinc-500 uppercase tracking-wider block">Return Reason</label>
-                <input type="text" value={formData.reason} onChange={e => setFormData(prev => ({ ...prev, reason: e.target.value }))} required className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg" placeholder="Size Issue / Defect" />
+                <label className="text-xs font-semibold text-[#75665D] uppercase tracking-wider block">Return Reason</label>
+                <input type="text" value={formData.reason} onChange={e => setFormData(prev => ({ ...prev, reason: e.target.value }))} required className="w-full px-3 py-2 bg-white border border-[#E9DCCB] text-[#30231F] rounded-lg outline-none focus:border-[#800020]" placeholder="Fragrance Note Issue / Damage" />
               </div>
             </div>
 
-            <div className="pt-3 border-t border-zinc-200 flex justify-end gap-2">
-              <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-zinc-300 rounded-lg text-[14px]  ">Cancel</button>
-              <button type="submit" className="px-5 py-2 bg-black text-white rounded-lg text-[14px]  ">Create Ticket</button>
+            <div className="pt-3 border-t border-[#E9DCCB] flex justify-end gap-2">
+              <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border border-[#E9DCCB] rounded-lg text-[14px] font-semibold text-[#30231F] hover:bg-[#E9DCCB]/40">Cancel</button>
+              <button type="submit" className="px-5 py-2 bg-[#800020] hover:bg-[#650018] text-white rounded-lg text-[14px] font-semibold shadow-md shadow-[#800020]/25">Create Ticket</button>
             </div>
           </form>
         </div>

@@ -12,11 +12,11 @@ import { collection, doc, setDoc, getDoc, deleteDoc, updateDoc } from 'firebase/
 const statusBadgeClasses = (status) => {
   switch (status) {
     case "In Stock":
-      return "bg-[#4A5D4E]/10 text-[#4A5D4E] border-[#4A5D4E]/20";
+      return "bg-[#800020]/10 text-[#800020] border-[#800020]/25 font-semibold";
     case "Low Stock":
-      return "bg-[#D9A036]/10 text-[#D9A036] border-[#D9A036]/20";
+      return "bg-[#B88D46]/15 text-[#B88D46] border-[#B88D46]/30 font-semibold";
     default:
-      return "bg-red-100 text-red-700 border-red-200";
+      return "bg-stone-100 text-[#75665D] border-[#E9DCCB] font-semibold";
   }
 };
 
@@ -380,17 +380,17 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
   };
 
   return (
-    <section className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
+    <section className="bg-white rounded-2xl border border-[#E9DCCB] shadow-sm overflow-hidden">
       {/* Top Header Controls */}
-      <div className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200">
+      <div className="px-4 sm:px-6 py-4 sm:py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E9DCCB]">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-base sm:text-lg font-poppins font-semibold text-zinc-900 tracking-tight">Fragrance Catalog</h2>
-            <span className="px-2.5 py-0.5 rounded-full bg-zinc-100 border border-zinc-200 text-zinc-800 text-[12px] font-medium">
+            <h2 className="text-base sm:text-lg font-serif font-bold text-[#30231F] tracking-tight">Fragrance Catalog</h2>
+            <span className="px-2.5 py-0.5 rounded-full bg-[#800020]/10 border border-[#800020]/20 text-[#800020] text-[12px] font-semibold">
               {products.length} Products
             </span>
           </div>
-          <p className="text-[12px] sm:text-[13px] text-zinc-500 mt-1">
+          <p className="text-[12px] sm:text-[13px] text-[#75665D] mt-1">
             Displaying 10 products per page sorted by most recently uploaded
           </p>
         </div>
@@ -407,14 +407,14 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
           <button
             type="button"
             onClick={handleImportClick}
-            className="flex items-center gap-1.5 px-3.5 py-2 border border-zinc-300 rounded-lg bg-white hover:bg-zinc-50 text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 border border-[#E9DCCB] rounded-xl bg-white hover:bg-[#FCF9F4] text-[13px] font-semibold text-[#30231F] cursor-pointer transition-all shadow-sm"
           >
             <Upload size={14} /> Import CSV
           </button>
           <button
             type="button"
             onClick={handleExport}
-            className="flex items-center gap-1.5 px-3.5 py-2 border border-zinc-300 rounded-lg bg-white hover:bg-zinc-50 text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-2 border border-[#E9DCCB] rounded-xl bg-white hover:bg-[#FCF9F4] text-[13px] font-semibold text-[#30231F] cursor-pointer transition-all shadow-sm"
           >
             <Download size={14} /> Export CSV
           </button>
@@ -423,7 +423,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
               type="button"
               onClick={onImportSuccess}
               title="Refresh Catalog"
-              className="p-2 border border-zinc-300 rounded-lg bg-white hover:bg-zinc-50 text-zinc-700 cursor-pointer transition-all shadow-sm"
+              className="p-2 border border-[#E9DCCB] rounded-xl bg-white hover:bg-[#FCF9F4] text-[#30231F] cursor-pointer transition-all shadow-sm"
             >
               <RefreshCw size={15} />
             </button>
@@ -432,10 +432,10 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
       </div>
 
       {/* Filter & Sort Bar */}
-      <div className="px-4 sm:px-6 py-3 bg-zinc-50/70 border-b border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="px-4 sm:px-6 py-3 bg-[#FCF9F4] border-b border-[#E9DCCB] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Table Quick Search */}
         <div className="relative max-w-xs w-full">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#75665D]" />
           <input
             type="text"
             placeholder="Search products by title, category..."
@@ -444,7 +444,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
               setTableSearch(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full pl-9 pr-3 py-1.5 text-[13px] bg-white border border-zinc-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition-all"
+            className="w-full pl-9 pr-3 py-1.5 text-[13px] bg-white border border-[#E9DCCB] rounded-xl focus:outline-none focus:ring-1 focus:ring-[#800020]/25 focus:border-[#800020] transition-all text-[#30231F]"
           />
           {tableSearch && (
             <button
@@ -453,7 +453,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
                 setTableSearch('');
                 setCurrentPage(1);
               }}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-700 text-xs font-bold"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#75665D] hover:text-[#30231F] text-xs font-bold"
             >
               ×
             </button>
@@ -462,14 +462,14 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
 
         {/* Sort Options Dropdown */}
         <div className="flex items-center gap-2 self-start sm:self-auto w-full sm:w-auto">
-          <div className="flex items-center gap-1.5 text-[13px] text-zinc-600 font-medium whitespace-nowrap">
-            <SlidersHorizontal size={14} className="text-zinc-500" />
+          <div className="flex items-center gap-1.5 text-[13px] text-[#75665D] font-medium whitespace-nowrap">
+            <SlidersHorizontal size={14} className="text-[#800020]" />
             <span>Sort by:</span>
           </div>
           <select
             value={sortBy}
             onChange={(e) => handleSortChange(e.target.value)}
-            className="text-[13px] bg-white border border-zinc-300 text-zinc-800 rounded-lg px-3 py-1.5 font-medium focus:outline-none focus:ring-1 focus:ring-black focus:border-black cursor-pointer shadow-sm w-full sm:w-auto"
+            className="text-[13px] bg-white border border-[#E9DCCB] text-[#30231F] rounded-xl px-3 py-1.5 font-medium focus:outline-none focus:ring-1 focus:ring-[#800020]/25 focus:border-[#800020] cursor-pointer shadow-sm w-full sm:w-auto"
           >
             <option value="date-desc">Recently Uploaded (Newest First)</option>
             <option value="date-asc">Date: Oldest First</option>
@@ -485,44 +485,44 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
 
       {/* Bulk Action Banner */}
       {selectedIds.length > 0 && (
-        <div className="mx-3.5 sm:mx-6 my-3 sm:my-4 flex flex-col sm:flex-row justify-between items-center bg-zinc-900 text-white p-3.5 rounded-xl gap-3 shadow-md">
+        <div className="mx-3.5 sm:mx-6 my-3 sm:my-4 flex flex-col sm:flex-row justify-between items-center bg-[#30231F] text-white p-3.5 rounded-2xl gap-3 shadow-lg border border-[#800020]/30">
           <div className="text-[13px] font-medium flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span className="w-2 h-2 rounded-full bg-[#B88D46]"></span>
             <span>{selectedIds.length} product(s) selected</span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => handleBulkStatusChange("In Stock")}
-              className="px-3 py-1.5 bg-zinc-800 text-emerald-400 border border-emerald-500/30 hover:bg-zinc-700 rounded-lg text-[12px] font-semibold cursor-pointer transition-colors"
+              className="px-3 py-1.5 bg-[#800020] text-white hover:bg-[#650018] rounded-xl text-[12px] font-semibold cursor-pointer transition-colors shadow-sm"
             >
               Mark In Stock
             </button>
             <button
               type="button"
               onClick={() => handleBulkStatusChange("Low Stock")}
-              className="px-3 py-1.5 bg-zinc-800 text-amber-400 border border-amber-500/30 hover:bg-zinc-700 rounded-lg text-[12px] font-semibold cursor-pointer transition-colors"
+              className="px-3 py-1.5 bg-[#650018] text-[#B88D46] border border-[#B88D46]/40 hover:bg-[#800020] rounded-xl text-[12px] font-semibold cursor-pointer transition-colors"
             >
               Mark Low Stock
             </button>
             <button
               type="button"
               onClick={() => handleBulkStatusChange("Out of Stock")}
-              className="px-3 py-1.5 bg-zinc-800 text-red-400 border border-red-500/30 hover:bg-zinc-700 rounded-lg text-[12px] font-semibold cursor-pointer transition-colors"
+              className="px-3 py-1.5 bg-black/50 text-white/80 border border-white/20 hover:bg-black rounded-xl text-[12px] font-semibold cursor-pointer transition-colors"
             >
               Mark Out of Stock
             </button>
             <button
               type="button"
               onClick={handleBulkDelete}
-              className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-[12px] font-semibold cursor-pointer transition-colors"
+              className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-[12px] font-semibold cursor-pointer transition-colors shadow-sm"
             >
               Delete Selected
             </button>
             <button
               type="button"
               onClick={() => setSelectedIds([])}
-              className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg text-[12px] font-semibold cursor-pointer transition-colors"
+              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white/80 rounded-xl text-[12px] font-semibold cursor-pointer transition-colors"
             >
               Cancel
             </button>
@@ -533,14 +533,14 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
       {/* Main Table */}
       <div className="overflow-x-auto scrollbar-thin">
         <table className="w-full min-w-[860px] text-left text-sm">
-          <thead className="bg-zinc-100/80 border-b border-zinc-200">
-            <tr className="text-[12px] text-zinc-600 uppercase tracking-wider font-semibold">
+          <thead className="bg-[#FCF9F4] border-b border-[#E9DCCB]">
+            <tr className="text-[12px] text-[#75665D] uppercase tracking-wider font-semibold">
               <th className="px-5 py-3.5 w-10">
                 <input
                   type="checkbox"
                   checked={isPageAllSelected}
                   onChange={toggleSelectAll}
-                  className="w-4 h-4 accent-black cursor-pointer rounded border-zinc-300"
+                  className="w-4 h-4 accent-[#800020] cursor-pointer rounded border-[#E9DCCB]"
                   title="Select all on this page"
                 />
               </th>
@@ -777,9 +777,9 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
                       key={pageNum}
                       type="button"
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`min-w-[32px] h-8 px-2 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${isActive
-                        ? 'bg-black text-white font-semibold shadow-sm'
-                        : 'border border-zinc-200 text-zinc-700 hover:bg-zinc-50'
+                      className={`min-w-[32px] h-8 px-2 rounded-xl text-[13px] font-medium transition-colors cursor-pointer ${isActive
+                        ? 'bg-[#800020] text-white font-semibold shadow-md shadow-[#800020]/25'
+                        : 'border border-[#E9DCCB] text-[#30231F] hover:bg-[#FCF9F4]'
                         }`}
                     >
                       {pageNum}
@@ -793,7 +793,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
                 type="button"
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="flex items-center gap-1 px-3 py-1.5 border border-zinc-300 rounded-lg text-[13px] font-medium text-zinc-700 hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm cursor-pointer"
+                className="flex items-center gap-1 px-3 py-1.5 border border-[#E9DCCB] rounded-xl text-[13px] font-medium text-[#30231F] hover:bg-[#FCF9F4] disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm cursor-pointer"
               >
                 Next <ChevronRight size={14} />
               </button>

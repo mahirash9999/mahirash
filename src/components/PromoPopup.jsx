@@ -108,7 +108,7 @@ const PromoPopup = () => {
 
           {/* Graphical Poster Typography Overlay */}
           <div className="relative z-10 p-6 text-center text-white space-y-2 flex flex-col items-center justify-end h-full w-full">
-            <span className="px-3 py-1 bg-[#b8860b] text-white font-black text-[12px] uppercase tracking-[0.25em] rounded-sm shadow-md flex items-center gap-1 mx-auto">
+            <span className="px-3 py-1 bg-[#800020] text-white font-black text-[12px] uppercase tracking-[0.25em] rounded-sm shadow-md flex items-center gap-1 mx-auto">
               <Sparkles size={11} /> MAHIRASH PARFUMERIE
             </span>
 
@@ -122,7 +122,7 @@ const PromoPopup = () => {
         <div className="md:col-span-6 p-6 sm:p-8 flex flex-col justify-center relative bg-white">
           {isSubmitted ? (
             <div className="text-center py-8 space-y-4 animate-in fade-in duration-300">
-              <div className="w-14 h-14 bg-amber-50 text-[#b8860b] border border-amber-200 rounded-full flex items-center justify-center mx-auto shadow-sm">
+              <div className="w-14 h-14 bg-[#800020]/10 text-[#800020] border border-[#800020]/20 rounded-full flex items-center justify-center mx-auto shadow-sm">
                 <Check size={28} strokeWidth={2.5} />
               </div>
               <h4 className="text-xl text-zinc-900 uppercase tracking-wide">You're On The List!</h4>
@@ -201,7 +201,7 @@ const PromoPopup = () => {
                 {/* Submit CTA */}
                 <button
                   type="submit"
-                  className="w-full py-3 bg-[#505050] hover:bg-black text-white   text-[14px] rounded-lg uppercase tracking-wider transition-all duration-300 shadow-md active:scale-[0.99] mt-2 cursor-pointer"
+                  className="w-full py-3 bg-[#800020] hover:bg-[#66001a] text-[#ffffff] text-[14px] font-bold rounded-lg uppercase tracking-wider transition-all duration-300 shadow-md active:scale-[0.99] mt-2 cursor-pointer"
                 >
                   Join Us
                 </button>

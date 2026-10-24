@@ -239,7 +239,7 @@ const Signup = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-black hover:bg-zinc-800 text-white font-semibold text-[12px] uppercase tracking-[0.25em] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-sm disabled:opacity-50 mt-2"
+                className="w-full py-4 bg-[#800020] hover:bg-[#66001a] text-[#ffffff] font-semibold text-[12px] uppercase tracking-[0.25em] transition-all duration-300 flex items-center justify-center gap-2.5 cursor-pointer shadow-md disabled:opacity-50 mt-2"
               >
                 {loading ? (
                   <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
@@ -292,7 +292,7 @@ const Signup = () => {
               Already registered?{" "}
               <Link
                 to={`/login?redirect=${encodeURIComponent(redirectPath)}`}
-                className="text-black hover:text-[#d9a036] transition-colors uppercase text-[12px] tracking-[0.2em] font-semibold ml-1.5"
+                className="text-black hover:text-[#800020] transition-colors uppercase text-[12px] tracking-[0.2em] font-semibold ml-1.5"
               >
                 Sign In
               </Link>

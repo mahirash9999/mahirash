@@ -413,14 +413,14 @@ const InventoryView = () => {
   const outOfStockCount = products.filter(p => (parseInt(p.stock) || 0) === 0).length;
 
   return (
-    <div className="space-y-6 text-zinc-900 font-['Inter',sans-serif]">
+    <div className="space-y-6 text-[#30231F] font-['Inter',sans-serif]">
       {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-zinc-200 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FCF9F4] p-4 sm:p-6 rounded-2xl border border-[#E9DCCB] shadow-xs">
         <div>
-          <h2 className="text-base sm:text-xl font-poppins text-zinc-900 uppercase tracking-wider flex items-center gap-2">
-            <ClipboardCheck className="text-[#b8860b]" size={22} /> Inventory & Stock Control Center
+          <h2 className="text-base sm:text-xl font-serif text-[#30231F] font-bold tracking-wide flex items-center gap-2">
+            <ClipboardCheck className="text-[#800020]" size={22} /> Inventory & Stock Control Center
           </h2>
-          <p className="text-[12px] sm:text-[14px] text-zinc-500 mt-1">Live stock levels, inventory valuation, and instant stock update controls.</p>
+          <p className="text-[12px] sm:text-[14px] text-[#75665D] mt-1">Live stock levels, inventory valuation, and instant stock update controls.</p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
           <input
@@ -433,76 +433,76 @@ const InventoryView = () => {
           <button
             type="button"
             onClick={() => fileInputRef.current.click()}
-            className="flex items-center gap-1.5 px-3.5 py-2 border border-zinc-300 rounded-xl bg-white hover:bg-zinc-50 text-[12px] sm:text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-xs"
+            className="flex items-center gap-1.5 px-3.5 py-2 border border-[#E9DCCB] rounded-xl bg-white hover:bg-[#FCF9F4] text-[12px] sm:text-[13px] font-semibold text-[#30231F] cursor-pointer transition-all shadow-xs"
           >
-            <Upload size={14} /> Import
+            <Upload size={14} className="text-[#800020]" /> Import
           </button>
           <button
             type="button"
             onClick={handleExportInventory}
-            className="flex items-center gap-1.5 px-3.5 py-2 border border-zinc-300 rounded-xl bg-white hover:bg-zinc-50 text-[12px] sm:text-[13px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-xs"
+            className="flex items-center gap-1.5 px-3.5 py-2 border border-[#E9DCCB] rounded-xl bg-white hover:bg-[#FCF9F4] text-[12px] sm:text-[13px] font-semibold text-[#30231F] cursor-pointer transition-all shadow-xs"
           >
-            <Download size={14} /> Export
+            <Download size={14} className="text-[#800020]" /> Export
           </button>
         </div>
       </div>
 
       {/* Stock Summary Badges */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-center justify-between">
+        <div className="bg-[#FCF9F4] p-5 rounded-2xl border border-[#E9DCCB] shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[12px]   text-zinc-400 uppercase tracking-widest block">Total Inventory Stock</span>
-            <h3 className="text-2xl   text-zinc-900 mt-1">{totalStockCount} units</h3>
+            <span className="text-[12px] font-semibold text-[#75665D] uppercase tracking-wider block">Total Inventory Stock</span>
+            <h3 className="text-2xl font-serif text-[#30231F] font-bold mt-1">{totalStockCount} units</h3>
           </div>
-          <div className="p-3 bg-zinc-100 rounded-xl text-zinc-700"><Package size={20} /></div>
+          <div className="p-3 bg-[#800020]/10 rounded-xl text-[#800020] border border-[#800020]/20"><Package size={20} /></div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-center justify-between">
+        <div className="bg-[#FCF9F4] p-5 rounded-2xl border border-[#E9DCCB] shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[12px]   text-amber-600 uppercase tracking-widest block">Low Stock Alerts</span>
-            <h3 className="text-2xl   text-amber-700 mt-1">{lowStockCount} items</h3>
+            <span className="text-[12px] font-semibold text-[#B88D46] uppercase tracking-wider block">Low Stock Alerts</span>
+            <h3 className="text-2xl font-serif text-[#30231F] font-bold mt-1">{lowStockCount} items</h3>
           </div>
-          <div className="p-3 bg-amber-50 rounded-xl text-amber-600"><AlertTriangle size={20} /></div>
+          <div className="p-3 bg-[#B88D46]/15 rounded-xl text-[#B88D46] border border-[#B88D46]/25"><AlertTriangle size={20} /></div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-center justify-between">
+        <div className="bg-[#FCF9F4] p-5 rounded-2xl border border-[#E9DCCB] shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[12px]   text-red-600 uppercase tracking-widest block">Out of Stock Items</span>
-            <h3 className="text-2xl   text-red-700 mt-1">{outOfStockCount} items</h3>
+            <span className="text-[12px] font-semibold text-[#800020] uppercase tracking-wider block">Out of Stock Items</span>
+            <h3 className="text-2xl font-serif text-[#30231F] font-bold mt-1">{outOfStockCount} items</h3>
           </div>
-          <div className="p-3 bg-red-50 rounded-xl text-red-600"><AlertTriangle size={20} /></div>
+          <div className="p-3 bg-[#800020]/10 rounded-xl text-[#800020] border border-[#800020]/20"><AlertTriangle size={20} /></div>
         </div>
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-zinc-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-[#FCF9F4] p-4 rounded-2xl border border-[#E9DCCB] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="relative flex-1 w-full">
-          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#75665D]" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search products by title or category..."
-            className="w-full pl-10 pr-4 py-2.5 bg-zinc-50 border border-zinc-300 rounded-xl text-[14px] outline-none focus:border-black focus:bg-white transition-all"
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-[#E9DCCB] rounded-xl text-[14px] text-[#30231F] outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 transition-all"
           />
         </div>
 
-        <div className="flex items-center gap-1.5 bg-zinc-100 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
+        <div className="flex items-center gap-1.5 bg-[#E9DCCB]/40 p-1 rounded-xl w-full sm:w-auto overflow-x-auto">
           <button
             onClick={() => setFilter("all")}
-            className={`px-3.5 py-1.5 text-[14px]   rounded-lg transition-all ${filter === "all" ? "bg-white text-black shadow-sm" : "text-zinc-500 hover:text-black"}`}
+            className={`px-3.5 py-1.5 text-[14px] font-semibold rounded-lg transition-all ${filter === "all" ? "bg-[#800020] text-white shadow-sm" : "text-[#75665D] hover:text-[#800020]"}`}
           >
             All ({products.length})
           </button>
           <button
             onClick={() => setFilter("low")}
-            className={`px-3.5 py-1.5 text-[14px]   rounded-lg transition-all ${filter === "low" ? "bg-amber-500 text-white shadow-sm" : "text-amber-700 hover:bg-amber-100"}`}
+            className={`px-3.5 py-1.5 text-[14px] font-semibold rounded-lg transition-all ${filter === "low" ? "bg-[#800020] text-white shadow-sm" : "text-[#75665D] hover:text-[#800020]"}`}
           >
             Low Stock ({lowStockCount})
           </button>
           <button
             onClick={() => setFilter("out")}
-            className={`px-3.5 py-1.5 text-[14px]   rounded-lg transition-all ${filter === "out" ? "bg-red-600 text-white shadow-sm" : "text-red-700 hover:bg-red-100"}`}
+            className={`px-3.5 py-1.5 text-[14px] font-semibold rounded-lg transition-all ${filter === "out" ? "bg-[#800020] text-white shadow-sm" : "text-[#75665D] hover:text-[#800020]"}`}
           >
             Out of Stock ({outOfStockCount})
           </button>
@@ -510,45 +510,45 @@ const InventoryView = () => {
       </div>
 
       {/* Stock Items Table */}
-      <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
+      <div className="bg-white p-6 rounded-2xl border border-[#E9DCCB] shadow-xs">
         {selectedIds.length > 0 && (
-          <div className="mb-4 flex flex-col sm:flex-row justify-between items-center bg-zinc-50 border border-zinc-200 p-4 rounded-xl gap-3">
-            <div className="text-[13px] font-semibold text-zinc-700">
+          <div className="mb-4 flex flex-col sm:flex-row justify-between items-center bg-[#FCF9F4] border border-[#E9DCCB] p-4 rounded-xl gap-3">
+            <div className="text-[13px] font-semibold text-[#30231F]">
               {selectedIds.length} item(s) selected
             </div>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => handleBulkStatusChange("In Stock")}
-                className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded text-[13px] font-semibold cursor-pointer transition-colors"
+                className="px-3 py-1.5 bg-[#800020]/10 text-[#800020] border border-[#800020]/25 hover:bg-[#800020]/15 rounded text-[13px] font-semibold cursor-pointer transition-colors"
               >
                 Mark In Stock
               </button>
               <button
                 type="button"
                 onClick={() => handleBulkStatusChange("Low Stock")}
-                className="px-3 py-1.5 bg-amber-50 text-amber-700 border border-[#d9a036]/20 hover:bg-amber-100 rounded text-[13px] font-semibold cursor-pointer transition-colors"
+                className="px-3 py-1.5 bg-[#B88D46]/15 text-[#B88D46] border border-[#B88D46]/30 hover:bg-[#B88D46]/20 rounded text-[13px] font-semibold cursor-pointer transition-colors"
               >
                 Mark Low Stock
               </button>
               <button
                 type="button"
                 onClick={() => handleBulkStatusChange("Out of Stock")}
-                className="px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 rounded text-[13px] font-semibold cursor-pointer transition-colors"
+                className="px-3 py-1.5 bg-[#800020]/10 text-[#800020] border border-[#800020]/25 hover:bg-[#800020]/15 rounded text-[13px] font-semibold cursor-pointer transition-colors"
               >
                 Mark Out of Stock
               </button>
               <button
                 type="button"
                 onClick={handleBulkDelete}
-                className="px-3 py-1.5 bg-red-600 text-white hover:bg-red-700 rounded text-[13px] font-semibold cursor-pointer transition-colors"
+                className="px-3 py-1.5 bg-[#800020] hover:bg-[#650018] text-white rounded text-[13px] font-semibold cursor-pointer transition-colors shadow-xs"
               >
                 Delete Selected
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedIds([])}
-                className="px-3 py-1.5 bg-zinc-200 hover:bg-zinc-300 text-zinc-700 rounded text-[13px] font-semibold cursor-pointer transition-colors"
+                className="px-3 py-1.5 bg-[#E9DCCB]/50 hover:bg-[#E9DCCB] text-[#30231F] rounded text-[13px] font-semibold cursor-pointer transition-colors"
               >
                 Cancel
               </button>
@@ -556,18 +556,18 @@ const InventoryView = () => {
           </div>
         )}
         {loading ? (
-          <div className="py-12 text-center text-[14px] text-zinc-500">Loading live stock data...</div>
+          <div className="py-12 text-center text-[14px] text-[#75665D]">Loading live stock data...</div>
         ) : (
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full min-w-[800px] text-left text-[13px] border-collapse">
               <thead>
-                <tr className="text-[12px]   uppercase tracking-widest text-zinc-400 border-b border-zinc-200">
+                <tr className="text-[12px] font-semibold uppercase tracking-wider text-[#75665D] bg-[#FCF9F4] border-b border-[#E9DCCB]">
                   <th className="py-3 px-3 w-10">
                     <input
                       type="checkbox"
                       checked={filteredProducts.length > 0 && selectedIds.length === filteredProducts.length}
                       onChange={toggleSelectAll}
-                      className="w-4 h-4 accent-black cursor-pointer rounded border-zinc-300"
+                      className="w-4 h-4 accent-[#800020] cursor-pointer rounded border-[#E9DCCB]"
                     />
                   </th>
                   <th className="py-3 px-3">Product</th>
@@ -578,34 +578,34 @@ const InventoryView = () => {
                   <th className="py-3 px-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-100">
+              <tbody className="divide-y divide-[#E9DCCB]/50">
                 {filteredProducts.map((p) => {
                   const stockNum = parseInt(p.stock) || 0;
                   return (
-                    <tr key={p.id} className={`hover:bg-zinc-50/80 transition-colors ${selectedIds.includes(p.id) ? 'bg-zinc-50' : ''}`}>
+                    <tr key={p.id} className={`hover:bg-[#FCF9F4]/70 transition-colors ${selectedIds.includes(p.id) ? 'bg-[#FCF9F4]' : ''}`}>
                       <td className="py-3.5 px-3 w-10">
                         <input
                           type="checkbox"
                           checked={selectedIds.includes(p.id)}
                           onChange={() => toggleSelectRow(p.id)}
-                          className="w-4 h-4 accent-black cursor-pointer rounded border-zinc-300"
+                          className="w-4 h-4 accent-[#800020] cursor-pointer rounded border-[#E9DCCB]"
                         />
                       </td>
                       <td className="py-3.5 px-3">
                         <div className="flex items-center gap-3">
-                          <OptimizedCloudinaryImage src={p.image || p.images?.[0]} preset="avatar" className="w-10 h-10 object-cover rounded-lg bg-zinc-100 border border-zinc-200" alt={p.name} />
+                          <OptimizedCloudinaryImage src={p.image || p.images?.[0]} preset="avatar" className="w-10 h-10 object-cover rounded-lg bg-[#FCF9F4] border border-[#E9DCCB]" alt={p.name} />
                           <div>
-                            <p className="  text-zinc-900">{p.name}</p>
-                            <span className="text-[12px] text-zinc-500 font-mono">ID: #{p.id?.slice(0, 8)}</span>
+                            <p className="font-semibold text-[#30231F]">{p.name}</p>
+                            <span className="text-[12px] text-[#75665D] font-mono">ID: #{p.id?.slice(0, 8)}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3.5 px-3 text-zinc-600 font-semibold">{p.category || 'General'}</td>
-                      <td className="py-3.5 px-3   text-zinc-900">₹{(p.price || 0).toLocaleString('en-IN')}</td>
+                      <td className="py-3.5 px-3 text-[#75665D] font-semibold">{p.category || 'General'}</td>
+                      <td className="py-3.5 px-3 font-semibold text-[#30231F]">₹{(p.price || 0).toLocaleString('en-IN')}</td>
                       <td className="py-3.5 px-3">
-                        <span className={`px-2.5 py-0.5 rounded text-[12px]   ${stockNum === 0 ? "bg-red-100 text-red-800 border border-red-200" :
-                          stockNum <= 5 ? "bg-amber-100 text-amber-800 border border-amber-200" :
-                            "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                        <span className={`px-2.5 py-0.5 rounded text-[12px] font-semibold ${stockNum === 0 ? "bg-[#800020]/10 text-[#800020] border border-[#800020]/25" :
+                          stockNum <= 5 ? "bg-[#B88D46]/15 text-[#B88D46] border border-[#B88D46]/30" :
+                            "bg-[#800020]/10 text-[#800020] border border-[#800020]/25"
                           }`}>
                           {stockNum === 0 ? "OUT OF STOCK" : stockNum <= 5 ? "LOW STOCK" : "IN STOCK"}
                         </span>
@@ -616,13 +616,13 @@ const InventoryView = () => {
                             {p.size_prices.map((sp, vIdx) => {
                               const vStockNum = Number(sp.stock) || 0;
                               return (
-                                <div key={vIdx} className="flex items-center justify-between gap-3 bg-zinc-50 border border-zinc-200/80 px-2.5 py-1.5 rounded-lg text-[14px]">
-                                  <span className="font-bold uppercase text-zinc-900 min-w-[50px]">{sp.size || `Var ${vIdx + 1}`}</span>
+                                <div key={vIdx} className="flex items-center justify-between gap-3 bg-[#FCF9F4] border border-[#E9DCCB] px-2.5 py-1.5 rounded-lg text-[14px]">
+                                  <span className="font-bold uppercase text-[#30231F] min-w-[50px]">{sp.size || `Var ${vIdx + 1}`}</span>
                                   <div className="flex items-center gap-1">
                                     <button
                                       type="button"
                                       onClick={() => handleVariantStockChange(p.id, vIdx, -1)}
-                                      className="w-6 h-6 flex items-center justify-center bg-white hover:bg-zinc-200 text-zinc-800 border border-zinc-300 rounded transition-colors cursor-pointer"
+                                      className="w-6 h-6 flex items-center justify-center bg-white hover:bg-[#800020] hover:text-white text-[#30231F] border border-[#E9DCCB] rounded transition-colors cursor-pointer"
                                     >
                                       <Minus size={11} />
                                     </button>
@@ -631,15 +631,15 @@ const InventoryView = () => {
                                       min="0"
                                       value={sp.stock ?? 0}
                                       onChange={(e) => handleVariantManualStockInput(p.id, vIdx, e.target.value)}
-                                      className={`w-12 px-1 py-0.5 text-center font-bold border rounded outline-none text-[14px] ${vStockNum === 0 ? 'bg-red-50 text-red-700 border-red-300' :
-                                        vStockNum <= 5 ? 'bg-amber-50 text-amber-800 border-amber-300' :
-                                          'bg-white text-zinc-900 border-zinc-300'
+                                      className={`w-12 px-1 py-0.5 text-center font-bold border rounded outline-none text-[14px] ${vStockNum === 0 ? 'bg-[#800020]/10 text-[#800020] border-[#800020]/30' :
+                                        vStockNum <= 5 ? 'bg-[#B88D46]/15 text-[#B88D46] border-[#B88D46]/35' :
+                                          'bg-white text-[#30231F] border-[#E9DCCB]'
                                         }`}
                                     />
                                     <button
                                       type="button"
                                       onClick={() => handleVariantStockChange(p.id, vIdx, 1)}
-                                      className="w-6 h-6 flex items-center justify-center bg-white hover:bg-zinc-200 text-zinc-800 border border-zinc-300 rounded transition-colors cursor-pointer"
+                                      className="w-6 h-6 flex items-center justify-center bg-white hover:bg-[#800020] hover:text-white text-[#30231F] border border-[#E9DCCB] rounded transition-colors cursor-pointer"
                                     >
                                       <Plus size={11} />
                                     </button>
@@ -647,15 +647,15 @@ const InventoryView = () => {
                                 </div>
                               );
                             })}
-                            <div className="text-[12px] text-zinc-500 font-semibold uppercase tracking-wider text-right pr-1">
-                              Total Stock: <span className="text-zinc-900 font-bold">{stockNum}</span>
+                            <div className="text-[12px] text-[#75665D] font-semibold uppercase tracking-wider text-right pr-1">
+                              Total Stock: <span className="text-[#30231F] font-bold">{stockNum}</span>
                             </div>
                           </div>
                         ) : (
                           <div className="flex items-center gap-1.5">
                             <button
                               onClick={() => handleStockChange(p.id, -1)}
-                              className="p-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-lg transition-colors cursor-pointer"
+                              className="p-1.5 bg-[#FCF9F4] hover:bg-[#800020] hover:text-white text-[#30231F] border border-[#E9DCCB] rounded-lg transition-colors cursor-pointer"
                             >
                               <Minus size={13} />
                             </button>
@@ -663,11 +663,11 @@ const InventoryView = () => {
                               type="number"
                               value={p.stock ?? 0}
                               onChange={(e) => handleManualStockInput(p.id, e.target.value)}
-                              className="w-16 px-2 py-1 text-center bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] outline-none focus:border-black"
+                              className="w-16 px-2 py-1 text-center bg-[#FCF9F4] border border-[#E9DCCB] rounded-lg text-[14px] text-[#30231F] outline-none focus:border-[#800020]"
                             />
                             <button
                               onClick={() => handleStockChange(p.id, 1)}
-                              className="p-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 rounded-lg transition-colors cursor-pointer"
+                              className="p-1.5 bg-[#FCF9F4] hover:bg-[#800020] hover:text-white text-[#30231F] border border-[#E9DCCB] rounded-lg transition-colors cursor-pointer"
                             >
                               <Plus size={13} />
                             </button>
@@ -678,7 +678,7 @@ const InventoryView = () => {
                         <button
                           onClick={() => handleSaveStock(p)}
                           disabled={savingId === p.id}
-                          className="px-3.5 py-1.5 bg-black hover:bg-zinc-800 text-white   text-[14px] rounded-lg transition-all flex items-center gap-1.5 ml-auto cursor-pointer shadow-sm"
+                          className="px-3.5 py-1.5 bg-[#800020] hover:bg-[#650018] text-white font-semibold text-[13px] rounded-lg transition-all flex items-center gap-1.5 ml-auto cursor-pointer shadow-xs shadow-[#800020]/20"
                         >
                           <Save size={13} />
                           <span>{savingId === p.id ? "Saving..." : "Save Stock"}</span>
@@ -689,7 +689,7 @@ const InventoryView = () => {
                 })}
                 {filteredProducts.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-zinc-500 text-[14px]">No matching inventory items found.</td>
+                    <td colSpan={7} className="py-8 text-center text-[#75665D] text-[14px]">No matching inventory items found.</td>
                   </tr>
                 )}
               </tbody>

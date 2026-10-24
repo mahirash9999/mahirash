@@ -117,7 +117,7 @@ const CloudinaryMediaPickerModal = ({
         <div className="flex justify-between items-center px-6 py-4 border-b border-zinc-200 bg-zinc-50">
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-900 flex items-center gap-2">
-              <ImageIcon size={18} className="text-[#b8860b]" />
+              <ImageIcon size={18} className="text-[#800020]" />
               Cloudinary Media Library
             </h3>
             <p className="text-[12px] text-zinc-500 font-light mt-0.5">

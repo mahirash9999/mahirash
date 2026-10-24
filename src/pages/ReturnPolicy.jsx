@@ -77,7 +77,7 @@ const ReturnPolicy = () => {
               { step: '03', title: 'Inspect & Refund', desc: 'After quality check at our warehouse, refund is initiated to your original payment method.', icon: CreditCard },
             ].map(({ step, title, desc, icon: Icon }) => (
               <div key={step} className="bg-white border border-zinc-200 p-6 relative">
-                <span className="absolute top-4 right-4 text-[12px] font-black tracking-[0.2em] text-[#b8860b]">{step}</span>
+                <span className="absolute top-4 right-4 text-[12px] font-black tracking-[0.15em] text-[#800020]">{step}</span>
                 <div className="w-10 h-10 border border-zinc-300 flex items-center justify-center text-zinc-600 mb-4">
                   <Icon size={18} strokeWidth={1.5} />
                 </div>
@@ -97,7 +97,7 @@ const ReturnPolicy = () => {
           <div className="bg-white border border-zinc-200 p-6 md:p-8 shadow-sm">
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b]">Processing Timeline</h3>
+                <h3 className="text-[12px] font-black uppercase tracking-[0.15em] text-[#800020]">Processing Timeline</h3>
                 <ul className="space-y-3 text-[14px] md:text-sm text-zinc-600">
                   <li className="flex gap-2.5 items-start">
                     <Clock size={14} className="text-zinc-500 shrink-0 mt-0.5" />
@@ -114,7 +114,7 @@ const ReturnPolicy = () => {
                 </ul>
               </div>
               <div className="space-y-4">
-                <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b]">Payment Method Refunds</h3>
+                <h3 className="text-[12px] font-black uppercase tracking-[0.15em] text-[#800020]">Payment Method Refunds</h3>
                 <ul className="space-y-3 text-[14px] md:text-sm text-zinc-600">
                   <li>• <strong>UPI / Cards / Net Banking:</strong> Refund credited back to original source account.</li>
                   <li>• <strong>Wallets (Paytm, PhonePe, GPay):</strong> Refund to wallet within 24–48 hours.</li>
@@ -142,7 +142,7 @@ const ReturnPolicy = () => {
               { label: 'Cash on Delivery', desc: 'Selected pincodes' },
             ].map((m) => (
               <div key={m.label} className="bg-white border border-zinc-200 p-4 flex flex-col items-center text-center hover:border-black/30 transition-colors">
-                <ShieldCheck size={18} className="text-[#b8860b] mb-2" />
+                <ShieldCheck size={18} className="text-[#800020] mb-2" />
                 <h3 className="text-[12px] font-bold uppercase tracking-wider text-zinc-900 mb-1">{m.label}</h3>
                 <p className="text-[12px] text-zinc-500 leading-snug">{m.desc}</p>
               </div>
@@ -169,7 +169,7 @@ const ReturnPolicy = () => {
         {/* 6. Contact */}
         <section className="bg-[#f5f5f5] border border-zinc-200 p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
           <div>
-            <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-2">Need Help With A Return?</h3>
+            <h3 className="text-[12px] font-black uppercase tracking-[0.15em] text-[#800020] mb-2">Need Help With A Return?</h3>
             <p className="text-[13px] md:text-sm text-zinc-600">Reach out to our support team for assistance with returns, exchanges or refund status.</p>
           </div>
           <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3.5 bg-black text-white text-[12px] font-black uppercase tracking-[0.2em] hover:bg-zinc-800 transition-colors shrink-0 self-start md:self-auto">

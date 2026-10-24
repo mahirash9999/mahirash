@@ -329,7 +329,7 @@ const TrackOrder = () => {
                                     <div className="bg-white border border-zinc-200 rounded-xl p-6 md:p-8 shadow-sm text-left">
                                         <div className="flex flex-wrap items-start justify-between gap-4 pb-6 border-b border-zinc-150">
                                             <div>
-                                                <span className="text-[12px] font-black uppercase tracking-[0.2em] text-[#b8860b]">
+                                                <span className="text-[12px] font-black uppercase tracking-[0.15em] text-[#800020]">
                                                     Tracking Number : {trackingData.awb || trackingKey}
                                                 </span>
                                                 <h2 className="text-xl font-light uppercase tracking-wider font-serif text-zinc-950 mt-1">

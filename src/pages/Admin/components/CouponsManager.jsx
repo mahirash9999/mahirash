@@ -138,69 +138,69 @@ const CouponsManager = () => {
     );
 
     return (
-        <div className="bg-white border border-zinc-200 rounded-2xl p-4 sm:p-6 text-zinc-900 shadow-sm font-['Inter',sans-serif]">
+        <div className="bg-white border border-[#E9DCCB] rounded-2xl p-4 sm:p-6 text-[#30231F] shadow-sm font-['Inter',sans-serif]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h2 className="text-base sm:text-lg font-bold text-zinc-900 uppercase tracking-wider">Coupons & Offers</h2>
-                    <p className="text-[12px] sm:text-[13px] text-zinc-500 mt-1">Manage brand discount campaigns and select eligible products</p>
+                    <h2 className="text-base sm:text-lg font-serif font-bold text-[#30231F] uppercase tracking-wider">Coupons & Offers</h2>
+                    <p className="text-[12px] sm:text-[13px] text-[#75665D] mt-1">Manage brand discount campaigns and select eligible products</p>
                 </div>
                 <button
                     type="button"
                     onClick={handleCreateNew}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-black text-white text-[13px] font-bold uppercase tracking-wider rounded-xl hover:bg-zinc-800 transition-all shadow-sm cursor-pointer active:scale-95"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-[#800020] text-white text-[13px] font-bold uppercase tracking-wider rounded-xl hover:bg-[#650018] transition-all shadow-md shadow-[#800020]/25 cursor-pointer active:scale-95"
                 >
                     <Plus size={14} /> Add New Coupon
                 </button>
             </div>
 
             {loading ? (
-                <div className="py-8 text-center text-zinc-500 text-[14px]">Loading campaigns...</div>
+                <div className="py-8 text-center text-[#75665D] text-[14px]">Loading campaigns...</div>
             ) : (
                 <div className="overflow-x-auto scrollbar-thin">
                     <table className="w-full min-w-[720px] text-left text-[13px] border-collapse">
                         <thead>
-                            <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-widest text-[12px]">
-                                <th className="py-3 px-4">Coupon Code</th>
-                                <th className="py-3 px-4">Type</th>
-                                <th className="py-3 px-4">Discount</th>
-                                <th className="py-3 px-4">Min. Order</th>
-                                <th className="py-3 px-4">Applicable Products</th>
-                                <th className="py-3 px-4">Status</th>
-                                <th className="py-3 px-4 text-right">Actions</th>
+                            <tr className="border-b border-[#E9DCCB] text-[#75665D] uppercase tracking-widest text-[12px] bg-[#FCF9F4]">
+                                <th className="py-3.5 px-4">Coupon Code</th>
+                                <th className="py-3.5 px-4">Type</th>
+                                <th className="py-3.5 px-4">Discount</th>
+                                <th className="py-3.5 px-4">Min. Order</th>
+                                <th className="py-3.5 px-4">Applicable Products</th>
+                                <th className="py-3.5 px-4">Status</th>
+                                <th className="py-3.5 px-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {coupons.map((coupon) => (
-                                <tr key={coupon.id} className="border-b border-zinc-200 hover:bg-zinc-50/80 transition-colors">
-                                    <td className="py-3.5 px-4 font-bold text-zinc-900">
-                                        <span className="inline-flex items-center bg-[#b8860b]/10 text-[#b8860b] text-[12px] px-2 py-0.5 rounded tracking-wider border border-[#b8860b]/20 font-mono">
+                                <tr key={coupon.id} className="border-b border-[#E9DCCB]/60 hover:bg-[#FCF9F4]/60 transition-colors">
+                                    <td className="py-3.5 px-4 font-bold text-[#30231F]">
+                                        <span className="inline-flex items-center bg-[#800020]/10 text-[#800020] text-[12px] px-2.5 py-0.5 rounded-md tracking-wider border border-[#800020]/20 font-mono font-bold">
                                             {coupon.code}
                                         </span>
                                     </td>
-                                    <td className="py-3.5 px-4 text-zinc-700 font-medium">{coupon.discount_type}</td>
-                                    <td className="py-3.5 px-4 font-bold text-zinc-900">
+                                    <td className="py-3.5 px-4 text-[#75665D] font-medium">{coupon.discount_type}</td>
+                                    <td className="py-3.5 px-4 font-bold text-[#30231F]">
                                         {coupon.discount_type === "Percentage"
                                             ? `${coupon.discount_val}% OFF`
                                             : `₹${Number(coupon.discount_val).toLocaleString("en-IN")} OFF`}
                                     </td>
-                                    <td className="py-3.5 px-4 text-zinc-600">
+                                    <td className="py-3.5 px-4 text-[#75665D]">
                                         ₹{Number(coupon.min_order).toLocaleString("en-IN")}
                                     </td>
                                     <td className="py-3.5 px-4">
                                         {coupon.applicableProducts && coupon.applicableProducts.length > 0 ? (
-                                            <span className="text-[14px] bg-zinc-100 text-zinc-700 px-2 py-1 rounded border border-zinc-200 font-semibold">
+                                            <span className="text-[12px] bg-[#FCF9F4] text-[#30231F] px-2 py-0.5 rounded border border-[#E9DCCB] font-semibold">
                                                 {coupon.applicableProducts.length === products.length
                                                     ? "All Products"
                                                     : `${coupon.applicableProducts.length} Selected`}
                                             </span>
                                         ) : (
-                                            <span className="text-[14px] bg-green-50 text-green-700 px-2 py-1 rounded border border-green-200 font-semibold">
+                                            <span className="text-[12px] bg-[#800020]/10 text-[#800020] px-2 py-0.5 rounded border border-[#800020]/20 font-semibold">
                                                 All Products
                                             </span>
                                         )}
                                     </td>
                                     <td className="py-3.5 px-4">
-                                        <span className={`px-2 py-0.5 rounded text-[12px] font-bold ${coupon.is_active ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
+                                        <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${coupon.is_active ? 'bg-[#800020]/10 text-[#800020] border border-[#800020]/20' : 'bg-stone-100 text-[#75665D] border border-[#E9DCCB]'}`}>
                                             {coupon.is_active ? 'ACTIVE' : 'INACTIVE'}
                                         </span>
                                     </td>
@@ -208,14 +208,14 @@ const CouponsManager = () => {
                                         <div className="flex justify-end gap-2">
                                             <button
                                                 onClick={() => handleEdit(coupon)}
-                                                className="p-1.5 text-zinc-500 hover:text-black hover:bg-zinc-100 rounded transition-colors"
+                                                className="p-1.5 text-[#75665D] hover:text-[#800020] hover:bg-[#800020]/10 rounded-lg transition-colors cursor-pointer"
                                                 title="Edit Coupon"
                                             >
                                                 <Edit2 size={13} />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(coupon.id)}
-                                                className="p-1.5 text-zinc-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                                className="p-1.5 text-[#75665D] hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                                                 title="Delete Coupon"
                                             >
                                                 <Trash2 size={13} />
@@ -226,7 +226,7 @@ const CouponsManager = () => {
                             ))}
                             {coupons.length === 0 && (
                                 <tr>
-                                    <td colSpan={7} className="py-8 text-center text-zinc-500">No coupons active. Click Add New Coupon to create one.</td>
+                                    <td colSpan={7} className="py-8 text-center text-[#75665D]">No coupons active. Click Add New Coupon to create one.</td>
                                 </tr>
                             )}
                         </tbody>
@@ -389,17 +389,17 @@ const CouponsManager = () => {
                             </div>
                         </div>
 
-                        <div className="pt-3.5 mt-2 border-t border-zinc-200/80 flex items-center justify-end gap-2.5">
+                        <div className="pt-3.5 mt-2 border-t border-[#E9DCCB] flex items-center justify-end gap-2.5">
                             <button
                                 type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="px-4 py-2 border border-zinc-300 text-zinc-700 text-[13px] font-semibold rounded-xl hover:bg-zinc-100 cursor-pointer transition-colors"
+                                className="px-4 py-2 border border-[#E9DCCB] text-[#75665D] text-[13px] font-semibold rounded-xl hover:bg-[#FCF9F4] cursor-pointer transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="px-5 py-2 bg-black text-white text-[13px] font-bold rounded-xl hover:bg-zinc-800 shadow-sm cursor-pointer transition-all active:scale-98"
+                                className="px-5 py-2 bg-[#800020] text-white text-[13px] font-bold rounded-xl hover:bg-[#650018] shadow-md shadow-[#800020]/25 cursor-pointer transition-all active:scale-98"
                             >
                                 {editingCoupon ? "Save Changes" : "Create Coupon"}
                             </button>

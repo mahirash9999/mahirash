@@ -30,7 +30,8 @@ import {
   CheckCircle2,
   Instagram,
   HelpCircle,
-  Globe
+  Globe,
+  Truck
 } from 'lucide-react';
 
 const sidebarSections = [
@@ -191,20 +192,20 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
       {/* Main Sidebar (Desktop fixed/static & Mobile slide-out drawer) */}
       <aside
         style={{ width: undefined }}
-        className={`fixed top-0 bottom-0 left-0 z-50 w-[285px] max-w-[85vw] bg-white border-r border-zinc-200 text-zinc-700 flex flex-col h-screen shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:static lg:h-screen lg:z-10 lg:translate-x-0 selection:bg-black selection:text-white ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed top-0 bottom-0 left-0 z-50 w-[285px] max-w-[85vw] bg-[#FCF9F4] border-r border-[#E9DCCB] text-[#30231F] flex flex-col h-screen shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:static lg:h-screen lg:z-10 lg:translate-x-0 selection:bg-[#800020] selection:text-white ${isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
       >
         {/* Brand Header */}
-        <div className="px-5 py-4 sm:px-6 sm:py-5 border-b border-zinc-200/80 sticky top-0 bg-white/95 backdrop-blur z-20 flex items-center justify-between">
+        <div className="px-5 py-4 sm:px-6 sm:py-5 border-b border-[#E9DCCB] sticky top-0 bg-[#FCF9F4]/95 backdrop-blur z-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-black via-zinc-900 to-zinc-800 text-[#d4af37] flex items-center justify-center shadow-md border border-[#d4af37]/20">
+            <div className="h-9 w-9 rounded-xl bg-[#800020] text-[#B88D46] flex items-center justify-center shadow-md border border-[#B88D46]/30">
               <Sparkles size={17} strokeWidth={2.2} />
             </div>
             <div>
-              <p className="text-[13px] font-bold font-serif tracking-[0.12em] text-zinc-900 uppercase">
+              <p className="text-[13px] font-bold font-serif tracking-[0.14em] text-[#30231F] uppercase">
                 MAHIRASH
               </p>
-              <p className="text-[12px] text-[#b8860b] uppercase tracking-[0.2em] font-semibold">Luxury Parfumerie</p>
+              <p className="text-[11px] text-[#800020] uppercase tracking-[0.2em] font-semibold">Luxury Parfumerie</p>
             </div>
           </div>
 
@@ -213,17 +214,17 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
             type="button"
             onClick={onClose}
             aria-label="Close menu"
-            className="lg:hidden p-2 rounded-xl text-zinc-400 hover:text-black hover:bg-zinc-100 transition-colors"
+            className="lg:hidden p-2 rounded-xl text-[#75665D] hover:text-[#800020] hover:bg-[#800020]/10 transition-colors"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Navigation Groups */}
-        <nav className="flex-grow overflow-y-auto px-3.5 py-4 sm:px-4 sm:py-6 space-y-6 scrollbar-thin scrollbar-thumb-zinc-200">
+        <nav className="flex-grow overflow-y-auto px-3.5 py-4 sm:px-4 sm:py-6 space-y-6 scrollbar-thin scrollbar-thumb-[#E9DCCB]">
           {sidebarSections.map((section) => (
             <div key={section.title} className="space-y-1">
-              <p className="text-[12px] font-bold text-zinc-400 tracking-[0.25em] px-3 uppercase mb-1.5">
+              <p className="text-[11px] font-bold text-[#75665D] tracking-[0.25em] px-3 uppercase mb-1.5">
                 {section.title}
               </p>
               <div className="space-y-0.5">
@@ -238,12 +239,12 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
                         setActiveItem(item.name);
                         onClose();
                       }}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium tracking-wide transition-all cursor-pointer ${isActive
-                          ? "bg-black text-white shadow-md shadow-black/10 font-semibold"
-                          : "text-zinc-600 hover:bg-zinc-100 hover:text-black border border-transparent"
+                      className={`group w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium tracking-wide transition-all cursor-pointer ${isActive
+                          ? "bg-[#800020] text-white shadow-md shadow-[#800020]/25 font-semibold"
+                          : "text-[#30231F] hover:bg-[#800020]/8 hover:text-[#800020] border border-transparent"
                         }`}
                     >
-                      <Icon size={16} strokeWidth={isActive ? 2.2 : 1.8} className={isActive ? "text-[#d4af37]" : "text-zinc-400 group-hover:text-black"} />
+                      <Icon size={16} strokeWidth={isActive ? 2.2 : 1.8} className={isActive ? "text-[#B88D46]" : "text-[#75665D] group-hover:text-[#800020] transition-colors"} />
                       <span className="truncate">{item.name}</span>
                     </button>
                   );
@@ -257,17 +258,17 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
         <div
           onMouseDown={handleMouseDown}
           title="Drag to resize sidebar"
-          className="hidden lg:block absolute top-0 right-0 h-full w-1 cursor-col-resize hover:bg-[#c9a962]/40 active:bg-[#c9a962] transition-colors z-30 group"
+          className="hidden lg:block absolute top-0 right-0 h-full w-1 cursor-col-resize hover:bg-[#800020]/40 active:bg-[#800020] transition-colors z-30 group"
         >
-          <div className="absolute top-1/2 right-0 -translate-y-1/2 w-1 h-8 rounded-full bg-zinc-300 group-hover:bg-[#c9a962] transition-colors" />
+          <div className="absolute top-1/2 right-0 -translate-y-1/2 w-1 h-8 rounded-full bg-[#E9DCCB] group-hover:bg-[#800020] transition-colors" />
         </div>
 
         {/* Logout button */}
-        <div className="p-3.5 sm:p-4 border-t border-zinc-200 bg-zinc-50/80">
+        <div className="p-3.5 sm:p-4 border-t border-[#E9DCCB] bg-[#FCF9F4]">
           <button
             type="button"
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[12px] font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-all border border-red-200/80 cursor-pointer shadow-xs active:scale-[0.99]"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-[12px] font-bold text-[#800020] hover:bg-[#800020] hover:text-white transition-all border border-[#800020]/30 cursor-pointer shadow-xs active:scale-[0.99]"
           >
             <LogOut size={14} />
             <span>LOGOUT ADMIN</span>

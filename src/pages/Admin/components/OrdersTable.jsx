@@ -357,53 +357,54 @@ const OrdersTable = ({ onRefresh }) => {
       {/* ─── 1. TOP METRICS STRIP: ORDERS & SHIPPING ─────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {[
-          { id: "all", label: "All Orders", count: metrics.total, icon: Package, color: "text-zinc-900", border: "border-zinc-200" },
-          { id: "topack", label: "To Be Packed", count: metrics.toPack, icon: Clock, color: "text-amber-700", border: "border-amber-200 bg-amber-50/40" },
-          { id: "ready", label: "Ready to Ship", count: metrics.readyToShip, icon: CheckSquare, color: "text-blue-700", border: "border-blue-200 bg-blue-50/40" },
-          { id: "intransit", label: "In Transit", count: metrics.inTransit, icon: Truck, color: "text-indigo-700", border: "border-indigo-200 bg-indigo-50/40" },
-          { id: "delivered", label: "Delivered", count: metrics.delivered, icon: CheckCircle2, color: "text-emerald-700", border: "border-emerald-200 bg-emerald-50/40" },
-          { id: "exceptions", label: "Exceptions / RTO", count: metrics.exceptions, icon: AlertCircle, color: "text-red-700", border: "border-red-200 bg-red-50/40" }
+          { id: "all", label: "All Orders", count: metrics.total, icon: Package },
+          { id: "topack", label: "To Be Packed", count: metrics.toPack, icon: Clock },
+          { id: "ready", label: "Ready to Ship", count: metrics.readyToShip, icon: CheckSquare },
+          { id: "intransit", label: "In Transit", count: metrics.inTransit, icon: Truck },
+          { id: "delivered", label: "Delivered", count: metrics.delivered, icon: CheckCircle2 },
+          { id: "exceptions", label: "Exceptions / RTO", count: metrics.exceptions, icon: AlertCircle }
         ].map((m) => (
           <div
             key={m.id}
             onClick={() => { setActiveFilter(m.id); setCurrentPage(1); }}
-            className={`p-3.5 bg-white border ${m.border} rounded-xs cursor-pointer hover:border-black transition-all shadow-xs ${
-              activeFilter === m.id ? "ring-2 ring-black" : ""
-            }`}
+            className={`p-3.5 bg-white border rounded-2xl cursor-pointer transition-all shadow-sm ${activeFilter === m.id
+              ? "ring-2 ring-[#800020] bg-[#800020]/5 border-[#800020]"
+              : "border-[#E9DCCB] hover:border-[#800020]/40"
+              }`}
           >
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{m.label}</span>
-              <m.icon size={13} className={m.color} />
+              <span className="text-[10px] font-bold text-[#75665D] uppercase tracking-wider">{m.label}</span>
+              <m.icon size={13} className="text-[#800020]" />
             </div>
-            <p className={`text-xl font-bold font-mono ${m.color}`}>{m.count}</p>
+            <p className="text-xl font-bold font-serif text-[#30231F]">{m.count}</p>
           </div>
         ))}
       </div>
 
       {/* ─── 2. CONTROLS BAR: SEARCH, FILTERS & EXPORT ────────────────────── */}
-      <div className="bg-white border border-zinc-200 p-4 rounded-xs shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-white border border-[#E9DCCB] p-4 rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="relative w-full md:w-80">
-          <Search size={14} className="absolute left-3.5 top-3 text-zinc-400" />
+          <Search size={14} className="absolute left-3.5 top-3 text-[#75665D]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             placeholder="Search Order ID, Customer, Phone, AWB..."
-            className="w-full pl-9 pr-3.5 py-2 bg-zinc-50 border border-zinc-200 text-xs text-zinc-900 focus:bg-white focus:border-black outline-none transition-all placeholder:text-zinc-400 font-sans"
+            className="w-full pl-9 pr-3.5 py-2 bg-[#FCF9F4] border border-[#E9DCCB] text-xs text-[#30231F] rounded-xl focus:bg-white focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none transition-all placeholder:text-[#75665D]/60 font-sans"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full md:w-auto justify-end">
           <button
             onClick={fetchOrders}
-            className="p-2 border border-zinc-200 hover:border-black rounded-xs text-zinc-600 hover:text-black transition-colors"
+            className="p-2 border border-[#E9DCCB] hover:border-[#800020] rounded-xl text-[#75665D] hover:text-[#800020] transition-colors cursor-pointer"
             title="Refresh orders"
           >
             <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
           </button>
           <button
             onClick={handleExportCSV}
-            className="px-3.5 py-2 border border-zinc-200 hover:border-black text-xs font-semibold uppercase tracking-wider text-zinc-800 transition-all flex items-center gap-1.5"
+            className="px-3.5 py-2 border border-[#E9DCCB] hover:border-[#800020] hover:bg-[#800020] hover:text-white text-xs font-semibold uppercase tracking-wider text-[#30231F] rounded-xl transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
           >
             <Download size={12} />
             <span>Export CSV</span>
@@ -412,31 +413,31 @@ const OrdersTable = ({ onRefresh }) => {
       </div>
 
       {/* ─── 3. ORDERS LISTING TABLE ───────────────────────────────────────── */}
-      <div className="bg-white border border-zinc-200 rounded-xs shadow-xs overflow-hidden">
+      <div className="bg-white border border-[#E9DCCB] rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-[#faf8f5] text-zinc-600 uppercase tracking-wider font-semibold border-b border-zinc-200">
+            <thead className="bg-[#FCF9F4] text-[#75665D] uppercase tracking-wider font-semibold border-b border-[#E9DCCB]">
               <tr>
-                <th className="py-3 px-4">Order ID & Date</th>
-                <th className="py-3 px-4">Customer</th>
-                <th className="py-3 px-4">Items</th>
-                <th className="py-3 px-4">Amount</th>
-                <th className="py-3 px-4">Payment</th>
-                <th className="py-3 px-4">Fulfilment</th>
-                <th className="py-3 px-4">Shipment</th>
-                <th className="py-3 px-4">Courier & AWB</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+                <th className="py-3.5 px-4">Order ID & Date</th>
+                <th className="py-3.5 px-4">Customer</th>
+                <th className="py-3.5 px-4">Items</th>
+                <th className="py-3.5 px-4">Amount</th>
+                <th className="py-3.5 px-4">Payment</th>
+                <th className="py-3.5 px-4">Fulfilment</th>
+                <th className="py-3.5 px-4">Shipment</th>
+                <th className="py-3.5 px-4">Courier & AWB</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-200">
+            <tbody className="divide-y divide-[#E9DCCB]/60">
               {pagedOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-zinc-50/80 transition-colors">
+                <tr key={order.id} className="hover:bg-[#FCF9F4]/60 transition-colors">
                   {/* Order ID & Date */}
-                  <td className="py-3 px-4">
-                    <span className="font-mono font-bold text-zinc-900 block hover:text-[#b8860b] cursor-pointer" onClick={() => setSelectedOrder(order)}>
+                  <td className="py-3.5 px-4">
+                    <span className="font-mono font-bold text-[#30231F] block hover:text-[#800020] cursor-pointer" onClick={() => setSelectedOrder(order)}>
                       #{order.id.slice(0, 10).toUpperCase()}
                     </span>
-                    <span className="text-[10px] text-zinc-400 font-mono block mt-0.5">
+                    <span className="text-[10px] text-[#75665D] font-mono block mt-0.5">
                       {order.createdAt?.toDate ? order.createdAt.toDate().toLocaleDateString("en-IN") : "Recent"}
                     </span>
                   </td>
@@ -512,18 +513,18 @@ const OrdersTable = ({ onRefresh }) => {
                   </td>
 
                   {/* Actions */}
-                  <td className="py-3 px-4 text-right">
+                  <td className="py-3.5 px-4 text-right">
                     <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => setSelectedOrder(order)}
-                        className="px-2.5 py-1.5 bg-black hover:bg-zinc-800 text-white text-[11px] font-semibold uppercase tracking-wider rounded-xs transition-colors"
+                        className="px-3 py-1.5 bg-[#800020] hover:bg-[#650018] text-white text-[11px] font-semibold uppercase tracking-wider rounded-xl transition-all shadow-sm cursor-pointer"
                       >
                         Manage
                       </button>
                       {order.awbCode && (
                         <button
                           onClick={() => handleTrackAWB(order.awbCode)}
-                          className="p-1.5 border border-zinc-300 hover:border-black rounded-xs text-zinc-600 hover:text-black transition-colors"
+                          className="p-1.5 border border-[#E9DCCB] hover:border-[#800020] hover:text-[#800020] rounded-xl text-[#75665D] transition-colors cursor-pointer"
                           title="Track live"
                         >
                           <Truck size={13} />
@@ -536,7 +537,7 @@ const OrdersTable = ({ onRefresh }) => {
 
               {pagedOrders.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="py-12 text-center text-zinc-400 uppercase tracking-widest font-light">
+                  <td colSpan={9} className="py-12 text-center text-[#75665D] uppercase tracking-widest font-light">
                     No orders match your filter criteria.
                   </td>
                 </tr>
@@ -547,22 +548,22 @@ const OrdersTable = ({ onRefresh }) => {
 
         {/* Pagination */}
         {filteredOrders.length > itemsPerPage && (
-          <div className="px-4 py-3 bg-[#faf8f5] border-t border-zinc-200 flex items-center justify-between text-xs">
-            <span className="text-zinc-500">
+          <div className="px-4 py-3 bg-[#FCF9F4] border-t border-[#E9DCCB] flex items-center justify-between text-xs">
+            <span className="text-[#75665D]">
               Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredOrders.length)} of {filteredOrders.length} orders
             </span>
             <div className="flex items-center gap-1.5">
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(p => p - 1)}
-                className="px-3 py-1 bg-white border border-zinc-200 hover:border-black disabled:opacity-40 rounded-xs font-semibold uppercase tracking-wider"
+                className="px-3 py-1 bg-white border border-[#E9DCCB] hover:border-[#800020] hover:text-[#800020] disabled:opacity-40 rounded-xl font-semibold uppercase tracking-wider cursor-pointer"
               >
                 Prev
               </button>
               <button
                 disabled={currentPage * itemsPerPage >= filteredOrders.length}
                 onClick={() => setCurrentPage(p => p + 1)}
-                className="px-3 py-1 bg-white border border-zinc-200 hover:border-black disabled:opacity-40 rounded-xs font-semibold uppercase tracking-wider"
+                className="px-3 py-1 bg-white border border-[#E9DCCB] hover:border-[#800020] hover:text-[#800020] disabled:opacity-40 rounded-xl font-semibold uppercase tracking-wider cursor-pointer"
               >
                 Next
               </button>
@@ -574,29 +575,28 @@ const OrdersTable = ({ onRefresh }) => {
       {/* ─── 4. COMPLETE ORDER DETAILS & SHIPPING MANAGEMENT MODAL ────────── */}
       {selectedOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="bg-white border border-zinc-200 max-w-4xl w-full max-h-[92vh] overflow-y-auto rounded-xs shadow-2xl text-zinc-900 flex flex-col">
+          <div className="bg-white border border-[#E9DCCB] max-w-4xl w-full max-h-[92vh] overflow-y-auto rounded-3xl shadow-2xl text-[#30231F] flex flex-col">
 
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-zinc-200 flex items-center justify-between sticky top-0 bg-white z-20">
+            <div className="px-6 py-4 border-b border-[#E9DCCB] flex items-center justify-between sticky top-0 bg-white z-20">
               <div>
-                <span className="text-[10px] text-[#b8860b] font-bold uppercase tracking-widest">
+                <span className="text-[10px] text-[#800020] font-bold uppercase tracking-widest">
                   Order Management & Shipping Console
                 </span>
-                <h3 className="text-sm font-mono font-bold uppercase text-zinc-950 mt-0.5">
+                <h3 className="text-sm font-mono font-bold uppercase text-[#30231F] mt-0.5">
                   Order #{selectedOrder.id.toUpperCase()}
                 </h3>
               </div>
               <div className="flex items-center gap-2">
                 {actionFeedback && (
-                  <span className={`text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-xs ${
-                    actionFeedback.isErr ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-800"
-                  }`}>
+                  <span className={`text-xs font-semibold uppercase tracking-wider px-2.5 py-1 rounded-xl ${actionFeedback.isErr ? "bg-red-50 text-red-700" : "bg-[#800020]/10 text-[#800020]"
+                    }`}>
                     {actionFeedback.msg}
                   </span>
                 )}
                 <button
                   onClick={() => setSelectedOrder(null)}
-                  className="p-1 hover:bg-zinc-100 rounded text-zinc-500 hover:text-black"
+                  className="p-1.5 hover:bg-[#FCF9F4] rounded-xl text-[#75665D] hover:text-[#800020] transition-colors cursor-pointer"
                 >
                   <X size={18} />
                 </button>
@@ -604,7 +604,7 @@ const OrdersTable = ({ onRefresh }) => {
             </div>
 
             {/* Modal Navigation Tabs */}
-            <div className="px-6 pt-3 border-b border-zinc-200 bg-[#faf8f5] flex gap-4 text-xs font-semibold uppercase tracking-wider">
+            <div className="px-6 pt-3 border-b border-[#E9DCCB] bg-[#FCF9F4] flex gap-4 text-xs font-semibold uppercase tracking-wider">
               {[
                 { id: "summary", label: "1. Order & Payment" },
                 { id: "address", label: "2. Customer & Address" },
@@ -616,11 +616,10 @@ const OrdersTable = ({ onRefresh }) => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveModalTab(tab.id)}
-                  className={`pb-2.5 border-b-2 transition-colors cursor-pointer ${
-                    activeModalTab === tab.id
-                      ? "border-black text-black font-bold"
-                      : "border-transparent text-zinc-500 hover:text-black"
-                  }`}
+                  className={`pb-2.5 border-b-2 transition-colors cursor-pointer ${activeModalTab === tab.id
+                    ? "border-[#800020] text-[#800020] font-bold"
+                    : "border-transparent text-[#75665D] hover:text-[#800020]"
+                    }`}
                 >
                   {tab.label}
                 </button>
@@ -1044,9 +1043,8 @@ const OrdersTable = ({ onRefresh }) => {
                       <div className="relative border-l border-zinc-200 ml-2 pl-4 space-y-4 py-2">
                         {(trackingData.scans || []).map((scan, idx) => (
                           <div key={idx} className="relative">
-                            <span className={`absolute -left-[21px] top-1 w-2 h-2 rounded-full border-2 ${
-                              idx === 0 ? "bg-black border-black ring-4 ring-zinc-100" : "bg-white border-zinc-300"
-                            }`} />
+                            <span className={`absolute -left-[21px] top-1 w-2 h-2 rounded-full border-2 ${idx === 0 ? "bg-black border-black ring-4 ring-zinc-100" : "bg-white border-zinc-300"
+                              }`} />
                             <div className="space-y-0.5">
                               <span className="text-[10px] font-mono text-zinc-400 block">{scan.date}</span>
                               <p className="font-semibold text-zinc-900">{scan.activity}</p>

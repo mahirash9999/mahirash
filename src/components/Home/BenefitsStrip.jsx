@@ -1,78 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Truck, RotateCcw, ShieldCheck, Zap } from 'lucide-react';
+import { ShieldCheck, Sparkles, Lock, Plane, Globe, RotateCcw, Truck } from 'lucide-react';
 import { db } from '../../components/Firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query } from 'firebase/firestore';
 
-const IconMap = {
-  Truck: Truck,
-  Zap: Zap,
-  RotateCcw: RotateCcw,
-  ShieldCheck: ShieldCheck
-};
-
-const DEFAULT_BENEFITS = [
-  { id: 'b_1', icon: 'Truck', text: 'Complimentary Express Shipping Over ₹1999', sort_order: 1, is_active: true },
-  { id: 'b_2', icon: 'ShieldCheck', text: '100% Authentic Extraits de Parfum', sort_order: 2, is_active: true },
-  { id: 'b_3', icon: 'Zap', text: 'Long-Lasting Projection Guaranteed', sort_order: 3, is_active: true },
-  { id: 'b_4', icon: 'ShieldCheck', text: 'Secure Encryption Checkout', sort_order: 4, is_active: true },
-  { id: 'b_5', icon: 'Truck', text: 'Rare Artisanal Formulations', sort_order: 5, is_active: true },
-  { id: 'b_6', icon: 'Zap', text: 'Handcrafted Packaging & Sealing', sort_order: 6, is_active: true }
+const DEFAULT_ITEMS = [
+  { id: '1', icon: 'shield', label: '100% AUTHENTIC PRODUCTS' },
+  { id: '2', icon: 'sparkles', label: 'LONG LASTING FRAGRANCES' },
+  { id: '3', icon: 'lock', label: 'SECURE SHOPPING CHECKOUT' },
+  { id: '4', icon: 'plane', label: 'WIDE INTERNATIONAL AVAILABILITY' }
 ];
 
+const renderIcon = (type) => {
+  const iconProps = { size: 19, strokeWidth: 1.6, className: "text-[#B88D46] shrink-0" };
+  switch (type?.toLowerCase()) {
+    case 'shield':
+    case 'shieldcheck':
+      return <ShieldCheck {...iconProps} />;
+    case 'sparkles':
+    case 'zap':
+      return <Sparkles {...iconProps} />;
+    case 'lock':
+    case 'secure':
+      return <Lock {...iconProps} />;
+    case 'plane':
+    case 'globe':
+    case 'truck':
+      return <Plane {...iconProps} />;
+    default:
+      return <ShieldCheck {...iconProps} />;
+  }
+};
+
 const BenefitsStrip = () => {
-  const [benefits, setBenefits] = useState(DEFAULT_BENEFITS);
-  const [loading, setLoading] = useState(true);
+  const [items, setItems] = useState(DEFAULT_ITEMS);
 
   useEffect(() => {
     const fetchBenefits = async () => {
       try {
         const q = query(collection(db, 'benefits_strip'));
         const snap = await getDocs(q);
-        if (snap.empty) {
-          setBenefits(DEFAULT_BENEFITS);
-        } else {
+        if (!snap.empty) {
           const list = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(item => item.is_active !== false);
-          list.sort((a, b) => (Number(a.sort_order) || 0) - (Number(b.sort_order) || 0));
-          setBenefits(list.length > 0 ? list : DEFAULT_BENEFITS);
+          if (list.length >= 4) {
+            setItems(list.slice(0, 4).map(item => ({
+              id: item.id,
+              icon: item.icon || 'shield',
+              label: item.text || item.label
+            })));
+          }
         }
       } catch (err) {
-        console.warn("Using default benefits fallback:", err);
-        setBenefits(DEFAULT_BENEFITS);
-      } finally {
-        setLoading(false);
+        console.warn("Using default trust strip fallback:", err);
       }
     };
     fetchBenefits();
   }, []);
 
-  if (loading || benefits.length === 0) return null;
-
   return (
-    <section className="relative bg-[#F5F2EB] border-y border-[#C5A059]/30 py-4 overflow-hidden shadow-sm">
-      {/* Subtle gold glowing top & bottom border accent lines */}
-      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#B8860B]/40 to-transparent pointer-events-none" />
-      <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#B8860B]/40 to-transparent pointer-events-none" />
-
-      <motion.div
-        animate={{ x: ['0%', '-50%'] }}
-        transition={{ repeat: Infinity, duration: 22, ease: 'linear' }}
-        className="flex gap-0 whitespace-nowrap"
-      >
-        {[...benefits, ...benefits].map((item, i) => {
-          const Icon = IconMap[item.icon] || Zap;
-          return (
-            <span
-              key={i}
-              className="inline-flex items-center gap-3.5 px-10 text-[12px] md:text-[14px] font-bold uppercase tracking-[0.25em] text-[#1A1A1A]"
+    <section className="bg-[#FCF9F4] border-b border-[#E9DCCB] py-3.5 sm:py-4">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#E9DCCB]">
+          {items.map((item, idx) => (
+            <div
+              key={item.id || idx}
+              className={`flex items-center justify-center gap-2.5 px-3 py-2 sm:py-1 ${idx % 2 === 0 ? 'pr-2' : 'pl-2'
+                } md:px-4`}
             >
-              <Icon size={16} strokeWidth={2} className="text-[#B8860B] flex-shrink-0 drop-shadow-sm" />
-              {item.text}
-              <span className="text-[#B8860B] text-[12px] md:text-[14px] ml-3.5 flex-shrink-0 opacity-80">✦</span>
-            </span>
-          );
-        })}
-      </motion.div>
+              {renderIcon(item.icon)}
+              <span className="text-[#30231F] text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.08em] whitespace-nowrap text-center">
+                {item.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };

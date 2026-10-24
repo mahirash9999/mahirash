@@ -240,7 +240,7 @@ const Cart = () => {
                             alert(`You will be notified when ${item.name} is restocked! It has been removed from your bag.`);
                             removeFromCart(item.cartId || item.id);
                           }}
-                          className="text-[12px] font-bold uppercase tracking-wider text-zinc-900 hover:text-[#b8860b] underline cursor-pointer"
+                          className="text-[12px] font-bold uppercase tracking-wider text-zinc-900 hover:text-[#800020] underline cursor-pointer"
                         >
                           Notify Me & Remove
                         </button>
@@ -261,7 +261,7 @@ const Cart = () => {
                               window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, "_blank");
                               removeFromCart(item.cartId || item.id);
                             }}
-                            className="text-[12px] font-bold uppercase tracking-wider text-[#b8860b] hover:text-black underline cursor-pointer"
+                            className="text-[12px] font-bold uppercase tracking-wider text-[#800020] hover:text-[#66001a] underline cursor-pointer"
                           >
                             Pre-Order on WhatsApp
                           </button>
@@ -301,7 +301,7 @@ const Cart = () => {
                       <div className="flex-1 min-w-0 px-4 py-4 flex flex-col justify-between gap-2">
                         {/* Top: product info */}
                         <div>
-                          <p className="text-[12px] font-bold uppercase tracking-widest text-[#b8860b] mb-0.5">
+                          <p className="text-[12px] font-bold uppercase tracking-widest text-[#800020] mb-0.5">
                             {item.brand || 'MAHIRASH'} {item.category ? `· ${item.category}` : ''}
                           </p>
                           <Link
@@ -390,7 +390,7 @@ const Cart = () => {
             <div className="bg-white rounded-xl border border-zinc-200 px-4 py-3.5 flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-[#f0eeeb] flex items-center justify-center shrink-0">
-                  <ShieldCheck size={16} strokeWidth={1.5} className="text-[#b8860b]" />
+                  <ShieldCheck size={16} strokeWidth={1.5} className="text-[#800020]" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-zinc-800">
@@ -493,9 +493,9 @@ const Cart = () => {
                 <button
                   onClick={() => !cannotCheckout && handleCheckout()}
                   disabled={cannotCheckout}
-                  className={`w-full py-4 text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 rounded-lg transition-all duration-200 ${cannotCheckout
+                  className={`w-full py-4 text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2 rounded-lg transition-all duration-200 cursor-pointer shadow-md ${cannotCheckout
                     ? "bg-zinc-200 text-zinc-400 cursor-not-allowed"
-                    : "bg-zinc-900 hover:bg-black text-white active:scale-[0.98]"
+                    : "bg-[#800020] hover:bg-[#66001a] text-[#ffffff] active:scale-[0.98]"
                     }`}
                 >
                   {hasOutOfStockItem

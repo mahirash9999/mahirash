@@ -4,7 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { db } from '../components/Firebase';
 import { doc, getDoc, collection, getDocs, query, limit } from 'firebase/firestore';
 import { useAuth } from '../components/useAuth';
-import { Heart, ShoppingBag, Minus, Plus, ChevronRight, ChevronLeft, Star, Truck, Ruler, Sparkles, Share2, Tag, Copy, X, ThumbsUp, Check, ShieldCheck, RefreshCw, ZoomIn, Clock, Bell } from 'lucide-react';
+import { Heart, ShoppingBag, Minus, Plus, ChevronRight, ChevronLeft, Star, Truck, Ruler, Sparkles, Share2, Tag, Copy, X, ThumbsUp, Check, ShieldCheck, RefreshCw, ZoomIn, Clock, Bell, CheckCircle2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from "../components/StoreProvider";
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -256,7 +256,7 @@ const ProductDetail = () => {
             exit={{ opacity: 0, y: 10, x: '-50%' }}
             className="fixed bottom-24 md:bottom-10 left-1/2 z-50 bg-black text-white px-6 py-3.5 shadow-2xl flex items-center gap-3 min-w-[280px]"
           >
-            <ShoppingBag size={14} className="shrink-0 text-[#c9a962]" />
+            <ShoppingBag size={14} className="shrink-0 text-[#800020]" />
             <p className="text-[12px] uppercase tracking-wider flex-1">{feedbackMessage}</p>
           </motion.div>
         )}
@@ -367,7 +367,7 @@ const ProductDetail = () => {
                     className="absolute inset-0 z-40 bg-white/70 backdrop-blur-xs flex flex-col items-center justify-center pointer-events-none"
                   >
                     <div className="flex flex-col items-center gap-2.5 bg-black/95 text-white px-5 py-3 shadow-2xl">
-                      <div className="w-5 h-5 border-2 border-[#c9a962] border-t-transparent rounded-full animate-spin" />
+                      <div className="w-5 h-5 border-2 border-[#800020] border-t-transparent rounded-full animate-spin" />
                       <span className="text-[12px] uppercase font-bold tracking-[0.2em] text-white">
                         SELECTING {selectedColor}...
                       </span>
@@ -483,7 +483,7 @@ const ProductDetail = () => {
             <div>
               {Boolean(selectedSize?.is_preorder === true || selectedSize?.is_preorder === 'true') && (
                 <div className="mb-2">
-                  <span className="inline-flex items-center gap-1.5 bg-[#b8860b] text-white px-3 py-1 text-[12px] font-bold uppercase tracking-widest shadow-xs">
+                  <span className="inline-flex items-center gap-1.5 bg-[#800020] text-white px-3 py-1 text-[12px] font-bold uppercase tracking-widest shadow-xs">
                     <Clock size={12} /> PRE-ORDER VARIANT
                   </span>
                 </div>
@@ -491,7 +491,7 @@ const ProductDetail = () => {
 
               {/* Brand & Category Header Row */}
               <div className="flex items-center justify-between gap-3 mb-2.5 pb-2 border-b border-zinc-200/80">
-                <span className="text-sm sm:text-base font-bold uppercase tracking-[0.3em] text-[#b8860b]">
+                <span className="text-sm sm:text-base font-bold uppercase tracking-[0.3em] text-[#800020]">
                   {product.brand || 'MAHIRASH PARFUMS'}
                 </span>
                 {product.category && (
@@ -527,9 +527,9 @@ const ProductDetail = () => {
 
               {/* Ratings Badge */}
               <div className="flex items-center gap-3 pt-1">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#b8860b]/10 border border-[#b8860b]/30 text-[#b8860b] text-[12px] md:text-[14px] font-bold">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#800020]/10 border border-[#800020]/30 text-[#800020] text-[12px] md:text-[14px] font-bold">
                   <span>{product.rating || 4.8}</span>
-                  <Star size={13} fill="#b8860b" strokeWidth={0} />
+                  <Star size={13} fill="#800020" strokeWidth={0} />
                 </div>
                 <span className="text-[12px] md:text-[14px] text-zinc-600 font-medium">
                   Verified Fragrance · 808 Customer Ratings & 476 Reviews
@@ -541,7 +541,7 @@ const ProductDetail = () => {
             <div className="p-4 bg-white border border-zinc-200/90 rounded-none shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Truck size={16} className="text-[#b8860b]" />
+                  <Truck size={16} className="text-[#800020]" />
                   <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider text-zinc-900">
                     Delhivery Express Delivery
                   </span>
@@ -609,9 +609,9 @@ const ProductDetail = () => {
                 <button
                   type="button"
                   onClick={() => setIsSizeChartOpen(true)}
-                  className="text-[12px] text-[#b8860b] hover:text-black flex items-center gap-1.5 transition-colors uppercase font-bold tracking-wider cursor-pointer underline underline-offset-4"
+                  className="text-[12px] text-[#800020] hover:text-[#66001a] flex items-center gap-1.5 transition-colors uppercase font-bold tracking-wider cursor-pointer underline underline-offset-4"
                 >
-                  <Sparkles size={12} className="text-[#b8860b]" />
+                  <Sparkles size={12} className="text-[#800020]" />
                   <span>FRAGRANCE & VOLUME GUIDE</span>
                 </button>
               </div>
@@ -641,19 +641,19 @@ const ProductDetail = () => {
                         }
                       }}
                       className={`px-5 py-3 flex flex-col items-center justify-center border transition-all duration-300 cursor-pointer relative min-w-[100px] ${isSelected
-                        ? 'border-black bg-black text-white shadow-xl scale-[1.02]'
+                        ? 'border-[#800020] bg-[#800020] text-[#ffffff] shadow-xl scale-[1.02]'
                         : isSpOut
                           ? 'border-red-200 bg-red-50/40 text-zinc-400 hover:border-red-400'
                           : isSpPre
-                            ? 'border-amber-300 bg-amber-50/40 text-amber-900 hover:border-[#b8860b]'
-                            : 'border-zinc-300 bg-white text-zinc-800 hover:border-black hover:bg-zinc-50'
+                            ? 'border-[#800020]/30 bg-[#800020]/5 text-[#800020] hover:border-[#800020]'
+                            : 'border-zinc-300 bg-white text-zinc-800 hover:border-[#800020] hover:bg-zinc-50'
                         }`}
                     >
                       <span className={`text-[13px] font-black uppercase tracking-wider ${isSpOut && !isSelected ? 'line-through' : ''}`}>
                         {sp.size}
                       </span>
                       {sp.price && (
-                        <span className={`text-[12px] md:text-[13px] font-semibold mt-0.5 ${isSelected ? 'text-amber-300' : 'text-zinc-500'}`}>
+                        <span className={`text-[12px] md:text-[13px] font-semibold mt-0.5 ${isSelected ? 'text-white/90' : 'text-zinc-500'}`}>
                           ₹{sp.price.toLocaleString('en-IN')}
                         </span>
                       )}
@@ -662,7 +662,7 @@ const ProductDetail = () => {
                           Out of stock
                         </span>
                       ) : isSpPre ? (
-                        <span className={`text-[12px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-amber-300' : 'text-amber-600'}`}>
+                        <span className={`text-[12px] uppercase font-bold tracking-widest mt-1 ${isSelected ? 'text-white/80' : 'text-[#800020]'}`}>
                           Pre-Order
                         </span>
                       ) : spStock <= 5 ? (
@@ -697,10 +697,10 @@ const ProductDetail = () => {
                         }
                       }}
                       className={`w-full h-13 text-[14px] font-black uppercase tracking-[0.22em] transition-all duration-300 cursor-pointer shadow-lg active:scale-[0.99] flex items-center justify-center gap-2 ${isCurrentVariantOut
-                        ? 'bg-[#0D0D0D] hover:bg-[#b8860b] text-white'
+                        ? 'bg-[#800020] hover:bg-[#66001a] text-[#ffffff]'
                         : isPreOrder
-                          ? 'bg-[#b8860b] hover:bg-black text-white'
-                          : 'bg-black hover:bg-zinc-900 text-white'
+                          ? 'bg-[#800020] hover:bg-[#66001a] text-[#ffffff]'
+                          : 'bg-[#800020] hover:bg-[#66001a] text-[#ffffff]'
                         }`}
                     >
                       {isCurrentVariantOut ? (
@@ -722,7 +722,7 @@ const ProductDetail = () => {
                     </button>
 
                     {isPreOrder && (
-                      <p className="text-[12px] font-semibold text-[#b8860b] bg-[#faf5ed] border border-[#e8ded0] p-2.5 flex items-center gap-1.5">
+                      <p className="text-[12px] font-semibold text-[#800020] bg-zinc-50 border border-zinc-200 p-2.5 flex items-center gap-1.5">
                         <Clock size={13} className="shrink-0" />
                         <span>Pre-Order: Estimated dispatch in 5–7 business days. Insured delivery.</span>
                       </p>
@@ -735,17 +735,17 @@ const ProductDetail = () => {
             {/* Trust & Guarantee Luxury Strip */}
             <div className="grid grid-cols-3 gap-2 pt-3 border-t border-zinc-200 text-center">
               <div className="flex flex-col items-center p-2.5 bg-zinc-50 border border-zinc-200/80">
-                <Sparkles size={16} className="text-[#b8860b] mb-1" />
+                <Sparkles size={16} className="text-[#800020] mb-1" />
                 <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider text-zinc-900">100% Extrait</span>
                 <span className="text-[12px] text-zinc-500 font-medium">Authentic Perfume</span>
               </div>
               <div className="flex flex-col items-center p-2.5 bg-zinc-50 border border-zinc-200/80">
-                <Truck size={16} className="text-[#b8860b] mb-1" />
+                <Truck size={16} className="text-[#800020] mb-1" />
                 <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider text-zinc-900">4-5 Days Express</span>
                 <span className="text-[12px] text-zinc-500 font-medium">Fast Delivery</span>
               </div>
               <div className="flex flex-col items-center p-2.5 bg-zinc-50 border border-zinc-200/80">
-                <ShieldCheck size={16} className="text-[#b8860b] mb-1" />
+                <ShieldCheck size={16} className="text-[#800020] mb-1" />
                 <span className="text-[12px] md:text-[14px] font-bold uppercase tracking-wider text-zinc-900">Authentic Guarantee</span>
                 <span className="text-[12px] text-zinc-500 font-medium">Original Formulation</span>
               </div>
@@ -793,7 +793,7 @@ const ProductDetail = () => {
 
                         {/* Fragrance Notes Breakdown */}
                         <div className="bg-zinc-900 text-white p-4 rounded-xl space-y-2.5 border border-zinc-800">
-                          <p className="text-[#c9a962] font-bold uppercase tracking-widest text-[12px] md:text-[13px] flex items-center gap-1.5">
+                          <p className="text-[#800020] font-bold uppercase tracking-widest text-[12px] md:text-[13px] flex items-center gap-1.5">
                             <Sparkles size={13} /> Fragrance Notes & Performance
                           </p>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[12px] md:text-[13px] pt-1">
@@ -1026,7 +1026,7 @@ const ProductDetail = () => {
                     >
                       <div className="pb-5 text-[14px] text-zinc-600 font-light leading-relaxed space-y-2">
                         <p className="flex items-start gap-2">
-                          <ShieldCheck size={14} className="text-[#b8860b] shrink-0 mt-0.5" />
+                          <ShieldCheck size={14} className="text-[#800020] shrink-0 mt-0.5" />
                           <span>100% Genuine & Handcrafted. Formulated with authentic botanical extracts and royal Cambodian ouds.</span>
                         </p>
                         <p className="flex items-start gap-2">
@@ -1114,10 +1114,10 @@ const ProductDetail = () => {
                 }
               }}
               className={`flex-1 h-12 text-[14px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${isCurrentVariantOut
-                ? 'bg-[#0D0D0D] active:bg-[#b8860b] text-white'
+                ? 'bg-[#800020] active:bg-[#66001a] text-[#ffffff]'
                 : isPreOrder
-                  ? 'bg-[#b8860b] active:bg-black text-white'
-                  : 'bg-black active:bg-zinc-800 text-white'
+                  ? 'bg-[#800020] active:bg-[#66001a] text-[#ffffff]'
+                  : 'bg-[#800020] active:bg-[#66001a] text-[#ffffff]'
                 }`}
             >
               {isCurrentVariantOut ? (

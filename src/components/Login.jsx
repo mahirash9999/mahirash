@@ -394,7 +394,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-black text-white text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
+                  className="w-full py-4 bg-[#800020] text-[#ffffff] text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-[#66001a] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -469,7 +469,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading || otp.length !== 6}
-                  className="w-full py-4 bg-black text-white text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
+                  className="w-full py-4 bg-[#800020] text-[#ffffff] text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-[#66001a] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -555,7 +555,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-black text-white text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
+                  className="w-full py-4 bg-[#800020] text-[#ffffff] text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-[#66001a] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -634,7 +634,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-black text-white text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50 mt-2"
+                  className="w-full py-4 bg-[#800020] text-[#ffffff] text-[12px] uppercase tracking-[0.3em] font-bold hover:bg-[#66001a] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-black/5 disabled:opacity-50 mt-2"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">

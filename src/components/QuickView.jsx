@@ -74,7 +74,7 @@ const QuickView = ({ product, onClose }) => {
           {/* Header */}
           <div className="flex justify-between items-center px-6 py-4 border-b border-zinc-200 bg-zinc-50">
             <h2 className="text-sm font-bold text-zinc-900 uppercase tracking-[0.2em] flex items-center gap-2">
-              <Sparkles size={14} className="text-[#c9a962]" />
+              <Sparkles size={14} className="text-[#800020]" />
               Quick Fragrance Preview
             </h2>
             <button
@@ -98,11 +98,11 @@ const QuickView = ({ product, onClose }) => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 {isPreOrder ? (
-                  <div className="absolute top-3 right-3 bg-[#b8860b] text-white px-3 py-1 text-[12px] font-bold uppercase tracking-wider shadow-sm">
+                  <div className="absolute top-3 right-3 bg-[#800020] text-white px-3 py-1 text-[12px] font-bold uppercase tracking-wider shadow-sm">
                     PRE-ORDER
                   </div>
                 ) : product.original_price && product.original_price > product.price ? (
-                  <div className="absolute top-3 right-3 bg-[#c9a962] text-black px-3 py-1 text-[12px] font-bold uppercase tracking-wider">
+                  <div className="absolute top-3 right-3 bg-[#800020] text-white px-3 py-1 text-[12px] font-bold uppercase tracking-wider">
                     SALE
                   </div>
                 ) : null}
@@ -112,7 +112,7 @@ const QuickView = ({ product, onClose }) => {
             {/* Details Section */}
             <div className="flex flex-col justify-between space-y-5">
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-[12px] uppercase tracking-[0.25em] text-[#c9a962] font-semibold">
+                <div className="flex items-center gap-2 text-[12px] uppercase tracking-[0.25em] text-[#800020] font-semibold">
                   <span className="text-zinc-600 font-bold">{product.brand || 'MAHIRASH'}</span>
                   {product.category && <span>• {product.category}</span>}
                 </div>
@@ -160,12 +160,12 @@ const QuickView = ({ product, onClose }) => {
                             type="button"
                             onClick={() => setSelectedSize(sp)}
                             className={`px-3 py-2 text-[14px] font-bold uppercase tracking-wider border transition-all cursor-pointer flex flex-col items-center ${isSelected
-                              ? 'bg-black text-white border-black'
+                              ? 'bg-[#800020] text-[#ffffff] border-[#800020]'
                               : isVPreOrder
                                 ? 'bg-amber-50 text-amber-900 border-amber-300'
                                 : isVOut
                                   ? 'bg-red-50 text-zinc-400 border-red-200'
-                                  : 'bg-white text-zinc-800 border-zinc-300 hover:border-black'
+                                  : 'bg-white text-zinc-800 border-zinc-300 hover:border-[#800020]'
                               }`}
                           >
                             <span className={isVOut && !isSelected ? 'line-through' : ''}>{sp.size}</span>
@@ -214,11 +214,11 @@ const QuickView = ({ product, onClose }) => {
                 <div className="flex gap-3">
                   <button
                     onClick={handleAction}
-                    className={`flex-1 py-3.5 px-4 text-white text-[12px] font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 cursor-pointer ${isOutOfStock
-                      ? 'bg-[#0D0D0D] hover:bg-[#b8860b]'
+                    className={`flex-1 py-3.5 px-4 text-[#ffffff] text-[12px] font-bold uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 cursor-pointer ${isOutOfStock
+                      ? 'bg-[#800020] hover:bg-[#66001a] text-[#ffffff]'
                       : isPreOrder
-                        ? 'bg-[#b8860b] hover:bg-black'
-                        : 'bg-black hover:bg-zinc-800'
+                        ? 'bg-[#800020] hover:bg-[#66001a] text-[#ffffff]'
+                        : 'bg-[#800020] hover:bg-[#66001a] text-[#ffffff]'
                       }`}
                   >
                     {isOutOfStock ? (

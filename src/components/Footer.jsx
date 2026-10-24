@@ -55,9 +55,9 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative bg-black pt-16 md:pt-24 pb-10 overflow-hidden border-t border-[#c9a962]/40 text-white font-sans">
+    <footer className="relative bg-[#800020] pt-16 md:pt-24 pb-10 overflow-hidden border-t border-[#990026]/60 text-[#ffffff] font-sans">
       {/* Luxury Ambient Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-[radial-gradient(circle_at_top,rgba(201,169,98,0.08)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="max-w-[1800px] mx-auto px-5 sm:px-8 lg:px-12 relative z-10">
 
@@ -68,9 +68,9 @@ const Footer = () => {
               <img
                 src={siteSettings?.logo_url || "/logom.webp"}
                 alt="MAHIRASH"
-                className="h-8 md:h-10 w-auto object-contain brightness-0 invert mb-1"
+                className="h-8 md:h-10 w-auto object-contain brightness-0 invert mb-5"
               />
-              <span className="text-[12px] md:text-[13px] uppercase tracking-[0.4em] text-[#c9a962] font-semibold">
+              <span className="text-[12px] md:text-[13px] uppercase tracking-[0.4em] text-[#800020] font-semibold">
                 LUXURY PERFUMES · HANDCRAFTED EXTRAITS
               </span>
             </Link>
@@ -91,7 +91,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="w-9 h-9 border border-zinc-800 bg-zinc-950 flex items-center justify-center text-zinc-400 hover:text-black hover:bg-[#c9a962] hover:border-[#c9a962] transition-all duration-300 cursor-pointer"
+                className="w-9 h-9 border border-zinc-800 bg-zinc-950 flex items-center justify-center text-zinc-400 hover:text-black hover:bg-[#800020] hover:border-[#800020] transition-all duration-300 cursor-pointer"
               >
                 <Icon size={15} strokeWidth={1.75} />
               </a>
@@ -104,7 +104,7 @@ const Footer = () => {
 
           {/* Col 1: Join The Club */}
           <div className="space-y-4">
-            <h4 className="text-[13px] font-bold uppercase tracking-[0.2em] text-[#c9a962]">
+            <h4 className="text-[13px] font-bold uppercase tracking-[0.2em] text-[#800020]">
               Join The Club
             </h4>
             <p className="text-zinc-300 text-sm font-light leading-relaxed">
@@ -112,7 +112,7 @@ const Footer = () => {
             </p>
 
             <form onSubmit={handleSubscribe} className="relative mt-2">
-              <div className="relative border-b border-zinc-700 focus-within:border-[#c9a962] transition-colors pb-1 flex items-center">
+              <div className="relative border-b border-zinc-700 focus-within:border-[#800020] transition-colors pb-1 flex items-center">
                 <input
                   type="email"
                   required
@@ -124,13 +124,13 @@ const Footer = () => {
                 <button
                   type="submit"
                   aria-label="Subscribe"
-                  className="text-zinc-400 hover:text-[#c9a962] transition-colors cursor-pointer p-1"
+                  className="text-zinc-400 hover:text-[#800020] transition-colors cursor-pointer p-1"
                 >
                   <ArrowRight size={17} />
                 </button>
               </div>
               {subscribed && (
-                <p className="text-xs text-[#c9a962] mt-2 font-medium">
+                <p className="text-xs text-[#800020] mt-2 font-medium">
                   ✓ Thank you for subscribing!
                 </p>
               )}
@@ -151,7 +151,7 @@ const Footer = () => {
 
           {/* Col 2: Menu */}
           <div>
-            <h4 className="text-[13px] font-bold uppercase tracking-[0.2em] text-[#c9a962] mb-5">
+            <h4 className="text-[13px] font-bold uppercase tracking-[0.2em] text-[#800020] mb-5">
               Menu
             </h4>
             <ul className="flex flex-col gap-3">
@@ -165,9 +165,9 @@ const Footer = () => {
                 <li key={item.label}>
                   <Link
                     to={item.path}
-                    className="text-sm text-zinc-300 hover:text-[#c9a962] transition-colors font-light tracking-wide flex items-center gap-2 group"
+                    className="text-sm text-zinc-300 hover:text-[#800020] transition-colors font-light tracking-wide flex items-center gap-2 group"
                   >
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[#c9a962]">&rarr;</span>
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[#800020]">&rarr;</span>
                     {item.label}
                   </Link>
                 </li>
@@ -177,7 +177,7 @@ const Footer = () => {
 
           {/* Col 3: Quick Links */}
           <div>
-            <h4 className="text-[13px] font-bold uppercase tracking-[0.2em] text-[#c9a962] mb-5">
+            <h4 className="text-[13px] font-bold uppercase tracking-[0.2em] text-[#800020] mb-5">
               Quick Links
             </h4>
             <ul className="flex flex-col gap-3">
@@ -192,9 +192,9 @@ const Footer = () => {
                 <li key={item.label}>
                   <Link
                     to={item.path}
-                    className="text-sm text-zinc-300 hover:text-[#c9a962] transition-colors font-light tracking-wide flex items-center gap-2 group"
+                    className="text-sm text-zinc-300 hover:text-[#800020] transition-colors font-light tracking-wide flex items-center gap-2 group"
                   >
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[#c9a962]">&rarr;</span>
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[#800020]">&rarr;</span>
                     {item.label}
                   </Link>
                 </li>
@@ -204,12 +204,12 @@ const Footer = () => {
 
           {/* Col 4: Our Store */}
           <div className="space-y-4">
-            <h4 className="text-[13px] font-bold uppercase tracking-[0.2em] text-[#c9a962] mb-5">
+            <h4 className="text-[13px] font-bold uppercase tracking-[0.2em] text-[#800020] mb-5">
               Our Store
             </h4>
             <div className="flex flex-col gap-3 text-sm text-zinc-300 font-light leading-relaxed">
               <div className="flex items-start gap-3">
-                <MapPin size={16} className="text-[#c9a962] shrink-0 mt-0.5" />
+                <MapPin size={16} className="text-[#800020] shrink-0 mt-0.5" />
                 <div>
                   <p>M-4, Kirti Nagar, New Delhi</p>
                   <p className="text-zinc-400 text-xs mt-0.5">Zip Code: 110015</p>
@@ -217,20 +217,20 @@ const Footer = () => {
               </div>
 
               <div className="flex items-center gap-3 pt-1">
-                <Phone size={16} className="text-[#c9a962] shrink-0" />
+                <Phone size={16} className="text-[#800020] shrink-0" />
                 <a
                   href={`tel:${siteSettings?.whatsapp_number || "+918959041514"}`}
-                  className="font-mono text-zinc-300 hover:text-[#c9a962] transition-colors"
+                  className="font-mono text-zinc-300 hover:text-[#800020] transition-colors"
                 >
                   Phone: {siteSettings?.whatsapp_number || "+91 8959041514"}
                 </a>
               </div>
 
               <div className="flex items-center gap-3">
-                <Mail size={16} className="text-[#c9a962] shrink-0" />
+                <Mail size={16} className="text-[#800020] shrink-0" />
                 <a
                   href={`mailto:${siteSettings?.email || "care@mahirash.com"}`}
-                  className="text-zinc-300 hover:text-[#c9a962] transition-colors"
+                  className="text-zinc-300 hover:text-[#800020] transition-colors"
                 >
                   Email: {siteSettings?.email || "care@mahirash.com"}
                 </a>
@@ -264,7 +264,7 @@ const Footer = () => {
               href="https://www.letskillify.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#c9a962] hover:underline font-semibold transition-colors"
+              className="text-[#800020] hover:underline font-semibold transition-colors"
             >
               Designed by LetSkillify
             </a>
@@ -277,7 +277,7 @@ const Footer = () => {
               document.documentElement.scrollTop = 0;
               document.body.scrollTop = 0;
             }}
-            className="w-10 h-10 border border-zinc-800 bg-zinc-950 text-zinc-400 flex items-center justify-center hover:bg-[#b8860b] hover:text-white hover:border-[#b8860b] transition-all duration-300 order-first md:order-last cursor-pointer rounded-none shadow-md"
+            className="w-10 h-10 border border-zinc-800 bg-zinc-950 text-zinc-400 flex items-center justify-center hover:bg-[#800020] hover:text-white hover:border-[#800020] transition-all duration-300 order-first md:order-last cursor-pointer rounded-none shadow-md"
             aria-label="Scroll to top"
           >
             <ChevronUp size={18} strokeWidth={2} />

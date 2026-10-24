@@ -82,18 +82,18 @@ const SiteSettingsManager = () => {
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-zinc-200 overflow-hidden font-sans">
-            <div className="p-6 border-b border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-[#E9DCCB] overflow-hidden font-sans">
+            <div className="p-6 border-b border-[#E9DCCB] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-xl font-bold uppercase tracking-wider text-black">
+                    <h2 className="text-xl font-serif font-bold uppercase tracking-wider text-[#30231F]">
                         Store Branding & Global Settings
                     </h2>
-                    <p className="text-zinc-500 text-sm mt-1">
+                    <p className="text-[#75665D] text-sm mt-1">
                         Upload your store logo, website favicon/site-icon, contact details, and Gemini Chatbot key.
                     </p>
                 </div>
                 {success && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg border border-emerald-200">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#800020]/10 text-[#800020] text-xs font-semibold rounded-lg border border-[#800020]/20">
                         <CheckCircle2 size={14} /> Saved & Synced across website!
                     </span>
                 )}
@@ -101,26 +101,26 @@ const SiteSettingsManager = () => {
 
             <form onSubmit={handleSave} className="p-6 space-y-8">
                 {/* ── SECTION 1: LOGO & SITE ICON UPLOAD ── */}
-                <div className="border border-zinc-200/90 rounded-2xl p-5 bg-zinc-50/60 space-y-6">
-                    <div className="border-b border-zinc-200 pb-3 flex items-center gap-2">
-                        <Image size={18} className="text-[#B8860B]" />
-                        <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-900">
+                <div className="border border-[#E9DCCB] rounded-2xl p-5 bg-[#FCF9F4]/70 space-y-6">
+                    <div className="border-b border-[#E9DCCB] pb-3 flex items-center gap-2">
+                        <Image size={18} className="text-[#800020]" />
+                        <h3 className="text-sm font-bold uppercase tracking-wider text-[#30231F]">
                             Website Brand Logo & Site Icon (Favicon)
                         </h3>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* 1. Website Brand Logo */}
-                        <div className="space-y-3 bg-white p-4.5 rounded-xl border border-zinc-200">
-                            <label className="text-[13px] font-bold text-zinc-800 uppercase tracking-wider block">
+                        <div className="space-y-3 bg-white p-4.5 rounded-xl border border-[#E9DCCB]">
+                            <label className="text-[13px] font-bold text-[#30231F] uppercase tracking-wider block">
                                 Main Store Logo
                             </label>
-                            <p className="text-[12px] text-zinc-500">
+                            <p className="text-[12px] text-[#75665D]">
                                 Displayed in header, footer, checkout, and emails. Recommended: PNG or WebP with transparent background.
                             </p>
 
                             {/* Live Preview Box */}
-                            <div className="h-20 bg-zinc-900 rounded-xl flex items-center justify-center p-3 relative border border-zinc-700 overflow-hidden">
+                            <div className="h-20 bg-[#30231F] rounded-xl flex items-center justify-center p-3 relative border border-[#650018]/40 overflow-hidden">
                                 <img
                                     src={settings.logo_url || "/logom.webp"}
                                     alt="Store Logo Preview"
@@ -138,12 +138,12 @@ const SiteSettingsManager = () => {
                                     value={settings.logo_url}
                                     onChange={handleChange}
                                     placeholder="Enter image URL or select from media"
-                                    className="flex-1 px-3 py-2 rounded-lg border border-zinc-300 text-xs outline-none focus:border-[#B8860B]"
+                                    className="flex-1 px-3 py-2 rounded-lg border border-[#E9DCCB] text-xs outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setPickerTarget('logo')}
-                                    className="px-3 py-2 bg-zinc-900 hover:bg-black text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"
+                                    className="px-3 py-2 bg-[#800020] hover:bg-[#650018] text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer shadow-sm"
                                 >
                                     <Upload size={13} />
                                     <span>Upload / Pick</span>
@@ -152,7 +152,7 @@ const SiteSettingsManager = () => {
                                     <button
                                         type="button"
                                         onClick={() => setSettings(p => ({ ...p, logo_url: "" }))}
-                                        className="p-2 text-zinc-400 hover:text-red-600 rounded-lg border border-zinc-200 hover:border-red-200 transition-colors"
+                                        className="p-2 text-[#75665D] hover:text-[#800020] rounded-lg border border-[#E9DCCB] hover:border-[#800020]/30 transition-colors"
                                         title="Reset to default logo"
                                     >
                                         <Trash2 size={14} />
@@ -162,16 +162,16 @@ const SiteSettingsManager = () => {
                         </div>
 
                         {/* 2. Site Icon / Favicon */}
-                        <div className="space-y-3 bg-white p-4.5 rounded-xl border border-zinc-200">
-                            <label className="text-[13px] font-bold text-zinc-800 uppercase tracking-wider block">
+                        <div className="space-y-3 bg-white p-4.5 rounded-xl border border-[#E9DCCB]">
+                            <label className="text-[13px] font-bold text-[#30231F] uppercase tracking-wider block">
                                 Website Favicon (Site Icon)
                             </label>
-                            <p className="text-[12px] text-zinc-500">
+                            <p className="text-[12px] text-[#75665D]">
                                 Shown in browser tabs, bookmarks, and mobile shortcut icons. Recommended: Square 512x512 PNG/ICO.
                             </p>
 
                             {/* Live Preview Box */}
-                            <div className="h-20 bg-zinc-100 rounded-xl flex items-center justify-center p-3 relative border border-zinc-300 overflow-hidden">
+                            <div className="h-20 bg-[#FCF9F4] rounded-xl flex items-center justify-center p-3 relative border border-[#E9DCCB] overflow-hidden">
                                 {settings.site_icon_url ? (
                                     <img
                                         src={settings.site_icon_url}
@@ -179,12 +179,12 @@ const SiteSettingsManager = () => {
                                         className="w-12 h-12 object-contain rounded-lg shadow-sm"
                                     />
                                 ) : (
-                                    <div className="flex items-center gap-2 text-zinc-400 text-xs">
+                                    <div className="flex items-center gap-2 text-[#75665D] text-xs">
                                         <Globe size={18} />
                                         <span>Default Mahirash Favicon</span>
                                     </div>
                                 )}
-                                <span className="absolute bottom-1 right-2 text-[10px] text-zinc-500 font-mono">
+                                <span className="absolute bottom-1 right-2 text-[10px] text-[#75665D] font-mono">
                                     {settings.site_icon_url ? "Custom Favicon" : "Default"}
                                 </span>
                             </div>
@@ -196,12 +196,12 @@ const SiteSettingsManager = () => {
                                     value={settings.site_icon_url}
                                     onChange={handleChange}
                                     placeholder="Enter favicon URL or select from media"
-                                    className="flex-1 px-3 py-2 rounded-lg border border-zinc-300 text-xs outline-none focus:border-[#B8860B]"
+                                    className="flex-1 px-3 py-2 rounded-lg border border-[#E9DCCB] text-xs outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setPickerTarget('icon')}
-                                    className="px-3 py-2 bg-zinc-900 hover:bg-black text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"
+                                    className="px-3 py-2 bg-[#800020] hover:bg-[#650018] text-white text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer shadow-sm"
                                 >
                                     <Upload size={13} />
                                     <span>Upload / Pick</span>
@@ -210,7 +210,7 @@ const SiteSettingsManager = () => {
                                     <button
                                         type="button"
                                         onClick={() => setSettings(p => ({ ...p, site_icon_url: "" }))}
-                                        className="p-2 text-zinc-400 hover:text-red-600 rounded-lg border border-zinc-200 hover:border-red-200 transition-colors"
+                                        className="p-2 text-[#75665D] hover:text-[#800020] rounded-lg border border-[#E9DCCB] hover:border-[#800020]/30 transition-colors"
                                         title="Reset to default favicon"
                                     >
                                         <Trash2 size={14} />
@@ -222,18 +222,18 @@ const SiteSettingsManager = () => {
                 </div>
 
                 {/* ── SECTION 2: GOOGLE GEMINI AI CHATBOT KEY ── */}
-                <div className="border border-zinc-200/90 rounded-2xl p-5 bg-zinc-50/60 space-y-4">
-                    <div className="border-b border-zinc-200 pb-3 flex items-center gap-2">
-                        <Bot size={18} className="text-[#B8860B]" />
-                        <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-900">
+                <div className="border border-[#E9DCCB] rounded-2xl p-5 bg-[#FCF9F4]/70 space-y-4">
+                    <div className="border-b border-[#E9DCCB] pb-3 flex items-center gap-2">
+                        <Bot size={18} className="text-[#800020]" />
+                        <h3 className="text-sm font-bold uppercase tracking-wider text-[#30231F]">
                             Google Gemini AI Chatbot Settings
                         </h3>
                     </div>
                     <div className="space-y-2">
-                        <label className="text-[13px] font-bold text-zinc-800 uppercase tracking-wider block">
+                        <label className="text-[13px] font-bold text-[#30231F] uppercase tracking-wider block">
                             Google Gemini API Key
                         </label>
-                        <p className="text-[12px] text-zinc-500">
+                        <p className="text-[12px] text-[#75665D]">
                             Powers the floating AI Fragrance Assistant on the bottom right of the website. Leave blank to use built-in smart assistant mode.
                         </p>
                         <input
@@ -242,26 +242,26 @@ const SiteSettingsManager = () => {
                             value={settings.gemini_api_key}
                             onChange={handleChange}
                             placeholder="AIzaSy..."
-                            className="w-full px-4 py-2.5 rounded-xl border border-zinc-300 focus:border-[#B8860B] focus:ring-1 focus:ring-[#B8860B] outline-none text-sm font-mono"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#E9DCCB] focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none text-sm font-mono"
                         />
                     </div>
                 </div>
 
                 {/* ── SECTION 3: SOCIAL MEDIA CHANNELS & HANDLES ── */}
-                <div className="border border-zinc-200/90 rounded-2xl p-5 bg-zinc-50/60 space-y-4">
-                    <div className="border-b border-zinc-200 pb-3 flex items-center justify-between">
+                <div className="border border-[#E9DCCB] rounded-2xl p-5 bg-[#FCF9F4]/70 space-y-4">
+                    <div className="border-b border-[#E9DCCB] pb-3 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <Share2 size={18} className="text-[#B8860B]" />
-                            <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-900">
+                            <Share2 size={18} className="text-[#800020]" />
+                            <h3 className="text-sm font-bold uppercase tracking-wider text-[#30231F]">
                                 Social Media Links & Handles
                             </h3>
                         </div>
-                        <span className="text-[11px] text-zinc-500 font-medium">Controls Header & Footer Social Icons</span>
+                        <span className="text-[11px] text-[#75665D] font-medium">Controls Header & Footer Social Icons</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-zinc-200">
-                            <label className="text-[12px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
+                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-[#E9DCCB]">
+                            <label className="text-[12px] font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-2">
                                 <Instagram size={14} className="text-pink-600" />
                                 Instagram Profile URL
                             </label>
@@ -271,12 +271,12 @@ const SiteSettingsManager = () => {
                                 value={settings.instagram_url}
                                 onChange={handleChange}
                                 placeholder="https://www.instagram.com/mahirashparfumerie/"
-                                className="w-full px-3 py-2 rounded-lg border border-zinc-300 focus:border-[#B8860B] outline-none text-xs"
+                                className="w-full px-3 py-2 rounded-lg border border-[#E9DCCB] focus:border-[#800020] outline-none text-xs"
                             />
                         </div>
 
-                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-zinc-200">
-                            <label className="text-[12px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
+                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-[#E9DCCB]">
+                            <label className="text-[12px] font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-2">
                                 <Facebook size={14} className="text-blue-600" />
                                 Facebook Page URL
                             </label>
@@ -286,12 +286,12 @@ const SiteSettingsManager = () => {
                                 value={settings.facebook_url}
                                 onChange={handleChange}
                                 placeholder="https://www.facebook.com/mahirashparfumerie/"
-                                className="w-full px-3 py-2 rounded-lg border border-zinc-300 focus:border-[#B8860B] outline-none text-xs"
+                                className="w-full px-3 py-2 rounded-lg border border-[#E9DCCB] focus:border-[#800020] outline-none text-xs"
                             />
                         </div>
 
-                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-zinc-200">
-                            <label className="text-[12px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
+                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-[#E9DCCB]">
+                            <label className="text-[12px] font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-2">
                                 <Twitter size={14} className="text-zinc-900" />
                                 Twitter (X) Profile URL
                             </label>
@@ -301,12 +301,12 @@ const SiteSettingsManager = () => {
                                 value={settings.twitter_url}
                                 onChange={handleChange}
                                 placeholder="https://x.com/MahirashParfum"
-                                className="w-full px-3 py-2 rounded-lg border border-zinc-300 focus:border-[#B8860B] outline-none text-xs"
+                                className="w-full px-3 py-2 rounded-lg border border-[#E9DCCB] focus:border-[#800020] outline-none text-xs"
                             />
                         </div>
 
-                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-zinc-200">
-                            <label className="text-[12px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
+                        <div className="space-y-1.5 bg-white p-3.5 rounded-xl border border-[#E9DCCB]">
+                            <label className="text-[12px] font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-2">
                                 <Youtube size={14} className="text-red-600" />
                                 YouTube Channel URL (Optional)
                             </label>
@@ -316,7 +316,7 @@ const SiteSettingsManager = () => {
                                 value={settings.youtube_url}
                                 onChange={handleChange}
                                 placeholder="https://www.youtube.com/@mahirashparfumerie"
-                                className="w-full px-3 py-2 rounded-lg border border-zinc-300 focus:border-[#B8860B] outline-none text-xs"
+                                className="w-full px-3 py-2 rounded-lg border border-[#E9DCCB] focus:border-[#800020] outline-none text-xs"
                             />
                         </div>
                     </div>
@@ -325,8 +325,8 @@ const SiteSettingsManager = () => {
                 {/* ── SECTION 4: CONTACT & PRE-ORDER TEMPLATE ── */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
-                        <label className="text-[13px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
-                            <Phone size={14} className="text-[#B8860B]" />
+                        <label className="text-[13px] font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-2">
+                            <Phone size={14} className="text-[#800020]" />
                             WhatsApp Number
                         </label>
                         <input
@@ -335,14 +335,14 @@ const SiteSettingsManager = () => {
                             value={settings.whatsapp_number}
                             onChange={handleChange}
                             placeholder="e.g. 9584826112"
-                            className="w-full px-4 py-2.5 rounded-xl border border-zinc-300 focus:border-[#B8860B] focus:ring-1 focus:ring-[#B8860B] outline-none text-sm"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#E9DCCB] focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none text-sm"
                         />
-                        <p className="text-[11px] text-zinc-400">Used for floating WhatsApp & pre-orders</p>
+                        <p className="text-[11px] text-[#75665D]">Used for floating WhatsApp & pre-orders</p>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[13px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
-                            <Phone size={14} className="text-[#B8860B]" />
+                        <label className="text-[13px] font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-2">
+                            <Phone size={14} className="text-[#800020]" />
                             Display Phone Number
                         </label>
                         <input
@@ -351,14 +351,14 @@ const SiteSettingsManager = () => {
                             value={settings.phone}
                             onChange={handleChange}
                             placeholder="e.g. +91 9584826112"
-                            className="w-full px-4 py-2.5 rounded-xl border border-zinc-300 focus:border-[#B8860B] focus:ring-1 focus:ring-[#B8860B] outline-none text-sm"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#E9DCCB] focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none text-sm"
                         />
-                        <p className="text-[11px] text-zinc-400">Shown in footer & contact pages</p>
+                        <p className="text-[11px] text-[#75665D]">Shown in footer & contact pages</p>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[13px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
-                            <Mail size={14} className="text-[#B8860B]" />
+                        <label className="text-[13px] font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-2">
+                            <Mail size={14} className="text-[#800020]" />
                             Support Email
                         </label>
                         <input
@@ -367,17 +367,17 @@ const SiteSettingsManager = () => {
                             value={settings.email}
                             onChange={handleChange}
                             placeholder="e.g. care@mahirash.com"
-                            className="w-full px-4 py-2.5 rounded-xl border border-zinc-300 focus:border-[#B8860B] focus:ring-1 focus:ring-[#B8860B] outline-none text-sm"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[#E9DCCB] focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none text-sm"
                         />
                     </div>
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-[13px] font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-2">
-                        <MessageSquare size={14} className="text-[#B8860B]" />
+                    <label className="text-[13px] font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-2">
+                        <MessageSquare size={14} className="text-[#800020]" />
                         Pre-Order WhatsApp Message Template
                     </label>
-                    <p className="text-[12px] text-zinc-500">
+                    <p className="text-[12px] text-[#75665D]">
                         Use <b>{`{productName}`}</b>, <b>{`{productSize}`}</b>, and <b>{`{productPrice}`}</b> as placeholders which will be automatically replaced with product details.
                     </p>
                     <textarea
@@ -386,16 +386,16 @@ const SiteSettingsManager = () => {
                         onChange={handleChange}
                         rows={3}
                         placeholder="Hi, I would like to pre-order {productName} ({productSize}) for ₹{productPrice}."
-                        className="w-full px-4 py-2.5 rounded-xl border border-zinc-300 focus:border-[#B8860B] focus:ring-1 focus:ring-[#B8860B] outline-none text-sm resize-none"
+                        className="w-full px-4 py-2.5 rounded-xl border border-[#E9DCCB] focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none text-sm resize-none"
                     />
                 </div>
 
-                <div className="pt-4 border-t border-zinc-200 flex items-center justify-end gap-4">
-                    {success && <span className="text-emerald-600 text-sm font-semibold">✓ Settings updated!</span>}
+                <div className="pt-4 border-t border-[#E9DCCB] flex items-center justify-end gap-4">
+                    {success && <span className="text-[#800020] text-sm font-semibold">✓ Settings updated!</span>}
                     <button
                         type="submit"
                         disabled={loading}
-                        className="px-7 py-3 bg-black hover:bg-[#B8860B] text-white font-bold uppercase tracking-widest text-[13px] rounded-xl transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 shadow-md"
+                        className="px-7 py-3 bg-[#800020] hover:bg-[#650018] text-white font-bold uppercase tracking-widest text-[13px] rounded-xl transition-all cursor-pointer flex items-center gap-2 disabled:opacity-50 shadow-md shadow-[#800020]/25"
                     >
                         {loading ? "Saving..." : <><Save size={16} /> Save All Settings</>}
                     </button>

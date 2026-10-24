@@ -3,19 +3,37 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-cream: #FAF8F5;
-  --color-brand-primary: #B8860B;
-  --color-brand-primary-light: #C5A059;
-  --color-brand-accent: #D4AF37;
-  --color-brand-accent-light: #E5D5B8;
-  --color-brand-gray: #F3EFE6;
-  --color-brand-gray-dark: #1A1A1A;
+  --color-brand-primary: #800020;
+  --color-brand-dark: #650018;
+  --color-brand-ivory: #FCF9F4;
+  --color-brand-cream: #F8F2E9;
+  --color-brand-surface: #FFFFFF;
+  --color-brand-gold: #B88D46;
+  --color-brand-text: #30231F;
+  --color-brand-muted: #75665D;
+  --color-brand-border: #E9E0D6;
+  --color-brand-border-warm: #E9DCCB;
+  --color-brand-maroon: #800020;
+  --color-brand-maroon-dark: #650018;
 
   --font-serif: "GFS Didot", Didot, serif;
   --font-sans: "Instrument Sans", sans-serif;
   --font-heading: "GFS Didot", Didot, serif;
   --font-subheading: "GFS Didot", Didot, serif;
   --font-didot: "GFS Didot", Didot, serif;
+}
+
+:root {
+  --brand-primary: #800020;
+  --brand-dark: #650018;
+  --page-background: #FCF9F4;
+  --section-background: #F8F2E9;
+  --surface-background: #FFFFFF;
+  --accent-gold: #B88D46;
+  --text-primary: #30231F;
+  --text-secondary: #75665D;
+  --border-subtle: #E9E0D6;
+  --border-warm: #E9DCCB;
 }
 
 @layer base {
@@ -25,13 +43,13 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
-    background-color: #FAF8F5;
-    color: #111111;
+    background-color: #FCF9F4;
+    color: #30231F;
     font-family: var(--font-sans);
   }
 
   body {
-    @apply bg-[#FAF8F5] text-[#111111] antialiased min-h-screen text-[14px];
+    @apply bg-[#FCF9F4] text-[#30231F] antialiased min-h-screen text-[14px];
     font-family: var(--font-sans);
     overflow-x: clip;
   }
@@ -42,7 +60,7 @@
   h4,
   h5,
   h6 {
-    @apply text-[#0D0D0D];
+    @apply text-[#30231F];
     font-family: "GFS Didot", Didot, serif !important;
   }
 
@@ -68,9 +86,20 @@
   }
 
   ::selection {
-    background-color: #B8860B;
+    background-color: #800020;
     color: #ffffff;
   }
+}
+
+/* Brand Maroon Utilities ensuring #ffffff text with #800020 bg */
+.bg-maroon {
+  background-color: #800020 !important;
+  color: #ffffff !important;
+}
+
+.hover-bg-maroon:hover {
+  background-color: #66001a !important;
+  color: #ffffff !important;
 }
 
 /* Explicit heading and subheading typography classes for Didot */
@@ -93,37 +122,37 @@
 
 /* Luxury Light Shimmer & Glow Helpers */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #996515 100%);
+  background: linear-gradient(135deg, #800020 0%, #a31238 50%, #800020 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gold-glow-sm {
-  box-shadow: 0 4px 20px rgba(184, 134, 11, 0.15);
+  box-shadow: 0 4px 20px rgba(128, 0, 32, 0.15);
 }
 
 .gold-glow-lg {
-  box-shadow: 0 10px 35px rgba(184, 134, 11, 0.25);
+  box-shadow: 0 10px 35px rgba(128, 0, 32, 0.25);
 }
 
 .light-glass-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid #E5D5B8;
-  box-shadow: 0 8px 30px -5px rgba(184, 134, 11, 0.08);
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 8px 30px -5px rgba(0, 0, 0, 0.04);
 }
 
 .light-glass-card:hover {
-  border-color: #B8860B;
-  box-shadow: 0 15px 35px -5px rgba(184, 134, 11, 0.18);
+  border-color: #800020;
+  box-shadow: 0 15px 35px -5px rgba(128, 0, 32, 0.14);
 }
 
 /* Custom Swiper Pagination */
 .swiper-pagination-bullet {
   width: 6px !important;
   height: 6px !important;
-  background: rgba(184, 134, 11, 0.3) !important;
+  background: rgba(128, 0, 32, 0.3) !important;
   opacity: 1 !important;
   transition: all 0.3s ease !important;
   border-radius: 3px !important;
@@ -132,8 +161,8 @@
 .swiper-pagination-bullet-active {
   width: 24px !important;
   opacity: 1 !important;
-  background: #B8860B !important;
-  box-shadow: 0 0 10px rgba(184, 134, 11, 0.4) !important;
+  background: #800020 !important;
+  box-shadow: 0 0 10px rgba(128, 0, 32, 0.4) !important;
   border-radius: 3px !important;
 }
 
@@ -142,15 +171,15 @@
   width: 6px !important;
   height: 6px !important;
   border-radius: 3px !important;
-  background: rgba(184, 134, 11, 0.3) !important;
+  background: rgba(128, 0, 32, 0.3) !important;
   opacity: 1 !important;
 }
 
 .testimonial-dots .swiper-pagination-bullet-active {
   width: 24px !important;
   opacity: 1 !important;
-  background: #B8860B !important;
-  box-shadow: 0 0 10px rgba(184, 134, 11, 0.4) !important;
+  background: #800020 !important;
+  box-shadow: 0 0 10px rgba(128, 0, 32, 0.4) !important;
 }
 
 /* Line clamp utility */
@@ -236,7 +265,7 @@ body *[class*="text-[13px]"] {
 }
 
 .mini-loader-arc {
-  stroke: #c9a962;
+  stroke: #800020;
 }
 
 .mini-loader-dot {
@@ -244,7 +273,7 @@ body *[class*="text-[13px]"] {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #c9a962;
+  background: #800020;
 }
 
 .mini-loader-label {

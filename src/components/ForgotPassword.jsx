@@ -252,11 +252,11 @@ const ForgotPassword = () => {
                     </div>
 
                     <div className="relative z-10 my-auto">
-                        <span className="text-[12px] uppercase tracking-[0.25em] text-[#b8860b]">Security Portal</span>
+                        <span className="text-[12px] uppercase tracking-[0.25em] text-[#800020]">Security Portal</span>
                         <h1 className="text-3xl md:text-4xl font-light text-zinc-900 tracking-[0.16em] uppercase leading-[1.25] mt-3 mb-5">
                             Reset<br />Password
                         </h1>
-                        <div className="w-8 h-[1px] bg-[#b8860b]/50" />
+                        <div className="w-8 h-[1px] bg-[#800020]/50" />
                         <p className="text-[14px] text-zinc-600 leading-relaxed mt-5 max-w-xs">
                             Verify your security credentials, generate OTP verification codes, and rebuild your password.
                         </p>
@@ -279,7 +279,7 @@ const ForgotPassword = () => {
                             <h2 className="text-xl font-light text-zinc-900 tracking-[0.2em] uppercase">
                                 {step === 1 ? "Password Recovery" : step === 2 ? "Verification Code" : "Set New Password"}
                             </h2>
-                            <p className="text-[12px] text-[#b8860b] tracking-wider font-medium mt-1 uppercase">
+                            <p className="text-[12px] text-[#800020] tracking-wider font-medium mt-1 uppercase">
                                 {step === 1 ? "ENTER EMAIL TO CONTINUE" : step === 2 ? `OTP HAS BEEN SENT TO ${email.toUpperCase()}` : "CREATE A STRONG PASSCODE"}
                             </p>
                         </div>

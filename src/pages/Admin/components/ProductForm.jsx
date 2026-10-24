@@ -561,13 +561,13 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         </div>
 
         {/* Featured Showcase Badges (Bestseller, New Arrivals) */}
-        <div className="space-y-2 md:col-span-2 lg:col-span-6 bg-gradient-to-r from-amber-50/80 via-stone-50 to-amber-50/40 border border-[#E5D5B8] p-4 rounded-xl mt-1 shadow-sm">
+        <div className="space-y-2 md:col-span-2 lg:col-span-6 bg-[#FCF9F4] border border-[#E9DCCB] p-4 rounded-xl mt-1 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-            <label className="text-[13px] font-bold text-zinc-900 uppercase tracking-wide flex items-center gap-2">
-              <Sparkles size={15} className="text-[#b8860b]" />
+            <label className="text-[13px] font-bold text-[#30231F] uppercase tracking-wide flex items-center gap-2">
+              <Sparkles size={15} className="text-[#800020]" />
               Home Page Showcases & Badges
             </label>
-            <span className="text-[12px] text-[#b8860b] font-semibold">
+            <span className="text-[12px] text-[#800020] font-semibold">
               Select which home page sections this product will display in
             </span>
           </div>
@@ -575,21 +575,21 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
             {/* Bestseller Checkbox */}
             <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${isBestseller
-              ? 'bg-red-50/90 border-red-300 shadow-sm ring-1 ring-red-400/30'
-              : 'bg-white border-zinc-200 hover:border-zinc-300'
+              ? 'bg-[#800020]/10 border-[#800020] shadow-sm ring-1 ring-[#800020]/30'
+              : 'bg-white border-[#E9DCCB] hover:border-[#800020]/40'
               }`}>
               <input
                 type="checkbox"
                 checked={isBestseller}
                 onChange={e => setIsBestseller(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded text-red-600 focus:ring-red-500 accent-red-600 cursor-pointer"
+                className="mt-0.5 w-4 h-4 rounded text-[#800020] focus:ring-[#800020] accent-[#800020] cursor-pointer"
               />
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-zinc-900 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="text-xs font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-1.5">
                   Bestseller
-                  <span className="text-[12px] bg-red-600 text-white px-1.5 py-0.5 rounded font-black tracking-normal">HOT</span>
+                  <span className="text-[11px] bg-[#800020] text-white px-1.5 py-0.5 rounded font-black tracking-normal">HOT</span>
                 </span>
-                <span className="text-[12px] text-zinc-500 mt-0.5">
+                <span className="text-[12px] text-[#75665D] mt-0.5">
                   Display in home "Bestseller" section
                 </span>
               </div>
@@ -597,21 +597,21 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
 
             {/* New Arrivals Checkbox */}
             <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${isNewArrival
-              ? 'bg-amber-50/90 border-[#b8860b] shadow-sm ring-1 ring-[#b8860b]/30'
-              : 'bg-white border-zinc-200 hover:border-zinc-300'
+              ? 'bg-[#800020]/10 border-[#800020] shadow-sm ring-1 ring-[#800020]/30'
+              : 'bg-white border-[#E9DCCB] hover:border-[#800020]/40'
               }`}>
               <input
                 type="checkbox"
                 checked={isNewArrival}
                 onChange={e => setIsNewArrival(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded text-[#b8860b] focus:ring-[#b8860b] accent-[#b8860b] cursor-pointer"
+                className="mt-0.5 w-4 h-4 rounded text-[#800020] focus:ring-[#800020] accent-[#800020] cursor-pointer"
               />
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-zinc-900 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="text-xs font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-1.5">
                   New Arrival
-                  <span className="text-[12px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">NEW</span>
+                  <span className="text-[11px] bg-[#800020] text-white px-1.5 py-0.5 rounded font-black tracking-normal">NEW</span>
                 </span>
-                <span className="text-[12px] text-zinc-500 mt-0.5">
+                <span className="text-[12px] text-[#75665D] mt-0.5">
                   Display in "Recent Arrivals" showcase
                 </span>
               </div>
@@ -619,21 +619,21 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
 
             {/* Shop Miniatures Checkbox */}
             <label className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${isMiniature
-              ? 'bg-amber-50/90 border-[#b8860b] shadow-sm ring-1 ring-[#b8860b]/30'
-              : 'bg-white border-zinc-200 hover:border-zinc-300'
+              ? 'bg-[#800020]/10 border-[#800020] shadow-sm ring-1 ring-[#800020]/30'
+              : 'bg-white border-[#E9DCCB] hover:border-[#800020]/40'
               }`}>
               <input
                 type="checkbox"
                 checked={isMiniature}
                 onChange={e => setIsMiniature(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded text-[#b8860b] focus:ring-[#b8860b] accent-[#b8860b] cursor-pointer"
+                className="mt-0.5 w-4 h-4 rounded text-[#800020] focus:ring-[#800020] accent-[#800020] cursor-pointer"
               />
               <div className="flex flex-col">
-                <span className="text-xs font-bold text-zinc-900 uppercase tracking-wider flex items-center gap-1.5">
+                <span className="text-xs font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-1.5">
                   Shop Miniatures
-                  <span className="text-[12px] bg-[#b8860b] text-white px-1.5 py-0.5 rounded font-black tracking-normal">MINI</span>
+                  <span className="text-[11px] bg-[#B88D46] text-white px-1.5 py-0.5 rounded font-black tracking-normal">MINI</span>
                 </span>
-                <span className="text-[12px] text-zinc-500 mt-0.5">
+                <span className="text-[12px] text-[#75665D] mt-0.5">
                   Display in "SHOP MINIATURES" section
                 </span>
               </div>
@@ -1031,11 +1031,11 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         <button
           type="submit"
           disabled={loading}
-          className="px-8 py-3 rounded-xl bg-black text-white text-sm font-bold shadow-md hover:bg-zinc-800 transition-all disabled:opacity-60 disabled:translate-y-0 cursor-pointer"
+          className="px-8 py-3 rounded-xl bg-[#800020] text-white text-sm font-bold shadow-md shadow-[#800020]/25 hover:bg-[#650018] transition-all disabled:opacity-60 disabled:translate-y-0 cursor-pointer"
         >
           {loading ? (
             <span className="flex items-center gap-2">
-              <svg className="animate-spin h-4 w-4 text-[#71717b]" viewBox="0 0 24 24">
+              <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>

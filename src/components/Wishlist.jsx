@@ -109,7 +109,7 @@ const Wishlist = () => {
             </div>
             <h3 className="text-xl font-light text-zinc-900 tracking-widest uppercase mb-2">Your wishlist is empty</h3>
             <p className="text-[13px] text-zinc-500 leading-relaxed mb-6">Save items you love and come back to them anytime.</p>
-            <Link to="/shop" className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-black text-white font-semibold text-[12px] uppercase tracking-[0.2em] hover:bg-zinc-800 transition-all">
+            <Link to="/shop" className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-[#800020] text-[#ffffff] font-semibold text-[12px] uppercase tracking-[0.2em] hover:bg-[#66001a] transition-all shadow-md">
               Explore Collection <ArrowRight size={13} />
             </Link>
           </motion.div>
@@ -156,7 +156,7 @@ const Wishlist = () => {
                             )}
                             {isPreOrder && !isOutOfStock && (
                               <div className="absolute top-3 left-3 z-20">
-                                <span className="bg-[#b8860b] text-white font-black uppercase text-[12px] tracking-[0.2em] px-2.5 py-1 shadow-sm">
+                                <span className="bg-[#800020] text-white font-black uppercase text-[12px] tracking-[0.2em] px-2.5 py-1 shadow-sm">
                                   PRE-ORDER
                                 </span>
                               </div>
@@ -164,12 +164,12 @@ const Wishlist = () => {
                           </div>
 
                           <div className="pt-3 flex-grow flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[12px] uppercase tracking-[0.2em] text-[#b8860b] mb-1">
+                            <div className="flex items-center gap-1.5 text-[12px] uppercase tracking-[0.2em] text-[#800020] mb-1">
                               <span className="font-semibold text-zinc-600">{item.brand || 'MAHIRASH'}</span>
                               {item.category && <span>• {item.category}</span>}
                             </div>
                             <h3 onClick={() => navigate(`/product/${item.id}`)}
-                              className="text-[13px] sm:text-sm font-semibold text-zinc-900 leading-snug mb-2 group-hover:text-[#b8860b] transition-colors cursor-pointer line-clamp-2"
+                              className="text-[13px] sm:text-sm font-semibold text-zinc-900 leading-snug mb-2 group-hover:text-[#800020] transition-colors cursor-pointer line-clamp-2"
                             >{item.name}</h3>
                             <div className="flex items-center justify-between mt-auto pt-2 border-t border-zinc-200 gap-2">
                               <span className="text-sm font-bold text-zinc-900">₹{Number(item.price).toLocaleString("en-IN")}</span>
@@ -177,7 +177,7 @@ const Wishlist = () => {
                                 <button
                                   type="button"
                                   onClick={() => triggerToast("We will notify you when back in stock!")}
-                                  className="h-8 px-2.5 bg-[#0D0D0D] hover:bg-[#b8860b] text-white text-[12px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                                  className="h-8 px-2.5 bg-[#0D0D0D] hover:bg-[#800020] text-white text-[12px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                                   title="Notify me when available"
                                 >
                                   <Bell size={12} />
@@ -187,7 +187,7 @@ const Wishlist = () => {
                                 <button
                                   type="button"
                                   onClick={() => navigate(`/product/${item.id}`)}
-                                  className="h-8 px-2.5 bg-[#b8860b] hover:bg-black text-white text-[12px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                                  className="h-8 px-2.5 bg-[#800020] hover:bg-[#66001a] text-white text-[12px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                                   title="Pre-order this item"
                                 >
                                   <Clock size={12} />
@@ -197,7 +197,7 @@ const Wishlist = () => {
                                 <button
                                   type="button"
                                   onClick={() => handleMoveToCart(item)}
-                                  className="w-8 h-8 flex items-center justify-center bg-black text-white hover:bg-zinc-800 transition-all shadow-xs cursor-pointer"
+                                  className="w-8 h-8 flex items-center justify-center bg-[#800020] text-[#ffffff] hover:bg-[#66001a] transition-all shadow-xs cursor-pointer"
                                   title="Move to bag"
                                 >
                                   <ShoppingBag size={14} strokeWidth={2} />

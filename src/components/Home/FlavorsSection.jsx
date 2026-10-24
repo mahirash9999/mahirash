@@ -51,10 +51,10 @@ const OlfactoryCard = ({ family }) => {
     <motion.div
       whileHover={{ y: -5, scale: 1.02 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="bg-[#0f0f0f] p-5 flex flex-col justify-between h-full relative border border-zinc-800 shadow-xl hover:border-[#b8860b]/60 transition-all duration-300 group"
+      className="bg-[#0f0f0f] p-5 flex flex-col justify-between h-full relative border border-zinc-800 shadow-xl hover:border-[#800020]/60 transition-all duration-300 group"
     >
-      <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[#b8860b]/40"></div>
-      <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[#b8860b]/40"></div>
+      <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-[#800020]/40"></div>
+      <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-[#800020]/40"></div>
 
       <div>
         <div className="w-full aspect-[4/3] relative overflow-hidden bg-black border border-zinc-800">
@@ -71,7 +71,7 @@ const OlfactoryCard = ({ family }) => {
           <h3 className="text-lg font-serif tracking-wider uppercase text-white mb-1.5">
             {family.name}
           </h3>
-          <p className="text-[12px] uppercase tracking-[0.2em] text-[#b8860b] mb-4 font-subheading">
+          <p className="text-[12px] uppercase tracking-[0.2em] text-[#800020] mb-4 font-subheading">
             {family.subtitle}
           </p>
 
@@ -82,7 +82,7 @@ const OlfactoryCard = ({ family }) => {
       </div>
 
       <div className="w-full pt-6 mt-4 flex justify-center">
-        <Link to="/shop" className="relative px-6 py-2.5 bg-white text-black hover:bg-[#b8860b] hover:text-white transition-all duration-300 text-[12px] font-black uppercase tracking-[0.2em]">
+        <Link to="/shop" className="relative px-6 py-2.5 bg-white text-black hover:bg-[#800020] hover:text-white transition-all duration-300 text-[12px] font-black uppercase tracking-[0.2em]">
           Explore Notes
         </Link>
       </div>
@@ -101,15 +101,15 @@ const FlavorsSection = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             className="flex items-center gap-4 mb-3"
           >
-            <div className="h-[1px] w-12 bg-[#b8860b]/40" />
-            <span className="text-[#b8860b] uppercase text-[12px] md:text-[13px] font-semibold tracking-[0.3em]">
+            <div className="h-[1px] w-12 bg-[#800020]/40" />
+            <span className="text-[#800020] uppercase text-[12px] md:text-[13px] font-semibold tracking-[0.2em]">
               SIGNATURE FRAGRANCE FAMILIES
             </span>
-            <div className="h-[1px] w-12 bg-[#b8860b]/40" />
+            <div className="h-[1px] w-12 bg-[#800020]/40" />
           </motion.div>
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extralight text-white tracking-[0.15em] uppercase max-w-3xl leading-[1.1] mb-4 font-serif">
-            Artisanal <span className="text-[#b8860b] italic font-serif">Fragrance Families</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extralight text-white tracking-[0.06em] uppercase max-w-3xl leading-[1.1] mb-4 font-serif">
+            Artisanal <span className="text-[#800020] font-serif">Fragrance Families</span>
           </h2>
           <p className="text-zinc-400 text-[14px] md:text-sm max-w-xl font-normal tracking-wide">
             Each Mahirash creation is built around masterfully harmonized top, heart, and base accords.
@@ -157,11 +157,11 @@ const FlavorsSection = () => {
           width: 8px;
           height: 8px;
           transition: all 0.4s ease;
-          border: 1px solid #b8860b;
+          border: 1px solid #800020;
         }
         .premium-flavor-swiper .swiper-pagination-bullet-active {
           opacity: 1;
-          background: #b8860b !important;
+          background: #800020 !important;
           width: 24px;
           border-radius: 4px;
         }

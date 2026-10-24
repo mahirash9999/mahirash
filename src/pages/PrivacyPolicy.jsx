@@ -19,7 +19,7 @@ const PrivacyPolicy = () => {
       <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-20 space-y-12">
         {/* Intro */}
         <section className="space-y-4">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             1. Commitment To Privacy
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
@@ -29,7 +29,7 @@ const PrivacyPolicy = () => {
 
         {/* Information Collected */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             2. Information We Collect
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
@@ -44,7 +44,7 @@ const PrivacyPolicy = () => {
 
         {/* How We Use Your Data */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             3. How We Use Your Information
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
@@ -60,7 +60,7 @@ const PrivacyPolicy = () => {
 
         {/* Data Protection & Sharing */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             4. Data Security & Third-Party Sharing
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
@@ -70,7 +70,7 @@ const PrivacyPolicy = () => {
 
         {/* Your Rights */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             5. Your Rights & Contact Information
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">

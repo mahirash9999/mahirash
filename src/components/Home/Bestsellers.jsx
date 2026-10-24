@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, X, ArrowRight } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { X, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { db } from '../../components/Firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { useStore } from '../../components/StoreProvider';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Mousewheel } from 'swiper/modules';
-import OptimizedCloudinaryImage from '../OptimizedCloudinaryImage';
-
-import 'swiper/css';
+import { collection, getDocs } from 'firebase/firestore';
+import SectionHeader from './SectionHeader';
 import ProductCard from '../ProductCard';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 
 const BestsellerProducts = () => {
   const [products, setProducts] = useState([]);
@@ -38,7 +35,17 @@ const BestsellerProducts = () => {
           p.is_bestseller === true ||
           (Array.isArray(p.tags) && p.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toLowerCase().includes('bestseller')))
         );
-        setProducts(bestsellers.length > 0 ? bestsellers : activeList);
+
+        // Ensure we always have at least 4 items so all 4 columns are filled without awkward blank gaps
+        let combined = [...bestsellers];
+        for (const item of activeList) {
+          if (!combined.some(p => p.id === item.id)) {
+            combined.push(item);
+          }
+          if (combined.length >= 8) break;
+        }
+
+        setProducts(combined.length > 0 ? combined : activeList);
       } catch (err) {
         console.error("Error loading bestseller products:", err);
       } finally {
@@ -48,82 +55,35 @@ const BestsellerProducts = () => {
     fetchProducts();
   }, []);
 
-  if (loading) {
-    return (
-      <section className="py-12 md:py-16 bg-[#FAF8F5] border-t border-[#E5D5B8]/60">
-        <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <div className="h-3 w-28 bg-zinc-200 animate-pulse mb-3 rounded-md" />
-              <div className="h-8 w-60 bg-zinc-200 animate-pulse rounded-md" />
-            </div>
-            <div className="hidden sm:flex gap-2">
-              <div className="w-10 h-10 rounded-full bg-zinc-200 animate-pulse" />
-              <div className="w-10 h-10 rounded-full bg-zinc-200 animate-pulse" />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-white border border-[#E5D5B8] p-3 space-y-3 rounded-2xl">
-                <div className="w-full aspect-[3/4] bg-zinc-100 animate-pulse rounded-xl" />
-                <div className="h-4 bg-zinc-200 animate-pulse w-3/4 rounded" />
-                <div className="h-4 bg-zinc-200 animate-pulse w-1/2 rounded" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
+  if (loading || products.length === 0) {
+    return null;
   }
 
   return (
-    <section className="py-14 md:py-20 bg-[#FAF8F5] overflow-hidden border-t border-[#E5D5B8]/60 relative">
-      <div className="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section className="py-10 sm:py-14 bg-[#FCF9F4] relative">
+      <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Centered Section Header without eyebrow */}
-        <div className="mb-8 md:mb-12 flex flex-col items-center justify-center text-center">
-          <div className="flex items-center justify-between w-full max-w-[1450px]">
-            <div className="w-12 hidden md:block" />
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-light tracking-[0.15em] text-[#0D0D0D] uppercase text-center flex-1">
-              BEST <span className="text-[#B8860B] italic font-serif">SELLERS</span>
-            </h2>
-            <div className="hidden md:flex items-center gap-2">
-              <button
-                onClick={() => swiperRef.current?.slidePrev()}
-                aria-label="Previous slide"
-                className="w-9 h-9 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-zinc-700 hover:text-white hover:bg-[#B8860B] hover:border-[#B8860B] transition-all duration-300 cursor-pointer shadow-xs"
-              >
-                &larr;
-              </button>
-              <button
-                onClick={() => swiperRef.current?.slideNext()}
-                aria-label="Next slide"
-                className="w-9 h-9 rounded-full border border-[#E5D5B8] bg-white flex items-center justify-center text-zinc-700 hover:text-white hover:bg-[#B8860B] hover:border-[#B8860B] transition-all duration-300 cursor-pointer shadow-xs"
-              >
-                &rarr;
-              </button>
-            </div>
-          </div>
-        </div>
+        {/* Section Heading with Decorative Gold Lines & Arrows */}
+        <SectionHeader
+          title="BEST"
+          accent="SELLERS"
+          onPrev={() => swiperRef.current?.slidePrev()}
+          onNext={() => swiperRef.current?.slideNext()}
+          showArrows={products.length > 4}
+        />
 
-        {/* Desktop View: Horizontal Swiper Carousel (Same size as requested) */}
-        <div className="hidden md:block w-full max-w-[1450px] mx-auto">
+        {/* Swiper Carousel: Guaranteed 4 columns on desktop, 3 on tablet, 2 on mobile */}
+        <div className="mt-3">
           <Swiper
             onSwiper={(swiper) => { swiperRef.current = swiper; }}
-            spaceBetween={20}
-            slidesPerView={3}
+            spaceBetween={18}
+            slidesPerView={2}
             breakpoints={{
-              1024: {
-                slidesPerView: 3.5,
-                spaceBetween: 20,
-              },
-              1280: {
-                slidesPerView: 4,
-                spaceBetween: 22,
-              },
+              640: { slidesPerView: 2, spaceBetween: 16 },
+              768: { slidesPerView: 3, spaceBetween: 18 },
+              1024: { slidesPerView: 4, spaceBetween: 20 }
             }}
-            modules={[Mousewheel]}
-            className="w-full overflow-visible"
+            className="w-full !overflow-visible"
           >
             {products.map((product, idx) => (
               <SwiperSlide key={product.id}>
@@ -133,37 +93,31 @@ const BestsellerProducts = () => {
           </Swiper>
         </div>
 
-        {/* Mobile View: Clean 2-column grid layout (from Shop Miniatures design) */}
-        <div className="md:hidden grid grid-cols-2 gap-3 sm:gap-4 max-w-[1450px] mx-auto">
-          {products.slice(0, 6).map((product, idx) => (
-            <ProductCard key={product.id} product={product} idx={idx} triggerToast={triggerToast} />
-          ))}
-        </div>
-
-        {/* Centered Outlined CTA */}
-        <div className="md:mt-14 mt-8 flex justify-center">
+        {/* Centered Pill CTA: VIEW ALL BEST SELLERS → */}
+        <div className="mt-8 sm:mt-10 flex justify-center">
           <Link
             to="/shop"
-            className="group flex items-center justify-center gap-3 px-8 py-3.5 border border-[#0D0D0D] bg-[#0D0D0D] text-white text-[12px] font-bold uppercase tracking-[0.25em] transition-all duration-300 hover:bg-[#B8860B] hover:border-[#B8860B] rounded-full shadow-md"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-[#800020] hover:bg-[#650018] text-white text-[11.5px] font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer active:scale-95 group"
           >
-            <span>View All Bestsellers</span>
-            <span className="transform group-hover:translate-x-1.5 transition-transform duration-300">&rarr;</span>
+            <span>VIEW ALL BEST SELLERS</span>
+            <span className="transform group-hover:translate-x-1 transition-transform">→</span>
           </Link>
         </div>
+
       </div>
 
       {/* Toast Notification */}
       <AnimatePresence>
         {feedbackMessage && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-[200] bg-[#0D0D0D] border border-[#B8860B] text-white px-7 py-3.5 rounded-full shadow-2xl flex items-center gap-3 gold-glow-sm"
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] bg-[#30231F] text-white px-5 py-2.5 rounded-full shadow-xl flex items-center gap-2.5"
           >
-            <p className="text-[12px] font-bold uppercase tracking-[0.2em] whitespace-nowrap text-[#D4AF37]">{feedbackMessage}</p>
-            <button onClick={() => setFeedbackMessage(null)} className="opacity-60 hover:opacity-100 ml-1 text-white">
-              <X size={14} />
+            <p className="text-[11.5px] font-medium tracking-wide whitespace-nowrap">{feedbackMessage}</p>
+            <button onClick={() => setFeedbackMessage(null)} className="opacity-70 hover:opacity-100 ml-1 text-white">
+              <X size={13} />
             </button>
           </motion.div>
         )}

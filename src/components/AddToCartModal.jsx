@@ -109,7 +109,7 @@ const AddToCartModal = () => {
                                 <Link
                                     to="/cart"
                                     onClick={dismissAddedItem}
-                                    className="w-full py-3.5 bg-zinc-900 hover:bg-black text-white text-sm font-bold uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-colors active:scale-[0.98]"
+                                    className="w-full py-3.5 bg-[#800020] hover:bg-[#66001a] text-[#ffffff] text-sm font-bold uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 transition-colors active:scale-[0.98] shadow-md"
                                 >
                                     <ShoppingBag size={15} />
                                     Go to Cart

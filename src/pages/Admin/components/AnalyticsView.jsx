@@ -122,21 +122,21 @@ const AnalyticsView = () => {
   ];
 
   return (
-    <div className="space-y-6 text-zinc-900 font-['Inter',sans-serif]">
+    <div className="space-y-6 text-[#30231F] font-['Inter',sans-serif]">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-[#E9DCCB] shadow-sm">
         <div>
-          <h2 className="text-xl   font-poppins text-zinc-900 uppercase tracking-wider flex items-center gap-2">
-            <BarChart3 className="text-[#b8860b]" size={22} /> Live Store Analytics & Performance
+          <h2 className="text-xl font-serif font-bold text-[#30231F] uppercase tracking-wider flex items-center gap-2">
+            <BarChart3 className="text-[#800020]" size={22} /> Live Store Analytics & Performance
           </h2>
-          <p className="text-[14px] text-zinc-500 mt-1">Real-time revenue, conversion ratios, and transaction channel diagnostics from Firestore.</p>
+          <p className="text-[14px] text-[#75665D] mt-1">Real-time revenue, conversion ratios, and transaction channel diagnostics from Firestore.</p>
         </div>
         <div className="flex items-center gap-2">
-          <Filter size={14} className="text-zinc-400" />
+          <Filter size={14} className="text-[#75665D]" />
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="px-3.5 py-2 bg-zinc-50 border border-zinc-300 rounded-xl text-[14px] font-semibold text-zinc-900 outline-none focus:border-black transition-all cursor-pointer"
+            className="px-3.5 py-2 bg-[#FCF9F4] border border-[#E9DCCB] rounded-xl text-[14px] font-semibold text-[#30231F] outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 transition-all cursor-pointer"
           >
             <option value="7d">Last 7 Days</option>
             <option value="30d">Last 30 Days</option>
@@ -147,51 +147,51 @@ const AnalyticsView = () => {
       </div>
 
       {loading ? (
-        <div className="py-12 text-center text-[14px] text-zinc-500 font-medium">Loading live store metrics...</div>
+        <div className="py-12 text-center text-[14px] text-[#75665D] font-medium">Loading live store metrics...</div>
       ) : (
         <>
           {/* Key Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm space-y-2">
+            <div className="bg-white p-5 rounded-2xl border border-[#E9DCCB] shadow-sm space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[12px]   text-zinc-400 uppercase tracking-widest">Total Gross Revenue</span>
-                <div className="p-2 bg-emerald-50 text-emerald-600 rounded-xl"><DollarSign size={16} /></div>
+                <span className="text-[11px] font-bold text-[#75665D] uppercase tracking-widest">Total Gross Revenue</span>
+                <div className="p-2 bg-[#800020]/10 text-[#800020] border border-[#800020]/20 rounded-xl"><DollarSign size={16} /></div>
               </div>
-              <h3 className="text-2xl   text-zinc-900">₹{Math.round(totalGrossRevenue).toLocaleString('en-IN')}</h3>
-              <div className={`flex items-center gap-1.5 text-[14px] ${revChange >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+              <h3 className="text-2xl font-serif text-[#30231F]">₹{Math.round(totalGrossRevenue).toLocaleString('en-IN')}</h3>
+              <div className={`flex items-center gap-1.5 text-[13px] ${revChange >= 0 ? "text-[#800020] font-medium" : "text-red-500"}`}>
                 {revChange >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />} <span>{revChange >= 0 ? "+" : ""}{revChange}% vs last period</span>
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm space-y-2">
+            <div className="bg-white p-5 rounded-2xl border border-[#E9DCCB] shadow-sm space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[12px]   text-zinc-400 uppercase tracking-widest">Completed Orders</span>
-                <div className="p-2 bg-blue-50 text-blue-600 rounded-xl"><ShoppingBag size={16} /></div>
+                <span className="text-[11px] font-bold text-[#75665D] uppercase tracking-widest">Completed Orders</span>
+                <div className="p-2 bg-[#800020]/10 text-[#800020] border border-[#800020]/20 rounded-xl"><ShoppingBag size={16} /></div>
               </div>
-              <h3 className="text-2xl   text-zinc-900">{completedOrdersCount}</h3>
-              <div className={`flex items-center gap-1.5 text-[14px] ${ordersChange >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+              <h3 className="text-2xl font-serif text-[#30231F]">{completedOrdersCount}</h3>
+              <div className={`flex items-center gap-1.5 text-[13px] ${ordersChange >= 0 ? "text-[#800020] font-medium" : "text-red-500"}`}>
                 {ordersChange >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />} <span>{ordersChange >= 0 ? "+" : ""}{ordersChange}% vs last period</span>
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm space-y-2">
+            <div className="bg-white p-5 rounded-2xl border border-[#E9DCCB] shadow-sm space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[12px]   text-zinc-400 uppercase tracking-widest">Average Order Value</span>
-                <div className="p-2 bg-amber-50 text-[#b8860b] rounded-xl"><TrendingUp size={16} /></div>
+                <span className="text-[11px] font-bold text-[#75665D] uppercase tracking-widest">Average Order Value</span>
+                <div className="p-2 bg-[#800020]/10 text-[#800020] border border-[#800020]/20 rounded-xl"><TrendingUp size={16} /></div>
               </div>
-              <h3 className="text-2xl   text-zinc-900">₹{aov.toLocaleString('en-IN')}</h3>
-              <div className={`flex items-center gap-1.5 text-[14px] ${aovChange >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+              <h3 className="text-2xl font-serif text-[#30231F]">₹{aov.toLocaleString('en-IN')}</h3>
+              <div className={`flex items-center gap-1.5 text-[13px] ${aovChange >= 0 ? "text-[#800020] font-medium" : "text-red-500"}`}>
                 {aovChange >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />} <span>{aovChange >= 0 ? "+" : ""}{aovChange}% vs last period</span>
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm space-y-2">
+            <div className="bg-white p-5 rounded-2xl border border-[#E9DCCB] shadow-sm space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[12px]   text-zinc-400 uppercase tracking-widest">Store Conversion Rate</span>
-                <div className="p-2 bg-purple-50 text-purple-600 rounded-xl"><Users size={16} /></div>
+                <span className="text-[11px] font-bold text-[#75665D] uppercase tracking-widest">Store Conversion Rate</span>
+                <div className="p-2 bg-[#800020]/10 text-[#800020] border border-[#800020]/20 rounded-xl"><Users size={16} /></div>
               </div>
-              <h3 className="text-2xl   text-zinc-900">{conversionRate}%</h3>
-              <div className={`flex items-center gap-1.5 text-[14px] ${convChange >= 0 ? "text-emerald-600" : "text-red-500"}`}>
+              <h3 className="text-2xl font-serif text-[#30231F]">{conversionRate}%</h3>
+              <div className={`flex items-center gap-1.5 text-[13px] ${convChange >= 0 ? "text-[#800020] font-medium" : "text-red-500"}`}>
                 {convChange >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />} <span>{convChange >= 0 ? "+" : ""}{convChange}% vs last period</span>
               </div>
             </div>

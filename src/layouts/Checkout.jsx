@@ -128,11 +128,11 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
         {/* Guest Order Account Link Prompt */}
         {finalDetails.isGuest && (
           <div className="mb-8 p-4 bg-zinc-50 border border-zinc-200/90 rounded-xl relative overflow-hidden text-left">
-            <div className="absolute top-0 bottom-0 left-0 w-1 bg-[#c9a962]" />
+            <div className="absolute top-0 bottom-0 left-0 w-1 bg-[#800020]" />
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="space-y-1">
                 <h4 className="text-[12px] font-bold uppercase tracking-wider text-zinc-900 flex items-center gap-1.5">
-                  <ShieldCheck size={15} className="text-[#c9a962]" />
+                  <ShieldCheck size={15} className="text-[#800020]" />
                   Track Your Fragrance Journey
                 </h4>
                 <p className="text-[12px] text-zinc-500 font-light leading-relaxed max-w-md">
@@ -1317,7 +1317,7 @@ const Checkout = () => {
                           type="button"
                           onClick={() => setFormData(p => ({ ...p, type: t }))}
                           className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${formData.type === t
-                            ? "bg-zinc-900 text-white border-zinc-900 shadow-xs"
+                            ? "bg-[#800020] text-[#ffffff] border-[#800020] shadow-xs"
                             : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
                             }`}
                         >
@@ -1618,13 +1618,13 @@ const Checkout = () => {
                         <OptimizedCloudinaryImage src={item.image} alt={item.name} preset="avatar" className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-bold uppercase tracking-wider text-[#b8860b] mb-0.5">{item.brand || 'MAHIRASH'}</p>
+                        <p className="text-[12px] font-bold uppercase tracking-wider text-[#800020] mb-0.5">{item.brand || 'MAHIRASH'}</p>
                         <p className="text-sm font-semibold text-zinc-900 line-clamp-1">{item.name}</p>
                         {item.size && (
                           <p className="text-[14px] text-zinc-500 mt-0.5 flex items-center gap-1.5">
                             <span>Size: {item.size}</span>
                             {item.is_preorder && (
-                              <span className="bg-[#b8860b] text-white text-[12px] font-bold uppercase tracking-wider px-1.5 py-0.5 shadow-xs">
+                              <span className="bg-[#800020] text-white text-[12px] font-bold uppercase tracking-wider px-1.5 py-0.5 shadow-xs">
                                 Pre-Order
                               </span>
                             )}
@@ -1642,7 +1642,7 @@ const Checkout = () => {
                 <div className="px-5 py-4 border-t border-zinc-100 space-y-2.5">
                   <div className="flex justify-between text-sm"><span className="text-zinc-600">Subtotal</span><span className="font-medium">₹{total.toLocaleString("en-IN")}</span></div>
                   {couponDiscount > 0 && (
-                    <div className="flex justify-between text-sm text-[#b8860b] font-bold">
+                    <div className="flex justify-between text-sm text-[#800020] font-bold">
                       <span>Coupon Discount ({appliedCoupon?.code})</span>
                       <span>-₹{couponDiscount.toLocaleString("en-IN")}</span>
                     </div>
@@ -1659,7 +1659,7 @@ const Checkout = () => {
               {/* Promo Coupon Card */}
               <div className="bg-white rounded-xl border border-zinc-200 p-5 space-y-3 font-['Inter',sans-serif]">
                 <div className="flex items-center gap-2">
-                  <Tag size={15} className="text-[#b8860b]" />
+                  <Tag size={15} className="text-[#800020]" />
                   <span className="text-[14px] font-bold text-zinc-900 uppercase tracking-wider">Apply Promo Code</span>
                 </div>
                 {!appliedCoupon ? (
@@ -1675,7 +1675,7 @@ const Checkout = () => {
                       <button
                         type="button"
                         onClick={() => handleApplyCoupon()}
-                        className="bg-black text-white hover:bg-zinc-800 text-[12px] font-bold uppercase tracking-wider px-4 py-2 rounded-lg transition-all cursor-pointer shadow-sm shrink-0"
+                        className="bg-[#800020] text-[#ffffff] hover:bg-[#66001a] text-[12px] font-bold uppercase tracking-wider px-4 py-2 rounded-lg transition-all cursor-pointer shadow-sm shrink-0"
                       >
                         Apply
                       </button>
@@ -1686,9 +1686,9 @@ const Checkout = () => {
                   </>
                 ) : (
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between bg-[#b8860b]/5 border border-[#b8860b]/20 p-2.5 rounded-lg">
+                    <div className="flex items-center justify-between bg-[#800020]/5 border border-[#800020]/20 p-2.5 rounded-lg">
                       <div className="min-w-0 text-left">
-                        <span className="text-[14px] font-bold text-[#b8860b] font-mono tracking-wider">{appliedCoupon.code}</span>
+                        <span className="text-[14px] font-bold text-[#800020] font-mono tracking-wider">{appliedCoupon.code}</span>
                         <p className="text-[12px] text-zinc-500 font-medium mt-0.5">
                           {appliedCoupon.discount_type === "Percentage" ? `${appliedCoupon.discount_val}% Extra Discount` : `Flat ₹${appliedCoupon.discount_val} Discount`}
                         </p>
@@ -1713,7 +1713,7 @@ const Checkout = () => {
               <button
                 type="submit"
                 disabled={isProcessing || items.length === 0 || Boolean(invalidCartError)}
-                className={`w-full py-4 text-sm font-bold uppercase tracking-wider rounded-xl flex items-center justify-center gap-2.5 transition-all duration-200 ${isProcessing || items.length === 0 || Boolean(invalidCartError) ? "bg-zinc-300 text-zinc-500 cursor-not-allowed" : "bg-zinc-900 hover:bg-black text-white active:scale-[0.98]"}`}
+                className={`w-full py-4 text-sm font-bold uppercase tracking-wider rounded-xl flex items-center justify-center gap-2.5 transition-all duration-200 ${isProcessing || items.length === 0 || Boolean(invalidCartError) ? "bg-zinc-300 text-zinc-500 cursor-not-allowed" : "bg-[#800020] hover:bg-[#66001a] text-[#ffffff] active:scale-[0.98] shadow-md cursor-pointer"}`}
               >
                 {isProcessing ? (
                   <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Processing…</>

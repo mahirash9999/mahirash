@@ -158,19 +158,19 @@ const GeminiChatbot = () => {
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsOpen(true)}
-          className="relative w-14 h-14 rounded-full bg-[#0D0D0D] border-2 border-[#B8860B] text-white flex items-center justify-center shadow-[0_12px_30px_rgba(184,134,11,0.35)] hover:shadow-[0_16px_40px_rgba(184,134,11,0.55)] transition-all duration-300 cursor-pointer group"
+          className="relative w-14 h-14 rounded-full bg-[#800020] border-2 border-white/60 text-[#ffffff] flex items-center justify-center shadow-[0_12px_30px_rgba(128,0,32,0.4)] hover:shadow-[0_16px_40px_rgba(128,0,32,0.6)] transition-all duration-300 cursor-pointer group"
           aria-label="Open AI Fragrance Assistant"
         >
-          {/* Ambient Gold Radial Glow */}
-          <div className="absolute inset-0 rounded-full bg-[#B8860B] opacity-20 animate-pulse pointer-events-none" />
+          {/* Ambient Brand Maroon Glow */}
+          <div className="absolute inset-0 rounded-full bg-[#800020] opacity-20 animate-pulse pointer-events-none" />
 
           {/* Sparkle & Bot Icon */}
           <div className="relative z-10 flex items-center justify-center">
-            <Sparkles size={20} className="text-[#D4AF37] animate-pulse" />
+            <Sparkles size={20} className="text-white animate-pulse" />
           </div>
 
           {/* Floating Pill Badge */}
-          <span className="absolute -top-1.5 -right-1.5 px-2 py-0.5 bg-gradient-to-r from-[#B8860B] to-[#D4AF37] text-black font-black text-[10px] uppercase tracking-wider rounded-full shadow-md border border-black/40">
+          <span className="absolute -top-1.5 -right-1.5 px-2 py-0.5 bg-[#800020] text-white font-black text-[10px] uppercase tracking-wider rounded-full shadow-md border border-white/40">
             AI
           </span>
         </motion.button>
@@ -184,12 +184,12 @@ const GeminiChatbot = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="w-[92vw] sm:w-[400px] h-[550px] max-h-[82vh] bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-[#E5D5B8] flex flex-col overflow-hidden text-zinc-900"
+            className="w-[92vw] sm:w-[400px] h-[550px] max-h-[82vh] bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-zinc-200 flex flex-col overflow-hidden text-zinc-900"
           >
             {/* Header */}
-            <div className="bg-[#0D0D0D] p-4 text-white flex items-center justify-between border-b border-[#B8860B]/40 relative">
+            <div className="bg-[#800020] p-4 text-[#ffffff] flex items-center justify-between border-b border-[#990026]/60 relative">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#B8860B] to-[#D4AF37] text-black flex items-center justify-center font-bold shadow-md">
+                <div className="w-9 h-9 rounded-full bg-white/20 text-white flex items-center justify-center font-bold shadow-md">
                   <Sparkles size={16} />
                 </div>
                 <div>
@@ -197,7 +197,7 @@ const GeminiChatbot = () => {
                     <h3 className="text-[14px] font-bold uppercase tracking-wider text-white">
                       Mahirash Assistant
                     </h3>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#B8860B]/20 text-[#D4AF37] border border-[#B8860B]/30 uppercase tracking-widest">
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-white/20 text-white border border-white/30 uppercase tracking-widest">
                       Gemini
                     </span>
                   </div>
@@ -230,7 +230,7 @@ const GeminiChatbot = () => {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-[#FAF8F5]/60 scrollbar-thin scrollbar-thumb-zinc-200">
+            <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-zinc-50/70 scrollbar-thin scrollbar-thumb-zinc-200">
               {messages.map((msg, i) => {
                 const isUser = msg.role === 'user';
                 return (
@@ -239,11 +239,10 @@ const GeminiChatbot = () => {
                     className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}
                   >
                     <div
-                      className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-[13px] leading-relaxed shadow-xs ${
-                        isUser
-                          ? 'bg-[#0D0D0D] text-white rounded-br-none'
-                          : 'bg-white text-zinc-800 border border-[#E5D5B8] rounded-bl-none'
-                      }`}
+                      className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-[13px] leading-relaxed shadow-xs ${isUser
+                        ? 'bg-[#800020] text-[#ffffff] rounded-br-none'
+                        : 'bg-white text-zinc-800 border border-zinc-200 rounded-bl-none'
+                        }`}
                     >
                       <p className="whitespace-pre-wrap">{msg.text}</p>
                     </div>
@@ -255,10 +254,10 @@ const GeminiChatbot = () => {
               })}
 
               {loading && (
-                <div className="flex items-center gap-2 p-3 bg-white border border-[#E5D5B8] rounded-2xl rounded-bl-none max-w-[80px]">
-                  <span className="w-2 h-2 rounded-full bg-[#B8860B] animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-[#B8860B] animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 rounded-full bg-[#B8860B] animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="flex items-center gap-2 p-3 bg-white border border-zinc-200 rounded-2xl rounded-bl-none max-w-[80px]">
+                  <span className="w-2 h-2 rounded-full bg-[#800020] animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-[#800020] animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <span className="w-2 h-2 rounded-full bg-[#800020] animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               )}
 
@@ -273,7 +272,7 @@ const GeminiChatbot = () => {
                   type="button"
                   onClick={() => handleSendMessage(s)}
                   disabled={loading}
-                  className="px-2.5 py-1 text-[11px] bg-zinc-50 border border-zinc-200 hover:border-[#B8860B] hover:text-[#B8860B] text-zinc-600 rounded-full whitespace-nowrap transition-colors cursor-pointer shrink-0 disabled:opacity-50"
+                  className="px-2.5 py-1 text-[11px] bg-zinc-50 border border-zinc-200 hover:border-[#800020] hover:text-[#800020] text-zinc-600 rounded-full whitespace-nowrap transition-colors cursor-pointer shrink-0 disabled:opacity-50"
                 >
                   {s}
                 </button>
@@ -293,13 +292,13 @@ const GeminiChatbot = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about fragrance notes, extraits, gifting..."
-                className="flex-1 px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs outline-none focus:border-[#B8860B] focus:bg-white transition-colors"
+                className="flex-1 px-3.5 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs outline-none focus:border-[#800020] focus:bg-white transition-colors"
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || loading}
-                className="w-10 h-10 rounded-xl bg-[#0D0D0D] hover:bg-[#B8860B] text-white flex items-center justify-center transition-all cursor-pointer disabled:opacity-40 disabled:hover:bg-[#0D0D0D] shadow-sm shrink-0"
+                className="w-10 h-10 rounded-xl bg-[#800020] hover:bg-[#66001a] text-[#ffffff] flex items-center justify-center transition-all cursor-pointer disabled:opacity-40 disabled:hover:bg-[#800020] shadow-sm shrink-0"
                 aria-label="Send message"
               >
                 <Send size={15} />

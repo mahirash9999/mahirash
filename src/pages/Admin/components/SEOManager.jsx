@@ -102,13 +102,13 @@ const SEOManager = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="p-6 rounded-2xl border bg-white border-zinc-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 rounded-2xl border bg-white border-[#E9DCCB] shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Globe className="text-[#b8860b]" size={22} />
-            <h2 className="text-xl font-bold text-zinc-900">Search Engine Optimization (SEO) & Dynamic Sitemap</h2>
+            <Globe className="text-[#800020]" size={22} />
+            <h2 className="text-xl font-serif font-bold text-[#30231F]">Search Engine Optimization (SEO) & Dynamic Sitemap</h2>
           </div>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-[#75665D]">
             Real-time sitemap generation, OpenGraph metadata, Google Rich Snippets (Schema.org), and robots.txt crawling configuration.
           </p>
         </div>
@@ -117,7 +117,7 @@ const SEOManager = () => {
             type="button"
             onClick={fetchStats}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-semibold rounded-xl text-sm transition-all cursor-pointer"
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#FCF9F4] hover:bg-[#E9DCCB]/40 text-[#30231F] border border-[#E9DCCB] font-semibold rounded-xl text-sm transition-all cursor-pointer"
           >
             <RefreshCw size={15} className={loading ? "animate-spin" : ""} />
             <span>Refresh Counts</span>
@@ -126,7 +126,7 @@ const SEOManager = () => {
             type="button"
             onClick={handleDownloadSitemap}
             disabled={downloading}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#b8860b] text-white font-semibold rounded-xl hover:bg-black transition-all shadow-md text-sm cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#800020] text-white font-semibold rounded-xl hover:bg-[#650018] transition-all shadow-md shadow-[#800020]/25 text-sm cursor-pointer"
           >
             <Download size={15} />
             <span>{downloading ? "Generating..." : "Download sitemap.xml"}</span>
@@ -136,57 +136,57 @@ const SEOManager = () => {
 
       {/* Real-time Sitemap Status Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-[#E9DCCB] shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-400">Total Sitemap URLs</span>
-            <h3 className="text-2xl font-bold text-zinc-900 mt-1">{totalIndexedUrls}</h3>
-            <span className="text-[12px] text-emerald-600 font-semibold flex items-center gap-1 mt-1">
+            <span className="text-[12px] font-bold uppercase tracking-wider text-[#75665D]">Total Sitemap URLs</span>
+            <h3 className="text-2xl font-serif font-bold text-[#30231F] mt-1">{totalIndexedUrls}</h3>
+            <span className="text-[12px] text-[#800020] font-semibold flex items-center gap-1 mt-1">
               <CheckCircle size={12} /> Auto-synced with DB
             </span>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-amber-50 text-[#b8860b] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-[#800020]/10 text-[#800020] border border-[#800020]/20 flex items-center justify-center">
             <FileCode size={22} />
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-[#E9DCCB] shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-400">Active Products Indexed</span>
-            <h3 className="text-2xl font-bold text-zinc-900 mt-1">{stats.productsCount}</h3>
-            <span className="text-[12px] text-zinc-500 mt-1 block">With Schema.org & images</span>
+            <span className="text-[12px] font-bold uppercase tracking-wider text-[#75665D]">Active Products Indexed</span>
+            <h3 className="text-2xl font-serif font-bold text-[#30231F] mt-1">{stats.productsCount}</h3>
+            <span className="text-[12px] text-[#75665D] mt-1 block">With Schema.org & images</span>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-[#800020]/10 text-[#800020] border border-[#800020]/20 flex items-center justify-center">
             <Search size={22} />
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-[#E9DCCB] shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-400">Catalog Categories</span>
-            <h3 className="text-2xl font-bold text-zinc-900 mt-1">{stats.categoriesCount}</h3>
-            <span className="text-[12px] text-zinc-500 mt-1 block">Dynamic URL routes</span>
+            <span className="text-[12px] font-bold uppercase tracking-wider text-[#75665D]">Catalog Categories</span>
+            <h3 className="text-2xl font-serif font-bold text-[#30231F] mt-1">{stats.categoriesCount}</h3>
+            <span className="text-[12px] text-[#75665D] mt-1 block">Dynamic URL routes</span>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-[#800020]/10 text-[#800020] border border-[#800020]/20 flex items-center justify-center">
             <Sparkles size={22} />
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-zinc-200 shadow-xs flex items-center justify-between">
+        <div className="p-5 rounded-2xl bg-white border border-[#E9DCCB] shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-[12px] font-bold uppercase tracking-wider text-zinc-400">Core Store Pages</span>
-            <h3 className="text-2xl font-bold text-zinc-900 mt-1">{stats.totalPages}</h3>
-            <span className="text-[12px] text-zinc-500 mt-1 block">Home, Shop, About, Legal</span>
+            <span className="text-[12px] font-bold uppercase tracking-wider text-[#75665D]">Core Store Pages</span>
+            <h3 className="text-2xl font-serif font-bold text-[#30231F] mt-1">{stats.totalPages}</h3>
+            <span className="text-[12px] text-[#75665D] mt-1 block">Home, Shop, About, Legal</span>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-[#800020]/10 text-[#800020] border border-[#800020]/20 flex items-center justify-center">
             <ShieldCheck size={22} />
           </div>
         </div>
       </div>
 
       {/* Live Sitemap Link & Direct Access Bar */}
-      <div className="p-5 bg-gradient-to-r from-zinc-900 to-zinc-950 text-white rounded-2xl border border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 bg-[#30231F] text-white rounded-2xl border border-[#650018]/40 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg">
         <div>
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#e5d5ab] mb-1">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#B88D46] mb-1">
             <Globe size={14} />
             <span>Live Dynamic Sitemap Endpoint</span>
           </div>
@@ -199,16 +199,16 @@ const SEOManager = () => {
           <button
             type="button"
             onClick={handleCopyUrl}
-            className="flex items-center gap-1.5 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer"
           >
-            {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+            {copied ? <Check size={14} className="text-[#B88D46]" /> : <Copy size={14} />}
             <span>{copied ? "Copied URL!" : "Copy URL"}</span>
           </button>
           <a
             href="/sitemap.xml"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-4 py-2 bg-[#b8860b] hover:bg-[#9a7008] text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-4 py-2 bg-[#800020] hover:bg-[#650018] text-white text-xs font-semibold rounded-xl transition-colors cursor-pointer shadow-md"
           >
             <span>Open in New Tab</span>
             <ExternalLink size={13} />
@@ -218,66 +218,66 @@ const SEOManager = () => {
 
       {/* SEO Settings Form */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <form onSubmit={handleSaveSettings} className="bg-white border border-zinc-200 rounded-2xl p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
-            <h3 className="font-bold text-zinc-900 text-base flex items-center gap-2">
-              <Share2 size={16} className="text-[#b8860b]" />
+        <form onSubmit={handleSaveSettings} className="bg-white border border-[#E9DCCB] rounded-2xl p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[#E9DCCB] pb-3">
+            <h3 className="font-bold text-[#30231F] text-base flex items-center gap-2">
+              <Share2 size={16} className="text-[#800020]" />
               Global Meta Defaults
             </h3>
             {saveSuccess && (
-              <span className="text-xs text-emerald-600 font-bold flex items-center gap-1">
+              <span className="text-xs text-[#800020] font-bold flex items-center gap-1">
                 <Check size={14} /> Saved Successfully
               </span>
             )}
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">Default Title Pattern</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#75665D]">Default Title Pattern</label>
             <input
               type="text"
               value={seoSettings.defaultTitle}
               onChange={e => setSeoSettings({ ...seoSettings, defaultTitle: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:border-[#b8860b] outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E9DCCB] text-sm focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none text-[#30231F]"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">Default Meta Description</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#75665D]">Default Meta Description</label>
             <textarea
               rows={3}
               value={seoSettings.defaultDescription}
               onChange={e => setSeoSettings({ ...seoSettings, defaultDescription: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:border-[#b8860b] outline-none resize-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E9DCCB] text-sm focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none resize-none text-[#30231F]"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">Global Keywords (Comma-separated)</label>
+            <label className="text-xs font-bold uppercase tracking-wider text-[#75665D]">Global Keywords (Comma-separated)</label>
             <input
               type="text"
               value={seoSettings.defaultKeywords}
               onChange={e => setSeoSettings({ ...seoSettings, defaultKeywords: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:border-[#b8860b] outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-[#E9DCCB] text-sm focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none text-[#30231F]"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3 pt-1">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">Author</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-[#75665D]">Author</label>
               <input
                 type="text"
                 value={seoSettings.defaultAuthor}
                 onChange={e => setSeoSettings({ ...seoSettings, defaultAuthor: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:border-[#b8860b] outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E9DCCB] text-sm focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none text-[#30231F]"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-zinc-600">Canonical Domain</label>
+              <label className="text-xs font-bold uppercase tracking-wider text-[#75665D]">Canonical Domain</label>
               <input
                 type="url"
                 value={seoSettings.canonicalDomain}
                 onChange={e => setSeoSettings({ ...seoSettings, canonicalDomain: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 text-sm focus:border-[#b8860b] outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-[#E9DCCB] text-sm focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20 outline-none text-[#30231F]"
               />
             </div>
           </div>
@@ -285,7 +285,7 @@ const SEOManager = () => {
           <div className="pt-2">
             <button
               type="submit"
-              className="px-5 py-2.5 bg-[#b8860b] hover:bg-black text-white font-semibold rounded-xl text-sm transition-all cursor-pointer shadow-sm"
+              className="px-5 py-2.5 bg-[#800020] hover:bg-[#650018] text-white font-semibold rounded-xl text-sm transition-all cursor-pointer shadow-md shadow-[#800020]/25"
             >
               Save SEO Configuration
             </button>
@@ -293,42 +293,42 @@ const SEOManager = () => {
         </form>
 
         {/* Robots.txt Live Inspector */}
-        <div className="bg-white border border-zinc-200 rounded-2xl p-6 shadow-xs space-y-4 flex flex-col justify-between">
+        <div className="bg-white border border-[#E9DCCB] rounded-2xl p-6 shadow-sm space-y-4 flex flex-col justify-between">
           <div className="space-y-3">
-            <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
-              <h3 className="font-bold text-zinc-900 text-base flex items-center gap-2">
-                <ShieldCheck size={16} className="text-[#b8860b]" />
+            <div className="flex items-center justify-between border-b border-[#E9DCCB] pb-3">
+              <h3 className="font-bold text-[#30231F] text-base flex items-center gap-2">
+                <ShieldCheck size={16} className="text-[#800020]" />
                 robots.txt Rules Inspector
               </h3>
-              <span className="text-[12px] font-mono px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded font-bold">
+              <span className="text-[12px] font-mono px-2 py-0.5 bg-[#800020]/10 text-[#800020] rounded-md font-bold border border-[#800020]/20">
                 Active: /robots.txt
               </span>
             </div>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-[#75665D]">
               The following rules protect sensitive checkout and customer account areas while prioritizing product catalogue indexing:
             </p>
-            <div className="bg-zinc-950 p-3.5 rounded-xl border border-zinc-800 text-[12px] font-mono text-zinc-300 space-y-1 overflow-x-auto leading-relaxed">
-              <p className="text-emerald-400 font-bold"># Public Routes Allowed</p>
-              <p className="text-zinc-400">Allow: /</p>
-              <p className="text-zinc-400">Allow: /shop</p>
-              <p className="text-zinc-400">Allow: /product/*</p>
-              <p className="text-amber-400 font-bold pt-1"># Private Routes Disallowed</p>
-              <p className="text-zinc-500">Disallow: /admin/*</p>
-              <p className="text-zinc-500">Disallow: /cart</p>
-              <p className="text-zinc-500">Disallow: /checkout</p>
-              <p className="text-zinc-500">Disallow: /account</p>
-              <p className="text-[#e5d5ab] font-bold pt-1"># Linked Sitemap</p>
+            <div className="bg-[#30231F] p-4 rounded-xl border border-[#650018]/40 text-[12px] font-mono text-zinc-300 space-y-1 overflow-x-auto leading-relaxed shadow-inner">
+              <p className="text-[#B88D46] font-bold"># Public Routes Allowed</p>
+              <p className="text-zinc-300">Allow: /</p>
+              <p className="text-zinc-300">Allow: /shop</p>
+              <p className="text-zinc-300">Allow: /product/*</p>
+              <p className="text-[#800020] font-bold pt-1"># Private Routes Disallowed</p>
+              <p className="text-zinc-400">Disallow: /admin/*</p>
+              <p className="text-zinc-400">Disallow: /cart</p>
+              <p className="text-zinc-400">Disallow: /checkout</p>
+              <p className="text-zinc-400">Disallow: /account</p>
+              <p className="text-[#B88D46] font-bold pt-1"># Linked Sitemap</p>
               <p className="text-zinc-300">Sitemap: https://mahirash.com/sitemap.xml</p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
-            <span className="text-xs text-zinc-500">Location: <code className="text-zinc-800 font-mono">public/robots.txt</code></span>
+          <div className="flex items-center justify-between pt-3 border-t border-[#E9DCCB]">
+            <span className="text-xs text-[#75665D]">Location: <code className="text-[#30231F] font-mono bg-[#FCF9F4] px-1.5 py-0.5 rounded border border-[#E9DCCB]">public/robots.txt</code></span>
             <a
               href="/robots.txt"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-[#b8860b] hover:underline font-bold flex items-center gap-1"
+              className="text-xs text-[#800020] hover:underline font-bold flex items-center gap-1"
             >
               <span>View Live robots.txt</span>
               <ExternalLink size={12} />

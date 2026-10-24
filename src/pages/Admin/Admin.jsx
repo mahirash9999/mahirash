@@ -377,11 +377,11 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
   };
 
   return (
-    <div className="bg-white border border-zinc-200/80 rounded-2xl p-4 sm:p-6 text-zinc-900 shadow-sm">
+    <div className="bg-white border border-[#E9DCCB] rounded-2xl p-4 sm:p-6 text-[#30231F] shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-base sm:text-lg font-bold text-zinc-900 uppercase tracking-wider">{title}</h2>
-          <p className="text-[12px] text-zinc-500 mt-0.5">Live records with Cloudinary image upload and media management</p>
+          <h2 className="text-base sm:text-lg font-bold text-[#30231F] uppercase tracking-wider">{title}</h2>
+          <p className="text-[12px] text-[#75665D] mt-0.5">Live records with Cloudinary image upload and media management</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <input
@@ -394,21 +394,21 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
           <button
             type="button"
             onClick={() => fileInputRef.current.click()}
-            className="flex items-center gap-1.5 px-3 py-2 border border-zinc-200 rounded-xl bg-white hover:bg-zinc-50 text-[12px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-2 border border-[#E9DCCB] rounded-xl bg-white hover:bg-[#FCF9F4] text-[12px] font-semibold text-[#30231F] cursor-pointer transition-all shadow-xs"
           >
             <Upload size={13} /> Import
           </button>
           <button
             type="button"
             onClick={handleExport}
-            className="flex items-center gap-1.5 px-3 py-2 border border-zinc-200 rounded-xl bg-white hover:bg-zinc-50 text-[12px] font-semibold text-zinc-700 cursor-pointer transition-all shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-2 border border-[#E9DCCB] rounded-xl bg-white hover:bg-[#FCF9F4] text-[12px] font-semibold text-[#30231F] cursor-pointer transition-all shadow-xs"
           >
             <Download size={13} /> Export
           </button>
           <button
             type="button"
             onClick={handleCreateNew}
-            className="flex items-center gap-2 px-4 py-2 bg-black text-white text-[13px] font-bold rounded-xl hover:bg-zinc-800 transition-all shadow-sm cursor-pointer active:scale-95"
+            className="flex items-center gap-2 px-4 py-2 bg-[#800020] text-white text-[13px] font-bold rounded-xl hover:bg-[#650018] transition-all shadow-sm shadow-[#800020]/20 cursor-pointer active:scale-95"
           >
             <Plus size={14} /> Add New
           </button>
@@ -416,8 +416,8 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
       </div>
 
       {selectedIds.length > 0 && (
-        <div className="flex flex-col sm:flex-row justify-between items-center bg-zinc-50 border border-zinc-200 p-4 rounded-xl mb-4 gap-3">
-          <div className="text-[13px] font-semibold text-zinc-700">
+        <div className="flex flex-col sm:flex-row justify-between items-center bg-[#FCF9F4] border border-[#E9DCCB] p-4 rounded-xl mb-4 gap-3">
+          <div className="text-[13px] font-semibold text-[#30231F]">
             {selectedIds.length} item(s) selected
           </div>
           <div className="flex items-center gap-2">
@@ -426,7 +426,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                 <button
                   type="button"
                   onClick={() => handleBulkStatusChange(true)}
-                  className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded text-[13px] font-semibold cursor-pointer transition-colors"
+                  className="px-3 py-1.5 bg-[#800020]/10 text-[#800020] border border-[#800020]/25 hover:bg-[#800020]/20 rounded text-[13px] font-semibold cursor-pointer transition-colors"
                 >
                   Mark Active
                 </button>
@@ -458,18 +458,18 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
       )}
 
       {loading ? (
-        <div className="py-8 text-center text-zinc-500 text-[14px]">Loading items...</div>
+        <div className="py-8 text-center text-[#75665D] text-[14px]">Loading items...</div>
       ) : (
         <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
           <table className="w-full min-w-[620px] text-left text-[13px] border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200 text-zinc-500 uppercase tracking-widest text-[12px]">
+              <tr className="border-b border-[#E9DCCB] text-[#75665D] uppercase tracking-widest text-[11px]">
                 <th className="py-3 px-4 w-10">
                   <input
                     type="checkbox"
                     checked={items.length > 0 && selectedIds.length === items.length}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 accent-black cursor-pointer rounded border-zinc-300"
+                    className="w-4 h-4 accent-[#800020] cursor-pointer rounded border-zinc-300"
                   />
                 </th>
                 {fields.map(f => (
@@ -480,21 +480,21 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
             </thead>
             <tbody>
               {items.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(item => (
-                <tr key={item.id} className={`border-b border-zinc-200 hover:bg-zinc-50/80 transition-colors ${selectedIds.includes(item.id) ? 'bg-zinc-50' : ''}`}>
+                <tr key={item.id} className={`border-b border-[#E9DCCB]/60 hover:bg-[#FCF9F4]/70 transition-colors ${selectedIds.includes(item.id) ? 'bg-[#FCF9F4]' : ''}`}>
                   <td className="py-3.5 px-4 w-10">
                     <input
                       type="checkbox"
                       checked={selectedIds.includes(item.id)}
                       onChange={() => toggleSelectRow(item.id)}
-                      className="w-4 h-4 accent-black cursor-pointer rounded border-zinc-300"
+                      className="w-4 h-4 accent-[#800020] cursor-pointer rounded border-zinc-300"
                     />
                   </td>
                   {fields.map(f => (
-                    <td key={f.key} className="py-3.5 px-4 font-medium text-zinc-800">
+                    <td key={f.key} className="py-3.5 px-4 font-medium text-[#30231F]">
                       {f.type === 'image' ? (
-                        <OptimizedCloudinaryImage src={item[f.key]} preset="avatar" className="w-10 h-10 object-cover rounded bg-zinc-100 border border-zinc-200" alt="thumb" />
+                        <OptimizedCloudinaryImage src={item[f.key]} preset="avatar" className="w-10 h-10 object-cover rounded bg-[#FCF9F4] border border-[#E9DCCB]" alt="thumb" />
                       ) : f.type === 'boolean' ? (
-                        <span className={`px-2 py-0.5 rounded text-[12px]   ${item[f.key] ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-red-100 text-red-800 border border-red-200'}`}>
+                        <span className={`px-2.5 py-0.5 rounded text-[11px] font-semibold ${item[f.key] ? 'bg-[#800020]/10 text-[#800020] border border-[#800020]/25' : 'bg-red-50 text-red-700 border border-red-200'}`}>
                           {item[f.key] ? 'ACTIVE' : 'INACTIVE'}
                         </span>
                       ) : (
@@ -504,22 +504,22 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                   ))}
                   <td className="py-3.5 px-4 text-right">
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => handleEdit(item)} className="p-1.5 text-zinc-500 hover:text-black hover:bg-zinc-100 rounded transition-colors"><Edit2 size={13} /></button>
-                      <button onClick={() => handleDelete(item.id)} className="p-1.5 text-zinc-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"><Trash2 size={13} /></button>
+                      <button onClick={() => handleEdit(item)} className="p-1.5 text-[#75665D] hover:text-[#800020] hover:bg-[#800020]/10 rounded transition-colors cursor-pointer"><Edit2 size={13} /></button>
+                      <button onClick={() => handleDelete(item.id)} className="p-1.5 text-[#75665D] hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"><Trash2 size={13} /></button>
                     </div>
                   </td>
                 </tr>
               ))}
               {items.length === 0 && (
                 <tr>
-                  <td colSpan={fields.length + 2} className="py-8 text-center text-zinc-500">No items found.</td>
+                  <td colSpan={fields.length + 2} className="py-8 text-center text-[#75665D]">No items found.</td>
                 </tr>
               )}
             </tbody>
           </table>
           {items.length > itemsPerPage && (
-            <div className="flex justify-between items-center px-4 py-4 border-t border-zinc-200">
-              <span className="text-[13px] text-zinc-500">
+            <div className="flex justify-between items-center px-4 py-4 border-t border-[#E9DCCB]">
+              <span className="text-[13px] text-[#75665D]">
                 Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, items.length)} of {items.length} items
               </span>
               <div className="flex gap-2">
@@ -527,7 +527,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                   type="button"
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-1.5 border border-zinc-300 rounded text-[13px] hover:bg-zinc-100 disabled:opacity-50 transition-colors"
+                  className="px-3 py-1.5 border border-[#E9DCCB] rounded text-[13px] hover:bg-[#FCF9F4] disabled:opacity-50 transition-colors cursor-pointer"
                 >
                   Prev
                 </button>
@@ -535,7 +535,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                   type="button"
                   onClick={() => setCurrentPage(p => Math.min(Math.ceil(items.length / itemsPerPage), p + 1))}
                   disabled={currentPage === Math.ceil(items.length / itemsPerPage)}
-                  className="px-3 py-1.5 border border-zinc-300 rounded text-[13px] hover:bg-zinc-100 disabled:opacity-50 transition-colors"
+                  className="px-3 py-1.5 border border-[#E9DCCB] rounded text-[13px] hover:bg-[#FCF9F4] disabled:opacity-50 transition-colors cursor-pointer"
                 >
                   Next
                 </button>
@@ -547,13 +547,13 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-3 sm:p-4">
-          <form onSubmit={handleSubmit} className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col p-4 sm:p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center border-b border-zinc-200 pb-3 mb-3">
+          <form onSubmit={handleSubmit} className="bg-white border border-[#E9DCCB] rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col p-4 sm:p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center border-b border-[#E9DCCB] pb-3 mb-3">
               <div>
-                <h3 className="text-sm sm:text-base font-bold uppercase tracking-wider text-zinc-900">{editingItem ? "Edit Item" : "Create Item"}</h3>
-                <p className="text-[12px] text-zinc-400">Save your changes directly to the cloud</p>
+                <h3 className="text-sm sm:text-base font-bold uppercase tracking-wider text-[#30231F]">{editingItem ? "Edit Item" : "Create Item"}</h3>
+                <p className="text-[12px] text-[#75665D]">Save your changes directly to the cloud</p>
               </div>
-              <button type="button" onClick={() => setIsModalOpen(false)} className="text-zinc-400 hover:text-black p-1.5 rounded-full hover:bg-zinc-100 transition-colors">
+              <button type="button" onClick={() => setIsModalOpen(false)} className="text-[#75665D] hover:text-[#800020] p-1.5 rounded-full hover:bg-[#800020]/10 transition-colors cursor-pointer">
                 <X size={16} />
               </button>
             </div>
@@ -561,14 +561,14 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
             <div className="space-y-3.5 overflow-y-auto flex-1 pr-1.5 py-1">
               {fields.map(f => (
                 <div key={f.key} className="space-y-1">
-                  <label className="text-[12px]   text-zinc-500 uppercase tracking-wider block">{f.label}</label>
+                  <label className="text-[12px] text-[#75665D] uppercase tracking-wider block font-semibold">{f.label}</label>
                   {f.type === 'image' ? (
                     <div className="space-y-2">
                       {formData[f.key] && (
-                        <OptimizedCloudinaryImage src={formData[f.key]} preset="category" className="w-20 h-20 object-cover rounded-lg border border-zinc-200 bg-zinc-50" alt="preview" />
+                        <OptimizedCloudinaryImage src={formData[f.key]} preset="category" className="w-20 h-20 object-cover rounded-lg border border-[#E9DCCB] bg-[#FCF9F4]" alt="preview" />
                       )}
                       <div className="flex flex-wrap items-center gap-2">
-                        <label className="px-3 py-1.5 rounded-lg border border-zinc-300 bg-zinc-100 hover:bg-zinc-200 text-[12px] font-semibold text-zinc-900 cursor-pointer transition-all">
+                        <label className="px-3 py-1.5 rounded-lg border border-[#E9DCCB] bg-[#FCF9F4] hover:bg-zinc-100 text-[12px] font-semibold text-[#30231F] cursor-pointer transition-all">
                           Upload from Device
                           <input
                             type="file"
@@ -583,20 +583,20 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                             setActivePickerField(f.key);
                             setIsPickerOpen(true);
                           }}
-                          className="px-3 py-1.5 rounded-lg border border-zinc-300 bg-white hover:bg-zinc-50 text-[12px] font-semibold text-zinc-900 cursor-pointer flex items-center gap-1.5 transition-all shadow-sm"
+                          className="px-3 py-1.5 rounded-lg border border-[#E9DCCB] bg-white hover:bg-[#FCF9F4] text-[12px] font-semibold text-[#30231F] cursor-pointer flex items-center gap-1.5 transition-all shadow-sm"
                         >
-                          <ImageIcon size={13} className="text-[#b8860b]" /> Choose from Cloudinary
+                          <ImageIcon size={13} className="text-[#800020]" /> Choose from Cloudinary
                         </button>
                       </div>
                       {uploading && (
-                        <p className="text-[12px] text-[#b8860b]   animate-pulse">Uploading image...</p>
+                        <p className="text-[12px] text-[#800020] animate-pulse">Uploading image...</p>
                       )}
                     </div>
                   ) : f.type === 'boolean' ? (
                     <select
                       value={formData[f.key] ? 'true' : 'false'}
                       onChange={(e) => setFormData(prev => ({ ...prev, [f.key]: e.target.value === 'true' }))}
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
+                      className="w-full px-3 py-2 bg-[#FCF9F4] border border-[#E9DCCB] rounded-lg text-[14px] text-[#30231F] focus:bg-white focus:border-[#800020] outline-none transition-all"
                     >
                       <option value="true">Active</option>
                       <option value="false">Inactive</option>
@@ -605,7 +605,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                     <select
                       value={formData[f.key] || ''}
                       onChange={(e) => handleInputChange(f.key, e.target.value)}
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
+                      className="w-full px-3 py-2 bg-[#FCF9F4] border border-[#E9DCCB] rounded-lg text-[14px] text-[#30231F] focus:bg-white focus:border-[#800020] outline-none transition-all"
                     >
                       <option value="" disabled>Select an option</option>
                       {f.options?.map(opt => (
@@ -617,32 +617,32 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
                       value={formData[f.key] || ''}
                       onChange={(e) => handleInputChange(f.key, e.target.value)}
                       rows={3}
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
+                      className="w-full px-3 py-2 bg-[#FCF9F4] border border-[#E9DCCB] rounded-lg text-[14px] text-[#30231F] focus:bg-white focus:border-[#800020] outline-none transition-all"
                     />
                   ) : (
                     <input
                       type={f.type || 'text'}
                       value={formData[f.key] ?? ''}
                       onChange={(e) => handleInputChange(f.key, e.target.value, f.type === 'number')}
-                      className="w-full px-3 py-2 bg-zinc-50 border border-zinc-300 rounded-lg text-[14px] text-zinc-900 focus:bg-white focus:border-black outline-none transition-all"
+                      className="w-full px-3 py-2 bg-[#FCF9F4] border border-[#E9DCCB] rounded-lg text-[14px] text-[#30231F] focus:bg-white focus:border-[#800020] outline-none transition-all"
                     />
                   )}
                 </div>
               ))}
             </div>
 
-            <div className="pt-3.5 mt-2 border-t border-zinc-200/80 flex items-center justify-end gap-2.5">
+            <div className="pt-3.5 mt-2 border-t border-[#E9DCCB] flex items-center justify-end gap-2.5">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 border border-zinc-300 text-zinc-700 text-[13px] font-semibold rounded-xl hover:bg-zinc-100 transition-colors cursor-pointer"
+                className="px-4 py-2 border border-[#E9DCCB] text-[#75665D] text-[13px] font-semibold rounded-xl hover:bg-[#FCF9F4] transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={uploading}
-                className="px-5 py-2 bg-black text-white text-[13px] font-bold rounded-xl hover:bg-zinc-800 disabled:opacity-50 shadow-sm transition-all cursor-pointer active:scale-98"
+                className="px-5 py-2 bg-[#800020] text-white text-[13px] font-bold rounded-xl hover:bg-[#650018] disabled:opacity-50 shadow-md shadow-[#800020]/25 transition-all cursor-pointer active:scale-98"
               >
                 {uploading ? "Uploading..." : "Save Changes"}
               </button>
@@ -1564,36 +1564,36 @@ const Admin = () => {
     return (
       <div className="grid gap-6 md:grid-cols-2 mt-8">
         {/* Revenue Chart */}
-        <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-          <h3 className="text-[14px]   uppercase tracking-wider text-zinc-500 mb-4">Revenue Overview</h3>
+        <div className="bg-white border border-[#E9DCCB] p-5 rounded-2xl shadow-sm">
+          <h3 className="text-[13px] font-semibold uppercase tracking-wider text-[#75665D] mb-4">Revenue Overview</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#b8860b" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#b8860b" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#800020" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#800020" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="name" stroke="#a1a1aa" fontSize={10} />
-                <YAxis stroke="#a1a1aa" fontSize={10} />
-                <Tooltip contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e4e4e7", color: "#111111", borderRadius: 8, fontSize: 11, boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }} />
-                <Area type="monotone" dataKey="Revenue" stroke="#b8860b" fillOpacity={1} fill="url(#colorRev)" strokeWidth={2} />
+                <XAxis dataKey="name" stroke="#75665D" fontSize={11} />
+                <YAxis stroke="#75665D" fontSize={11} />
+                <Tooltip contentStyle={{ backgroundColor: "#FCF9F4", borderColor: "#E9DCCB", color: "#30231F", borderRadius: 10, fontSize: 12, boxShadow: "0 6px 16px -2px rgba(128,0,32,0.1)" }} />
+                <Area type="monotone" dataKey="Revenue" stroke="#800020" fillOpacity={1} fill="url(#colorRev)" strokeWidth={2.5} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Orders Chart */}
-        <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-          <h3 className="text-[14px]   uppercase tracking-wider text-zinc-500 mb-4">Orders Overview</h3>
+        <div className="bg-white border border-[#E9DCCB] p-5 rounded-2xl shadow-sm">
+          <h3 className="text-[13px] font-semibold uppercase tracking-wider text-[#75665D] mb-4">Orders Overview</h3>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>
-                <XAxis dataKey="name" stroke="#a1a1aa" fontSize={10} />
-                <YAxis stroke="#a1a1aa" fontSize={10} />
-                <Tooltip contentStyle={{ backgroundColor: "#ffffff", borderColor: "#e4e4e7", color: "#111111", borderRadius: 8, fontSize: 11, boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }} />
-                <Bar dataKey="Orders" fill="#111111" radius={[4, 4, 0, 0]} />
+                <XAxis dataKey="name" stroke="#75665D" fontSize={11} />
+                <YAxis stroke="#75665D" fontSize={11} />
+                <Tooltip contentStyle={{ backgroundColor: "#FCF9F4", borderColor: "#E9DCCB", color: "#30231F", borderRadius: 10, fontSize: 12, boxShadow: "0 6px 16px -2px rgba(128,0,32,0.1)" }} />
+                <Bar dataKey="Orders" fill="#800020" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -1607,31 +1607,31 @@ const Admin = () => {
       <div className="space-y-6">
         {/* KPI Row */}
         <div className="grid gap-5 grid-cols-2 lg:grid-cols-4">
-          <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-            <p className="text-[12px]   text-zinc-500 uppercase tracking-wider">Total Revenue</p>
-            <h3 className="text-xl   text-zinc-900 mt-1">₹{statsSummary.revenue.toLocaleString('en-IN')}</h3>
-            <span className={`text-[12px] block mt-1 ${statsSummary.revChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+          <div className="bg-white border border-[#E9DCCB] p-5 rounded-2xl shadow-sm">
+            <p className="text-[11px] font-bold text-[#75665D] uppercase tracking-wider">Total Revenue</p>
+            <h3 className="text-2xl font-serif text-[#30231F] mt-1">₹{statsSummary.revenue.toLocaleString('en-IN')}</h3>
+            <span className={`text-[12px] block mt-1 ${statsSummary.revChange >= 0 ? 'text-[#800020] font-medium' : 'text-red-500'}`}>
               {statsSummary.revChange >= 0 ? '+' : ''}{statsSummary.revChange.toFixed(1)}% vs last month
             </span>
           </div>
-          <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-            <p className="text-[12px]   text-zinc-500 uppercase tracking-wider">Total Orders</p>
-            <h3 className="text-xl   text-zinc-900 mt-1">{statsSummary.orders}</h3>
-            <span className={`text-[12px] block mt-1 ${statsSummary.ordersChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+          <div className="bg-white border border-[#E9DCCB] p-5 rounded-2xl shadow-sm">
+            <p className="text-[11px] font-bold text-[#75665D] uppercase tracking-wider">Total Orders</p>
+            <h3 className="text-2xl font-serif text-[#30231F] mt-1">{statsSummary.orders}</h3>
+            <span className={`text-[12px] block mt-1 ${statsSummary.ordersChange >= 0 ? 'text-[#800020] font-medium' : 'text-red-500'}`}>
               {statsSummary.ordersChange >= 0 ? '+' : ''}{statsSummary.ordersChange.toFixed(1)}% vs last month
             </span>
           </div>
-          <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-            <p className="text-[12px]   text-zinc-500 uppercase tracking-wider">Total Customers</p>
-            <h3 className="text-xl   text-zinc-900 mt-1">{statsSummary.customers}</h3>
-            <span className={`text-[12px] block mt-1 ${statsSummary.custChange >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+          <div className="bg-white border border-[#E9DCCB] p-5 rounded-2xl shadow-sm">
+            <p className="text-[11px] font-bold text-[#75665D] uppercase tracking-wider">Total Customers</p>
+            <h3 className="text-2xl font-serif text-[#30231F] mt-1">{statsSummary.customers}</h3>
+            <span className={`text-[12px] block mt-1 ${statsSummary.custChange >= 0 ? 'text-[#800020] font-medium' : 'text-red-500'}`}>
               {statsSummary.custChange >= 0 ? '+' : ''}{statsSummary.custChange.toFixed(1)}% vs last month
             </span>
           </div>
-          <div className="bg-white border border-zinc-200 p-5 rounded-xl shadow-sm">
-            <p className="text-[12px]   text-zinc-500 uppercase tracking-wider">Total Products</p>
-            <h3 className="text-xl   text-zinc-900 mt-1">{statsSummary.products}</h3>
-            <span className="text-[12px] text-zinc-500 block mt-1">Live catalog items</span>
+          <div className="bg-white border border-[#E9DCCB] p-5 rounded-2xl shadow-sm">
+            <p className="text-[11px] font-bold text-[#75665D] uppercase tracking-wider">Total Products</p>
+            <h3 className="text-2xl font-serif text-[#30231F] mt-1">{statsSummary.products}</h3>
+            <span className="text-[12px] text-[#75665D] block mt-1">Live catalog items</span>
           </div>
         </div>
 
@@ -1640,49 +1640,49 @@ const Admin = () => {
         {/* Dynamic widgets */}
         <div className="grid gap-6 md:grid-cols-3 mt-8">
           {/* Low Stock Alerts */}
-          <div className="bg-white border border-zinc-200 p-5 rounded-xl text-[14px] space-y-4 shadow-sm">
-            <h4 className="  text-zinc-500 uppercase tracking-wider">Low Stock Alerts</h4>
+          <div className="bg-white border border-[#E9DCCB] p-5 rounded-2xl text-[14px] space-y-4 shadow-sm">
+            <h4 className="text-[12px] font-bold text-[#75665D] uppercase tracking-wider">Low Stock Alerts</h4>
             <div className="space-y-3">
               {products.filter(p => (parseInt(p.stock) || 0) <= 5).slice(0, 3).map(p => (
-                <div key={p.id} className="flex justify-between items-center border-b border-zinc-100 pb-2">
+                <div key={p.id} className="flex justify-between items-center border-b border-[#E9DCCB]/60 pb-2">
                   <div>
-                    <p className="font-semibold text-zinc-900">{p.name}</p>
-                    <p className="text-[12px] text-zinc-500">Category: {p.category}</p>
+                    <p className="font-semibold text-[#30231F]">{p.name}</p>
+                    <p className="text-[12px] text-[#75665D]">Category: {p.category}</p>
                   </div>
-                  <span className="text-red-600  ">Stock: {p.stock || 0}</span>
+                  <span className="text-[#800020] font-bold text-xs bg-[#800020]/10 px-2 py-0.5 rounded-md">Stock: {p.stock || 0}</span>
                 </div>
               ))}
               {products.filter(p => (parseInt(p.stock) || 0) <= 5).length === 0 && (
-                <p className="text-zinc-500 text-center">No products are low in stock.</p>
+                <p className="text-[#75665D] text-center text-xs py-2">No products are low in stock.</p>
               )}
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="bg-white border border-zinc-200 p-5 rounded-xl text-[14px] space-y-4 shadow-sm">
-            <h4 className="  text-zinc-500 uppercase tracking-wider">Quick Actions</h4>
-            <div className="grid grid-cols-2 gap-2">
-              <button onClick={() => { setActiveItem("Products"); setIsProductModalOpen(true); }} className="p-3 bg-zinc-50 border border-zinc-200 text-zinc-700 font-semibold hover:bg-zinc-100 hover:text-black rounded-lg text-center cursor-pointer transition-all">Add Product</button>
-              <button onClick={() => setActiveItem("Collections")} className="p-3 bg-zinc-50 border border-zinc-200 text-zinc-700 font-semibold hover:bg-zinc-100 hover:text-black rounded-lg text-center cursor-pointer transition-all">Add Collection</button>
-              <button onClick={() => setActiveItem("Categories")} className="p-3 bg-zinc-50 border border-zinc-200 text-zinc-700 font-semibold hover:bg-zinc-100 hover:text-black rounded-lg text-center cursor-pointer transition-all">Categories</button>
-              <button onClick={() => setActiveItem("Coupons / Offers")} className="p-3 bg-zinc-50 border border-zinc-200 text-zinc-700 font-semibold hover:bg-zinc-100 hover:text-black rounded-lg text-center cursor-pointer transition-all">Add Coupon</button>
+          <div className="bg-white border border-[#E9DCCB] p-5 rounded-2xl text-[14px] space-y-4 shadow-sm">
+            <h4 className="text-[12px] font-bold text-[#75665D] uppercase tracking-wider">Quick Actions</h4>
+            <div className="grid grid-cols-2 gap-2.5">
+              <button onClick={() => { setActiveItem("Products"); setIsProductModalOpen(true); }} className="p-3 bg-[#FCF9F4] border border-[#E9DCCB] text-[#30231F] font-medium hover:bg-[#800020] hover:text-white hover:border-[#800020] rounded-xl text-center cursor-pointer transition-all duration-200 text-xs">Add Product</button>
+              <button onClick={() => setActiveItem("Collections")} className="p-3 bg-[#FCF9F4] border border-[#E9DCCB] text-[#30231F] font-medium hover:bg-[#800020] hover:text-white hover:border-[#800020] rounded-xl text-center cursor-pointer transition-all duration-200 text-xs">Add Collection</button>
+              <button onClick={() => setActiveItem("Categories")} className="p-3 bg-[#FCF9F4] border border-[#E9DCCB] text-[#30231F] font-medium hover:bg-[#800020] hover:text-white hover:border-[#800020] rounded-xl text-center cursor-pointer transition-all duration-200 text-xs">Categories</button>
+              <button onClick={() => setActiveItem("Coupons / Offers")} className="p-3 bg-[#FCF9F4] border border-[#E9DCCB] text-[#30231F] font-medium hover:bg-[#800020] hover:text-white hover:border-[#800020] rounded-xl text-center cursor-pointer transition-all duration-200 text-xs">Add Coupon</button>
             </div>
           </div>
 
           {/* Recent Orders */}
-          <div className="bg-white border border-zinc-200 p-5 rounded-xl text-[14px] space-y-4 shadow-sm">
-            <h4 className="  text-zinc-500 uppercase tracking-wider">Recent Orders</h4>
+          <div className="bg-white border border-[#E9DCCB] p-5 rounded-2xl text-[14px] space-y-4 shadow-sm">
+            <h4 className="text-[12px] font-bold text-[#75665D] uppercase tracking-wider">Recent Orders</h4>
             <div className="space-y-3">
               {orders.slice(0, 3).map(o => (
-                <div key={o.id} className="flex justify-between items-center border-b border-zinc-100 pb-2">
+                <div key={o.id} className="flex justify-between items-center border-b border-[#E9DCCB]/60 pb-2">
                   <div>
-                    <p className="font-semibold text-zinc-900">#{o.id?.slice(0, 8)}</p>
-                    <p className="text-[12px] text-zinc-500">{o.customerName || 'Guest User'}</p>
+                    <p className="font-semibold text-[#30231F]">#{o.id?.slice(0, 8)}</p>
+                    <p className="text-[12px] text-[#75665D]">{o.customerName || 'Guest User'}</p>
                   </div>
-                  <span className="text-[#b8860b]  ">₹{(o.total || o.grandTotal || 0).toLocaleString('en-IN')}</span>
+                  <span className="text-[#800020] font-bold font-serif">₹{(o.total || o.grandTotal || 0).toLocaleString('en-IN')}</span>
                 </div>
               ))}
-              {orders.length === 0 && <p className="text-zinc-500 text-center">No orders placed yet.</p>}
+              {orders.length === 0 && <p className="text-[#75665D] text-center text-xs py-2">No orders placed yet.</p>}
             </div>
           </div>
         </div>
@@ -2056,29 +2056,29 @@ const Admin = () => {
       case "Shipping Settings":
       case "Tax Settings":
         return (
-          <div className="bg-[#121212] border border-[#1a1a1a] rounded-xl p-6 text-white text-[14px] max-w-lg space-y-4">
-            <h2 className="text-base   uppercase tracking-wider text-[#c9a962]">{activeItem}</h2>
+          <div className="bg-[#FCF9F4] border border-[#E9DCCB] rounded-2xl p-6 text-[#30231F] text-[14px] max-w-lg space-y-4 shadow-xs">
+            <h2 className="text-base font-serif font-bold uppercase tracking-wider text-[#800020]">{activeItem}</h2>
             <div className="space-y-3">
               <div className="space-y-1">
-                <label className="text-zinc-500 uppercase tracking-widest text-[12px] block">Primary Parameter</label>
-                <input type="text" defaultValue="Mahirash Luxury Perfumes" className="w-full px-3 py-2 bg-[#161616] border border-[#222] rounded text-white" />
+                <label className="text-[#75665D] uppercase tracking-wider text-[11px] font-bold block">Primary Parameter</label>
+                <input type="text" defaultValue="Mahirash Luxury Perfumes" className="w-full px-3.5 py-2.5 bg-white border border-[#E9DCCB] rounded-xl text-[#30231F] outline-none focus:border-[#800020]" />
               </div>
               <div className="space-y-1">
-                <label className="text-zinc-500 uppercase tracking-widest text-[12px] block">Fallback Mode</label>
-                <select className="w-full px-3 py-2 bg-[#161616] border border-[#222] rounded text-white">
+                <label className="text-[#75665D] uppercase tracking-wider text-[11px] font-bold block">Fallback Mode</label>
+                <select className="w-full px-3.5 py-2.5 bg-white border border-[#E9DCCB] rounded-xl text-[#30231F] outline-none focus:border-[#800020]">
                   <option>Enabled (Production)</option>
                   <option>Disabled (Staging)</option>
                 </select>
               </div>
             </div>
-            <button onClick={() => alert("Settings updated!")} className="px-5 py-2.5 bg-[#c9a962] text-[#090909]   rounded">Save Configuration</button>
+            <button onClick={() => alert("Settings updated!")} className="px-5 py-2.5 bg-[#800020] hover:bg-[#650018] text-white font-semibold rounded-xl shadow-md shadow-[#800020]/25 cursor-pointer">Save Configuration</button>
           </div>
         );
       case "Help / Documentation":
         return (
-          <div className="bg-white border border-zinc-200 rounded-xl p-6 text-zinc-900 text-[14px] space-y-4 max-w-xl shadow-sm">
-            <h2 className="text-base   uppercase tracking-wider text-[#b8860b]">Mahirash Suite Help Center</h2>
-            <p className="text-zinc-600 font-light leading-relaxed">This dashboard controls the storefront sections, database lists, order timelines, inventory, and promotions in real time. All changes are saved automatically to Firebase Firestore.</p>
+          <div className="bg-[#FCF9F4] border border-[#E9DCCB] rounded-2xl p-6 text-[#30231F] text-[14px] space-y-4 max-w-xl shadow-xs">
+            <h2 className="text-base font-serif font-bold uppercase tracking-wider text-[#800020]">Mahirash Suite Help Center</h2>
+            <p className="text-[#75665D] font-medium leading-relaxed">This dashboard controls the storefront sections, database lists, order timelines, inventory, and promotions in real time. All changes are saved automatically to Firebase Firestore.</p>
           </div>
         );
       default:
@@ -2088,23 +2088,23 @@ const Admin = () => {
 
   if (!isAdminLoggedIn) {
     return (
-      <div className="min-h-screen w-full bg-[#f5f5f5] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden font-['Inter',sans-serif]">
+      <div className="min-h-screen w-full bg-[#FCF9F4] flex items-center justify-center p-4 sm:p-6 relative overflow-hidden font-['Inter',sans-serif]">
         {/* Subtle Ambient Background Elements */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#c9a962]/10 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-10 right-10 w-72 h-72 bg-black/[0.03] blur-2xl rounded-full pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#800020]/8 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-10 right-10 w-72 h-72 bg-[#B88D46]/10 blur-2xl rounded-full pointer-events-none" />
 
         {/* Centered Admin Card Container */}
-        <div className="w-full max-w-md bg-white/95 backdrop-blur-xl border border-zinc-200/90 p-6 sm:p-9 shadow-[0_20px_60px_rgba(0,0,0,0.08)] rounded-3xl relative z-10 space-y-6 transition-all duration-500">
+        <div className="w-full max-w-md bg-white border border-[#E9DCCB] p-6 sm:p-9 shadow-[0_20px_50px_rgba(128,0,32,0.06)] rounded-3xl relative z-10 space-y-6 transition-all duration-500">
 
           {/* Header */}
           <div className="text-center space-y-1.5">
-            <div className="w-12 h-12 rounded-2xl bg-black text-[#c9a962] flex items-center justify-center shadow-xl shadow-black/10 ring-4 ring-black/5 mx-auto mb-2 transform hover:scale-105 transition-transform duration-300">
+            <div className="w-12 h-12 rounded-2xl bg-[#800020] text-[#B88D46] flex items-center justify-center shadow-lg shadow-[#800020]/25 ring-4 ring-[#800020]/10 mx-auto mb-2 transform hover:scale-105 transition-transform duration-300">
               <Sparkles size={22} strokeWidth={2} />
             </div>
-            <h1 className="text-lg font-poppins font-bold tracking-[0.2em] text-zinc-900 uppercase">
+            <h1 className="text-lg font-serif font-bold tracking-[0.2em] text-[#30231F] uppercase">
               MAHIRASH ADMIN
             </h1>
-            <p className="text-[12px] text-[#b8860b] uppercase tracking-[0.25em] font-bold">
+            <p className="text-[12px] text-[#800020] uppercase tracking-[0.25em] font-bold">
               HAUTE PARFUMERIE CONTROL CENTRE
             </p>
           </div>
@@ -2118,35 +2118,35 @@ const Admin = () => {
 
           <form onSubmit={handleAdminLogin} className="space-y-4">
             <div className="space-y-1">
-              <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
+              <label className="text-[11px] uppercase tracking-[0.2em] text-[#75665D] block pl-0.5 font-bold">
                 Admin ID (Email)
               </label>
               <div className="relative">
-                <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+                <Mail size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#75665D]" />
                 <input
                   type="email"
                   value={adminEmail}
                   onChange={(e) => setAdminEmail(e.target.value)}
                   placeholder="admin@mahirash.com"
                   required
-                  className="w-full pl-11 pr-4 py-3 bg-zinc-50/80 border border-zinc-300 rounded-xl text-[13px] font-medium text-zinc-900 outline-none focus:border-black focus:bg-white focus:ring-2 focus:ring-black/10 transition-all duration-300 placeholder:text-zinc-400 shadow-inner"
+                  className="w-full pl-11 pr-4 py-3 bg-[#FCF9F4] border border-[#E9DCCB] rounded-xl text-[13px] font-medium text-[#30231F] outline-none focus:border-[#800020] focus:bg-white focus:ring-2 focus:ring-[#800020]/15 transition-all duration-300 placeholder:text-[#75665D]/60 shadow-inner"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="text-[12px] uppercase tracking-[0.25em] text-zinc-500 block pl-0.5 font-bold">
+              <label className="text-[11px] uppercase tracking-[0.2em] text-[#75665D] block pl-0.5 font-bold">
                 Security Password
               </label>
               <div className="relative">
-                <Lock size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+                <Lock size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#75665D]" />
                 <input
                   type="password"
                   value={adminPassword}
                   onChange={(e) => setAdminPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-11 pr-4 py-3 bg-zinc-50/80 border border-zinc-300 rounded-xl text-[13px] font-medium text-zinc-900 outline-none focus:border-black focus:bg-white focus:ring-2 focus:ring-black/10 transition-all duration-300 placeholder:text-zinc-400 shadow-inner"
+                  className="w-full pl-11 pr-4 py-3 bg-[#FCF9F4] border border-[#E9DCCB] rounded-xl text-[13px] font-medium text-[#30231F] outline-none focus:border-[#800020] focus:bg-white focus:ring-2 focus:ring-[#800020]/15 transition-all duration-300 placeholder:text-[#75665D]/60 shadow-inner"
                 />
               </div>
             </div>
@@ -2154,7 +2154,7 @@ const Admin = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3.5 bg-black text-white font-bold text-[12px] uppercase tracking-[0.2em] transition-all duration-300 hover:bg-zinc-800 active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer shadow-lg shadow-black/10 rounded-xl mt-2 disabled:opacity-60"
+              className="w-full py-3.5 bg-[#800020] text-white font-bold text-[12px] uppercase tracking-[0.2em] transition-all duration-300 hover:bg-[#650018] active:scale-[0.98] flex items-center justify-center gap-2.5 cursor-pointer shadow-lg shadow-[#800020]/25 rounded-xl mt-2 disabled:opacity-60"
             >
               <span>{isSubmitting ? "Authenticating..." : "Authenticate Admin"}</span>
               <ArrowRight size={14} />
@@ -2166,10 +2166,10 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#f8f7f4] text-zinc-900 selection:bg-black selection:text-white relative">
+    <div className="min-h-screen flex bg-[#FCF9F4] text-[#30231F] selection:bg-[#800020] selection:text-white relative">
       <AdminSidebar activeItem={activeItem} setActiveItem={setActiveItem} isOpen={isMobileSidebarOpen} onClose={() => setIsMobileSidebarOpen(false)} />
 
-      <main className="flex-1 min-w-0 w-full px-3 py-4 sm:px-6 md:px-8 lg:px-10 overflow-x-hidden overflow-y-auto bg-[#f8f7f4]">
+      <main className="flex-1 min-w-0 w-full px-3 py-4 sm:px-6 md:px-8 lg:px-10 overflow-x-hidden overflow-y-auto bg-[#FCF9F4]">
         <div className="max-w-7xl mx-auto w-full">
           <AdminHeader activeItem={activeItem} searchVal={searchVal} setSearchVal={setSearchVal} onMenuClick={() => setIsMobileSidebarOpen(true)} />
 
@@ -2178,7 +2178,7 @@ const Admin = () => {
               <button
                 type="button"
                 onClick={() => setIsProductModalOpen(true)}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-black text-white text-[13px] font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer active:scale-[0.99]"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#800020] text-white text-[13px] font-bold hover:bg-[#650018] transition-all flex items-center justify-center gap-2 shadow-md shadow-[#800020]/20 cursor-pointer active:scale-[0.99]"
               >
                 <Plus size={15} /> Add New Product
               </button>
@@ -2191,18 +2191,18 @@ const Admin = () => {
 
       {isProductModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-2.5 sm:p-4">
-          <div className="bg-white border border-zinc-200 rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-zinc-200 flex items-center justify-between bg-zinc-50/50">
+          <div className="bg-[#FCF9F4] border border-[#E9DCCB] rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-[#E9DCCB] flex items-center justify-between bg-[#FCF9F4]">
               <div>
-                <h2 className="text-sm sm:text-base font-bold text-zinc-900 uppercase tracking-wider">
+                <h2 className="text-sm sm:text-base font-serif font-bold text-[#30231F] uppercase tracking-wider">
                   Add New Fragrance Product
                 </h2>
-                <p className="text-[12px] text-zinc-500">Configure formulation, pricing variants, and notes</p>
+                <p className="text-[12px] text-[#75665D]">Configure formulation, pricing variants, and notes</p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsProductModalOpen(false)}
-                className="p-2 hover:bg-zinc-200/60 rounded-xl transition-colors text-zinc-500 hover:text-black cursor-pointer"
+                className="p-2 hover:bg-[#E9DCCB]/40 rounded-xl transition-colors text-[#75665D] hover:text-[#800020] cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -2218,17 +2218,17 @@ const Admin = () => {
 
       {isEditModalOpen && editingProduct && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white border border-zinc-200 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-            <div className="px-7 py-5 border-b border-zinc-200 flex items-center justify-between">
+          <div className="bg-[#FCF9F4] border border-[#E9DCCB] rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="px-7 py-5 border-b border-[#E9DCCB] flex items-center justify-between bg-[#FCF9F4]">
               <div>
-                <h2 className="text-base font-poppins   text-zinc-900 uppercase tracking-wider">
+                <h2 className="text-base font-serif font-bold text-[#30231F] uppercase tracking-wider">
                   Edit Fragrance Product
                 </h2>
               </div>
               <button
                 type="button"
                 onClick={() => setIsEditModalOpen(false)}
-                className="p-2 hover:bg-zinc-100 rounded-lg transition-colors text-zinc-500 hover:text-black cursor-pointer"
+                className="p-2 hover:bg-[#E9DCCB]/40 rounded-lg transition-colors text-[#75665D] hover:text-[#800020] cursor-pointer"
               >
                 <X size={20} />
               </button>

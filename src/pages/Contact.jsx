@@ -129,9 +129,9 @@ const Contact = () => {
         {formSubmitted && (
           <motion.div
             initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 bg-black text-white px-6 py-4 shadow-2xl flex items-center gap-3 border border-[#B8860B]"
+            className="fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 z-50 bg-black text-white px-6 py-4 shadow-2xl flex items-center gap-3 border border-[#800020]"
           >
-            <CheckCircle size={18} className="text-[#B8860B]" />
+            <CheckCircle size={18} className="text-[#800020]" />
             <div>
               <p className="text-[13px] md:text-[14px] font-bold uppercase tracking-wider text-white">Message Dispatched!</p>
               <p className="text-[12px] text-zinc-300">Our customer support team will contact you within 24 hours.</p>
@@ -147,8 +147,8 @@ const Contact = () => {
           {/* LEFT: Channels */}
           <motion.div {...fadeUp} className="lg:col-span-5 space-y-7">
             <div>
-              <span className="text-[12px] tracking-[0.3em] uppercase text-zinc-500 block mb-4">Reach Out</span>
-              <h2 className="text-3xl sm:text-4xl font-light text-zinc-900 tracking-widest leading-[1.05] uppercase">
+              <span className="text-[12px] tracking-[0.2em] uppercase text-zinc-500 block mb-4">Reach Out</span>
+              <h2 className="text-3xl sm:text-4xl font-light text-zinc-900 tracking-[0.06em] leading-[1.05] uppercase">
                 We're Here<br />to Help
               </h2>
               <p className="text-[14px] text-zinc-600 mt-4 leading-relaxed max-w-sm">
@@ -171,7 +171,7 @@ const Contact = () => {
                       <Icon size={16} strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12px] md:text-[13px] font-black uppercase tracking-[0.25em] text-[#b8860b] mb-0.5">{item.label}</p>
+                      <p className="text-[12px] md:text-[13px] font-black uppercase tracking-[0.15em] text-[#800020] mb-0.5">{item.label}</p>
                       <p className="text-[15px] text-zinc-900 truncate">{item.val}</p>
                       <p className="text-[12px] md:text-[13px] text-zinc-500 mt-0.5">{item.desc}</p>
                     </div>
@@ -196,8 +196,8 @@ const Contact = () => {
             <div className="bg-white border border-zinc-200 p-6 sm:p-8 md:p-10 shadow-sm">
               <div className="flex items-center justify-between gap-2 mb-6">
                 <div className="flex items-center gap-2">
-                  <MessageSquare size={14} className="text-[#B8860B]" />
-                  <h3 className="text-[12px] font-black uppercase tracking-[0.25em] text-zinc-700">Send an Inquiry</h3>
+                  <MessageSquare size={14} className="text-[#800020]" />
+                  <h3 className="text-[12px] font-black uppercase tracking-[0.15em] text-zinc-700">Send an Inquiry</h3>
                 </div>
                 <span className="text-[11px] text-zinc-400 uppercase font-mono tracking-wider">* All fields required</span>
               </div>
@@ -292,7 +292,7 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-4 bg-black hover:bg-[#B8860B] text-white font-black text-[12px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2.5 group cursor-pointer disabled:opacity-50"
+                  className="w-full py-4 bg-black hover:bg-[#800020] text-white font-black text-[12px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-2.5 group cursor-pointer disabled:opacity-50"
                 >
                   {loading ? (
                     <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />

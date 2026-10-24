@@ -1,50 +1,89 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const SectionHeader = ({ subtitle, title, description, action, border = true, center = false }) => {
+const SectionHeader = ({
+  eyebrow,
+  title,
+  accent,
+  accentWord,
+  onPrev,
+  onNext,
+  showArrows = false,
+  className = "",
+  description = null,
+  rightContent = null
+}) => {
+  let primaryText = title;
+  let maroonText = accent || accentWord;
+
+  if (!maroonText && typeof title === 'string') {
+    const words = title.trim().split(' ');
+    if (words.length > 1) {
+      maroonText = words.pop();
+      primaryText = words.join(' ');
+    }
+  }
+
   return (
-    <div className={`flex flex-col ${center ? 'items-center text-center' : 'md:flex-row md:items-end justify-between'} mb-6 md:mb-8 ${border ? 'border-b border-zinc-200 pb-4' : ''}`}>
-      <div className={center ? 'flex flex-col items-center' : ''}>
-        {subtitle && (
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-[12px] uppercase tracking-[0.3em] text-[#b8860b] block mb-2 font-subheading"
-          >
-            {subtitle}
-          </motion.span>
+    <div className={`w-full mb-7 md:mb-10 text-center relative ${className}`}>
+      {/* Optional Eyebrow */}
+      {eyebrow && (
+        <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.25em] text-[#B88D46] font-semibold block mb-2 font-sans">
+          {eyebrow}
+        </span>
+      )}
+
+      {/* Main Header Row with Gold Decorative Lines */}
+      <div className="relative flex items-center justify-center">
+        <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5">
+          {/* Left Decorative Gold Line */}
+          <span className="w-8 sm:w-12 md:w-14 h-[1px] bg-[#B88D46] inline-block opacity-85 shrink-0" />
+
+          {/* Title */}
+          <h2 className="text-xl sm:text-2xl lg:text-[26px] font-normal tracking-[0.1em] text-[#30231F] uppercase font-serif select-none">
+            {primaryText}{' '}
+            {maroonText && (
+              <span className="text-[#800020] font-serif font-normal">{maroonText}</span>
+            )}
+          </h2>
+
+          {/* Right Decorative Gold Line */}
+          <span className="w-8 sm:w-12 md:w-14 h-[1px] bg-[#B88D46] inline-block opacity-85 shrink-0" />
+        </div>
+
+        {/* Optional Right Action Controls (e.g. Carousel Prev/Next Arrows) */}
+        {(onPrev || onNext || rightContent) && (
+          <div className="hidden sm:flex items-center gap-2 absolute right-0 top-1/2 -translate-y-1/2 z-10">
+            {rightContent}
+            {onPrev && (
+              <button
+                type="button"
+                onClick={onPrev}
+                aria-label="Previous slide"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-[#E9E0D6] bg-white flex items-center justify-center text-[#75665D] hover:text-[#800020] hover:border-[#800020] transition-all cursor-pointer shadow-xs"
+              >
+                <ChevronLeft size={14} />
+              </button>
+            )}
+            {onNext && (
+              <button
+                type="button"
+                onClick={onNext}
+                aria-label="Next slide"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-[#E9E0D6] bg-white flex items-center justify-center text-[#75665D] hover:text-[#800020] hover:border-[#800020] transition-all cursor-pointer shadow-xs"
+              >
+                <ChevronRight size={14} />
+              </button>
+            )}
+          </div>
         )}
-        <motion.h2
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.1 }}
-          className="text-2xl md:text-3xl lg:text-4xl font-light text-zinc-900 tracking-widest uppercase leading-none font-heading"
-        >
-          {title}
-        </motion.h2>
       </div>
-      {(description || action) && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className={`flex flex-col ${center ? 'items-center mt-4 text-center' : 'md:items-end md:mt-0 mt-4'} max-w-sm`}
-        >
-          {description && (
-            <p className="text-zinc-600 text-[14px] md:text-sm font-light leading-relaxed mb-4 md:mb-0 md:text-right">
-              {description}
-            </p>
-          )}
-          {action && (
-            <div className="w-full flex md:justify-end">
-              {action}
-            </div>
-          )}
-        </motion.div>
+
+      {/* Optional Short Description */}
+      {description && (
+        <p className="text-[#75665D] text-xs sm:text-[13px] font-light leading-relaxed max-w-lg mx-auto mt-2.5">
+          {description}
+        </p>
       )}
     </div>
   );

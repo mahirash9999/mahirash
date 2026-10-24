@@ -39,7 +39,7 @@ const FilterSection = ({ title, children, defaultOpen = false, activeCount = 0 }
             {title}
           </span>
           {activeCount > 0 && (
-            <span className="w-5 h-5 rounded-full bg-[#b8860b] text-white shop-sidebar-badge flex items-center justify-center font-bold shrink-0">
+            <span className="w-5 h-5 rounded-full bg-[#800020] text-[#ffffff] shop-sidebar-badge flex items-center justify-center font-bold shrink-0">
               {activeCount}
             </span>
           )}
@@ -126,7 +126,7 @@ const ShopFilterSidebar = ({
       <div className="pb-4 border-b border-zinc-200 space-y-2.5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Filter size={15} className="text-[#b8860b]" />
+            <Filter size={15} className="text-[#800020]" />
             <h2 className="text-[14px] uppercase tracking-[0.2em] text-zinc-900 font-semibold">
               Refine By
             </h2>
@@ -136,7 +136,7 @@ const ShopFilterSidebar = ({
             <button
               type="button"
               onClick={resetFilters}
-              className="flex items-center gap-1.5 text-[12px] uppercase tracking-wider text-zinc-400 hover:text-[#b8860b] transition-colors"
+              className="flex items-center gap-1.5 text-[12px] uppercase tracking-wider text-zinc-400 hover:text-[#800020] transition-colors"
             >
               <RotateCcw size={11} />
               <span>Reset All</span>
@@ -145,8 +145,8 @@ const ShopFilterSidebar = ({
         </div>
 
         {activeCount > 0 && (
-          <div className="flex items-center justify-between px-3 py-1.5 bg-[#b8860b]/10 border border-[#b8860b]/30 rounded-sm">
-            <span className="text-[12px] font-bold uppercase tracking-widest text-[#b8860b] shop-sidebar-badge">
+          <div className="flex items-center justify-between px-3 py-1.5 bg-[#800020]/10 border border-[#800020]/30 rounded-sm">
+            <span className="text-[12px] font-bold uppercase tracking-widest text-[#800020] shop-sidebar-badge">
               {activeCount} Filter{activeCount > 1 ? "s" : ""} Active
             </span>
             <button
@@ -184,7 +184,7 @@ const ShopFilterSidebar = ({
                       }`}
                   >
                     <span className="shop-sidebar-label">{b}</span>
-                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                    {isSelected && <Check size={13} className="text-[#800020] shrink-0" />}
                   </button>
                 );
               })}
@@ -212,7 +212,7 @@ const ShopFilterSidebar = ({
                     }`}
                 >
                   <span className="shop-sidebar-label">{cat}</span>
-                  {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                  {isSelected && <Check size={13} className="text-[#800020] shrink-0" />}
                 </button>
               );
             })}
@@ -244,7 +244,7 @@ const ShopFilterSidebar = ({
                       }`}
                   >
                     <span className="shop-sidebar-label">{familyName}</span>
-                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                    {isSelected && <Check size={13} className="text-[#800020] shrink-0" />}
                   </button>
                 );
               })}
@@ -273,7 +273,7 @@ const ShopFilterSidebar = ({
                       }`}
                   >
                     <span className="shop-sidebar-label">{mat}</span>
-                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                    {isSelected && <Check size={13} className="text-[#800020] shrink-0" />}
                   </button>
                 );
               })}
@@ -302,7 +302,7 @@ const ShopFilterSidebar = ({
                       }`}
                   >
                     <span className="shop-sidebar-label">{avail}</span>
-                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                    {isSelected && <Check size={13} className="text-[#800020] shrink-0" />}
                   </button>
                 );
               })}
@@ -331,7 +331,7 @@ const ShopFilterSidebar = ({
                       }`}
                   >
                     <span className="shop-sidebar-label">{g}</span>
-                    {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                    {isSelected && <Check size={13} className="text-[#800020] shrink-0" />}
                   </button>
                 );
               })}
@@ -354,7 +354,7 @@ const ShopFilterSidebar = ({
             {/* Price values readout */}
             <div className="flex items-center justify-between text-[14px] font-mono text-zinc-700">
               <span>₹{filters.minPrice?.toLocaleString("en-IN")}</span>
-              <span className="text-[#b8860b]">
+              <span className="text-[#800020]">
                 ₹{(filters.maxPrice ?? maxPriceLimit)?.toLocaleString("en-IN")}
               </span>
             </div>
@@ -378,7 +378,7 @@ const ShopFilterSidebar = ({
                 onTouchStart={e => e.stopPropagation()}
                 onTouchMove={e => e.stopPropagation()}
                 style={{ touchAction: 'none' }}
-                className="w-full h-1 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-[#b8860b]"
+                className="w-full h-1 bg-zinc-200 rounded-lg appearance-none cursor-pointer accent-[#800020]"
               />
             </div>
 
@@ -412,7 +412,7 @@ const ShopFilterSidebar = ({
                       }
                     }}
                     className={`py-2 px-2 border text-center uppercase transition-all rounded-sm flex items-center justify-center ${isSelected
-                      ? "border-[#b8860b] bg-[#b8860b]/10 text-[#b8860b]"
+                      ? "border-[#800020] bg-[#800020]/10 text-[#800020]"
                       : "border-zinc-300 text-zinc-600 hover:border-black hover:text-black"
                       }`}
                   >
@@ -478,11 +478,11 @@ const ShopFilterSidebar = ({
                     : "text-zinc-600 hover:text-black hover:bg-zinc-50"
                     }`}
                 >
-                  <div className="flex items-center gap-1.5 text-[#b8860b]">
+                  <div className="flex items-center gap-1.5 text-[#800020]">
                     <Star size={12} fill="currentColor" />
                     <span className="shop-sidebar-label">{stars} & Above</span>
                   </div>
-                  {isSelected && <Check size={13} className="text-[#b8860b] shrink-0" />}
+                  {isSelected && <Check size={13} className="text-[#800020] shrink-0" />}
                 </button>
               );
             })}
@@ -522,7 +522,7 @@ const ShopFilterSidebar = ({
               className="relative w-full max-w-xs sm:max-w-sm bg-[#f5f5f5] border-r border-zinc-200 h-full p-6 flex flex-col justify-between shadow-2xl z-10 text-zinc-900"
             >
               <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
-                <span className="text-[14px]   uppercase tracking-[0.2em] text-[#b8860b]">
+                <span className="text-[14px]   uppercase tracking-[0.2em] text-[#800020]">
                   Filter Products
                 </span>
                 <button
@@ -551,7 +551,7 @@ const ShopFilterSidebar = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-2/3 py-3 bg-black text-white text-[12px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all"
+                  className="w-2/3 py-3 bg-[#800020] hover:bg-[#66001a] text-[#ffffff] text-[12px] font-black uppercase tracking-widest transition-all cursor-pointer shadow-md"
                 >
                   Show ({totalResults})
                 </button>

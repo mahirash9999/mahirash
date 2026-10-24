@@ -197,13 +197,11 @@ const NewsManager = ({ isDarkMode = false }) => {
   };
 
   // Styling classes based on dark/light theme
-  const cardBg = isDarkMode ? "bg-slate-800 border-slate-700" : "bg-white border-zinc-200/80 shadow-sm";
-  const modalBg = isDarkMode ? "bg-slate-900 border-slate-700 text-white" : "bg-white border-zinc-100 text-zinc-800";
-  const inputBg = isDarkMode
-    ? "bg-slate-800 border-slate-700 text-white focus:border-[#b8860b]"
-    : "bg-zinc-50 border-zinc-200 text-zinc-900 focus:border-[#b8860b]";
-  const textMuted = isDarkMode ? "text-slate-400" : "text-zinc-500";
-  const textHeader = isDarkMode ? "text-white" : "text-zinc-900";
+  const cardBg = "bg-white border-[#E9DCCB] shadow-sm";
+  const modalBg = "bg-white border-[#E9DCCB] text-[#30231F]";
+  const inputBg = "bg-[#FCF9F4] border-[#E9DCCB] text-[#30231F] focus:border-[#800020] focus:ring-1 focus:ring-[#800020]/20";
+  const textMuted = "text-[#75665D]";
+  const textHeader = "text-[#30231F]";
 
   return (
     <div className="space-y-6">
@@ -211,16 +209,16 @@ const NewsManager = ({ isDarkMode = false }) => {
       <div className={`p-6 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 ${cardBg}`}>
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Video className="text-[#b8860b]" size={22} />
-            <h2 className={`text-xl font-bold ${textHeader}`}>Instagram Video Reels Manager</h2>
+            <Video className="text-[#800020]" size={22} />
+            <h2 className={`text-xl font-serif font-bold ${textHeader}`}>Instagram Video Reels Manager</h2>
           </div>
           <p className={`text-sm ${textMuted}`}>
-            Upload videos, manage Instagram reel links, and display captivating video reels in the "Moments That Inspire Us" section on the homepage (`TheJournal.jsx`).
+            Upload videos, manage Instagram reel links, and display captivating video reels in the "Moments That Inspire Us" section on the homepage.
           </p>
         </div>
         <button
           onClick={openAddModal}
-          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#b8860b] text-white font-semibold rounded-xl hover:bg-black transition-all shadow-md shadow-[#b8860b]/20 active:scale-95 text-sm cursor-pointer"
+          className="flex items-center justify-center gap-2 px-5 py-2.5 bg-[#800020] text-white font-semibold rounded-xl hover:bg-[#650018] transition-all shadow-md shadow-[#800020]/25 active:scale-95 text-sm cursor-pointer"
         >
           <Plus size={16} />
           <span>Add Video / Reel</span>
@@ -509,18 +507,18 @@ const NewsManager = ({ isDarkMode = false }) => {
                 </div>
 
                 {/* Form Buttons */}
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-200">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E9DCCB]">
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2.5 rounded-xl border border-zinc-300 text-sm font-semibold hover:bg-zinc-100 transition-colors cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl border border-[#E9DCCB] text-sm font-semibold hover:bg-[#FCF9F4] text-[#75665D] transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={loading || uploadingVideo}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-[#b8860b] text-white font-semibold rounded-xl text-sm hover:bg-black transition-all disabled:opacity-50 cursor-pointer"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-[#800020] text-white font-semibold rounded-xl text-sm hover:bg-[#650018] shadow-md shadow-[#800020]/25 transition-all disabled:opacity-50 cursor-pointer"
                   >
                     {loading && <Loader2 size={14} className="animate-spin" />}
                     <span>{editingReel ? "Save Changes" : "Create Reel"}</span>

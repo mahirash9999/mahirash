@@ -325,7 +325,7 @@ const Orders = () => {
             <ArrowLeft size={14} /> Back to Dashboard
           </Link>
 
-          <span className="text-[14px] uppercase tracking-widest text-[#b8860b] font-mono  ">
+          <span className="text-[14px] uppercase tracking-wider text-[#800020] font-mono  ">
             Total Orders: {orders.length}
           </span>
         </div>
@@ -428,7 +428,7 @@ const Orders = () => {
                         <Package size={18} strokeWidth={1.5} />
                       </div>
                       <div>
-                        <span className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b]">
+                        <span className="text-[12px] font-black uppercase tracking-[0.15em] text-[#800020]">
                           Order Reference
                         </span>
                         <h3 className="text-sm   text-zinc-900 uppercase tracking-wider font-mono">
@@ -456,7 +456,7 @@ const Orders = () => {
                       <button
                         type="button"
                         onClick={() => handleDownloadInvoice(order)}
-                        className="px-3.5 py-2 bg-white border border-zinc-300 hover:bg-[#b8860b] hover:text-white text-[#b8860b] text-[12px] font-bold uppercase tracking-widest transition-all flex items-center gap-2"
+                        className="px-3.5 py-2 bg-white border border-zinc-300 hover:bg-[#800020] hover:text-white text-[#800020] text-[12px] font-bold uppercase tracking-wider transition-all flex items-center gap-2"
                         title="Download official tax invoice PDF"
                       >
                         <Download size={12} />
@@ -570,7 +570,7 @@ const Orders = () => {
               {/* Modal Header */}
               <div className="flex items-center justify-between pb-4 border-b border-zinc-200">
                 <div>
-                  <span className="text-[12px] font-black uppercase tracking-[0.25em] text-[#b8860b]">
+                  <span className="text-[12px] font-black uppercase tracking-[0.15em] text-[#800020]">
                     Order Specification
                   </span>
                   <h3 className="text-base   text-zinc-900 uppercase tracking-wider font-mono">
@@ -605,7 +605,7 @@ const Orders = () => {
               {/* Shipping & Payment Details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-zinc-50 p-4 border border-zinc-200 text-[14px]">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-[#b8860b]   uppercase tracking-wider text-[12px] mb-1">
+                  <div className="flex items-center gap-1.5 text-[#800020] uppercase tracking-wider text-[12px] mb-1">
                     <MapPin size={12} /> Shipping Address
                   </div>
                   <p className="  text-zinc-900 uppercase">{selectedOrder.shipping?.name || user?.displayName}</p>
@@ -613,11 +613,11 @@ const Orders = () => {
                   <p className="text-zinc-600">
                     {selectedOrder.shipping?.city}, {selectedOrder.shipping?.state} - {selectedOrder.shipping?.pincode}
                   </p>
-                  <p className="text-[#b8860b] font-mono text-[12px] pt-1">Phone: {selectedOrder.shipping?.phone || 'N/A'}</p>
+                  <p className="text-[#800020] font-mono text-[12px] pt-1">Phone: {selectedOrder.shipping?.phone || 'N/A'}</p>
                 </div>
 
                 <div className="space-y-1">
-                  <div className="flex items-center gap-1.5 text-[#b8860b]   uppercase tracking-wider text-[12px] mb-1">
+                  <div className="flex items-center gap-1.5 text-[#800020] uppercase tracking-wider text-[12px] mb-1">
                     <CreditCard size={12} /> Payment Info
                   </div>
                   <p className="text-zinc-700">Method: <strong className="text-zinc-900 uppercase">{selectedOrder.paymentMethod || 'Online'}</strong></p>

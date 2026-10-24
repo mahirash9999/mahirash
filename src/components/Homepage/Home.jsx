@@ -13,10 +13,7 @@ import SEOHead from '../SEOHead';
 
 const Home = () => {
   return (
-    <main className="bg-[#FAF8F5] text-[#111111] min-h-screen relative overflow-hidden selection:bg-[#B8860B] selection:text-white">
-      {/* Ambient Radial Golden Light Lighting Effects */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(184,134,11,0.06)_0%,transparent_70%)] pointer-events-none z-0" />
-      <div className="fixed bottom-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(circle_at_bottom_right,rgba(184,134,11,0.04)_0%,transparent_60%)] pointer-events-none z-0" />
+    <main className="bg-[#FCF9F4] text-[#30231F] min-h-screen relative overflow-hidden selection:bg-[#800020] selection:text-white">
 
       <SEOHead
         title="Mahirash Parfumerie | Haute Parfumerie & Luxury Artisan Extraits"

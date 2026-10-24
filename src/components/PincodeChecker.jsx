@@ -66,7 +66,7 @@ const PincodeChecker = ({
   return (
     <div className={`pincode-checker-root ${className}`}>
       <div className="flex items-center gap-2 mb-2">
-        <MapPin size={13} className="text-[#b8860b]" />
+        <MapPin size={13} className="text-[#800020]" />
         <span className="text-[12px] font-semibold text-zinc-800 uppercase tracking-widest">
           Check Delivery & ETA
         </span>
@@ -114,8 +114,8 @@ const PincodeChecker = ({
               </p>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[12px] text-zinc-600">
                 <span className="flex items-center gap-1 text-zinc-900 font-semibold">
-                  <Clock size={11} className="text-[#b8860b]" />
-                  Delivery by: <span className="text-[#b8860b]">{result.estimatedDeliveryDate}</span>
+                  <Clock size={11} className="text-[#800020]" />
+                  Delivery by: <span className="text-[#800020]">{result.estimatedDeliveryDate}</span>
                 </span>
                 {result.courierName && (
                   <span className="flex items-center gap-1">

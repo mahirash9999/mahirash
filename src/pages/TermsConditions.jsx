@@ -19,7 +19,7 @@ const TermsConditions = () => {
       <div className="max-w-4xl mx-auto px-6 md:px-12 py-12 md:py-20 space-y-12">
         {/* Intro */}
         <section className="space-y-4">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             1. Overview & Agreement
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
@@ -29,7 +29,7 @@ const TermsConditions = () => {
 
         {/* Intellectual Property */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             2. Intellectual Property Rights
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
@@ -39,7 +39,7 @@ const TermsConditions = () => {
 
         {/* Orders & Pricing */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             3. Orders, Pricing & Product Availability
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
@@ -52,7 +52,7 @@ const TermsConditions = () => {
 
         {/* Shipping & Delivery */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             4. Shipping, Delivery & Transit
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
@@ -62,7 +62,7 @@ const TermsConditions = () => {
 
         {/* Authenticity Guarantee & Quality Commitment */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             5. Authenticity Guarantee & Quality Commitment
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
@@ -72,7 +72,7 @@ const TermsConditions = () => {
 
         {/* Payment Methods */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             6. Accepted Payment Methods
           </h2>
           <div className="grid md:grid-cols-2 gap-4">
@@ -91,7 +91,7 @@ const TermsConditions = () => {
 
         {/* User Obligations */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
-          <h2 className="text-xl font-light uppercase tracking-widest text-[#b8860b]">
+          <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
             7. Governing Law & Contact
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">

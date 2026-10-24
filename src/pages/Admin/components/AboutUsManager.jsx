@@ -57,16 +57,16 @@ const AboutUsManager = () => {
     }
 
     return (
-        <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm max-w-5xl mx-auto">
+        <div className="bg-white p-6 rounded-2xl border border-[#E9DCCB] shadow-sm max-w-5xl mx-auto">
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h2 className="text-xl font-semibold text-zinc-900">About Us Page Editor</h2>
-                    <p className="text-sm text-zinc-500 mt-1">Design your story just like WordPress.</p>
+                    <h2 className="text-xl font-serif font-bold text-[#30231F]">About Us Page Editor</h2>
+                    <p className="text-sm text-[#75665D] mt-1">Design your story just like WordPress.</p>
                 </div>
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="px-6 py-2 bg-black text-white hover:bg-zinc-800 disabled:opacity-50 transition-colors uppercase tracking-widest text-[13px] font-bold rounded-lg"
+                    className="px-6 py-2.5 bg-[#800020] text-white hover:bg-[#650018] disabled:opacity-50 transition-all uppercase tracking-widest text-[13px] font-bold rounded-xl shadow-md shadow-[#800020]/25 cursor-pointer"
                 >
                     {saving ? 'Saving...' : 'Save Changes'}
                 </button>

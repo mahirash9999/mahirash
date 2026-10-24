@@ -48,8 +48,8 @@ const AnimatedSearchBox = ({ searchQuery, setSearchQuery, onSubmit, onFocus }) =
 
   return (
     <form onSubmit={onSubmit} className="relative flex items-center w-full">
-      <div className="relative w-full flex items-center bg-white/90 border border-zinc-300 focus-within:border-[#c9a962] rounded-none px-3.5 py-2.5 transition-all duration-300 shadow-sm">
-        <Search size={17} className="text-[#c9a962] shrink-0 mr-2.5" strokeWidth={2} />
+      <div className="relative w-full flex items-center bg-white/90 border border-zinc-300 focus-within:border-[#800020] rounded-none px-3.5 py-2.5 transition-all duration-300 shadow-sm">
+        <Search size={17} className="text-[#800020] shrink-0 mr-2.5" strokeWidth={2} />
         <input
           type="text"
           value={searchQuery}
@@ -69,7 +69,7 @@ const AnimatedSearchBox = ({ searchQuery, setSearchQuery, onSubmit, onFocus }) =
                 className="text-zinc-400 text-[12px] tracking-[0.12em] uppercase whitespace-nowrap font-normal flex items-center gap-1.5"
               >
                 <span>Search</span>
-                <span className="text-[#c9a962] font-semibold">"{SEARCH_PLACEHOLDERS[index]}"</span>
+                <span className="text-[#800020] font-semibold">"{SEARCH_PLACEHOLDERS[index]}"</span>
               </motion.span>
             </AnimatePresence>
           </div>
@@ -101,11 +101,11 @@ const Header = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [globalAlerts, setGlobalAlerts] = useState([
-    'COMPLIMENTARY EXPRESS SHIPPING OVER ₹1999',
-    'HAUTE PARFUMERIE • CRAFTED WITH RARE BOTANICAL ESSENCES',
-    'SIGNATURE EXTRAITS DE PARFUM',
-    '100% AUTHENTIC FINE FRAGRANCES',
-    'EXPLORE OUR EXCLUSIVE DISCOVERY SETS',
+    'LUXURY PERFUMES',
+    'FREE SHIPPING ON ALL ORDERS',
+    'PREMIUM FRAGRANCES FOR EVERY MOOD',
+    'EXCLUSIVE OFFERS',
+    '100% AUTHENTIC PRODUCTS',
   ]);
 
   const location = useLocation();
@@ -259,8 +259,9 @@ const Header = () => {
 
   // Unified Navigation Menu items used for both Desktop and Mobile Header
   const MAIN_NAV_ITEMS = [
-    { id: 'shop', name: 'Shop All', path: '/shop', type: 'link', position: 'left' },
-    { id: 'collections', name: 'Collections', type: 'dropdown', position: 'left' },
+    { id: 'shop', name: 'SHOP ALL', path: '/shop', type: 'link', position: 'left' },
+    { id: 'collections', name: 'COLLECTIONS', type: 'dropdown', position: 'left' },
+    { id: 'about', name: 'ABOUT', path: '/about', type: 'link', position: 'left' },
   ];
 
   const leftNavItems = MAIN_NAV_ITEMS.filter(item => item.position === 'left');
@@ -270,33 +271,35 @@ const Header = () => {
     <>
       <header className="fixed top-0 left-0 w-full z-[100] flex flex-col pointer-events-auto font-sans">
 
-        {/* ── ANNOUNCEMENT TICKER BAR (Active on both Desktop and Mobile) ── */}
+        {/* ── ANNOUNCEMENT TICKER BAR ── */}
         <motion.div
           style={{ height: topbarHeight, opacity: topbarOpacity }}
-          className="bg-[#0b0b0b] text-[#e5d5ab] text-[12px] sm:text-[10.5px] font-semibold tracking-[0.22em] uppercase overflow-hidden flex items-center border-b border-[#c9a962]/20"
+          className="bg-[#650018] text-[#FCF9F4] text-[10px] sm:text-[10.5px] font-medium tracking-[0.2em] uppercase overflow-hidden flex items-center justify-between px-3 sm:px-6 border-b border-[#800020]/40 relative z-20"
         >
+          <span className="text-white/60 text-xs cursor-pointer select-none hidden sm:inline">&lsaquo;</span>
           <motion.div
             animate={{ x: ['0%', '-50%'] }}
             transition={{ repeat: Infinity, duration: 32, ease: 'linear' }}
-            className="flex gap-16 whitespace-nowrap"
+            className="flex gap-10 sm:gap-14 whitespace-nowrap mx-auto"
           >
             {[...globalAlerts, ...globalAlerts].map((item, i) => (
               <span key={i} className="flex items-center gap-6">
-                <span className="text-[#c9a962] text-[12px] font-serif">✦</span>
-                <span className="hover:text-white transition-colors cursor-pointer">{item}</span>
+                <span className="hover:text-white transition-colors">{item}</span>
+                <span className="text-white/50 text-[10px]">|</span>
               </span>
             ))}
           </motion.div>
+          <span className="text-white/60 text-xs cursor-pointer select-none hidden sm:inline">&rsaquo;</span>
         </motion.div>
 
         {/* ── MAIN NAV BAR ── */}
         <motion.nav
-          className={`transition-all duration-500 border-b w-full ${isScrolled
-            ? 'bg-white/95 backdrop-blur-xl shadow-lg border-zinc-200/80 text-zinc-900 py-3.5 md:py-4'
-            : 'bg-white/90 backdrop-blur-md border-zinc-200/60 text-zinc-900 py-4 md:py-5'
+          className={`transition-all duration-300 border-b w-full ${isScrolled
+            ? 'bg-[#FCF9F4]/98 backdrop-blur-xl shadow-sm border-[#E9DCCB] text-[#30231F] py-3 md:py-3.5'
+            : 'bg-[#FCF9F4] border-[#E9DCCB] text-[#30231F] py-3.5 md:py-4'
             } px-4 sm:px-8 md:px-12`}
         >
-          <div className="max-w-[1800px] mx-auto w-full grid grid-cols-3 items-center">
+          <div className="max-w-[1450px] mx-auto w-full grid grid-cols-3 items-center">
 
             {/* Left Desktop Nav */}
             <div className="hidden lg:flex items-center gap-8 justify-start">
@@ -310,7 +313,7 @@ const Header = () => {
                         }`}
                     >
                       {item.name}
-                      <span className={`absolute bottom-0 left-0 h-[1.5px] bg-[#c9a962] transition-all duration-300 ${location.pathname === item.path && !location.search ? 'w-full' : 'w-0 group-hover:w-full'
+                      <span className={`absolute bottom-0 left-0 h-[2px] bg-[#800020] transition-all duration-300 ${location.pathname === item.path && !location.search ? 'w-full' : 'w-0 group-hover:w-full'
                         }`} />
                     </Link>
                   );
@@ -331,9 +334,9 @@ const Header = () => {
                           }`}
                       >
                         <span>{item.name}</span>
-                        <ChevronDown size={12} className={`transition-transform duration-300 ${isCollectionsDropdownOpen ? 'rotate-180 text-[#c9a962]' : 'text-zinc-400 group-hover:text-zinc-900'
+                        <ChevronDown size={12} className={`transition-transform duration-300 ${isCollectionsDropdownOpen ? 'rotate-180 text-[#800020]' : 'text-zinc-400 group-hover:text-zinc-900'
                           }`} />
-                        <span className={`absolute bottom-0 left-0 h-[1.5px] bg-[#c9a962] transition-all duration-300 ${location.search.includes('category=') ? 'w-full' : 'w-0 group-hover:w-full'
+                        <span className={`absolute bottom-0 left-0 h-[1.5px] bg-[#800020] transition-all duration-300 ${location.search.includes('category=') ? 'w-full' : 'w-0 group-hover:w-full'
                           }`} />
                       </button>
 
@@ -345,16 +348,16 @@ const Header = () => {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 8, scale: 0.97 }}
                             transition={{ duration: 0.22, ease: easing }}
-                            className="absolute top-full left-0 w-64 bg-white/98 backdrop-blur-xl border border-zinc-200/90 shadow-2xl p-3 z-50 rounded-none border-t-2 border-t-[#c9a962]"
+                            className="absolute top-full left-0 w-64 bg-white/98 backdrop-blur-xl border border-zinc-200/90 shadow-2xl p-3 z-50 rounded-none border-t-2 border-t-[#800020]"
                           >
                             <div className="py-1">
                               <button
                                 type="button"
                                 onClick={() => handleCollectionSelect('All')}
-                                className="w-full text-left px-3.5 py-2.5 text-[12px] font-bold uppercase tracking-[0.2em] text-[#c9a962] hover:bg-zinc-50 transition-colors border-b border-zinc-100 mb-1.5 flex items-center justify-between group"
+                                className="w-full text-left px-3.5 py-2.5 text-[12px] font-bold uppercase tracking-[0.2em] text-[#800020] hover:bg-[#800020]/5 transition-colors border-b border-zinc-100 mb-1.5 flex items-center justify-between group"
                               >
                                 <span className="flex items-center gap-2">
-                                  <Sparkles size={13} className="text-[#c9a962]" />
+                                  <Sparkles size={13} className="text-[#800020]" />
                                   Explore All Scents
                                 </span>
                                 <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
@@ -366,10 +369,10 @@ const Header = () => {
                                     key={col}
                                     type="button"
                                     onClick={() => handleCollectionSelect(col)}
-                                    className="w-full text-left px-3.5 py-2 text-[11.5px] font-medium uppercase tracking-[0.14em] text-zinc-700 hover:text-black hover:bg-zinc-100/80 transition-colors flex items-center justify-between group rounded-none"
+                                    className="w-full text-left px-3.5 py-2 text-[11.5px] font-medium uppercase tracking-[0.14em] text-zinc-700 hover:text-[#800020] hover:bg-zinc-50 transition-colors flex items-center justify-between group rounded-none"
                                   >
                                     <span>{col}</span>
-                                    <span className="opacity-0 group-hover:opacity-100 text-[#c9a962] text-[12px] transition-opacity">→</span>
+                                    <span className="opacity-0 group-hover:opacity-100 text-[#800020] text-[12px] transition-opacity">→</span>
                                   </button>
                                 ))}
                               </div>
@@ -406,158 +409,102 @@ const Header = () => {
               </Link>
             </div>
 
-            {/* Right Desktop Nav: Social Icons & Action Controls */}
-            <div className="hidden lg:flex items-center gap-6 justify-end">
-              <div className="flex items-center gap-3.5">
-                <a
-                  href={siteSettings?.instagram_url || "https://www.instagram.com/mahirashparfumerie/"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Instagram"
-                  title="Follow us on Instagram"
-                  className="p-1 text-zinc-600 hover:text-[#B8860B] hover:scale-110 transition-all duration-300"
-                >
-                  <Instagram size={17} strokeWidth={1.8} />
-                </a>
-                <a
-                  href={siteSettings?.facebook_url || "https://www.facebook.com/mahirashparfumerie/"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Facebook"
-                  title="Follow us on Facebook"
-                  className="p-1 text-zinc-600 hover:text-[#B8860B] hover:scale-110 transition-all duration-300"
-                >
-                  <Facebook size={17} strokeWidth={1.8} />
-                </a>
-                <a
-                  href={siteSettings?.twitter_url || "https://x.com/MahirashParfum"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Twitter"
-                  title="Follow us on Twitter"
-                  className="p-1 text-zinc-600 hover:text-[#B8860B] hover:scale-110 transition-all duration-300"
-                >
-                  <Twitter size={17} strokeWidth={1.8} />
-                </a>
-              </div>
+            {/* Right Desktop Nav: Action Controls (Search, Account, Wishlist, Cart) */}
+            <div className="hidden lg:flex items-center gap-5 justify-end">
+              {/* Search Toggle */}
+              <button
+                onClick={() => setIsSearchActive(!isSearchActive)}
+                className="p-1.5 text-[#30231F] hover:text-[#800020] transition-colors relative"
+                aria-label="Search"
+                title="Search products"
+              >
+                <Search size={18} strokeWidth={1.8} />
+              </button>
 
-              {/* Action Icons */}
-              <div className="flex items-center gap-2.5 ml-2 border-l border-zinc-200/80 pl-6">
-                {/* Search Toggle */}
-                <button
-                  onClick={() => setIsSearchActive(!isSearchActive)}
-                  className="p-2 text-zinc-700 hover:text-black hover:scale-105 transition-all duration-300 relative group"
-                  aria-label="Search"
-                  title="Search products"
-                >
-                  <Search size={19} strokeWidth={1.75} />
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#c9a962] rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
+              {/* Account Icon */}
+              <Link
+                to={user ? "/account" : "/login"}
+                className="p-1.5 text-[#30231F] hover:text-[#800020] transition-colors relative"
+                aria-label="Account"
+                title="My Account"
+              >
+                <User size={18} strokeWidth={1.8} />
+              </Link>
 
-                {/* Wishlist Icon */}
-                <Link
-                  to="/wishlist"
-                  className="p-2 text-zinc-700 hover:text-black hover:scale-105 transition-all duration-300 relative group"
-                  aria-label="Wishlist"
-                  title="Wishlist"
-                >
-                  <Heart size={19} strokeWidth={1.75} />
-                  {wishlistCount > 0 && (
-                    <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[12px] font-black rounded-full flex items-center justify-center border border-white shadow-sm">
-                      {wishlistCount}
-                    </span>
-                  )}
-                </Link>
-
-                {/* Cart Icon */}
-                <Link
-                  to="/cart"
-                  className="p-2 text-zinc-700 hover:text-black hover:scale-105 transition-all duration-300 relative group"
-                  aria-label="Cart"
-                  title="Shopping Bag"
-                >
-                  <ShoppingBag size={19} strokeWidth={1.75} />
-                  {cartCount > 0 && (
-                    <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[12px] font-black rounded-full flex items-center justify-center border border-white shadow-sm">
-                      {cartCount}
-                    </span>
-                  )}
-                </Link>
-
-                {/* Account Icon */}
-                <Link
-                  to="/account"
-                  className="p-2 text-zinc-700 hover:text-black hover:scale-105 transition-all duration-300 relative"
-                  aria-label="Account"
-                  title="My Account"
-                >
-                  <User size={19} strokeWidth={1.75} />
-                </Link>
-              </div>
-            </div>
-
-            {/* Mobile Right Action Icons */}
-            <div className="flex lg:hidden justify-end items-center gap-1.5">
-              <Link to="/wishlist" className="p-2 text-zinc-800 hover:text-black relative" aria-label="Wishlist">
-                <Heart size={21} strokeWidth={1.6} />
+              {/* Wishlist Icon */}
+              <Link
+                to="/wishlist"
+                className="p-1.5 text-[#30231F] hover:text-[#800020] transition-colors relative"
+                aria-label="Wishlist"
+                title="Wishlist"
+              >
+                <Heart size={18} strokeWidth={1.8} />
                 {wishlistCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[12px] font-bold rounded-full flex items-center justify-center border border-white">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#800020] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                     {wishlistCount}
                   </span>
                 )}
               </Link>
 
-              <Link to="/cart" className="p-2 text-zinc-800 hover:text-black relative" aria-label="Cart">
-                <ShoppingBag size={21} strokeWidth={1.6} />
-                {cartCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-[#c9a962] text-black text-[12px] font-bold rounded-full flex items-center justify-center border border-white">
-                    {cartCount}
+              {/* Cart Icon */}
+              <Link
+                to="/cart"
+                className="p-1.5 text-[#30231F] hover:text-[#800020] transition-colors relative"
+                aria-label="Cart"
+                title="Shopping Bag"
+              >
+                <ShoppingBag size={18} strokeWidth={1.8} />
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#800020] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              </Link>
+            </div>
+
+            {/* Mobile Right Action Icons */}
+            <div className="flex lg:hidden justify-end items-center gap-1">
+              <button
+                onClick={() => setIsSearchActive(!isSearchActive)}
+                className="p-1.5 text-zinc-800 hover:text-[#800020] relative"
+                aria-label="Search"
+              >
+                <Search size={20} strokeWidth={1.8} />
+              </button>
+
+              <Link to="/wishlist" className="p-1.5 text-zinc-800 hover:text-[#800020] relative" aria-label="Wishlist">
+                <Heart size={20} strokeWidth={1.8} />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#800020] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {wishlistCount}
                   </span>
                 )}
+              </Link>
+
+              <Link to="/cart" className="p-1.5 text-zinc-800 hover:text-[#800020] relative" aria-label="Cart">
+                <ShoppingBag size={20} strokeWidth={1.8} />
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#800020] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
               </Link>
             </div>
 
           </div>
         </motion.nav>
 
-        {/* ── MOBILE SEARCH & PINCODE QUICK BAR ── */}
+        {/* ── MOBILE SEARCH & PINCODE QUICK BAR (Expands on Search Active) ── */}
         <motion.div
           initial={false}
           animate={{
-            height: (showSearchBar || isSearchActive) ? 'auto' : 0,
-            opacity: (showSearchBar || isSearchActive) ? 1 : 0,
+            height: isSearchActive ? 'auto' : 0,
+            opacity: isSearchActive ? 1 : 0,
           }}
-          transition={{ duration: 0.35, ease: easing }}
-          className="overflow-hidden block md:hidden bg-[#fbf9f5] border-b border-zinc-200/80 w-full"
+          transition={{ duration: 0.3, ease: easing }}
+          className="overflow-hidden block md:hidden bg-white border-b border-zinc-200/80 w-full"
         >
-          {/* Top Line: Pincode Checker */}
-          <div className="px-4 pt-2.5 pb-1 text-[12px] text-zinc-700 flex items-center justify-between border-b border-zinc-200/50">
-            <div className="flex items-center gap-1.5">
-              <MapPin size={12} className="text-[#c9a962]" />
-              <span className="font-medium text-zinc-800">Enter Pincode</span>
-              <span className="text-zinc-400">•</span>
-              <button
-                type="button"
-                onClick={() => {
-                  const pin = prompt("Enter 6-digit Pincode to check express delivery availability:");
-                  if (pin) alert(`Pincode ${pin}: Express fragrance delivery available in 24-48 hrs!`);
-                }}
-                className="underline text-zinc-800 font-semibold hover:text-[#c9a962] transition-colors cursor-pointer"
-              >
-                check availability
-              </button>
-            </div>
-            <span className="text-[12px] uppercase tracking-widest text-[#c9a962] font-bold">EXPRESS</span>
-          </div>
-
           <div className="px-4 pb-3 pt-2">
             <AnimatedSearchBox
               searchQuery={searchQuery}
               setSearchQuery={(val) => {
                 setSearchQuery(val);
-                if (!isSearchActive && val.trim().length > 0) {
-                  setIsSearchActive(true);
-                }
               }}
               onSubmit={handleSearchSubmit}
               onFocus={() => setIsSearchActive(true)}
@@ -573,15 +520,15 @@ const Header = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.3, ease: easing }}
-              className="absolute left-0 top-full w-full bg-white/98 backdrop-blur-2xl border-b border-zinc-200 px-5 md:px-14 py-8 z-[90] shadow-2xl max-h-[85vh] overflow-y-auto text-zinc-900 border-t-2 border-t-[#c9a962]"
+              className="absolute left-0 top-full w-full bg-white/98 backdrop-blur-2xl border-b border-zinc-200 px-5 md:px-14 py-8 z-[90] shadow-2xl max-h-[85vh] overflow-y-auto text-zinc-900 border-t-2 border-t-[#800020]"
             >
               <div className="max-w-4xl mx-auto space-y-6">
 
                 {/* Overlay Header for Mobile */}
                 <div className="flex md:hidden items-center justify-between border-b border-zinc-200 pb-3">
                   <div className="flex items-center gap-2">
-                    <Sparkles size={14} className="text-[#c9a962]" />
-                    <span className="text-[12px] uppercase tracking-[0.2em] text-[#c9a962] font-semibold">
+                    <Sparkles size={14} className="text-[#800020]" />
+                    <span className="text-[12px] uppercase tracking-[0.2em] text-[#800020] font-semibold">
                       {searchQuery.trim() ? 'Search Results' : 'Explore Perfumerie'}
                     </span>
                   </div>
@@ -597,7 +544,7 @@ const Header = () => {
 
                 {/* Desktop Search Input Form */}
                 <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center gap-4 border-b-2 border-zinc-900 pb-4">
-                  <Search size={24} className="text-[#c9a962] shrink-0" strokeWidth={2} />
+                  <Search size={24} className="text-[#800020] shrink-0" strokeWidth={2} />
                   <input
                     type="text"
                     value={searchQuery}
@@ -618,7 +565,7 @@ const Header = () => {
                   )}
                   <button
                     type="submit"
-                    className="px-6 py-3 bg-[#0b0b0b] text-[#e5d5ab] font-bold text-[12px] uppercase tracking-[0.22em] hover:bg-[#c9a962] hover:text-black transition-all shrink-0 shadow-md"
+                    className="px-6 py-3 bg-[#800020] text-[#ffffff] font-bold text-[12px] uppercase tracking-[0.22em] hover:bg-[#66001a] hover:text-[#ffffff] transition-all shrink-0 shadow-md cursor-pointer"
                   >
                     Search
                   </button>
@@ -635,7 +582,7 @@ const Header = () => {
                 {!searchQuery.trim() && (
                   <div className="space-y-4 pt-2">
                     <div className="flex items-center gap-2 text-zinc-400 text-[10.5px] font-semibold uppercase tracking-[0.25em]">
-                      <Tag size={13} className="text-[#c9a962]" />
+                      <Tag size={13} className="text-[#800020]" />
                       <span>Popular Searches & Notes</span>
                     </div>
                     <div className="flex flex-wrap gap-2.5">
@@ -644,7 +591,7 @@ const Header = () => {
                           key={tag}
                           type="button"
                           onClick={() => handleQuickTagClick(tag)}
-                          className="px-4 py-2 bg-zinc-50 border border-zinc-200 hover:border-[#c9a962] text-zinc-700 hover:text-black text-[12px] uppercase tracking-[0.15em] transition-all hover:shadow-sm"
+                          className="px-4 py-2 bg-zinc-50 border border-zinc-200 hover:border-[#800020] text-zinc-700 hover:text-black text-[12px] uppercase tracking-[0.15em] transition-all hover:shadow-sm"
                         >
                           {tag}
                         </button>
@@ -662,7 +609,7 @@ const Header = () => {
                         <button
                           type="button"
                           onClick={handleSearchSubmit}
-                          className="text-[#c9a962] hover:underline font-bold"
+                          className="text-[#800020] hover:underline font-bold"
                         >
                           View All Results ({liveSearchResults.length}) →
                         </button>
@@ -677,7 +624,7 @@ const Header = () => {
                             <div
                               key={product.id}
                               onClick={() => handleProductClick(product.id)}
-                              className="group bg-white border border-zinc-200/80 hover:border-[#c9a962] p-3 cursor-pointer transition-all duration-300 hover:shadow-lg flex flex-col justify-between"
+                              className="group bg-white border border-zinc-200/80 hover:border-[#800020] p-3 cursor-pointer transition-all duration-300 hover:shadow-lg flex flex-col justify-between"
                             >
                               <div className="aspect-[3/4] bg-zinc-100 overflow-hidden mb-3 relative">
                                 <OptimizedCloudinaryImage
@@ -695,11 +642,11 @@ const Header = () => {
 
                               <div>
                                 {product.category && (
-                                  <span className="text-[12px] uppercase tracking-[0.2em] text-[#c9a962] font-bold block mb-0.5">
+                                  <span className="text-[12px] uppercase tracking-[0.2em] text-[#800020] font-bold block mb-0.5">
                                     {product.category}
                                   </span>
                                 )}
-                                <h4 className="text-[13px] font-medium text-zinc-900 uppercase tracking-wide truncate group-hover:text-[#c9a962] transition-colors">
+                                <h4 className="text-[13px] font-medium text-zinc-900 uppercase tracking-wide truncate group-hover:text-[#800020] transition-colors">
                                   {product.name}
                                 </h4>
                                 <p className="text-[13px] font-mono text-zinc-800 mt-1 font-semibold">
@@ -745,7 +692,7 @@ const Header = () => {
                     alt="MAHIRASH"
                     className="h-7 sm:h-8 w-auto object-contain brightness-0 invert"
                   />
-                  <span className="text-[7.5px] uppercase tracking-[0.38em] text-[#c9a962] mt-0.5 font-semibold">
+                  <span className="text-[7.5px] uppercase tracking-[0.38em] text-white/80 mt-0.5 font-semibold">
                     PARFUMERIE
                   </span>
                 </Link>
@@ -760,7 +707,7 @@ const Header = () => {
 
               {/* Drawer Scrollable Navigation */}
               <div className="px-8 pt-8 flex-1 overflow-y-auto pb-32 space-y-6">
-                <div className="text-[12px] uppercase tracking-[0.3em] text-[#c9a962] font-semibold mb-2">
+                <div className="text-[12px] uppercase tracking-[0.3em] text-[#800020] font-semibold mb-2">
                   HAUTE PERFUMERIE NAVIGATION
                 </div>
 
@@ -779,10 +726,10 @@ const Header = () => {
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="flex items-center justify-between py-4 border-b border-zinc-800/60 group"
                         >
-                          <span className="text-[15px] font-medium tracking-[0.1em] text-zinc-100 group-hover:text-[#c9a962] transition-colors duration-300 uppercase">
+                          <span className="text-[15px] font-medium tracking-[0.1em] text-zinc-100 group-hover:text-[#800020] transition-colors duration-300 uppercase">
                             {item.name}
                           </span>
-                          <ArrowRight size={18} className="text-zinc-500 group-hover:text-[#c9a962] group-hover:translate-x-1 transition-all duration-300" />
+                          <ArrowRight size={18} className="text-zinc-500 group-hover:text-[#800020] group-hover:translate-x-1 transition-all duration-300" />
                         </Link>
                       </motion.div>
                     );
@@ -796,10 +743,10 @@ const Header = () => {
                           onClick={() => setIsMobileCollectionsOpen(!isMobileCollectionsOpen)}
                           className="w-full flex items-center justify-between py-4 group text-left"
                         >
-                          <span className="text-[15px] font-medium tracking-[0.1em] text-zinc-100 group-hover:text-[#c9a962] transition-colors duration-300 uppercase">
+                          <span className="text-[15px] font-medium tracking-[0.1em] text-zinc-100 group-hover:text-[#800020] transition-colors duration-300 uppercase">
                             {item.name}
                           </span>
-                          <ChevronDown size={18} className={`text-zinc-500 transition-transform duration-300 ${isMobileCollectionsOpen ? 'rotate-180 text-[#c9a962]' : ''}`} />
+                          <ChevronDown size={18} className={`text-zinc-500 transition-transform duration-300 ${isMobileCollectionsOpen ? 'rotate-180 text-[#800020]' : ''}`} />
                         </button>
 
                         <AnimatePresence>
@@ -808,12 +755,12 @@ const Header = () => {
                               initial={{ height: 0, opacity: 0 }}
                               animate={{ height: 'auto', opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
-                              className="overflow-hidden pb-4 space-y-2.5 pl-4 border-l border-[#c9a962]/30 ml-2"
+                              className="overflow-hidden pb-4 space-y-2.5 pl-4 border-l border-[#800020]/40 ml-2"
                             >
                               <button
                                 type="button"
                                 onClick={() => handleCollectionSelect('All')}
-                                className="block text-[12px] uppercase tracking-[0.2em] text-[#c9a962] font-semibold py-1 hover:underline"
+                                className="block text-[12px] uppercase tracking-[0.2em] text-[#800020] font-semibold py-1 hover:underline"
                               >
                                 All Fragrances →
                               </button>
@@ -839,30 +786,30 @@ const Header = () => {
 
                 {/* Account & Care Links */}
                 <div className="pt-6 space-y-4">
-                  <div className="text-[12px] uppercase tracking-[0.3em] text-[#c9a962] font-semibold mb-2">
+                  <div className="text-[12px] uppercase tracking-[0.3em] text-[#800020] font-semibold mb-2">
                     SUPPORT & PRIVILEGES
                   </div>
 
                   <div className="flex items-center gap-3.5 text-zinc-300 hover:text-white transition-colors">
-                    <User size={17} className="text-[#c9a962]" />
+                    <User size={17} className="text-[#800020]" />
                     <Link to="/account" onClick={() => setIsMobileMenuOpen(false)} className="text-[14px] uppercase tracking-wider font-medium">My Account</Link>
                   </div>
 
                   <div className="flex items-center gap-3.5 text-zinc-300 hover:text-white transition-colors">
-                    <Compass size={17} className="text-[#c9a962]" />
+                    <Compass size={17} className="text-[#800020]" />
                     <Link to="/track" onClick={() => setIsMobileMenuOpen(false)} className="text-[14px] uppercase tracking-wider font-medium">Track Order</Link>
                   </div>
 
                   <div className="flex items-center gap-3.5 text-zinc-300 hover:text-white transition-colors">
-                    <HelpCircle size={17} className="text-[#c9a962]" />
+                    <HelpCircle size={17} className="text-[#800020]" />
                     <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-[14px] uppercase tracking-wider font-medium">Help & Support</Link>
                   </div>
                 </div>
 
                 {/* Signature Brand Quote Card */}
-                <div className="p-4 bg-zinc-900/80 border border-[#c9a962]/20 text-center space-y-1 rounded-none mt-6">
-                  <Sparkles size={14} className="text-[#c9a962] mx-auto mb-1" />
-                  <p className="text-[12px] uppercase tracking-[0.25em] text-[#c9a962] font-semibold">MAHIRASH GUARANTEE</p>
+                <div className="p-4 bg-zinc-900/80 border border-[#800020]/30 text-center space-y-1 rounded-none mt-6">
+                  <Sparkles size={14} className="text-[#800020] mx-auto mb-1" />
+                  <p className="text-[12px] uppercase tracking-[0.25em] text-[#800020] font-semibold">MAHIRASH GUARANTEE</p>
                   <p className="text-[12px] text-zinc-400 font-serif italic">"Crafted with rare botanical essences and fine artisanal extraits."</p>
                 </div>
 
@@ -872,7 +819,7 @@ const Header = () => {
                     href={siteSettings?.instagram_url || "https://www.instagram.com/mahirashparfumerie/"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#c9a962] hover:border-[#c9a962] transition-colors"
+                    className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#800020] hover:border-[#800020] transition-colors"
                     aria-label="Instagram"
                   >
                     <Instagram size={16} />
@@ -881,7 +828,7 @@ const Header = () => {
                     href={siteSettings?.facebook_url || "https://www.facebook.com/mahirashparfumerie/"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#c9a962] hover:border-[#c9a962] transition-colors"
+                    className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#800020] hover:border-[#800020] transition-colors"
                     aria-label="Facebook"
                   >
                     <Facebook size={16} />
@@ -890,7 +837,7 @@ const Header = () => {
                     href={siteSettings?.twitter_url || "https://x.com/MahirashParfum"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#c9a962] hover:border-[#c9a962] transition-colors"
+                    className="w-9 h-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#800020] hover:border-[#800020] transition-colors"
                     aria-label="Twitter"
                   >
                     <Twitter size={16} />

@@ -23,7 +23,7 @@ const FloatingWhatsApp = () => {
             initial={{ opacity: 0, scale: 0.8, x: -10 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             exit={{ opacity: 0, scale: 0.8, x: -10 }}
-            className="hidden sm:flex items-center gap-2 bg-white/95 backdrop-blur-md text-zinc-900 px-3.5 py-1.5 rounded-full shadow-xl border border-[#E5D5B8] mr-3 text-xs font-medium"
+            className="hidden sm:flex items-center gap-2 bg-white/95 backdrop-blur-md text-zinc-900 px-3.5 py-1.5 rounded-full shadow-xl border border-zinc-200 mr-3 text-xs font-medium"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
             <span className="text-[12px] md:text-[14px] font-semibold text-zinc-800 tracking-wide">

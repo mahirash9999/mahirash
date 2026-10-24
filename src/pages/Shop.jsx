@@ -677,10 +677,10 @@ const Shop = () => {
               onClick={() => setShowMobileFilters(true)}
               className="lg:hidden flex items-center justify-center gap-2 bg-white border border-zinc-300 px-4 py-3 text-[12px]   uppercase tracking-widest text-zinc-800 hover:bg-zinc-100 transition-all"
             >
-              <SlidersHorizontal size={13} className="text-[#b8860b]" />
+              <SlidersHorizontal size={13} className="text-[#800020]" />
               <span>Filters</span>
               {activeFiltersCount > 0 && (
-                <span className="w-4 h-4 rounded-full bg-black text-white text-[12px] font-bold flex items-center justify-center">
+                <span className="w-4 h-4 rounded-full bg-[#800020] text-[#ffffff] text-[12px] font-bold flex items-center justify-center">
                   {activeFiltersCount}
                 </span>
               )}
@@ -701,7 +701,7 @@ const Shop = () => {
                 <button
                   type="button"
                   onClick={() => setFilters(p => ({ ...p, brand: "All" }))}
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -714,7 +714,7 @@ const Shop = () => {
                 <button
                   type="button"
                   onClick={() => setFilters(p => ({ ...p, category: "All" }))}
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -727,7 +727,7 @@ const Shop = () => {
                 <button
                   type="button"
                   onClick={() => setFilters(p => ({ ...p, collection: "All" }))}
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -745,7 +745,7 @@ const Shop = () => {
                   onClick={() =>
                     setFilters(p => ({ ...p, availabilities: p.availabilities.filter(x => x !== avail) }))
                   }
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -758,7 +758,7 @@ const Shop = () => {
                 <button
                   type="button"
                   onClick={() => setFilters(p => ({ ...p, gender: "All" }))}
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -772,7 +772,7 @@ const Shop = () => {
                 <button
                   type="button"
                   onClick={() => setFilters(p => ({ ...p, minPrice: 0, maxPrice: null }))}
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -790,7 +790,7 @@ const Shop = () => {
                   onClick={() =>
                     setFilters(p => ({ ...p, sizes: p.sizes.filter(x => x !== sz) }))
                   }
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -808,7 +808,7 @@ const Shop = () => {
                   onClick={() =>
                     setFilters(p => ({ ...p, families: p.families.filter(x => x !== fam) }))
                   }
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -826,7 +826,7 @@ const Shop = () => {
                   onClick={() =>
                     setFilters(p => ({ ...p, concentrations: p.concentrations.filter(x => x !== conc) }))
                   }
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -839,7 +839,7 @@ const Shop = () => {
                 <button
                   type="button"
                   onClick={() => setFilters(p => ({ ...p, inStockOnly: false }))}
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -852,7 +852,7 @@ const Shop = () => {
                 <button
                   type="button"
                   onClick={() => setFilters(p => ({ ...p, onSaleOnly: false }))}
-                  className="hover:text-[#b8860b]"
+                  className="hover:text-[#800020]"
                 >
                   <X size={10} />
                 </button>
@@ -862,7 +862,7 @@ const Shop = () => {
             <button
               type="button"
               onClick={resetFilters}
-              className="text-[12px]   uppercase tracking-widest text-[#b8860b] hover:underline ml-auto"
+              className="text-[12px]   uppercase tracking-widest text-[#800020] hover:underline ml-auto"
             >
               Clear All
             </button>
@@ -895,9 +895,9 @@ const Shop = () => {
           {/* Product Grid Container */}
           <div className="lg:col-span-3 font-['Inter',sans-serif]">
             {activeCoupon && (
-              <div className="mb-6 bg-[#b8860b]/5 border border-dashed border-[#b8860b]/30 p-4 rounded-xl flex items-center justify-between gap-3 text-zinc-950">
+              <div className="mb-6 bg-[#800020]/5 border border-dashed border-[#800020]/30 p-4 rounded-xl flex items-center justify-between gap-3 text-zinc-950">
                 <div className="text-left">
-                  <h4 className="text-[14px] font-bold text-[#b8860b] uppercase tracking-wider font-mono">Coupon Activated: {activeCoupon.code}</h4>
+                  <h4 className="text-[14px] font-bold text-[#800020] uppercase tracking-wider font-mono">Coupon Activated: {activeCoupon.code}</h4>
                   <p className="text-[12px] text-zinc-600 mt-1 leading-normal">
                     Showing products eligible for this exclusive offer. The discount will be applied during checkout.
                   </p>
@@ -957,7 +957,7 @@ const Shop = () => {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       disabled={currentPage === 1}
-                      className="px-4 py-2 border border-zinc-200 text-sm font-semibold disabled:opacity-50 hover:bg-black hover:text-white transition-colors"
+                      className="px-4 py-2 border border-zinc-200 text-sm font-semibold disabled:opacity-50 hover:bg-[#800020] hover:text-[#ffffff] hover:border-[#800020] transition-colors cursor-pointer"
                     >
                       Prev
                     </button>
@@ -970,7 +970,7 @@ const Shop = () => {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
                       disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)}
-                      className="px-4 py-2 border border-zinc-200 text-sm font-semibold disabled:opacity-50 hover:bg-black hover:text-white transition-colors"
+                      className="px-4 py-2 border border-zinc-200 text-sm font-semibold disabled:opacity-50 hover:bg-[#800020] hover:text-[#ffffff] hover:border-[#800020] transition-colors cursor-pointer"
                     >
                       Next
                     </button>
@@ -991,7 +991,7 @@ const Shop = () => {
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] bg-black text-white px-6 py-3 hover:bg-zinc-800 transition-all"
+                  className="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[0.2em] bg-[#800020] hover:bg-[#66001a] text-[#ffffff] px-6 py-3 transition-all cursor-pointer shadow-md"
                 >
                   Reset All Filters
                   <ArrowUpRight size={13} />
