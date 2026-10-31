@@ -16,14 +16,14 @@ const Home = () => {
     <main className="bg-[#FCF9F4] text-[#30231F] min-h-screen relative overflow-hidden selection:bg-[#800020] selection:text-white">
 
       <SEOHead
-        title="Mahirash Parfumerie | Haute Parfumerie & Luxury Artisan Extraits"
-        description="Explore Mahirash Parfumerie for rare extrait de parfums, royal oud blends, luxury eau de parfums, and bespoke fragrance collections. Worldwide express shipping."
-        keywords="Mahirash, Mahirash Parfumerie, mahirash.com, luxury perfume, extrait de parfum, royal oud, designer fragrance India, niche perfumerie"
+        title="Mahirash | Luxury Perfumes & Pure Fragrance Extraits"
+        description="Explore Mahirash for luxury long-lasting perfumes, royal oud blends, and fine fragrance gift collections. Express delivery across India."
+        keywords="Mahirash, Mahirash perfumes, luxury perfume, oud perfume, buy perfume online India, best perfume brand India"
         url="https://mahirash.com/"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "OnlineStore",
-          "name": "Mahirash Parfumerie",
+          "name": "Mahirash Luxury Perfumes",
           "url": "https://mahirash.com/",
           "logo": "/logom.webp",
           "email": "help@mahirash.com",

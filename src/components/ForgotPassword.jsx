@@ -226,7 +226,7 @@ const ForgotPassword = () => {
     return (
         <div className="min-h-screen bg-[#f5f5f5] flex flex-col justify-center items-center relative overflow-hidden px-5 py-12">
             <SEOHead
-                title="Recover Password | Mahirash Parfumerie"
+                title="Recover Password | Mahirash Luxury Perfumes"
                 description="Verify your email with security passcode and reset your password online."
                 robots="noindex, follow"
                 url="https://mahirash.com/forgot-password"
@@ -243,7 +243,7 @@ const ForgotPassword = () => {
             </div>
 
             <div className="w-full max-w-[1100px] grid lg:grid-cols-12 gap-12 lg:gap-0 border border-zinc-200 bg-white min-h-[580px] z-10 shadow-xl">
-                {/* Left Side: Atelier Styling */}
+                {/* Left Side: Brand Styling */}
                 <div className="lg:col-span-5 bg-[#f5f5f5] p-8 md:p-12 lg:p-14 flex flex-col justify-between border-r border-zinc-200 relative overflow-hidden text-zinc-900">
                     <div className="relative z-10">
                         <Link to="/" className="inline-block mb-10">
@@ -263,7 +263,7 @@ const ForgotPassword = () => {
                     </div>
 
                     <div className="relative z-10 pt-6">
-                        <span className="text-[12px] text-zinc-400 uppercase tracking-widest font-medium">© MAHIRASH PARFUMERIE</span>
+                        <span className="text-[12px] text-zinc-400 uppercase tracking-widest font-medium">© MAHIRASH LUXURY PERFUMES</span>
                     </div>
                 </div>
 

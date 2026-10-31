@@ -6,8 +6,8 @@ const TermsConditions = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-zinc-900">
       <SEOHead
-        title="Terms & Conditions | Mahirash Parfumerie"
-        description="Read the official terms and conditions for using Mahirash Parfumerie online store and placing orders."
+        title="Terms & Conditions | Mahirash Luxury Perfumes"
+        description="Read the official terms and conditions for using Mahirash Luxury Perfumes online store and placing orders."
         url="https://mahirash.com/terms"
       />
       <PageHeader
@@ -33,7 +33,7 @@ const TermsConditions = () => {
             2. Intellectual Property Rights
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
-            All content published on this site—including but not limited to brand typography, trademarks, imagery, lookbooks, product designs, graphics, and software—is the exclusive intellectual property of MAHIRASH PARFUMERIE and is protected by international copyright and trademark laws. Unauthorized reproduction or redistribution is strictly prohibited.
+            All content published on this site—including but not limited to brand typography, trademarks, imagery, lookbooks, product designs, graphics, and software—is the exclusive intellectual property of MAHIRASH LUXURY PERFUMES and is protected by international copyright and trademark laws. Unauthorized reproduction or redistribution is strictly prohibited.
           </p>
         </section>
 

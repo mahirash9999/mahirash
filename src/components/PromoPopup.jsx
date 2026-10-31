@@ -109,7 +109,7 @@ const PromoPopup = () => {
           {/* Graphical Poster Typography Overlay */}
           <div className="relative z-10 p-6 text-center text-white space-y-2 flex flex-col items-center justify-end h-full w-full">
             <span className="px-3 py-1 bg-[#800020] text-white font-black text-[12px] uppercase tracking-[0.25em] rounded-sm shadow-md flex items-center gap-1 mx-auto">
-              <Sparkles size={11} /> MAHIRASH PARFUMERIE
+              <Sparkles size={11} /> MAHIRASH LUXURY PERFUMES
             </span>
 
             <h3 className="text-2xl md:text-3xl font-black uppercase tracking-tight leading-none text-white drop-shadow-md">
@@ -127,7 +127,7 @@ const PromoPopup = () => {
               </div>
               <h4 className="text-xl text-zinc-900 uppercase tracking-wide">You're On The List!</h4>
               <p className="text-[14px] text-zinc-600 leading-relaxed max-w-xs mx-auto">
-                Thank you for joining Mahirash Parfumerie.
+                Thank you for joining Mahirash.
               </p>
             </div>
           ) : (

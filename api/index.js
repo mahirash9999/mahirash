@@ -15,6 +15,8 @@ import shippingRequestPickupHandler from "./_handlers/shipping-request-pickup.js
 import shippingServiceabilityHandler from "./_handlers/shipping-serviceability.js";
 import shippingTrackHandler from "./_handlers/shipping-track.js";
 import webhooksShippingHandler from "./_handlers/webhooks-shipping.js";
+import razorpayCreateOrderHandler from "./_handlers/razorpay-create-order.js";
+import razorpayVerifyPaymentHandler from "./_handlers/razorpay-verify-payment.js";
 
 const ROUTE_HANDLERS = {
   "admin-order-status": adminOrderStatusHandler,
@@ -33,7 +35,11 @@ const ROUTE_HANDLERS = {
   "shipping/request-pickup": shippingRequestPickupHandler,
   "shipping/serviceability": shippingServiceabilityHandler,
   "shipping/track": shippingTrackHandler,
-  "webhooks/shipping": webhooksShippingHandler
+  "webhooks/shipping": webhooksShippingHandler,
+  "razorpay-create-order": razorpayCreateOrderHandler,
+  "razorpay/create-order": razorpayCreateOrderHandler,
+  "razorpay-verify-payment": razorpayVerifyPaymentHandler,
+  "razorpay/verify-payment": razorpayVerifyPaymentHandler
 };
 
 function normalizeRoute(route) {
@@ -125,7 +131,7 @@ export default async function handler(req, res) {
   if (!normalized || normalized === "health" || normalized === "index") {
     return res.status(200).json({
       success: true,
-      service: "Mahirash Atelier API",
+      service: "Mahirash Perfumes API",
       status: "operational",
       timestamp: new Date().toISOString()
     });

@@ -90,7 +90,7 @@ const Wishlist = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       <SEOHead
-        title="My Wishlist | Mahirash Parfumerie"
+        title="My Wishlist | Mahirash Luxury Perfumes"
         description="View your saved extraits and favourite luxury fragrances on Mahirash."
         robots="noindex, follow"
         url="https://mahirash.com/wishlist"

@@ -244,7 +244,7 @@ const Footer = () => {
         {/* ── BOTTOM BAR & LEGAL ── */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-4">
           <p className="text-zinc-400 text-[14px] tracking-wider text-center md:text-left font-light">
-            © {currentYear} MAHIRASH PARFUMERIE. ALL RIGHTS RESERVED.
+            © {currentYear} MAHIRASH LUXURY PERFUMES. ALL RIGHTS RESERVED.
           </p>
 
           <div className="flex flex-wrap justify-center items-center gap-5 text-[14px] font-light tracking-wider">

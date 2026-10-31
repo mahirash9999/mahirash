@@ -471,6 +471,7 @@ const OrdersTable = ({ onRefresh }) => {
                     </span>
                     <span className="text-[10px] text-zinc-400 uppercase font-mono block">
                       {order.paymentMethod || "Prepaid"}
+                      {order.paymentId && order.paymentId !== "COD" ? ` • ${order.paymentId.slice(0, 12)}` : ""}
                     </span>
                   </td>
 

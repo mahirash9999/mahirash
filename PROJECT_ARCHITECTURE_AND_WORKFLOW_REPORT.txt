@@ -1,0 +1,455 @@
+====================================================================================================
+MAHIRASH - COMPLETE ARCHITECTURE, DATA FLOW & SECURITY AUDIT REPORT
+====================================================================================================
+Document Type   : Senior Software Engineer / Technical Lead Architecture Report
+Target Audience : Engineering Manager, Project Manager & Technical Stakeholders
+Project Name    : Mahirash (Luxury Haute Parfumerie E-Commerce Web Platform)
+Repository Root : d:\Mahirash-Final
+Generated At    : October 2026
+Version         : 2.0 (Production Architecture Review)
+====================================================================================================
+
+----------------------------------------------------------------------------------------------------
+TABLE OF CONTENTS (विषय सूची)
+----------------------------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY (कार्यकारी सारांश)
+2. HIGH-LEVEL ARCHITECTURE & SYSTEM TOPOLOGY (सिस्टम आर्किटेक्चर और कंपोनेंट्स)
+3. TECHNOLOGY STACK DETAILED BREAKDOWN (फ्रंटएंड, बैकएंड, डेटाबेस और टूल्स)
+4. EXTERNAL INTEGRATIONS & CONNECTIVITY (बाहरी सर्विसेज और APIs)
+5. REQUEST HANDLING & ROUTING MECHANISM (रिक्वेस्ट कैसे हैंडल होती है)
+6. END-TO-END DATA FLOW & BUSINESS WORKFLOWS (डेटा फ़्लो और प्रोसेस लाइफसाइकिल)
+   - 6.1 Product Browsing & Dynamic Catalog Flow
+   - 6.2 Authentication & Identity Flow (OTP + Firebase Hybrid)
+   - 6.3 Cart & Wishlist Realtime Sync (Guest vs Authenticated)
+   - 6.4 Checkout, Payment Gateway & Order Placement Flow
+   - 6.5 Inventory & Multi-tier Stock Deduction Flow
+   - 6.6 Logistics, Courier Assignment & Realtime Tracking Flow
+   - 6.7 Email & Notification Dispatch Flow
+7. SECURITY AUDIT & RISK ANALYSIS (सुरक्षा विश्लेषण, खामियां और मजबूती)
+8. DATABASE SCHEMA & SECURITY RULES (Firestore Collections & RBAC)
+9. ADMIN & CMS ERP OPERATIONS (एडमिन और बिज़नेस ऑपरेशन्स)
+10. TECHNICAL DEBT, VULNERABILITIES & SENIOR DEVELOPER RECOMMENDATIONS (सुधार के सुझाव)
+
+====================================================================================================
+1. EXECUTIVE SUMMARY (कार्यकारी सारांश)
+====================================================================================================
+Mahirash ek high-performance, modern Luxury E-Commerce Web Application hai jo bespoke artisanal perfumes,
+rare Cambodian oud extraits aur luxury fragrance discovery sets sell karne ke liye design kiya gaya hai.
+
+Architecture Pattern:
+- Frontend: Single Page Application (SPA) based on React 19 + Vite 8.
+- Backend: Serverless Microservices / API Gateway based on Node.js running on Vercel Functions.
+- Database & Identity: Google Cloud Firestore (NoSQL Document DB) + Firebase Authentication.
+- Assets CDN: Cloudinary for optimized image transformations and video streaming.
+- Payment Gateway: Razorpay (Credit/Debit Card, UPI, NetBanking) + Cash on Delivery (COD).
+- Logistics & Fulfillment: Shiprocket API + Delhivery Express B2C API for nationwide automated shipping.
+- Artificial Intelligence: Google Gemini AI (gemini-1.5-flash) for virtual fragrance concierge.
+
+Project ka primary objective luxury brand aesthetics (smooth animations, 3D interactive elements,
+responsive design) ke sath enterprise-grade e-commerce reliability provide karna hai.
+
+====================================================================================================
+2. HIGH-LEVEL ARCHITECTURE & SYSTEM TOPOLOGY (सिस्टम आर्किटेक्चर)
+====================================================================================================
+
++--------------------------------------------------------------------------------------------------+
+|                                     CLIENT LAYER (Browser / Mobile)                              |
+|  - React 19 SPA (Vite 8 Bundler, TailwindCSS v4, Framer Motion, GSAP, Lenis Smooth Scroll)       |
+|  - Three.js / @react-three/fiber (3D Perfume Canvas)                                             |
+|  - React Router DOM v7 (Client Routing)                                                          |
+|  - StoreProvider + CustomerAuthProvider (State & Session Management)                             |
++-------------------------------------------------+------------------------------------------------+
+                                                  |
+                         +------------------------+------------------------+
+                         | HTTPS / REST / WebSockets                       | Direct Firestore SDK (Client)
+                         v                                                 v
++-------------------------------------------------+     +------------------------------------------+
+|       API GATEWAY (Vercel Serverless Function)  |     |     GOOGLE FIREBASE CLOUD                |
+|             Location: /api/index.js             |     |                                          |
+|  - Central Route Normalization & Dispatching    |     |  - Cloud Firestore (NoSQL Database)      |
+|  - Stream / JSON Body Parsing                   |     |    (Products, Orders, Customers, CMS)    |
+|  - Timing-Safe Cryptographic Operations         |     |  - Firebase Authentication               |
+|  - Rate Limiting & Cooldown Protection          |     |    (OAuth, Custom Tokens, Sessions)      |
++------------------------+------------------------+     |  - Firebase Cloud Storage                |
+                         |                              +--------------------+---------------------+
+                         |                                                   ^
+        +----------------+----------------+                                  |
+        | Serverless Handlers (api/_handlers)                               |
+        |                                                                    | Server-side updates
+        v                                                                    |
++----------------------------------------------------------------------------+---------------------+
+|                              BACKEND INTEGRATIONS & 3RD PARTY SERVICES                           |
+|                                                                                                  |
+| [1] Razorpay API        : Payment gateway order capture, verification & refund tracking          |
+| [2] Shiprocket API      : B2C courier aggregation, automated AWB generation, label printing      |
+| [3] Delhivery Express   : Direct pincode serviceability, TAT (Turnaround Time) calculation, AWB  |
+| [4] Cloudinary CDN      : Dynamic media compression, WebP auto-format, responsive delivery       |
+| [5] Nodemailer / SMTP   : Branded transactional emails (OTP verification, order confirmations)   |
+| [6] Google Gemini AI    : Fragrance advice virtual assistant (gemini-1.5-flash)                  |
+| [7] WhatsApp API Link   : Direct customer care concierge channel                                 |
++--------------------------------------------------------------------------------------------------+
+
+====================================================================================================
+3. TECHNOLOGY STACK DETAILED BREAKDOWN (तकनीकी स्टैक)
+====================================================================================================
+
+3.1 FRONTEND STACK:
+-------------------
+- Core Framework: React 19 (19.2.0) - modern concurrent rendering and optimized virtual DOM.
+- Build Tool & Dev Server: Vite 8 (8.0.0-beta.13) - ultra-fast HMR and Rollup-based bundling.
+- Client-Side Routing: React Router DOM v7 (7.13.0) - nested routes, declarative navigation.
+- Styling Engine: Tailwind CSS v4 (@tailwindcss/vite 4.1.18) - zero-runtime modern CSS engine.
+- 3D Interactive Graphics:
+  * Three.js (0.184.0)
+  * @react-three/fiber (9.6.1) - declarative React wrapper for Three.js
+  * @react-three/drei (10.7.7) - 3D helpers and shader materials for perfume bottles.
+- Animation & Motion:
+  * Framer Motion (12.34.0) - route transitions, modal appearances, physics-based UI.
+  * GSAP (GreenSock 3.15.0) - high-performance timeline and scroll animations.
+  * Lenis / @studio-freight/lenis (1.3.23) - luxury smooth inertial scrolling.
+- UI Components & Utilities:
+  * Lucide React (0.563.0) - vector icons.
+  * Swiper (12.1.4) - multi-device touch swipers and carousels.
+  * @tinymce/tinymce-react (6.3.0) - WYSIWYG editor for admin blog/CMS content.
+  * Recharts (3.7.0) & Chart.js (4.5.1) - interactive analytics and revenue dashboards.
+  * React Helmet Async (3.0.0) - dynamic meta tags and SEO management.
+- Form Validation:
+  * React Hook Form (7.71.1) + Zod (4.3.6) + @hookform/resolvers.
+  * Custom regex sanitizer utilities in 'src/utils/validation.js'.
+
+3.2 BACKEND & API STACK:
+------------------------
+- Runtime: Node.js (ECMAScript Modules / ESM).
+- Hosting: Vercel Serverless Functions.
+- Central API Gateway: 'api/index.js' (maps requests, handles streaming body, parses query).
+- HTTP Client: Axios (1.13.5) with timeout guards and interceptors.
+- Cryptography: Node.js native 'crypto' module:
+  * SHA-256 HMAC hashing for OTP protection.
+  * 'crypto.timingSafeEqual' for side-channel attack mitigation.
+  * RS256 JWT signing for Firebase Custom Auth tokens.
+- Email Engine: Nodemailer (9.1.0) with support for custom SMTP servers and Gmail App Passwords.
+
+3.3 DATABASE & STORAGE:
+-----------------------
+- Primary Database: Google Cloud Firestore (Document NoSQL Database).
+- Document Schema: Collection-based with subcollections (e.g. users/{uid}/orders/{orderId}).
+- File / Media Storage: Cloudinary (Primary for product images, banners, videos) + Firebase Storage.
+
+====================================================================================================
+4. EXTERNAL INTEGRATIONS & CONNECTIVITY (बाहरी सर्विसेज और कनेक्शंस)
+====================================================================================================
+
+1. Google Firebase (Authentication, Firestore, Cloud Storage):
+   - Client Config: 'src/components/Firebase.js' initializes client app using VITE_FIREBASE_* keys.
+   - Admin/Server Config: 'api/_lib/firestoreClient.js' and 'api/_lib/firebaseAdmin.js'.
+   - Role: Realtime state synchronization, customer accounts, master product catalog, order history.
+
+2. Razorpay Payment Gateway:
+   - Client SDK: Loaded dynamically via 'https://checkout.razorpay.com/v1/checkout.js'.
+   - Modes: UPI (GPay, PhonePe, Paytm), Credit/Debit Cards (Visa, Mastercard, RuPay), NetBanking.
+   - Flow: Creates payment session, captures payment ID, updates Firestore status to 'confirmed'.
+
+3. Shiprocket Logistics:
+   - Config: 'api/_lib/shiprocketClient.js' using SHIPROCKET_EMAIL and SHIPROCKET_PASSWORD.
+   - Features: Multi-carrier fulfillment, order sync, AWB generation, courier pickup scheduling.
+   - Performance: In-memory token caching with 9-day expiration buffer to prevent redundant auth calls.
+
+4. Delhivery Express B2C API:
+   - Config: 'api/_lib/delhiveryClient.js'.
+   - Features: Direct pincode serviceability check, delivery Turnaround Time (TAT) calculator from
+     Indore hub (Pincode: 452001), real-time waybill / AWB consignment tracking.
+   - Fallback Engine: Automated smart fallback algorithm to calculate estimated delivery business days
+     even if third-party carrier API undergoes maintenance.
+
+5. Cloudinary Media CDN:
+   - Config: 'src/config/cloudinary.js' and 'src/utils/cloudinary.js'.
+   - Features: Browser-side image compression prior to network transfer, deduplication cache
+     (re-uses existing URLs), auto WebP conversion, dynamic quality adjustments.
+
+6. Transactional Email (SMTP / Nodemailer):
+   - Config: 'api/_lib/email.js'.
+   - Features: Responsive gold-embossed luxury HTML templates for customer OTP login codes and
+     order confirmation receipts, plus instant notifications sent to the store owner.
+
+7. Google Gemini AI (Model: gemini-1.5-flash):
+   - Config: 'src/components/GeminiChatbot.jsx'.
+   - Features: Interactive fragrance recommendation assistant answering customer queries regarding
+     notes, longevity, extrait concentration, gift sets, and delivery timelines.
+
+8. WhatsApp Business Concierge:
+   - Config: 'src/components/FloatingWhatsApp.jsx'.
+   - Features: Quick-tap customer support and pre-order booking assistance.
+
+====================================================================================================
+5. REQUEST HANDLING & ROUTING MECHANISM (रिक्वेस्ट कैसे प्रोसेस होती है)
+====================================================================================================
+
+5.1 FRONTEND CLIENT ROUTING (React Router DOM v7):
+--------------------------------------------------
+- Entry Point: 'src/main.jsx' mounts <App /> wrapped in AuthProvider, CustomerAuthProvider, StoreProvider.
+- Path Rewrites: 'vercel.json' specifies that any non-API path '/(.*)' routes to '/index.html' (SPA).
+- Code Splitting: All major views (Admin, Shop, Checkout, ProductDetail, Orders, TrackOrder) are
+  wrapped in React.lazy() and Suspense with a luxury RouteLoader to minimize initial bundle size.
+
+5.2 BACKEND SERVERLESS API GATEWAY (Vercel Functions):
+------------------------------------------------------
+All incoming backend calls target '/api/*'.
+In 'vercel.json', rewrites are configured as:
+  { "source": "/api/(.*)", "destination": "/api/index.js?__route=$1" }
+
+Request Processing Steps in 'api/index.js':
+  Step 1: Injects uniform response helpers (.status(), .json(), .send()) if running on raw Node server.
+  Step 2: Parses URL search query parameters into 'req.query'.
+  Step 3: Asynchronously reads and decodes request body (supports JSON strings and raw readable streams).
+  Step 4: Normalizes route candidate from req.query.__route or x-matched-path headers (strips .js, slashes).
+  Step 5: Health Check: Requests to '/api' or '/api/health' return 200 OK operational status.
+  Step 6: Route Lookup: Looks up handler in ROUTE_HANDLERS dictionary:
+          - /api/send-otp                 -> api/_handlers/send-otp.js
+          - /api/verify-otp               -> api/_handlers/verify-otp.js
+          - /api/deduct-stock             -> api/_handlers/deduct-stock.js
+          - /api/get-orders               -> api/_handlers/get-orders.js
+          - /api/admin-order-status       -> api/_handlers/admin-order-status.js
+          - /api/shipping-create-shipment -> api/_handlers/shipping-create-shipment.js
+          - /api/shipping-assign-courier  -> api/_handlers/shipping-assign-courier.js
+          - /api/shipping-serviceability  -> api/_handlers/shipping-serviceability.js
+          - /api/shipping-track           -> api/_handlers/shipping-track.js
+          - /api/delhivery/serviceability -> api/_handlers/delhivery-serviceability.js
+          - /api/webhooks/shipping        -> api/_handlers/webhooks-shipping.js
+          - /api/send-order-email         -> api/_handlers/send-order-email.js
+          - /api/link-guest-orders        -> api/_handlers/link-guest-orders.js
+  Step 7: Execution & Error Boundary: Executes target handler inside a master try/catch block.
+          Unhandled crashes return a sanitized JSON error response with code 500.
+
+====================================================================================================
+6. END-TO-END DATA FLOW & BUSINESS WORKFLOWS (डेटा फ़्लो और प्रोसेस लाइफसाइकिल)
+====================================================================================================
+
+6.1 PRODUCT BROWSING & DYNAMIC CATALOG FLOW:
+--------------------------------------------
+[User visits /shop or /product/:id]
+       |
+       +---> Client fetches documents from Firestore 'products' collection.
+       |     (Filtered by: Category, Subcategory, Concentration, Price, Fragrance Family).
+       |
+       +---> Cloudinary CDN serves optimized WebP product media.
+       |
+       +---> Pincode Checker invokes '/api/delhivery/serviceability' or '/api/shipping-serviceability'
+             to compute real-time delivery TAT from Indore hub (452001).
+
+6.2 AUTHENTICATION & IDENTITY FLOW (DUAL AUTH SYSTEM):
+------------------------------------------------------
+The project uses a dual-layer authentication model:
+A. Administrators:
+   - Email/password authentication via Firebase Auth ('signInWithEmailAndPassword').
+   - Access verified against hardcoded SuperAdmin emails in 'firestore.rules'.
+B. Customers (Passwordless OTP System):
+   1. User enters Email in Login/Checkout modal -> calls 'POST /api/send-otp'.
+   2. Backend checks 45-second cooldown and email format.
+   3. Backend generates 6-digit random number via 'crypto.randomInt(100000, 1000000)'.
+   4. Generates HMAC-SHA256 hash using secret server salt:
+      hashedOtp = HMAC_SHA256(cleanEmail + ":" + otp, OTP_SALT)
+   5. Stores record in memory with 10-minute expiry and 5-attempt limit.
+   6. Nodemailer sends luxury HTML email containing the OTP.
+   7. Customer enters 6 digits -> calls 'POST /api/verify-otp'.
+   8. Backend verifies hash using 'crypto.timingSafeEqual' (prevents timing attacks).
+   9. On success: OTP is immediately deleted to prevent replay attacks.
+  10. Backend creates Firebase Custom Token (RS256 JWT) or verified identity bridge.
+  11. Frontend calls 'signInWithCustomToken(auth, customToken)' to establish Firebase Auth session.
+  12. Backend automatically triggers '/api/link-guest-orders' to associate past guest orders.
+
+6.3 CART & WISHLIST REALTIME SYNCHRONIZATION FLOW:
+--------------------------------------------------
+Managed centrally by 'src/components/StoreProvider.jsx':
+- Guest Users:
+  * Cart and Wishlist stored in browser 'localStorage' ('guest_cart', 'guest_wishlist').
+- Logged-in Users:
+  * Immediate local cache load for zero UI lag ('user_cart_<uid>').
+  * Cloud sync with Firestore document 'users/{uid}'.
+  * Realtime listener ('onSnapshot') keeps cart in sync across multiple browser tabs or devices.
+  * Auto-Merge: When a guest logs in, unauthenticated cart items are automatically merged into
+    the cloud account without duplicating existing items.
+
+6.4 CHECKOUT, PAYMENT & ORDER PLACEMENT FLOW:
+---------------------------------------------
+[User clicks 'Proceed to Checkout' at /checkout]
+       |
+       v
+1. FORM VALIDATION:
+   - Validates Indian 10-digit mobile number, 6-digit PIN code, sanitized name and address.
+       |
+       v
+2. PAYMENT METHOD SELECTION:
+   - If Online (Razorpay):
+     * Loads Razorpay script, opens payment popup for amount (Total - Coupon Discount).
+     * On payment success, callback receives 'razorpay_payment_id'.
+   - If Cash on Delivery (COD):
+     * Sets paymentMethod = "COD", paymentStatus = "pending".
+       |
+       v
+3. ORDER RECORD CREATION:
+   - Saves order directly to Firestore 'orders' collection with:
+     { orderNumber, items, subtotal, total, couponDiscount, shippingAddress, paymentStatus, ... }
+   - Saves reference to 'customers/{email}/orders/{orderId}' and 'users/{uid}/orders/{orderId}'.
+       |
+       v
+4. MULTI-TIER STOCK DEDUCTION (AUTOMATIC):
+   - Tier 1: Client performs per-variant stock deduction allowed by Firestore security rules.
+   - Tier 2 (Guaranteed Fallback): Calls 'POST /api/deduct-stock' to deduct stock via backend.
+       |
+       v
+5. POST-ORDER AUTOMATION (NON-BLOCKING):
+   - Clears cart.
+   - Creates customer session in localStorage ('pasoja_customer_session') so customer remains logged in.
+   - Triggers 'POST /api/send-order-email' in background:
+     * Dispatches order receipt to Customer.
+     * Dispatches new order alert to Store Administrator.
+   - Redirects customer to luxury Order Success screen.
+
+6.5 INVENTORY & STOCK MANAGEMENT FLOW:
+--------------------------------------
+Managed by 'api/_lib/stockManager.js':
+- Supports multi-variant sizes (e.g., 50ml, 100ml, Discovery Vials).
+- Deducts purchased quantity from matching size variant in 'size_prices' array.
+- Recalculates total product stock = sum of variant stocks.
+- Automatically updates 'stock_status':
+  * Total Stock == 0  --> "Out of Stock"
+  * Total Stock <= 5  --> "Low Stock"
+  * Total Stock > 5   --> "In Stock"
+
+6.6 LOGISTICS, COURIER DISPATCH & REALTIME TRACKING FLOW:
+---------------------------------------------------------
+1. Shipment Creation:
+   - In Admin Panel (/admin -> OrdersTable), Admin clicks "Create Shipment".
+   - Calls 'POST /api/shipping-create-shipment'.
+   - Shiprocket API receives package dimensions, weight, customer address.
+   - Returns 'shipment_id' and 'awb_code'. Order status set to "Ready to Ship".
+2. Courier Pickup:
+   - Admin clicks "Assign Courier / Schedule Pickup".
+   - Calls 'POST /api/shipping-assign-courier' and 'POST /api/shipping-request-pickup'.
+3. Realtime Webhooks:
+   - As the courier picks up, transports, and delivers the package, Shiprocket sends webhooks
+     to 'POST /api/webhooks/shipping'.
+   - Webhook handler verifies security token, validates status progression using rank hierarchy,
+     and updates Firestore order document ('shipmentStatus', 'fulfilmentStatus', 'activityLog').
+4. Customer Tracking:
+   - Customer enters Order ID or AWB in '/track'.
+   - System fetches scans from Firestore, Delhivery API, or Shiprocket API and displays visual timeline.
+
+====================================================================================================
+7. SECURITY AUDIT & RISK ANALYSIS (सुरक्षा विश्लेषण)
+====================================================================================================
+
+7.1 SECURITY STRENGTHS (मौजूदा मजबूत पहलू):
+-------------------------------------------
+1. Cryptographic OTP Verification:
+   - OTPs are NEVER saved in plain text. Hashed with server-side secret 'OTP_SALT' using HMAC-SHA256.
+   - Verified using 'crypto.timingSafeEqual' to eliminate timing side-channel attacks.
+   - Strict 10-minute expiry and maximum 5-attempt brute-force protection.
+   - Enforced 45-second cooldown rate limit to prevent email flooding.
+   - Instant token invalidation upon verification to prevent replay attacks.
+2. Firestore Security Rules Isolation:
+   - '_otp_verifications' collection has 'allow read, write: if false' (zero client access).
+   - Orders: Customers can ONLY read their own orders ('auth.uid == userId' or 'auth.token.email == customerEmail').
+   - Products: Only SuperAdmin can create/delete products. Clients are ONLY allowed to update stock fields
+     specifically ('stock', 'stock_status', 'size_prices', 'updatedAt') during checkout.
+   - CMS & Site Settings: Strictly restricted to Super Admin emails.
+3. Strict Input Sanitization:
+   - Phone numbers sanitized to 10 digits; PIN codes validated against Indian 6-digit regex;
+     strings sanitized against HTML/XSS injection prior to database entry.
+
+7.2 CRITICAL VULNERABILITIES & TECHNICAL DEBT (कमियां और जोखिम):
+----------------------------------------------------------------
+[CRITICAL SEVERITY - P0]
+1. Environment Variable Prefix Exposure (VITE_* Secrets):
+   - Finding: In '.env.example', secrets like 'VITE_RAZORPAY_KEY_SECRET', 'VITE_SHIPROCKET_PASSWORD',
+     and 'VITE_EMAILJS_PRIVATE_KEY' are prefixed with 'VITE_'.
+   - Risk: Any environment variable with the 'VITE_' prefix is bundled into the client-side JavaScript
+     bundle during 'vite build'. Anyone inspecting browser network tabs or bundle scripts could extract them.
+   - Remediation: Remove 'VITE_' prefix from all backend secrets in Vercel. Use server-only variables:
+     RAZORPAY_KEY_SECRET, SHIPROCKET_PASSWORD, SMTP_PASS, etc.
+
+[HIGH SEVERITY - P1]
+2. Client-Side Order Creation & Price Integrity Risk:
+   - Finding: In 'Checkout.jsx', orders are written directly to Firestore from the browser using 'addDoc()'.
+     Payment verification also occurs primarily on the frontend.
+   - Risk: A technically skilled adversary could intercept the network request and alter 'total',
+     'couponDiscount', or product prices before writing to Firestore.
+   - Remediation: Implement a dedicated backend endpoint 'POST /api/create-order' that recalculates
+     order totals server-side based on database product prices, verifies the Razorpay signature
+     (crypto.createHmac with razorpay_order_id + payment_id), and saves the order securely.
+
+[MEDIUM SEVERITY - P2]
+3. In-Memory OTP Store in Serverless Environment:
+   - Finding: 'api/_lib/firebaseAdmin.js' uses 'inMemoryOtpStore = new Map()' for tracking OTPs.
+   - Risk: Vercel Functions run across multiple stateless lambdas. If the 'send-otp' request hits
+     Instance A, and the subsequent 'verify-otp' request hits Instance B (cold start), the OTP record
+     will not exist in Instance B's memory, causing false verification failures.
+   - Remediation: Store OTP hashes in Firestore with server timestamps or use an Upstash Redis instance.
+
+[LOW SEVERITY - P3]
+4. Hardcoded SuperAdmin Emails:
+   - Finding: 'firestore.rules' contains hardcoded email addresses:
+     'mahirash9999@gmail.com' and 'admin@mahirash.com'.
+   - Risk: Changing admin credentials requires modifying and redeploying Firestore security rules.
+   - Remediation: Transition to Firebase Custom Claims (request.auth.token.admin == true).
+
+====================================================================================================
+8. DATABASE SCHEMA & COLLECTIONS (Firestore NoSQL)
+====================================================================================================
+
+Key Collections in Cloud Firestore:
+-----------------------------------
+1. 'products' : Master fragrance catalog (name, brand, category, size_prices, stock, stock_status, images).
+2. 'orders'   : Master order records (orderNumber, items, total, shipping, paymentStatus, shipmentStatus, activityLog).
+3. 'customers': Customer profile records (name, email, phone, addresses, subcollection: 'orders').
+4. 'users'    : Firebase Auth linked accounts (cart, wishlist, profile, subcollection: 'orders').
+5. 'coupons'  : Discount promo codes (code, discount_type, discount_value, min_order, expiry).
+6. 'returns'  : Customer return and replacement requests.
+7. 'settings' : Global store settings (whatsapp_number, email, gemini_api_key, social links).
+8. 'hero_slides', 'shop_by_category', 'benefits_strip', 'explore_banner', 'blogs': Dynamic CMS content.
+
+====================================================================================================
+9. ADMIN & CMS ERP OPERATIONS (एडमिन डैशबोर्ड)
+====================================================================================================
+
+Accessible via '/admin':
+- Products Management: Add/edit fragrances, multi-size pricing (50ml/100ml), upload media to Cloudinary.
+- Orders Management: Live order tracking, bulk status updates, invoice generation, courier assignment.
+- Inventory Control: Real-time stock monitor with low-stock warnings.
+- Logistics Dispatch: Delhivery & Shiprocket direct dispatch, AWB label generation.
+- Billing System: Automated luxury GST invoice generation and printable receipts.
+- CMS Control: Hero banner video management, news/journal editor, SEO metadata configurator.
+- Analytics: Revenue graphs, average order value (AOV), bestsellers ranking via Recharts.
+
+====================================================================================================
+10. SENIOR DEVELOPER RECOMMENDATIONS & ROADMAP (सुधार और अगले कदम)
+====================================================================================================
+
+Priority 1 (Immediate / P0):
+- Verify production environment variables on Vercel: Ensure sensitive API keys (Razorpay Secret,
+  Shiprocket Password, SMTP Credentials) DO NOT contain the 'VITE_' prefix.
+
+Priority 2 (Next Sprint / P1):
+- Server-Side Order Finalization: Create '/api/create-order' and '/api/verify-payment' to verify
+  Razorpay HMAC signatures server-side and calculate prices from Firestore to eliminate tampering.
+
+Priority 3 (Infrastructure / P2):
+- Distributed OTP Storage: Migrate in-memory OTP Map to a lightweight server-side store (Firestore
+  or Upstash Redis) to ensure 100% OTP verification success regardless of serverless cold starts.
+
+Priority 4 (Enterprise Identity / P3):
+- Replace hardcoded admin emails in 'firestore.rules' with Firebase Custom Claims (admin: true).
+
+====================================================================================================
+REPORT SUMMARY CONCLUSION:
+====================================================================================================
+Mahirash Atelier features a well-crafted, luxury-grade user interface coupled with strong cryptographic
+foundations for passwordless customer authentication and multi-carrier logistics automation.
+By resolving the server-side price verification and environment variable sanitization items outlined
+above, the platform will achieve full enterprise-grade security and scalability.
+
+Report Prepared By : Senior Full-Stack Software Engineer / Technical Lead
+Approved For       : Engineering Management & Project Delivery Team
+Status             : Completed & Ready for Review
+====================================================================================================
+

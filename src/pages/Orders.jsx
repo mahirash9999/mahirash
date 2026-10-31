@@ -200,7 +200,7 @@ const Orders = () => {
             <div class="header">
               <div>
                 <h1 class="brand">MAHIRASH</h1>
-                <div class="tagline">Haute Parfumerie & Luxury Fragrances</div>
+                <div class="tagline">Luxury Perfumes & Fragrances</div>
               </div>
               <div class="inv-meta">
                 <h2>TAX INVOICE</h2>

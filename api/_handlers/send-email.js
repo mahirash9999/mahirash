@@ -65,7 +65,7 @@ export default async function handler(req, res) {
   <div style="padding:40px 20px;text-align:center;max-width:600px;margin:0 auto;">
     <h1 style="margin:0 0 16px;font-size:22px;text-transform:uppercase;letter-spacing:2px;">Welcome, ${to_name || "Valued Guest"}</h1>
     <p style="color:#52525b;line-height:1.6;font-size:14px;margin-bottom:28px;">
-      Your Mahirash Haute Parfumerie account has been created. Enjoy expedited checkout and order tracking.
+      Your Mahirash Luxury Perfumes account has been created. Enjoy fast checkout and order tracking.
     </p>
     <a href="https://mahirash.com/shop" style="display:inline-block;background:#000;color:#fff;padding:14px 32px;text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:2px;font-weight:bold;">
       Explore Fragrances

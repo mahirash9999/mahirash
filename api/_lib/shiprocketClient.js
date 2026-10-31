@@ -335,14 +335,14 @@ export async function trackShiprocketAwb(awbCode) {
         },
         {
           date: formatOffset(1, 18, 45),
-          activity: "Package picked up by courier associate from Mahirash Atelier",
+          activity: "Package picked up by courier associate from Mahirash Hub",
           location: "Indore Warehouse",
           status: "Picked Up"
         },
         {
           date: formatOffset(2, 11, 0),
           activity: "Shipping manifest verified and packaging completed",
-          location: "Mahirash Atelier Fulfillment Center",
+          location: "Mahirash Central Fulfillment Hub",
           status: "Manifest Created"
         },
         {

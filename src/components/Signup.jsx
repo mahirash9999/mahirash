@@ -106,8 +106,8 @@ const Signup = () => {
   return (
     <div className="min-h-screen bg-[#fafafa] flex flex-col justify-center items-center relative overflow-hidden px-4 py-12 md:py-20 font-['Inter',sans-serif]">
       <SEOHead
-        title="Create Account | Mahirash Parfumerie"
-        description="Join Mahirash Parfumerie to enjoy faster checkout, exclusive drop access, and track your orders."
+        title="Create Account | Mahirash Luxury Perfumes"
+        description="Join Mahirash Luxury Perfumes to enjoy fast checkout and track your orders."
         robots="noindex, follow"
         url="https://mahirash.com/signup"
       />

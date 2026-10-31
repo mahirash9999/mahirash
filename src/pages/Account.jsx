@@ -578,7 +578,7 @@ const Account = () => {
           <thead>
             <tr>
               <th style="text-align: left;">#</th>
-              <th style="text-align: left;">Fragrance Formulation</th>
+              <th style="text-align: left;">Item Description</th>
               <th>Qty</th>
               <th style="text-align: right;">Unit Price</th>
               <th style="text-align: right;">Total</th>
@@ -596,16 +596,16 @@ const Account = () => {
               <td style="text-align: right;">₹${(order.subtotal || order.total || 0).toLocaleString()}</td>
             </tr>
             <tr>
-              <td>Express Insured Shipping</td>
-              <td style="text-align: right; color: #059669; font-weight: bold;">COMPLIMENTARY</td>
+              <td>Shipping Charges</td>
+              <td style="text-align: right; color: #059669; font-weight: bold;">FREE DELIVERY</td>
             </tr>
             ${order.discount ? `
             <tr>
-              <td>Member Discount</td>
-              <td style="text-align: right; color: #b8860b;">-₹${order.discount.toLocaleString()}</td>
+              <td>Coupon Discount</td>
+              <td style="text-align: right; color: #800020;">-₹${order.discount.toLocaleString()}</td>
             </tr>` : ""}
             <tr class="final-price">
-              <td>Total Amount Paid</td>
+              <td>Grand Total</td>
               <td style="text-align: right;">₹${(order.total || 0).toLocaleString()}</td>
             </tr>
           </table>

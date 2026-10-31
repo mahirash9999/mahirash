@@ -2105,7 +2105,7 @@ const Admin = () => {
               MAHIRASH ADMIN
             </h1>
             <p className="text-[12px] text-[#800020] uppercase tracking-[0.25em] font-bold">
-              HAUTE PARFUMERIE CONTROL CENTRE
+              STORE & ORDER MANAGEMENT CENTRE
             </p>
           </div>
 

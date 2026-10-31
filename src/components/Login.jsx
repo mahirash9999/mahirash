@@ -280,7 +280,7 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-[#fafafa] flex flex-col justify-center items-center relative overflow-hidden px-4 py-12 md:py-20 font-sans">
       <SEOHead
-        title="Sign In | Mahirash Haute Parfumerie"
+        title="Sign In | Mahirash Luxury Perfumes"
         description="Access your exclusive Mahirash account with secure Email OTP or Password authentication."
         robots="noindex, follow"
         url="https://mahirash.com/login"

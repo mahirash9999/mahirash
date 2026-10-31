@@ -20,10 +20,10 @@ const SUGGESTIONS = [
 
 const FALLBACK_ANSWERS = {
   oud: "Our Royal Cambodian Oud extraits are crafted from rare, sustainably sourced agarwood resin aged for maximum richness. They feature hypnotic animalic, smoky, and warm woody accords that linger for 14+ hours on skin.",
-  extrait: "Extrait de Parfum is the highest concentration of fragrance available in haute perfumerie (typically 25% to 40% pure botanical and aromatic oils). It lasts significantly longer and reveals complex base notes gracefully throughout the day.",
+  extrait: "Extrait de Parfum is the highest concentration of luxury perfume (typically 25% to 40% pure aromatic perfume oils). It lasts significantly longer and reveals rich base notes throughout the day.",
   gifting: "For luxury gifting, we recommend our Discovery Sets or signature Extrait de Parfum bottles. Each order is packaged in our signature gold-embossed presentation boxes.",
   delivery: "All online orders are carefully inspected, packaged in tamper-evident luxury containers, and delivered within 4-5 days nationwide across India.",
-  default: "Thank you for inquiring with Mahirash Parfumerie. Our collection is handcrafted with rare botanical essences and fine artisanal perfume oils. You can browse our shop or let me know what scent family you enjoy (Oud, Floral, Amber, Woods, Fresh)!"
+  default: "Thank you for inquiring with Mahirash Luxury Perfumes. Our collection is handcrafted with rare essences and fine perfume oils. You can browse our shop or let me know what scent family you enjoy (Oud, Floral, Amber, Woods, Fresh)!"
 };
 
 const getSmartFallback = (query) => {

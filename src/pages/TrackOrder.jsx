@@ -170,7 +170,7 @@ const TrackOrder = () => {
     return (
         <div className="min-h-screen bg-[#faf9f6] text-zinc-900 font-sans">
             <SEOHead
-                title="Track Live Order | Mahirash Parfumerie"
+                title="Track Live Order | Mahirash Luxury Perfumes"
                 description="Verify and track your shipment details with real-time Shiprocket updates."
                 url="https://mahirash.com/track"
             />

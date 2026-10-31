@@ -693,7 +693,7 @@ const Header = () => {
                     className="h-7 sm:h-8 w-auto object-contain brightness-0 invert"
                   />
                   <span className="text-[7.5px] uppercase tracking-[0.38em] text-white/80 mt-0.5 font-semibold">
-                    PARFUMERIE
+                    LUXURY PERFUMES
                   </span>
                 </Link>
                 <button
@@ -708,7 +708,7 @@ const Header = () => {
               {/* Drawer Scrollable Navigation */}
               <div className="px-8 pt-8 flex-1 overflow-y-auto pb-32 space-y-6">
                 <div className="text-[12px] uppercase tracking-[0.3em] text-[#800020] font-semibold mb-2">
-                  HAUTE PERFUMERIE NAVIGATION
+                  PERFUME COLLECTION MENU
                 </div>
 
                 {/* Unified Mobile Navigation Items (automatically in-sync with Desktop Header) */}

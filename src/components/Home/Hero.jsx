@@ -23,7 +23,7 @@ const HERO_SLIDES = [
     ctaLink: '/shop?category=Oud'
   },
   {
-    eyebrow: 'HAUTE PARFUMERIE',
+    eyebrow: 'LUXURY PERFUMES',
     title: 'Elegance in Every Drop',
     description: 'Formulated to captivate and linger with unmatched projection and sophisticated warmth.',
     ctaText: 'Discover Scent',

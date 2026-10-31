@@ -205,7 +205,7 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
               <p className="text-[13px] font-bold font-serif tracking-[0.14em] text-[#30231F] uppercase">
                 MAHIRASH
               </p>
-              <p className="text-[11px] text-[#800020] uppercase tracking-[0.2em] font-semibold">Luxury Parfumerie</p>
+              <p className="text-[11px] text-[#800020] uppercase tracking-[0.2em] font-semibold">Luxury Perfumes</p>
             </div>
           </div>
 

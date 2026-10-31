@@ -11,7 +11,7 @@ const AboutUsManager = () => {
     // Default about text if nothing is in db
     const DEFAULT_ABOUT = `
     <h2>The Origin</h2>
-    <p>Every legendary creation begins with a whisper. For Mahirash Parfumerie, that whisper came from the ancient spice routes and the royal courts of perfume history.</p>
+    <p>Every legendary creation begins with a whisper. For Mahirash, that whisper came from the ancient spice routes and the royal courts of perfume history.</p>
     <h2>Our Process</h2>
     <p>Crafted with extreme attention to detail and patience.</p>
   `;

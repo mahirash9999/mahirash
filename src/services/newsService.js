@@ -18,7 +18,7 @@ export const DEFAULT_REELS = [
     title: "Artisanal Royal Oud Extrait | Notes of Pure Cambodian Agarwood",
     video: "https://assets.mixkit.co/videos/preview/mixkit-perfume-bottle-and-flowers-in-water-41272-large.mp4",
     url: "https://www.instagram.com/mahirashparfumerie/",
-    tag: "Haute Parfumerie",
+    tag: "Luxury Perfumes",
     duration: "0:30",
     order: 1,
   },

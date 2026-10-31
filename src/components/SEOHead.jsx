@@ -15,7 +15,7 @@ const SEOHead = ({
   type = "website",
   robots = "index, follow",
   canonical = "",
-  author = "Mahirash Parfumerie",
+  author = "Mahirash Luxury Perfumes",
   product = null,
   jsonLd = null,
 }) => {
@@ -28,7 +28,7 @@ const SEOHead = ({
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": `${BASE_URL}/#organization`,
-    "name": "Mahirash Parfumerie",
+    "name": "Mahirash Luxury Perfumes",
     "url": BASE_URL,
     "logo": `${BASE_URL}/logom.webp`,
     "description": "Mahirash is a luxury fragrance house crafting rare botanical extraits de parfum, royal Cambodian ouds, and signature perfumes.",
@@ -96,7 +96,7 @@ const SEOHead = ({
         "availability": isAvailable ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         "seller": {
           "@type": "Organization",
-          "name": "Mahirash Parfumerie"
+          "name": "Mahirash Luxury Perfumes"
         }
       }
     };
@@ -133,7 +133,7 @@ const SEOHead = ({
       <meta name="keywords" content={keywords} />
       <meta name="robots" content={robots} />
       <meta name="author" content={author} />
-      <meta name="publisher" content="Mahirash Parfumerie" />
+      <meta name="publisher" content="Mahirash Luxury Perfumes" />
       <meta name="theme-color" content="#0D0D0D" />
       <link rel="canonical" href={targetUrl} />
 
@@ -144,7 +144,7 @@ const SEOHead = ({
       <meta property="og:image:alt" content={imageAlt || fullTitle} />
       <meta property="og:url" content={targetUrl} />
       <meta property="og:type" content={product ? "product" : type} />
-      <meta property="og:site_name" content="Mahirash Parfumerie" />
+      <meta property="og:site_name" content="Mahirash Luxury Perfumes" />
       <meta property="og:locale" content="en_IN" />
 
       {/* ── Twitter Card Tags ── */}

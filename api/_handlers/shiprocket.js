@@ -24,7 +24,7 @@ export default async function handler(req, res) {
   try {
     const nameParts = (customerName || "Customer").split(" ");
     const firstName = nameParts[0] || "Customer";
-    const lastName = nameParts.slice(1).join(" ") || "Atelier";
+    const lastName = nameParts.slice(1).join(" ") || "Customer";
 
     const payload = {
       order_id: String(orderId),

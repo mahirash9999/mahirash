@@ -43,8 +43,8 @@ export default async function handler(req, res) {
         scans: [
           {
             date: orderInfo?.createdAt?.toDate ? orderInfo.createdAt.toDate().toISOString() : new Date().toISOString(),
-            activity: "Order verified and reserved at Mahirash Atelier",
-            location: "Atelier Warehouse",
+            activity: "Order verified and packed at Mahirash Hub",
+            location: "Central Warehouse",
             status: "Order Confirmed"
           }
         ]

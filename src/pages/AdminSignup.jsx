@@ -115,7 +115,7 @@ const AdminSignup = () => {
             REGISTER ADMIN
           </h1>
           <p className="text-[12px] text-[#b8860b] uppercase tracking-[0.25em] font-bold">
-            HAUTE PARFUMERIE CONTROL CENTRE
+            ADMIN CONTROL CENTRE
           </p>
         </div>
 

@@ -324,7 +324,7 @@ const ProductDetail = () => {
           imageAlt={`${product.name} - Luxury Extrait de Parfum by ${product.brand || 'Mahirash'}`}
           url={`https://mahirash.com/product/${id}`}
           canonical={`https://mahirash.com/product/${id}`}
-          author={product.brand || "Mahirash Parfumerie"}
+          author={product.brand || "Mahirash Luxury Perfumes"}
           type="product"
           product={product}
         />

@@ -172,7 +172,7 @@ const BillingSystem = () => {
                     Official Tax Invoice & Sales Receipt
                   </p>
                   <p className="text-[14px] text-[#30231F] mt-2 font-medium">
-                    Haute Parfumerie | mahirash.com
+                    Luxury Perfumes Store | mahirash.com
                   </p>
                   <p className="text-[14px] text-[#75665D]">Contact: +91 8959041514 | mahirash.help@gmail.com</p>
                 </div>
@@ -205,6 +205,9 @@ const BillingSystem = () => {
                     {(selectedOrder.shipping?.pincode || selectedOrder.shippingAddress?.pincode) ? `, ${(selectedOrder.shipping?.pincode || selectedOrder.shippingAddress?.pincode)}` : ''}
                   </p>
                   <p className="font-semibold text-[#30231F] mt-1">Payment Method: {selectedOrder.paymentMethod || selectedOrder.payment_method || 'N/A'}</p>
+                  {selectedOrder.paymentId && selectedOrder.paymentId !== "COD" && (
+                    <p className="text-[12px] text-[#75665D] font-mono">Ref ID: {selectedOrder.paymentId}</p>
+                  )}
                 </div>
               </div>
 

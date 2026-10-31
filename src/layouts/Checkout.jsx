@@ -13,7 +13,7 @@ import { useStore } from "../components/StoreProvider";
 import {
   MapPin, User, Phone, Mail, CheckCircle, X,
   ShieldCheck, ChevronRight, Plus, Check, Lock, Tag,
-  ArrowRight, Package, Truck, Home
+  ArrowRight, Package, Truck, Home, Printer, Download
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SEOHead from "../components/SEOHead";
@@ -74,7 +74,138 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
     tempPassword: ""
   };
 
-  const isCOD = finalDetails.shipping?.paymentMethod !== "online";
+  const isCOD = finalDetails.shipping?.paymentMethod !== "online" && finalDetails.paymentMethod !== "online";
+
+  const handleDownloadInvoice = (order) => {
+    const invoiceWindow = window.open("", "_blank", "width=850,height=950");
+    if (!invoiceWindow) {
+      alert("Please allow popups to view or print the official tax invoice.");
+      return;
+    }
+
+    const orderDate = new Date().toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+    const itemsRows = (order.items || []).map((item, idx) => `
+      <tr>
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; color: #555;">${idx + 1}</td>
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; font-weight: 600; color: #111;">
+          ${item.name}
+          ${item.size ? `<span style="font-size:10px; color:#888; margin-left: 6px;">(${item.size})</span>` : ""}
+        </td>
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; text-align: center; color: #333;">${item.quantity || item.units || 1}</td>
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; text-align: right; color: #333;">₹${(item.price || 0).toLocaleString("en-IN")}</td>
+        <td style="padding: 12px 14px; border-bottom: 1px solid #e5e5e5; font-size: 12px; text-align: right; font-weight: 700; color: #000;">₹${((item.price || 0) * (item.quantity || item.units || 1)).toLocaleString("en-IN")}</td>
+      </tr>
+    `).join("");
+
+    const displayOrderId = order.orderNumber || order.id || "MHR-ORDER";
+    const shipping = order.shipping || {};
+    const isOnline = order.paymentMethod === "online" || !isCOD;
+
+    invoiceWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>Tax Invoice - #${displayOrderId} | MAHIRASH</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 40px; color: #111; background: #fff; }
+          .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 25px; border-bottom: 2px solid #111; }
+          .logo { font-size: 26px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #111; }
+          .badge { background: #faf5eb; color: #800020; border: 1px solid #e7e5e4; font-size: 10px; font-weight: bold; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; }
+          .table { width: 100%; border-collapse: collapse; margin-top: 25px; }
+          .table th { background: #fafafa; border-bottom: 2px solid #111; padding: 10px 14px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #444; }
+          .total-box { margin-top: 30px; display: flex; justify-content: flex-end; }
+          .total-table { width: 300px; font-size: 12px; }
+          .total-table td { padding: 6px 0; }
+          .final-price { font-size: 16px; font-weight: bold; color: #000; border-top: 2px solid #111; padding-top: 8px; }
+          .footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; font-size: 11px; color: #777; text-align: center; }
+          .btn-print { background: #000; color: #fff; border: none; padding: 10px 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; border-radius: 4px; margin-bottom: 20px; }
+          @media print { .btn-print { display: none; } }
+        </style>
+      </head>
+      <body>
+        <div style="text-align: right;"><button class="btn-print" onclick="window.print()">Print / Save PDF</button></div>
+        <div class="header">
+          <div>
+            <div class="logo">MAHIRASH</div>
+            <p style="font-size: 11px; color: #666; margin: 4px 0 0 0; text-transform: uppercase; letter-spacing: 0.1em;">Luxury Perfumes Store</p>
+          </div>
+          <div style="text-align: right;">
+            <span class="badge">Official Tax Invoice</span>
+            <p style="font-size: 13px; font-family: monospace; margin: 8px 0 0 0; font-weight: bold;">#${displayOrderId}</p>
+            <p style="font-size: 11px; color: #666; margin: 2px 0 0 0;">Date: ${orderDate}</p>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 30px; font-size: 12px; line-height: 1.6;">
+          <div>
+            <strong style="text-transform: uppercase; font-size: 10px; color: #888; letter-spacing: 0.1em;">Billed & Shipped To:</strong>
+            <p style="margin: 4px 0 0 0; font-weight: bold; text-transform: uppercase;">${shipping.name || "Customer"}</p>
+            <p style="margin: 2px 0 0 0; color: #555;">${shipping.address || "Standard Address"}</p>
+            <p style="margin: 2px 0 0 0; color: #555;">${shipping.city || ""}, ${shipping.state || ""} – ${shipping.pincode || ""}</p>
+            <p style="margin: 2px 0 0 0; color: #000; font-weight: bold;">Phone: ${shipping.phone || ""}</p>
+            <p style="margin: 2px 0 0 0; color: #555;">Email: ${shipping.email || ""}</p>
+          </div>
+          <div style="text-align: right;">
+            <strong style="text-transform: uppercase; font-size: 10px; color: #888; letter-spacing: 0.1em;">Payment Details:</strong>
+            <p style="margin: 4px 0 0 0;">Method: <strong style="text-transform: uppercase;">${isOnline ? "Razorpay (Online / UPI)" : "Cash on Delivery"}</strong></p>
+            <p style="margin: 2px 0 0 0;">Payment Status: <strong style="color: ${isOnline ? "#059669" : "#b45309"};">${isOnline ? "PAID" : "PENDING (COD)"}</strong></p>
+            ${order.paymentId ? `<p style="margin: 2px 0 0 0; color: #555;">Payment ID: <span style="font-family: monospace; font-weight: bold;">${order.paymentId}</span></p>` : ""}
+            ${order.awbCode ? `<p style="margin: 2px 0 0 0; color: #555;">Courier AWB: <span style="font-family: monospace;">${order.awbCode}</span></p>` : ""}
+          </div>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="text-align: left;">#</th>
+              <th style="text-align: left;">Item Description</th>
+              <th>Qty</th>
+              <th style="text-align: right;">Unit Price</th>
+              <th style="text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsRows}
+          </tbody>
+        </table>
+
+        <div class="total-box">
+          <table class="total-table">
+            <tr>
+              <td>Subtotal</td>
+              <td style="text-align: right;">₹${(order.subtotal || order.total || 0).toLocaleString("en-IN")}</td>
+            </tr>
+            <tr>
+              <td>Shipping Charges</td>
+              <td style="text-align: right; color: #059669; font-weight: bold;">FREE EXPRESS DELIVERY</td>
+            </tr>
+            ${order.couponDiscount || order.discount ? `
+            <tr>
+              <td>Coupon Discount</td>
+              <td style="text-align: right; color: #800020; font-weight: 600;">-₹${(order.couponDiscount || order.discount || 0).toLocaleString("en-IN")}</td>
+            </tr>` : ""}
+            <tr class="final-price">
+              <td>Grand Total</td>
+              <td style="text-align: right;">₹${(order.total || 0).toLocaleString("en-IN")}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="footer">
+          <p style="font-weight: 600; color: #333;">Thank you for shopping with Mahirash Luxury Perfumes.</p>
+          <p>For any queries or assistance, contact support at care@mahirash.com or WhatsApp +91 9584826112.</p>
+        </div>
+      </body>
+      </html>
+    `);
+    invoiceWindow.document.close();
+  };
 
   return (
     <div className="min-h-screen bg-[#faf9f6] flex items-center justify-center px-4 pt-[155px] md:pt-[125px] pb-24">
@@ -240,19 +371,30 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-2 gap-3 pt-6 border-t border-zinc-200">
-          <Link
-            to="/orders"
-            className="w-full py-3.5 bg-zinc-900 hover:bg-black text-white text-[14px] font-bold uppercase tracking-widest rounded-xl transition-all text-center flex items-center justify-center gap-2 border border-zinc-900 shadow-sm"
+        {/* Action Buttons */}
+        <div className="space-y-3 pt-6 border-t border-zinc-200">
+          <button
+            type="button"
+            onClick={() => handleDownloadInvoice(finalDetails)}
+            className="w-full py-3.5 bg-[#800020] hover:bg-[#600018] text-white text-[13px] font-bold uppercase tracking-wider rounded-xl transition-all text-center flex items-center justify-center gap-2 shadow-md cursor-pointer"
           >
-            <Package size={14} /> My Orders
-          </Link>
-          <Link
-            to="/shop"
-            className="w-full py-3.5 bg-white hover:bg-zinc-50 text-zinc-805 text-[14px] font-bold uppercase tracking-widest rounded-xl transition-all text-center border border-zinc-200"
-          >
-            Continue Shopping
-          </Link>
+            <Printer size={16} /> Download Tax Invoice / Bill
+          </button>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Link
+              to="/orders"
+              className="w-full py-3.5 bg-zinc-900 hover:bg-black text-white text-[13px] font-bold uppercase tracking-wider rounded-xl transition-all text-center flex items-center justify-center gap-2 border border-zinc-900 shadow-sm"
+            >
+              <Package size={14} /> My Orders
+            </Link>
+            <Link
+              to="/shop"
+              className="w-full py-3.5 bg-white hover:bg-zinc-50 text-zinc-800 text-[13px] font-bold uppercase tracking-wider rounded-xl transition-all text-center border border-zinc-200"
+            >
+              Continue Shopping
+            </Link>
+          </div>
         </div>
       </motion.div>
     </div>
@@ -684,7 +826,7 @@ const Checkout = () => {
     } catch (_) { }
   };
 
-  const saveOrder = async (paymentId = "COD", status = "confirmed", paymentStatus = "captured", tempPassword = "") => {
+  const saveOrder = async (paymentId = "COD", status = "confirmed", paymentStatus = "captured", tempPassword = "", extraPaymentData = {}) => {
     try {
       const finalEmail = (formData.email || customer?.email || user?.email || "").toLowerCase().trim();
       const activeUid = user?.uid || customer?.uid || customer?.id || (customer ? "usr_" + finalEmail.replace(/[^a-z0-9]/g, "_") : null);
@@ -790,7 +932,12 @@ const Checkout = () => {
         shippingCost: 0,
         discount: couponDiscount,
         paymentMethod: formData.paymentMethod,
+        paymentProvider: formData.paymentMethod === "online" ? "Razorpay" : "Cash on Delivery",
         paymentId,
+        razorpayOrderId: extraPaymentData.razorpayOrderId || "",
+        razorpaySignature: extraPaymentData.razorpaySignature || "",
+        paymentMode: extraPaymentData.paymentMode || (formData.paymentMethod === "online" ? "Online" : "COD"),
+        verifiedAmount: extraPaymentData.verifiedAmount || Math.max(0, total - couponDiscount),
         status,
         orderStatus: status,
         paymentStatus,
@@ -976,11 +1123,17 @@ const Checkout = () => {
           orderNumber,
           isGuest,
           total: Math.max(0, total - couponDiscount),
+          subtotal: total,
           shipping: { ...formData, email: finalEmail },
           items: items,
           appliedCoupon: appliedCoupon ? appliedCoupon.code : null,
           couponDiscount,
           tempPassword,
+          paymentMethod: formData.paymentMethod,
+          paymentId,
+          paymentStatus,
+          paymentMode: extraPaymentData.paymentMode || (formData.paymentMethod === "online" ? "Online" : "COD"),
+          razorpayOrderId: extraPaymentData.razorpayOrderId || "",
           awbCode: shiprocketData?.awb_code || "",
           courierName: shiprocketData?.courier_name || "",
           trackingUrl: shiprocketData?.tracking_url || ""
@@ -1007,6 +1160,8 @@ const Checkout = () => {
                 discount: couponDiscount,
                 paymentMethod: formData.paymentMethod,
                 paymentStatus,
+                paymentId,
+                paymentMode: extraPaymentData.paymentMode || (formData.paymentMethod === "online" ? "Online" : "COD"),
                 shipping: formData,
                 isGuest
               }
@@ -1124,35 +1279,114 @@ const Checkout = () => {
     let tempPassword = "";
 
     if (formData.paymentMethod === "online") {
+      const payableAmount = Math.max(0, total - couponDiscount);
+      const generatedOrderNumber = "MHR-" + Math.floor(100000 + Math.random() * 900000);
+
+      // Step 1: Create verified server-side Razorpay order
+      let rzpOrder = null;
+      try {
+        const orderRes = await fetch("/api/razorpay/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: payableAmount,
+            currency: "INR",
+            receipt: `rcpt_${generatedOrderNumber}`,
+            customer: {
+              name: cleanName,
+              email: cleanEmail,
+              phone: phoneVal
+            },
+            notes: {
+              order_number: generatedOrderNumber,
+              customer_name: cleanName,
+              customer_email: cleanEmail,
+              items_count: String(items.length)
+            }
+          })
+        });
+        if (orderRes.ok) {
+          rzpOrder = await orderRes.json();
+        } else {
+          const errData = await orderRes.json().catch(() => ({}));
+          console.warn("[Razorpay] Server order notice:", errData);
+        }
+      } catch (err) {
+        console.warn("[Razorpay] Server order creation call notice:", err);
+      }
+
+      const activeKey = rzpOrder?.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_live_TuShEm20JwRAKS";
+
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: Math.max(0, total - couponDiscount) * 100,
+        key: activeKey,
+        amount: rzpOrder?.amount || Math.round(payableAmount * 100),
         currency: "INR",
-        name: "Mahirash",
-        description: "Luxury Perfume Order",
+        name: "Mahirash Perfumes",
+        description: "Luxury Perfumes Order #" + generatedOrderNumber,
         image: `${window.location.origin}/logom.webp`,
-        handler: async (response) => {
-          await saveOrder(response.razorpay_payment_id, "confirmed", "captured", tempPassword);
-          setIsProcessing(false);
-        },
+        order_id: rzpOrder?.orderId || undefined,
         prefill: { name: cleanName, email: cleanEmail, contact: phoneVal },
         theme: { color: "#111111" },
+        handler: async (response) => {
+          let verifiedMethod = "Online";
+          let verifiedAmount = payableAmount;
+
+          // Step 2: Verify signature on server
+          if (response.razorpay_signature && response.razorpay_order_id) {
+            try {
+              const verifyRes = await fetch("/api/razorpay/verify-payment", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature
+                })
+              });
+              if (verifyRes.ok) {
+                const verifyData = await verifyRes.json();
+                if (verifyData.verified) {
+                  verifiedMethod = verifyData.method || "Online";
+                  verifiedAmount = verifyData.amount || payableAmount;
+                }
+              }
+            } catch (vErr) {
+              console.warn("[Razorpay] Signature verification notice:", vErr);
+            }
+          }
+
+          // Step 3: Save order to Firestore with all verified payment details
+          await saveOrder(
+            response.razorpay_payment_id,
+            "confirmed",
+            "paid",
+            tempPassword,
+            {
+              razorpayOrderId: response.razorpay_order_id || "",
+              razorpaySignature: response.razorpay_signature || "",
+              paymentMode: verifiedMethod.toUpperCase(),
+              verifiedAmount
+            }
+          );
+          setIsProcessing(false);
+        },
         modal: {
-          ondismiss: async () => {
-            await saveOrder("CANCELLED_BY_USER", "failed", "cancelled", tempPassword);
+          ondismiss: () => {
+            showToast("Payment was cancelled. You can retry placing your order anytime.", "info");
             setIsProcessing(false);
           }
         }
       };
-      const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", async (response) => {
-        await saveOrder(response.error.metadata?.payment_id || "FAILED", "failed", "failed", tempPassword);
 
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", (response) => {
+        console.error("Razorpay payment failed:", response.error);
+        showToast(response.error?.description || "Payment failed. Please try another card or UPI.", "error");
         setIsProcessing(false);
       });
       rzp.open();
     } else {
-      await saveOrder("COD", "confirmed", "pending", tempPassword);
+      await saveOrder("COD", "confirmed", "pending", tempPassword, { paymentMode: "COD" });
       setIsProcessing(false);
     }
   };

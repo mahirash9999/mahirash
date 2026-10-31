@@ -40,7 +40,7 @@ export function getFromEmail() {
     return process.env.SMTP_FROM;
   }
   const user = process.env.SMTP_USER || process.env.GMAIL_USER || "no-reply@mahirash.com";
-  return `"Mahirash Haute Parfumerie" <${user}>`;
+  return `"Mahirash Luxury Perfumes" <${user}>`;
 }
 
 export function getAdminEmail() {
@@ -147,7 +147,7 @@ export function renderOtpEmail({ otp, toEmail, name }) {
  */
 export function renderOrderConfirmationEmail({ order }) {
   const orderNumber = order.orderNumber || order.id || "MHR-ORDER";
-  const customerName = order.customerName || order.shipping?.name || "Valued Connoisseur";
+  const customerName = order.customerName || order.shipping?.name || "Customer";
   const items = Array.isArray(order.items) ? order.items : [];
   const total = Number(order.total) || 0;
   const subtotal = Number(order.subtotal) || total;
@@ -205,7 +205,7 @@ export function renderOrderConfirmationEmail({ order }) {
               <p style="margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:0.25em;color:#c9a962;font-weight:700;">Order Confirmed</p>
               <h1 style="margin:0 0 12px;font-size:24px;font-weight:300;text-transform:uppercase;letter-spacing:0.18em;color:#000000;">Thank You for Choosing Mahirash</h1>
               <p style="margin:0;font-size:14px;color:#57534e;line-height:1.6;">
-                Dear ${customerName}, your fragrance formulation has been successfully placed and is now being handcrafted and packaged for dispatch.
+                Dear ${customerName}, your perfume order has been placed successfully and is now being packed for dispatch.
               </p>
             </td>
           </tr>
@@ -261,12 +261,12 @@ export function renderOrderConfirmationEmail({ order }) {
                 </tr>
                 ${discount > 0 ? `
                 <tr>
-                  <td style="padding:4px 0;font-size:12px;color:#15803d;">Privilege Discount</td>
+                  <td style="padding:4px 0;font-size:12px;color:#15803d;">Coupon Discount</td>
                   <td align="right" style="padding:4px 0;font-size:12px;color:#15803d;">-₹${discount.toLocaleString("en-IN")}</td>
                 </tr>` : ""}
                 <tr>
                   <td style="padding:4px 0;font-size:12px;color:#78716c;">Insured Shipping</td>
-                  <td align="right" style="padding:4px 0;font-size:12px;color:#1c1917;">${shippingFee === 0 ? "Complimentary" : "₹" + shippingFee.toLocaleString("en-IN")}</td>
+                  <td align="right" style="padding:4px 0;font-size:12px;color:#1c1917;">${shippingFee === 0 ? "Free Delivery" : "₹" + shippingFee.toLocaleString("en-IN")}</td>
                 </tr>
                 <tr>
                   <td style="padding:12px 0 0;font-size:14px;font-weight:700;color:#000000;text-transform:uppercase;letter-spacing:0.1em;border-top:1px solid #e7e5e4;">Total Amount</td>
@@ -305,7 +305,7 @@ export function renderOrderConfirmationEmail({ order }) {
             <td style="padding:24px 30px;background-color:#000000;color:#ffffff;text-align:center;">
               <p style="margin:0 0 6px;font-size:11px;font-weight:400;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">Mahirash</p>
               <p style="margin:0;font-size:10px;color:#a8a29e;">
-                Questions regarding your order? Reach our concierge at <a href="mailto:${SUPPORT_EMAIL}" style="color:#ffffff;text-decoration:none;">${SUPPORT_EMAIL}</a>
+                Questions regarding your order? Contact our support team at <a href="mailto:${SUPPORT_EMAIL}" style="color:#ffffff;text-decoration:none;">${SUPPORT_EMAIL}</a>
               </p>
             </td>
           </tr>
