@@ -404,7 +404,7 @@ const Header = () => {
                 <img
                   src={siteSettings?.logo_url || "/logom.webp"}
                   alt="MAHIRASH"
-                  className="h-8 sm:h-9 md:h-10 w-auto object-contain brightness-0 group-hover:opacity-85 transition-opacity"
+                  className="h-8 sm:h-9 md:h-10 w-auto object-contain group-hover:opacity-85 transition-opacity"
                 />
               </Link>
             </div>
