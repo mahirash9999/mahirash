@@ -79,7 +79,7 @@ const sidebarSections = [
       { name: "FAQs", icon: HelpCircle },
       { name: "Shop By Scents", icon: Sparkles },
       { name: "Explore Banner", icon: Image },
-      { name: "Global Alert", icon: AlertCircle },
+      { name: "Top Slider", icon: AlertCircle },
       { name: "Benefits Strip", icon: ClipboardList },
       { name: "Blogs", icon: BookOpen },
       { name: "About Us", icon: FileText },

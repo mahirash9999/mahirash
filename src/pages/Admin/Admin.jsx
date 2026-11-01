@@ -1958,7 +1958,7 @@ const Admin = () => {
       case "Community Gallery":
       case "Reviews":
         return <CommunityManager />;
-      case "Global Alert":
+      case "Top Slider":
         return (
           <GenericCRUDManager
             collectionName="global_alerts"
