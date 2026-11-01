@@ -690,7 +690,7 @@ const Header = () => {
                   <img
                     src={siteSettings?.logo_url || "/logom.webp"}
                     alt="MAHIRASH"
-                    className="h-7 sm:h-8 w-auto object-contain brightness-0 invert"
+                    className="h-7 sm:h-8 w-auto object-contain invert"
                   />
                   <span className="text-[7.5px] uppercase tracking-[0.38em] text-white/80 mt-0.5 font-semibold">
                     LUXURY PERFUMES
