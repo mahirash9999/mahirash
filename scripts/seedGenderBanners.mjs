@@ -66,7 +66,7 @@ async function run() {
 
   // High quality luxury perfume editorial photos
   const menSource = "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=1200&auto=format&fit=crop";
-  const womenSource = "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=1200&auto=format&fit=crop";
+  const womenSource = "/mahirash_icon_white.png";
   const unisexSource = "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1200&auto=format&fit=crop";
 
   let menUrl, womenUrl, unisexUrl;

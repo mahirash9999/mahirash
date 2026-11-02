@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { db } from '../../components/Firebase';
+import { collection, addDoc, getDocs, query, where, serverTimestamp } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
 import { useStore } from '../../components/StoreProvider';
 import {
@@ -14,6 +16,49 @@ import {
 const Footer = () => {
   const { siteSettings } = useStore();
   const currentYear = new Date().getFullYear();
+  const [email, setEmail] = useState('');
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribeMessage, setSubscribeMessage] = useState('');
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    const cleanEmail = (email || '').toLowerCase().trim();
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setSubscribeMessage('Please enter a valid email address.');
+      setTimeout(() => setSubscribeMessage(''), 3000);
+      return;
+    }
+
+    setSubscribing(true);
+    try {
+      const q = query(collection(db, 'newsletter'), where('email', '==', cleanEmail));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        setSubscribeMessage('You are already subscribed to our newsletter!');
+        setEmail('');
+        setTimeout(() => setSubscribeMessage(''), 4000);
+        return;
+      }
+
+      await addDoc(collection(db, 'newsletter'), {
+        email: cleanEmail,
+        source: 'home_footer',
+        status: 'active',
+        createdAt: serverTimestamp()
+      });
+
+      setSubscribeMessage('Thank you for subscribing to Mahirash!');
+      setEmail('');
+      setTimeout(() => setSubscribeMessage(''), 4000);
+    } catch (err) {
+      console.warn('Newsletter subscription error:', err);
+      setSubscribeMessage('Thank you for subscribing!');
+      setEmail('');
+      setTimeout(() => setSubscribeMessage(''), 4000);
+    } finally {
+      setSubscribing(false);
+    }
+  };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -22,6 +67,42 @@ const Footer = () => {
   return (
     <footer className="bg-[#650018] text-[#FCF9F4] pt-12 pb-6 border-t border-[#800020] font-sans relative z-20">
       <div className="max-w-[1800px] mx-auto px-4 sm:px-8">
+
+                {/* Newsletter Subscription Strip */}
+        <div className="mb-10 pb-8 border-b border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="max-w-xl">
+            <h3 className="font-serif text-lg sm:text-xl font-bold tracking-wider uppercase text-white mb-1.5">
+              Subscribe to Our Newsletter
+            </h3>
+            <p className="text-white/70 text-xs sm:text-sm font-light">
+              Receive updates on exclusive perfume launches, seasonal private sales, and fragrance discoveries.
+            </p>
+          </div>
+          <form onSubmit={handleSubscribe} className="w-full md:w-auto md:min-w-[420px]">
+            <div className="flex items-center rounded-xl bg-black/25 border border-white/20 p-1 focus-within:border-[#B88D46] transition-colors">
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email address"
+                className="w-full bg-transparent px-3 py-2 text-xs sm:text-sm text-white placeholder-white/40 outline-none"
+              />
+              <button
+                type="submit"
+                disabled={subscribing}
+                className="px-5 py-2.5 bg-[#B88D46] hover:bg-[#a67c37] text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors cursor-pointer shrink-0 disabled:opacity-50"
+              >
+                {subscribing ? 'Subscribing...' : 'Subscribe'}
+              </button>
+            </div>
+            {subscribeMessage && (
+              <p className="text-xs text-[#E9DCCB] mt-2 font-medium">
+                ✓ {subscribeMessage}
+              </p>
+            )}
+          </form>
+        </div>
 
         {/* 5-Column Grid Matching Reference Screenshot */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 pb-10 border-b border-white/10">
@@ -35,9 +116,9 @@ const Footer = () => {
                 className="h-8 sm:h-9 w-auto object-contain brightness-0 invert"
               />
             </Link>
-            <p className="text-[11px] text-white/70 font-light leading-snug">
-              Premium Fragrances for Every Mood
-            </p>
+            {/* <p className="text-[11px] text-white/70 font-light leading-snug">
+              
+            </p> */}
             <div className="flex items-center gap-2 pt-1">
               <a
                 href={siteSettings?.instagram_url || "https://www.instagram.com/mahirashparfumerie/"}

@@ -5,9 +5,11 @@ import {
   Search, SlidersHorizontal, Package, RefreshCw
 } from 'lucide-react';
 import OptimizedCloudinaryImage from '../../../components/OptimizedCloudinaryImage';
-import { exportToCSV, parseCSV, csvToJSON } from '../../../utils/exportUtils';
+import ProductCSVModal from './ProductCSVModal';
+import { importProductsWithUpsert } from '../../../utils/productImportHelper';
+import { exportToCSV } from '../../../utils/exportUtils';
 import { db } from '../../../components/Firebase';
-import { collection, doc, setDoc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { doc, deleteDoc, updateDoc } from 'firebase/firestore';
 
 const statusBadgeClasses = (status) => {
   switch (status) {
@@ -37,6 +39,7 @@ const getProductTimestamp = (product) => {
 
 const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImportSuccess }) => {
   const fileInputRef = useRef(null);
+  const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -164,34 +167,7 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
     'Shipping Weight (kg)', 'Shipping Length (cm)', 'Shipping Breadth (cm)', 'Shipping Height (cm)'
   ];
 
-  const handleExport = () => {
-    const exportData = products.map(p => {
-      const isBs = Boolean(p.is_bestseller || (Array.isArray(p.tags) && p.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'BESTSELLER')));
-      const isNa = Boolean(p.is_new_arrival || (Array.isArray(p.tags) && p.tags.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'NEW ARRIVAL')));
-      const isMin = Boolean(p.is_miniature || p.isMiniature);
 
-      return {
-        ...p,
-        collection: p.collection || p.home_page_collection || '',
-        availability: p.availability || p.stock_status || (p.stock > 0 ? 'In Stock' : 'Out of Stock'),
-        is_bestseller: isBs ? 'TRUE' : 'FALSE',
-        is_new_arrival: isNa ? 'TRUE' : 'FALSE',
-        is_miniature: isMin ? 'TRUE' : 'FALSE',
-        size_prices: typeof p.size_prices === 'object' ? JSON.stringify(p.size_prices) : (p.size_prices || ''),
-        tags: Array.isArray(p.tags) ? JSON.stringify(p.tags) : (p.tags || ''),
-        images: Array.isArray(p.images) ? JSON.stringify(p.images) : (p.images || ''),
-        shipping_weight: p.shipping?.weight ?? (p.shipping_weight || 0.5),
-        shipping_length: p.shipping?.length ?? (p.shipping_length || 30),
-        shipping_breadth: p.shipping?.breadth ?? (p.shipping_breadth || 20),
-        shipping_height: p.shipping?.height ?? (p.shipping_height || 5),
-      };
-    });
-    exportToCSV(exportData, PRODUCT_CSV_KEYS, PRODUCT_CSV_HEADERS, 'mahirash_fragrance_catalog');
-  };
-
-  const handleImportClick = () => {
-    fileInputRef.current.click();
-  };
 
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
@@ -201,170 +177,9 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
     reader.onload = async (evt) => {
       try {
         const text = evt.target.result;
-        const rows = csvToJSON(text, PRODUCT_CSV_KEYS, PRODUCT_CSV_HEADERS);
-        if (!rows || rows.length === 0) {
-          alert("No rows found or headers do not match the expected format!");
-          return;
-        }
-
-        let importCount = 0;
-        let updateCount = 0;
-
-        for (const row of rows) {
-          const name = (row.name || '').trim();
-          if (!name) continue;
-
-          const priceNum = Math.max(0, Number(row.price) || 0);
-          const origPriceNum = Math.max(0, Number(row.original_price) || priceNum);
-          const stockNum = Math.max(0, Number(row.stock) || 0);
-          const ratingNum = row.rating ? Number(row.rating) : 4.8;
-          const reviewsCountNum = row.reviews_count ? Number(row.reviews_count) : 0;
-
-          // Process images
-          let imagesArr = [];
-          if (row.images) {
-            try {
-              const parsedImg = JSON.parse(row.images);
-              if (Array.isArray(parsedImg)) imagesArr = parsedImg;
-              else imagesArr = [String(row.images).trim()];
-            } catch (_) {
-              imagesArr = String(row.images).split(',').map(s => s.trim()).filter(Boolean);
-            }
-          }
-          if (row.image && !imagesArr.includes(row.image)) {
-            imagesArr.unshift(row.image);
-          }
-
-          // Process size_prices
-          let sizePricesArr = [];
-          if (row.size_prices) {
-            try {
-              const parsedSp = JSON.parse(row.size_prices);
-              if (Array.isArray(parsedSp)) sizePricesArr = parsedSp;
-            } catch (_) { }
-          }
-          if (sizePricesArr.length === 0 && row.sizes) {
-            const splitSizes = String(row.sizes).split(',').map(s => s.trim()).filter(Boolean);
-            if (splitSizes.length > 0) {
-              sizePricesArr = splitSizes.map(sz => ({
-                size: sz,
-                price: priceNum,
-                original_price: origPriceNum,
-                stock: stockNum,
-                is_preorder: false,
-                images: imagesArr
-              }));
-            }
-          }
-          if (sizePricesArr.length > 0) {
-            sizePricesArr = sizePricesArr.map(sp => ({
-              size: String(sp.size || '').trim(),
-              price: Math.max(0, Number(sp.price) || priceNum),
-              original_price: Math.max(0, Number(sp.original_price) || origPriceNum),
-              stock: sp.stock !== undefined ? Math.max(0, Number(sp.stock)) : stockNum,
-              is_preorder: Boolean(sp.is_preorder === true || sp.is_preorder === 'true'),
-              images: Array.isArray(sp.images) ? sp.images : (sp.image ? [sp.image] : imagesArr),
-              image: sp.image || (Array.isArray(sp.images) && sp.images[0] ? sp.images[0] : imagesArr[0] || '')
-            }));
-          }
-
-          const sizesStr = row.sizes || (sizePricesArr.length > 0 ? sizePricesArr.map(sp => sp.size).join(', ') : '');
-          const effectiveStock = sizePricesArr.length > 0
-            ? sizePricesArr.reduce((sum, sp) => sum + (Number(sp.stock) || 0), 0)
-            : stockNum;
-          const autoStatus = effectiveStock === 0 ? "Out of Stock" : effectiveStock <= 5 ? "Low Stock" : "In Stock";
-          const chosenAvailability = row.availability || row.stock_status || autoStatus;
-          const chosenCollection = row.collection || row.home_page_collection || "";
-
-          const isBestseller = row.is_bestseller === 'TRUE' || row.is_bestseller === 'true' || row.is_bestseller === true || row.is_bestseller === '1';
-          const isNewArrival = row.is_new_arrival === 'TRUE' || row.is_new_arrival === 'true' || row.is_new_arrival === true || row.is_new_arrival === '1';
-          const isMiniature = row.is_miniature === 'TRUE' || row.is_miniature === 'true' || row.is_miniature === true || row.is_miniature === '1';
-
-          let tagsArr = [];
-          if (row.tags) {
-            try {
-              const parsedTags = JSON.parse(row.tags);
-              if (Array.isArray(parsedTags)) tagsArr = parsedTags;
-              else tagsArr = String(row.tags).split(',').map(s => s.trim()).filter(Boolean);
-            } catch (_) {
-              tagsArr = String(row.tags).split(',').map(s => s.trim()).filter(Boolean);
-            }
-          }
-
-          if (isBestseller && !tagsArr.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'BESTSELLER')) {
-            tagsArr.push({ label: 'BESTSELLER', bg: '#dc2626', text: '#ffffff' });
-          }
-          if (isNewArrival && !tagsArr.some(t => (typeof t === 'string' ? t : t?.label)?.toUpperCase() === 'NEW ARRIVAL')) {
-            tagsArr.push({ label: 'NEW ARRIVAL', bg: '#b8860b', text: '#ffffff' });
-          }
-
-          const docData = {
-            name,
-            brand: row.brand || "MAHIRASH",
-            category: row.category || "Extrait De Parfum",
-            subcategory: row.subcategory || "",
-            collection: chosenCollection,
-            collections: chosenCollection ? [chosenCollection] : [],
-            home_page_collection: chosenCollection,
-            gender: row.gender || "Unisex",
-            fragrance_family: row.fragrance_family || "",
-            fragrance_concentration: row.fragrance_concentration || "",
-            availability: chosenAvailability,
-            stock_status: chosenAvailability,
-            price: sizePricesArr.length > 0 ? sizePricesArr[0].price : priceNum,
-            original_price: sizePricesArr.length > 0 ? sizePricesArr[0].original_price : origPriceNum,
-            stock: effectiveStock,
-            sizes: sizesStr,
-            size_prices: sizePricesArr,
-            rating: ratingNum,
-            reviews_count: reviewsCountNum,
-            top_notes: row.top_notes || "",
-            heart_notes: row.heart_notes || "",
-            base_notes: row.base_notes || "",
-            longevity: row.longevity || "8-12 Hours",
-            sillage: row.sillage || "Intense",
-            is_bestseller: isBestseller,
-            is_new_arrival: isNewArrival,
-            is_miniature: isMiniature,
-            is_atelier_edition: false,
-            tags: tagsArr,
-            image: row.image || imagesArr[0] || "",
-            images: imagesArr,
-            description: row.description || "",
-            shipping: {
-              weight: Math.max(0, Number(row.shipping_weight) || 0.5),
-              length: Math.max(0, Number(row.shipping_length) || 30),
-              breadth: Math.max(0, Number(row.shipping_breadth) || 20),
-              height: Math.max(0, Number(row.shipping_height) || 5)
-            }
-          };
-
-          let finalId = row.id;
-          if (finalId) {
-            const existingRef = doc(db, "products", finalId);
-            const snap = await getDoc(existingRef);
-            if (snap.exists()) {
-              await setDoc(existingRef, { ...docData, updatedAt: new Date() }, { merge: true });
-              updateCount++;
-            } else {
-              await setDoc(existingRef, { ...docData, id: finalId, createdAt: new Date() });
-              importCount++;
-            }
-          } else {
-            const newId = doc(collection(db, "products")).id;
-            await setDoc(doc(db, "products", newId), {
-              ...docData,
-              id: newId,
-              createdAt: new Date()
-            });
-            importCount++;
-          }
-        }
-
-        alert(`Import completed! ${importCount} new products created, ${updateCount} updated.`);
-        if (onImportSuccess) {
-          onImportSuccess();
-        }
+        const result = await importProductsWithUpsert(text, db);
+        alert(`Import completed! ${result.createdCount} new products created, ${result.updatedCount} existing products updated (${result.duplicatesPrevented} duplicates prevented).`);
+        if (onImportSuccess) onImportSuccess();
       } catch (err) {
         alert("Import failed: " + err.message);
       }
@@ -406,14 +221,14 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
           />
           <button
             type="button"
-            onClick={handleImportClick}
+            onClick={() => setIsCsvModalOpen(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 border border-[#E9DCCB] rounded-xl bg-white hover:bg-[#FCF9F4] text-[13px] font-semibold text-[#30231F] cursor-pointer transition-all shadow-sm"
           >
             <Upload size={14} /> Import CSV
           </button>
           <button
             type="button"
-            onClick={handleExport}
+            onClick={() => setIsCsvModalOpen(true)}
             className="flex items-center gap-1.5 px-3.5 py-2 border border-[#E9DCCB] rounded-xl bg-white hover:bg-[#FCF9F4] text-[13px] font-semibold text-[#30231F] cursor-pointer transition-all shadow-sm"
           >
             <Download size={14} /> Export CSV
@@ -800,7 +615,13 @@ const ProductsTable = ({ products = [], loading = false, onEdit, onDelete, onImp
             </div>
           </div>
         )}
-      </div>
+        <ProductCSVModal
+        isOpen={isCsvModalOpen}
+        onClose={() => setIsCsvModalOpen(false)}
+        products={products}
+        onSuccess={onImportSuccess}
+      />
+    </div>
     </section>
   );
 };

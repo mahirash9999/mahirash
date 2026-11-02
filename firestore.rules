@@ -86,6 +86,11 @@ service cloud.firestore {
     }
 
     // CMS & Storefront Dynamic Content Collections: public read, super admin write
+    match /hero_video/{docId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
     match /hero_slides/{slideId} {
       allow read: if true;
       allow write: if isSuperAdmin();
@@ -101,7 +106,17 @@ service cloud.firestore {
       allow write: if isSuperAdmin();
     }
 
+    match /newsletter/{subId} {
+      allow create: if true;
+      allow read, update, delete: if isSuperAdmin();
+    }
+
     match /benefits_strip/{benefitId} {
+      allow read: if true;
+      allow write: if isSuperAdmin();
+    }
+
+    match /homepage_banners/{bannerId} {
       allow read: if true;
       allow write: if isSuperAdmin();
     }

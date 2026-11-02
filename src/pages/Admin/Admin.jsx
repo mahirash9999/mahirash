@@ -56,6 +56,9 @@ import SiteSettingsManager from "./components/SiteSettingsManager";
 import BillingSystem from "./components/BillingSystem";
 import AdminProfileSettings from "./components/AdminProfileSettings";
 import HeroVideoManager from "./components/HeroVideoManager";
+import BenefitsStripManager from "./components/BenefitsStripManager";
+import NewsletterManager from "./components/NewsletterManager";
+import HomepageBannersManager from "./components/HomepageBannersManager";
 import AboutUsManager from "./components/AboutUsManager";
 import NewsManager from "./components/NewsManager";
 import SEOManager from "./components/SEOManager";
@@ -356,12 +359,21 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
             }
           });
 
+          let matchedItem = null;
           if (row.id) {
-            await setDoc(doc(db, collectionName, row.id), docData, { merge: true });
+            matchedItem = items.find(it => String(it.id).toLowerCase() === String(row.id).toLowerCase());
+          }
+          if (!matchedItem && (row.name || row.title)) {
+            const rowLabel = String(row.name || row.title).toLowerCase().trim();
+            matchedItem = items.find(it => String(it.name || it.title || '').toLowerCase().trim() === rowLabel);
+          }
+
+          if (matchedItem) {
+            await setDoc(doc(db, collectionName, matchedItem.id), docData, { merge: true });
             updateCount++;
           } else {
-            const newId = doc(collection(db, collectionName)).id;
-            await setDoc(doc(db, collectionName, newId), { ...docData, id: newId });
+            const newId = (row.id && row.id.trim()) || doc(collection(db, collectionName)).id;
+            await setDoc(doc(db, collectionName, newId), { ...docData, id: newId, createdAt: new Date() });
             importCount++;
           }
         }
@@ -1940,21 +1952,9 @@ const Admin = () => {
             defaultItem={{ image: '', title: '', tag: '', subtitle: '', cta: 'EXPLORE COLLECTION', link: '/shop', sort_order: 1, is_active: true }}
           />
         );
+      case "Homepage Banners":
       case "Explore Banner":
-        return (
-          <GenericCRUDManager
-            collectionName="explore_banner"
-            title="Explore Banner Settings"
-            fields={[
-              { key: 'desktop_image', label: 'Desktop Banner Image', type: 'image' },
-              { key: 'tablet_image', label: 'Tablet Banner Image', type: 'image' },
-              { key: 'mobile_image', label: 'Mobile Banner Image', type: 'image' },
-              { key: 'link', label: 'Destination Link (e.g. /shop)' },
-              { key: 'is_active', label: 'Status', type: 'boolean' }
-            ]}
-            defaultItem={{ desktop_image: '', tablet_image: '', mobile_image: '', link: '/shop', is_active: true }}
-          />
-        );
+        return <HomepageBannersManager />;
       case "Community Gallery":
       case "Reviews":
         return <CommunityManager />;
@@ -2024,29 +2024,10 @@ const Admin = () => {
           </div>
         );
       case "Benefits Strip":
-        return (
-          <GenericCRUDManager
-            collectionName="benefits_strip"
-            title="Homepage Benefits Info Strip CMS"
-            fields={[
-              {
-                key: 'icon',
-                label: 'Benefit Icon',
-                type: 'select',
-                options: [
-                  { value: 'Truck', label: 'Truck (Shipping/Delivery)' },
-                  { value: 'Zap', label: 'Zap (Fast/Performance)' },
-                  { value: 'RotateCcw', label: 'Rotate Arrow (Returns/Refresh)' },
-                  { value: 'ShieldCheck', label: 'Shield Check (Authentic/Secure)' }
-                ]
-              },
-              { key: 'text', label: 'Benefit text' },
-              { key: 'sort_order', label: 'Sort Order', type: 'number' },
-              { key: 'is_active', label: 'Status', type: 'boolean' }
-            ]}
-            defaultItem={{ icon: 'Truck', text: 'Free Delivery', sort_order: 1, is_active: true }}
-          />
-        );
+        return <BenefitsStripManager />;
+      case "Newsletter Subscribers":
+      case "Newsletter":
+        return <NewsletterManager />;
       case "Activity Logs":
         return <ActivityLogsView />;
       case "SEO & Sitemap":
@@ -2166,10 +2147,10 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#FCF9F4] text-[#30231F] selection:bg-[#800020] selection:text-white relative">
+    <div className="h-screen w-full flex overflow-hidden bg-[#FCF9F4] text-[#30231F] selection:bg-[#800020] selection:text-white relative">
       <AdminSidebar activeItem={activeItem} setActiveItem={setActiveItem} isOpen={isMobileSidebarOpen} onClose={() => setIsMobileSidebarOpen(false)} />
 
-      <main className="flex-1 min-w-0 w-full px-3 py-4 sm:px-6 md:px-8 lg:px-10 overflow-x-hidden overflow-y-auto bg-[#FCF9F4]">
+      <main className="flex-1 min-w-0 h-screen overflow-y-auto w-full px-3 py-4 sm:px-6 md:px-8 lg:px-10 bg-[#FCF9F4]">
         <div className="max-w-7xl mx-auto w-full">
           <AdminHeader activeItem={activeItem} searchVal={searchVal} setSearchVal={setSearchVal} onMenuClick={() => setIsMobileSidebarOpen(true)} />
 

@@ -10,6 +10,7 @@ import RandomProducts from '../Home/RandomProducts';
 import TheJournal from '../Home/TheJournal';
 import HomeFAQ from '../Home/HomeFAQ';
 import SEOHead from '../SEOHead';
+import HomePromoBanner, { BANNER_DEFAULTS } from '../Home/HomePromoBanner';
 
 const Home = () => {
   return (
@@ -35,12 +36,44 @@ const Home = () => {
         <Hero />
         <BenefitsStrip />
         <GallerySwiper />
+
+        {/* 1. Shop by Scent Section */}
         <CategorySection />
+
+        {/* ── BANNER SLOT 1: Between Shop by Scent and Best Sellers ── */}
+        <HomePromoBanner
+          slotKey="scent_to_bestseller"
+          defaultData={BANNER_DEFAULTS.scent_to_bestseller}
+        />
+
+        {/* 2. Best Sellers Section */}
         <Bestsellers />
+
+        {/* 3. Shop Miniatures Section */}
         <RandomProducts />
+
+        {/* ── BANNER SLOT 2: Between Shop Miniatures and Signature Collection ── */}
+        <HomePromoBanner
+          slotKey="miniatures_to_signature"
+          defaultData={BANNER_DEFAULTS.miniatures_to_signature}
+        />
+
+        {/* 4. Signature Collection Section */}
         <ShopTheLook />
+
+        {/* 5. Editorial Journal */}
         <TheJournal />
+
+        {/* ── BANNER SLOT 3: Before FAQ Section ── */}
+        <HomePromoBanner
+          slotKey="before_faq"
+          defaultData={BANNER_DEFAULTS.before_faq}
+        />
+
+        {/* 6. Frequently Asked Questions (FAQ) */}
         <HomeFAQ />
+
+        {/* 7. Customer Testimonials */}
         <Testimonials />
       </div>
     </main>

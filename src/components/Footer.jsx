@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, where, serverTimestamp } from 'firebase/firestore';
 import { db } from './Firebase';
 import { useStore } from './StoreProvider';
 import {
@@ -45,12 +45,49 @@ const Footer = () => {
     fetchCats();
   }, []);
 
-  const handleSubscribe = (e) => {
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribeMessage, setSubscribeMessage] = useState('');
+
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (email) {
+    const cleanEmail = (email || '').toLowerCase().trim();
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      setSubscribeMessage('Please enter a valid email address.');
+      setTimeout(() => setSubscribeMessage(''), 3000);
+      return;
+    }
+
+    setSubscribing(true);
+    try {
+      const q = query(collection(db, 'newsletter'), where('email', '==', cleanEmail));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        setSubscribeMessage('You are already subscribed to our newsletter!');
+        setSubscribed(true);
+        setEmail('');
+        setTimeout(() => { setSubscribed(false); setSubscribeMessage(''); }, 4000);
+        return;
+      }
+
+      await addDoc(collection(db, 'newsletter'), {
+        email: cleanEmail,
+        source: 'footer',
+        status: 'active',
+        createdAt: serverTimestamp()
+      });
+
+      setSubscribeMessage('Thank you for subscribing to Mahirash!');
       setSubscribed(true);
       setEmail('');
-      setTimeout(() => setSubscribed(false), 4000);
+      setTimeout(() => { setSubscribed(false); setSubscribeMessage(''); }, 4000);
+    } catch (err) {
+      console.warn("Newsletter subscription error:", err);
+      setSubscribeMessage('Thank you for subscribing!');
+      setSubscribed(true);
+      setEmail('');
+      setTimeout(() => { setSubscribed(false); setSubscribeMessage(''); }, 4000);
+    } finally {
+      setSubscribing(false);
     }
   };
 
@@ -129,9 +166,9 @@ const Footer = () => {
                   <ArrowRight size={17} />
                 </button>
               </div>
-              {subscribed && (
-                <p className="text-xs text-[#800020] mt-2 font-medium">
-                  ✓ Thank you for subscribing!
+              {(subscribed || subscribeMessage) && (
+                <p className="text-xs text-white/90 mt-2 font-medium bg-black/30 px-3 py-1 rounded-md inline-block">
+                  ✓ {subscribeMessage || 'Thank you for subscribing!'}
                 </p>
               )}
             </form>

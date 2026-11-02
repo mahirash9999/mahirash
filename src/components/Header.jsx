@@ -103,7 +103,7 @@ const Header = () => {
   const [globalAlerts, setGlobalAlerts] = useState([
     'LUXURY PERFUMES',
     'FREE SHIPPING ON ALL ORDERS',
-    'PREMIUM FRAGRANCES FOR EVERY MOOD',
+    '',
     'EXCLUSIVE OFFERS',
     '100% AUTHENTIC PRODUCTS',
   ]);

@@ -78,6 +78,7 @@ const sidebarSections = [
       { name: "Instagram Reels", icon: Instagram },
       { name: "FAQs", icon: HelpCircle },
       { name: "Shop By Scents", icon: Sparkles },
+      { name: "Homepage Banners", icon: Image },
       { name: "Explore Banner", icon: Image },
       { name: "Top Slider", icon: AlertCircle },
       { name: "Benefits Strip", icon: ClipboardList },
@@ -192,21 +193,22 @@ const AdminSidebar = ({ activeItem, setActiveItem, isOpen, onClose }) => {
       {/* Main Sidebar (Desktop fixed/static & Mobile slide-out drawer) */}
       <aside
         style={{ width: undefined }}
-        className={`fixed top-0 bottom-0 left-0 z-50 w-[285px] max-w-[85vw] bg-[#FCF9F4] border-r border-[#E9DCCB] text-[#30231F] flex flex-col h-screen shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:static lg:h-screen lg:z-10 lg:translate-x-0 selection:bg-[#800020] selection:text-white ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed top-0 bottom-0 left-0 z-50 w-[285px] max-w-[85vw] bg-[#FCF9F4] border-r border-[#E9DCCB] text-[#30231F] flex flex-col h-screen shrink-0 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:sticky lg:top-0 lg:h-screen lg:shrink-0 lg:z-20 lg:translate-x-0 selection:bg-[#800020] selection:text-white ${isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
       >
         {/* Brand Header */}
         <div className="px-5 py-4 sm:px-6 sm:py-5 border-b border-[#E9DCCB] sticky top-0 bg-[#FCF9F4]/95 backdrop-blur z-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-[#800020] text-[#B88D46] flex items-center justify-center shadow-md border border-[#B88D46]/30">
-              <Sparkles size={17} strokeWidth={2.2} />
-            </div>
-            <div>
-              <p className="text-[13px] font-bold font-serif tracking-[0.14em] text-[#30231F] uppercase">
-                MAHIRASH
-              </p>
-              <p className="text-[11px] text-[#800020] uppercase tracking-[0.2em] font-semibold">Luxury Perfumes</p>
-            </div>
+          <div className="flex items-center py-1">
+            <img
+              src="/Mahirash_logo_mahroon.png"
+              onError={(e) => {
+                if (!e.target.src.includes('Mahirash_logo.png')) {
+                  e.target.src = '/Mahirash_logo.png';
+                }
+              }}
+              alt="MAHIRASH"
+              className="h-9 sm:h-10 w-auto max-w-[170px] object-contain"
+            />
           </div>
 
           {/* Close button on mobile */}

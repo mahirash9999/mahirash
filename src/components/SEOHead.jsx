@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { getOptimizedCloudinaryUrl } from '../utils/cloudinaryUtils';
 
 const BASE_URL = "https://mahirash.com";
-const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=1200&auto=format&fit=crop";
+const DEFAULT_IMAGE = "/mahirash_icon_white.png";
 
 const SEOHead = ({
   title = "Mahirash | Luxury Perfumes & Artisan Extraits",
