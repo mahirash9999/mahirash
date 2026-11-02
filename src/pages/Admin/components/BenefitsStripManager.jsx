@@ -283,7 +283,7 @@ const BenefitsStripManager = () => {
         </div>
 
         <div className="bg-[#FCF9F4] border border-[#E9DCCB] rounded-xl py-3 px-4 overflow-hidden">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#E9DCCB]">
+          <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#E9DCCB]">
             {benefits.filter(b => b.is_active !== false).map((item, idx) => (
               <div
                 key={item.id || idx}

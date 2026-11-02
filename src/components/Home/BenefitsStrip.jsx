@@ -76,7 +76,7 @@ const BenefitsStrip = () => {
   return (
     <section className="bg-[#FCF9F4] border-b border-[#E9DCCB] py-3.5 sm:py-4">
       <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`grid grid-cols-2 md:grid-cols-${Math.min(items.length, 4)} divide-y md:divide-y-0 md:divide-x divide-[#E9DCCB]`}>
+        <div className={`grid grid-cols-1 md:grid-cols-${Math.min(items.length, 4)} divide-y md:divide-y-0 md:divide-x divide-[#E9DCCB]`}>
           {items.map((item, idx) => (
             <div
               key={item.id || idx}
