@@ -19,7 +19,7 @@ const DEFAULT_ITEMS = [
   { id: '1', icon: 'ShieldCheck', label: '100% AUTHENTIC PRODUCTS' },
   { id: '2', icon: 'Sparkles', label: 'LONG LASTING FRAGRANCES' },
   { id: '3', icon: 'Lock', label: 'SECURE SHOPPING CHECKOUT' },
-  { id: '4', icon: 'Plane', label: 'WIDE INTERNATIONAL AVAILABILITY' }
+  { id: '4', icon: 'Plane', label: 'SHIPPING PAN INDIA' }
 ];
 
 const renderIcon = (type) => {
@@ -45,7 +45,7 @@ const BenefitsStrip = () => {
 
   useEffect(() => {
     // Realtime listener for instant dynamic sync from Admin Panel
-    let unsubscribe = () => {};
+    let unsubscribe = () => { };
     try {
       const q = query(collection(db, 'benefits_strip'));
       unsubscribe = onSnapshot(q, (snapshot) => {
@@ -80,9 +80,8 @@ const BenefitsStrip = () => {
           {items.map((item, idx) => (
             <div
               key={item.id || idx}
-              className={`flex items-center justify-center gap-2.5 px-3 py-2 sm:py-1 ${
-                idx % 2 === 0 ? 'pr-2' : 'pl-2'
-              } md:px-4`}
+              className={`flex items-center justify-center gap-2.5 px-3 py-2 sm:py-1 ${idx % 2 === 0 ? 'pr-2' : 'pl-2'
+                } md:px-4`}
             >
               {renderIcon(item.icon)}
               <span className="text-[#30231F] text-[10px] sm:text-[11px] font-semibold uppercase tracking-[0.08em] whitespace-nowrap text-center">

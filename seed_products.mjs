@@ -316,7 +316,7 @@ const PRODUCTS_SEED = [
     name: "PARFUMS DE MARLY Layton",
     brand: "PARFUMS DE MARLY",
     category: "Eau de Parfum",
-    subcategory: "Haute Parfumerie",
+    subcategory: "Mahirash Parfumerie",
     collection: "Royal Vault",
     gender: "Unisex",
     fragrance_family: "Oriental Floral",

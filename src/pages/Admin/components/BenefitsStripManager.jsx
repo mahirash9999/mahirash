@@ -91,7 +91,7 @@ const DEFAULT_SEED_BENEFITS = [
   },
   {
     id: 'benefit_4',
-    label: 'WIDE INTERNATIONAL AVAILABILITY',
+    label: 'SHIPPING PAN INDIA',
     icon: 'Plane',
     sort_order: 4,
     is_active: true
@@ -245,9 +245,8 @@ const BenefitsStripManager = () => {
     <div className="space-y-6 text-[#30231F] font-['Inter',sans-serif]">
       {/* Toast Notification */}
       {toastMessage.text && (
-        <div className={`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-xl flex items-center gap-2.5 text-sm font-semibold transition-all ${
-          toastMessage.type === 'error' ? 'bg-red-600 text-white' : 'bg-[#800020] text-white'
-        }`}>
+        <div className={`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-xl flex items-center gap-2.5 text-sm font-semibold transition-all ${toastMessage.type === 'error' ? 'bg-red-600 text-white' : 'bg-[#800020] text-white'
+          }`}>
           {toastMessage.type === 'error' ? <X size={16} /> : <Check size={16} />}
           <span>{toastMessage.text}</span>
         </div>
@@ -287,9 +286,8 @@ const BenefitsStripManager = () => {
             {benefits.filter(b => b.is_active !== false).map((item, idx) => (
               <div
                 key={item.id || idx}
-                className={`flex items-center justify-center gap-2.5 px-3 py-2 sm:py-1 ${
-                  idx % 2 === 0 ? 'pr-2' : 'pl-2'
-                } md:px-4`}
+                className={`flex items-center justify-center gap-2.5 px-3 py-2 sm:py-1 ${idx % 2 === 0 ? 'pr-2' : 'pl-2'
+                  } md:px-4`}
               >
                 {renderBenefitIcon(item.icon, "text-[#B88D46] shrink-0", 18)}
                 <span className="text-[#30231F] text-[10.5px] sm:text-[11px] font-semibold uppercase tracking-[0.08em] whitespace-nowrap text-center">
@@ -344,11 +342,10 @@ const BenefitsStripManager = () => {
                       <button
                         type="button"
                         onClick={() => handleToggleStatus(item)}
-                        className={`px-3 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full transition-all cursor-pointer ${
-                          item.is_active !== false
+                        className={`px-3 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full transition-all cursor-pointer ${item.is_active !== false
                             ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : 'bg-zinc-100 text-zinc-500 border border-zinc-200'
-                        }`}
+                          }`}
                       >
                         {item.is_active !== false ? 'Active' : 'Inactive'}
                       </button>
@@ -427,16 +424,14 @@ const BenefitsStripManager = () => {
                         key={iconItem.id}
                         type="button"
                         onClick={() => setFormData({ ...formData, icon: iconItem.id })}
-                        className={`flex flex-col items-center justify-center p-2.5 rounded-lg border transition-all text-center cursor-pointer ${
-                          isSelected
+                        className={`flex flex-col items-center justify-center p-2.5 rounded-lg border transition-all text-center cursor-pointer ${isSelected
                             ? 'bg-[#800020] text-white border-[#800020] shadow-sm'
                             : 'bg-white text-[#30231F] border-[#E9DCCB] hover:border-[#800020]/50'
-                        }`}
+                          }`}
                       >
                         <IconComp size={20} className={isSelected ? 'text-white' : 'text-[#800020]'} />
-                        <span className={`text-[9.5px] mt-1 font-semibold truncate w-full ${
-                          isSelected ? 'text-white' : 'text-[#75665D]'
-                        }`}>
+                        <span className={`text-[9.5px] mt-1 font-semibold truncate w-full ${isSelected ? 'text-white' : 'text-[#75665D]'
+                          }`}>
                           {iconItem.id}
                         </span>
                       </button>

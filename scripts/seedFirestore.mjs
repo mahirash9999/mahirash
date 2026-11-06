@@ -172,7 +172,7 @@ const products = [
     subcategory: "Discovery Set",
     collection: "New Launches",
     gender: "Unisex",
-    description: "<p>Experience our entire haute parfumerie collection in 5 travel luxury atomizers (Royal Oud, Velvet Amber, Imperium, Sultanate, Rose Royale).</p>",
+    description: "<p>Experience our entire Mahirash parfumerie collection in 5 travel luxury atomizers (Royal Oud, Velvet Amber, Imperium, Sultanate, Rose Royale).</p>",
     price: 1999,
     original_price: 2999,
     size_prices: [

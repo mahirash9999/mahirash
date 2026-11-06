@@ -95,7 +95,7 @@ const DEFAULT_SEED_DATA = {
   ],
   brands: [
     { id: 'brand_mahirash', name: 'MAHIRASH', slug: 'mahirash', description: 'Luxury Perfumes Brand', is_active: true, sort_order: 1 },
-    { id: 'brand_roja', name: 'Roja Parfums', slug: 'roja-parfums', description: 'Haute Luxe Perfumery', is_active: true, sort_order: 2 },
+    { id: 'brand_roja', name: 'Roja Parfums', slug: 'roja-parfums', description: 'Mahirash Luxe Perfumery', is_active: true, sort_order: 2 },
     { id: 'brand_creed', name: 'House of Creed', slug: 'house-of-creed', description: 'Artisan Perfume Heritage', is_active: true, sort_order: 3 },
     { id: 'brand_maison', name: 'Maison Francis Kurkdjian', slug: 'maison-francis-kurkdjian', description: 'Parisian Niche Parfums', is_active: true, sort_order: 4 },
     { id: 'brand_tomford', name: 'Tom Ford Private Blend', slug: 'tom-ford-private-blend', description: 'Luxury Private Blends', is_active: true, sort_order: 5 }

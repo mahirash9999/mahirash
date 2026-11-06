@@ -3,7 +3,7 @@ MAHIRASH - COMPLETE ARCHITECTURE, DATA FLOW & SECURITY AUDIT REPORT
 ====================================================================================================
 Document Type   : Senior Software Engineer / Technical Lead Architecture Report
 Target Audience : Engineering Manager, Project Manager & Technical Stakeholders
-Project Name    : Mahirash (Luxury Haute Parfumerie E-Commerce Web Platform)
+Project Name    : Mahirash (Luxury Mahirash Parfumerie E-Commerce Web Platform)
 Repository Root : d:\Mahirash-Final
 Generated At    : October 2026
 Version         : 2.0 (Production Architecture Review)

@@ -636,7 +636,7 @@ const Shop = () => {
             />
             <input
               type="text"
-              placeholder="Search by name, fabric, or style..."
+              placeholder="Search..."
               className="w-full bg-white border border-zinc-300 pl-10 pr-9 py-3 text-[14px] text-zinc-900 outline-none focus:border-zinc-500 transition-colors placeholder:text-zinc-400"
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
