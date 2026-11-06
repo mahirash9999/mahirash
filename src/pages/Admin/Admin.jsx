@@ -62,6 +62,7 @@ import HomepageBannersManager from "./components/HomepageBannersManager";
 import AboutUsManager from "./components/AboutUsManager";
 import NewsManager from "./components/NewsManager";
 import SEOManager from "./components/SEOManager";
+import MediaLibraryManager from "./components/MediaLibraryManager";
 import CloudinaryMediaPickerModal from "../../components/CloudinaryMediaPickerModal";
 
 import uploadToCloudinary from "../../utils/cloudinary";
@@ -282,6 +283,16 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
       setUploading(true);
       const url = await uploadToCloudinary(file);
       setFormData(prev => ({ ...prev, [field]: url }));
+      const docId = doc(collection(db, "media_library")).id;
+      setDoc(doc(db, "media_library", docId), {
+        id: docId,
+        url,
+        name: file.name,
+        size: file.size,
+        type: "image",
+        format: file.name.split('.').pop()?.toLowerCase() || "jpg",
+        createdAt: serverTimestamp()
+      }).catch(() => {});
     } catch (err) {
       alert("Upload failed: " + err.message);
     } finally {
@@ -1971,6 +1982,9 @@ const Admin = () => {
             defaultItem={{ text: 'COMPLIMENTARY EXPRESS SHIPPING OVER ₹1999', sort_order: 1, is_active: true }}
           />
         );
+      case "Media Library":
+      case "Media":
+        return <MediaLibraryManager />;
       case "Hero Video":
       case "Hero Slides":
         return <HeroVideoManager />;

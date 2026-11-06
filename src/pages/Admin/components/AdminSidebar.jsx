@@ -72,6 +72,7 @@ const sidebarSections = [
   {
     title: "CONTENT",
     items: [
+      { name: "Media Library", icon: Image },
       { name: "Hero Video", icon: Video },
       { name: "Home Page Collection", icon: Image },
       // { name: "Shop Miniatures", icon: Package },

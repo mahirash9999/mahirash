@@ -74,7 +74,7 @@ const AboutUsManager = () => {
 
             <div className="border border-zinc-200 rounded-lg overflow-hidden">
                 <Editor
-                    apiKey="fyliq0cjbctqb3mtuka0gznhq60oqj2j9seqkjtee5evz7fo"
+                    apiKey="uofa7hsyygrxt05ghf9jru7ikamcu759utdjungruz24s9c1"
                     value={content}
                     onEditorChange={(newContent) => setContent(newContent)}
                     init={{

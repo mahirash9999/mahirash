@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import uploadToCloudinary from "../../../utils/cloudinary";
 import { db } from "../../../components/Firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Editor } from "@tinymce/tinymce-react";
 import { Image as ImageIcon, Upload, X, Plus, Package, Sparkles, Clock, Tag } from "lucide-react";
 import CloudinaryMediaPickerModal from "../../../components/CloudinaryMediaPickerModal";
@@ -707,7 +707,7 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
         </label>
         <div className="border border-gray-300 rounded-xl overflow-hidden bg-white">
           <Editor
-            apiKey="fyliq0cjbctqb3mtuka0gznhq60oqj2j9seqkjtee5evz7fo"
+            apiKey="uofa7hsyygrxt05ghf9jru7ikamcu759utdjungruz24s9c1"
             value={watch("description") || ""}
             onEditorChange={(content) => setValue("description", content, { shouldValidate: true, shouldDirty: true })}
             init={{
@@ -863,6 +863,16 @@ const ProductForm = ({ onSuccess, isEdit = false, product = null }) => {
                           for (const file of files) {
                             const url = await uploadToCloudinary(file);
                             uploaded.push(url);
+                            const docId = doc(collection(db, "media_library")).id;
+                            setDoc(doc(db, "media_library", docId), {
+                              id: docId,
+                              url,
+                              name: file.name,
+                              size: file.size,
+                              type: "image",
+                              format: file.name.split('.').pop()?.toLowerCase() || "jpg",
+                              createdAt: serverTimestamp()
+                            }).catch(() => {});
                           }
                           addVariantImages(index, uploaded);
                         }
