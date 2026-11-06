@@ -1,45 +1,38 @@
-import adminOrderStatusHandler from "./_handlers/admin-order-status.js";
-import deductStockHandler from "./_handlers/deduct-stock.js";
-import getOrdersHandler from "./_handlers/get-orders.js";
-import linkGuestOrdersHandler from "./_handlers/link-guest-orders.js";
-import sendEmailHandler from "./_handlers/send-email.js";
-import sendOrderEmailHandler from "./_handlers/send-order-email.js";
-import sendOtpHandler from "./_handlers/send-otp.js";
-import verifyOtpHandler from "./_handlers/verify-otp.js";
-import shiprocketHandler from "./_handlers/shiprocket.js";
-import trackHandler from "./_handlers/track.js";
-import delhiveryServiceabilityHandler from "./_handlers/delhivery-serviceability.js";
-import shippingAssignCourierHandler from "./_handlers/shipping-assign-courier.js";
-import shippingCreateShipmentHandler from "./_handlers/shipping-create-shipment.js";
-import shippingRequestPickupHandler from "./_handlers/shipping-request-pickup.js";
-import shippingServiceabilityHandler from "./_handlers/shipping-serviceability.js";
-import shippingTrackHandler from "./_handlers/shipping-track.js";
-import webhooksShippingHandler from "./_handlers/webhooks-shipping.js";
-import razorpayCreateOrderHandler from "./_handlers/razorpay-create-order.js";
-import razorpayVerifyPaymentHandler from "./_handlers/razorpay-verify-payment.js";
+import fs from "fs";
+import path from "path";
 
-const ROUTE_HANDLERS = {
-  "admin-order-status": adminOrderStatusHandler,
-  "deduct-stock": deductStockHandler,
-  "get-orders": getOrdersHandler,
-  "link-guest-orders": linkGuestOrdersHandler,
-  "send-email": sendEmailHandler,
-  "send-order-email": sendOrderEmailHandler,
-  "send-otp": sendOtpHandler,
-  "verify-otp": verifyOtpHandler,
-  "shiprocket": shiprocketHandler,
-  "track": trackHandler,
-  "delhivery/serviceability": delhiveryServiceabilityHandler,
-  "shipping/assign-courier": shippingAssignCourierHandler,
-  "shipping/create-shipment": shippingCreateShipmentHandler,
-  "shipping/request-pickup": shippingRequestPickupHandler,
-  "shipping/serviceability": shippingServiceabilityHandler,
-  "shipping/track": shippingTrackHandler,
-  "webhooks/shipping": webhooksShippingHandler,
-  "razorpay-create-order": razorpayCreateOrderHandler,
-  "razorpay/create-order": razorpayCreateOrderHandler,
-  "razorpay-verify-payment": razorpayVerifyPaymentHandler,
-  "razorpay/verify-payment": razorpayVerifyPaymentHandler
+const ROUTE_LOADERS = {
+  "admin-order-status": () => import(`./_handlers/admin-order-status.js?t=${Date.now()}`),
+  "deduct-stock": () => import(`./_handlers/deduct-stock.js?t=${Date.now()}`),
+  "get-orders": () => import(`./_handlers/get-orders.js?t=${Date.now()}`),
+  "link-guest-orders": () => import(`./_handlers/link-guest-orders.js?t=${Date.now()}`),
+  "send-email": () => import(`./_handlers/send-email.js?t=${Date.now()}`),
+  "send-order-email": () => import(`./_handlers/send-order-email.js?t=${Date.now()}`),
+  "send-otp": () => import(`./_handlers/send-otp.js?t=${Date.now()}`),
+  "verify-otp": () => import(`./_handlers/verify-otp.js?t=${Date.now()}`),
+  "shiprocket": () => import(`./_handlers/shiprocket.js?t=${Date.now()}`),
+  "track": () => import(`./_handlers/delhivery-track.js?t=${Date.now()}`),
+  "delhivery/serviceability": () => import(`./_handlers/delhivery-serviceability.js?t=${Date.now()}`),
+  "delhivery/create-shipment": () => import(`./_handlers/delhivery-create-shipment.js?t=${Date.now()}`),
+  "delhivery-create-shipment": () => import(`./_handlers/delhivery-create-shipment.js?t=${Date.now()}`),
+  "delhivery/track": () => import(`./_handlers/delhivery-track.js?t=${Date.now()}`),
+  "delhivery-track": () => import(`./_handlers/delhivery-track.js?t=${Date.now()}`),
+  "delhivery/label": () => import(`./_handlers/delhivery-label.js?t=${Date.now()}`),
+  "delhivery-label": () => import(`./_handlers/delhivery-label.js?t=${Date.now()}`),
+  "delhivery/pickup": () => import(`./_handlers/delhivery-pickup.js?t=${Date.now()}`),
+  "delhivery-pickup": () => import(`./_handlers/delhivery-pickup.js?t=${Date.now()}`),
+  "delhivery/cancel": () => import(`./_handlers/delhivery-cancel.js?t=${Date.now()}`),
+  "delhivery-cancel": () => import(`./_handlers/delhivery-cancel.js?t=${Date.now()}`),
+  "shipping/assign-courier": () => import(`./_handlers/shipping-assign-courier.js?t=${Date.now()}`),
+  "shipping/create-shipment": () => import(`./_handlers/delhivery-create-shipment.js?t=${Date.now()}`),
+  "shipping/request-pickup": () => import(`./_handlers/delhivery-pickup.js?t=${Date.now()}`),
+  "shipping/serviceability": () => import(`./_handlers/delhivery-serviceability.js?t=${Date.now()}`),
+  "shipping/track": () => import(`./_handlers/delhivery-track.js?t=${Date.now()}`),
+  "webhooks/shipping": () => import(`./_handlers/webhooks-shipping.js?t=${Date.now()}`),
+  "razorpay-create-order": () => import(`./_handlers/razorpay-create-order.js?t=${Date.now()}`),
+  "razorpay/create-order": () => import(`./_handlers/razorpay-create-order.js?t=${Date.now()}`),
+  "razorpay-verify-payment": () => import(`./_handlers/razorpay-verify-payment.js?t=${Date.now()}`),
+  "razorpay/verify-payment": () => import(`./_handlers/razorpay-verify-payment.js?t=${Date.now()}`)
 };
 
 function normalizeRoute(route) {
@@ -137,9 +130,20 @@ export default async function handler(req, res) {
     });
   }
 
-  const targetHandler = ROUTE_HANDLERS[normalized];
+  let loader = ROUTE_LOADERS[normalized];
 
-  if (!targetHandler) {
+  // Fallback: check if direct file exists in _handlers
+  if (!loader) {
+    try {
+      const sanitizedName = normalized.replace(/[^a-zA-Z0-9-_]/g, "");
+      const directPath = path.resolve(process.cwd(), "api", "_handlers", `${sanitizedName}.js`);
+      if (fs.existsSync(directPath)) {
+        loader = () => import(`./_handlers/${sanitizedName}.js?t=${Date.now()}`);
+      }
+    } catch (_) {}
+  }
+
+  if (!loader) {
     console.warn(`[api/index] Route not found: "${normalized}" (raw: "${routeCandidate}")`);
     return res.status(404).json({
       error: `API route /api/${normalized} not found`,
@@ -148,6 +152,8 @@ export default async function handler(req, res) {
   }
 
   try {
+    const mod = await loader();
+    const targetHandler = mod.default || mod;
     return await targetHandler(req, res);
   } catch (err) {
     console.error(`[api/index] Internal error in /api/${normalized}:`, err);

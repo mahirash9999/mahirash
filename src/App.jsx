@@ -20,6 +20,8 @@ const Signup = lazy(() => import("./components/Signup"));
 const ForgotPassword = lazy(() => import("./components/ForgotPassword"));
 const Cart = lazy(() => import("./layouts/Cart"));
 const Checkout = lazy(() => import("./layouts/Checkout"));
+const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
+const OrderFailed = lazy(() => import("./pages/OrderFailed"));
 const Wishlist = lazy(() => import("./components/Wishlist"));
 const ProductDetail = lazy(() => import("./layouts/ProductDetail"));
 const QuickView = lazy(() => import("./components/QuickView"));
@@ -65,6 +67,9 @@ const AppRoutes = () => {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-success" element={<OrderSuccess />} />
+            <Route path="/thank-you" element={<OrderSuccess />} />
+            <Route path="/order-failed" element={<OrderFailed />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/account" element={<Account />} />
             <Route path="/about" element={<About />} />

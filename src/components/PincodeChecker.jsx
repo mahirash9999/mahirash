@@ -123,7 +123,7 @@ const PincodeChecker = ({
                   </span>
                 )}
                 <span className="text-emerald-700 font-medium">
-                  {result.codAvailable ? "✓ Cash on Delivery Available" : "Prepaid Only"}
+                  ✓ 100% Insured Express Delivery
                 </span>
               </div>
             </div>

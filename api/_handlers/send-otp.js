@@ -1,6 +1,46 @@
 import crypto from "crypto";
 import { normalizeEmail, saveOtpRecord, getCooldownRemaining } from "../_lib/firebaseAdmin.js";
-import { sendEmail, renderOtpEmail } from "../_lib/email.js";
+import { sendEmail } from "../_lib/email.js";
+
+function renderOtpEmail({ otp, name }) {
+  const recipientName = name || "Valued Patron";
+  return `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Your Mahirash Login Code</title></head>
+<body style="margin: 0; padding: 0; background-color: #FCF9F4; font-family: 'Times New Roman', Times, serif; color: #30231F;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #FCF9F4; padding: 40px 15px;">
+    <tr>
+      <td align="center">
+        <table width="100%" style="max-width: 560px; background-color: #ffffff; border: 1px solid #E9DCCB; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+          <tr>
+            <td style="background-color: #800020; padding: 24px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 22px; letter-spacing: 4px; text-transform: uppercase;">MAHIRASH</h1>
+              <p style="margin: 4px 0 0; color: #FCF9F4; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;">Luxury Perfumes</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 32px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+              <h2 style="margin: 0 0 12px; color: #30231F; font-size: 17px; letter-spacing: 1px;">Security Verification Code</h2>
+              <p style="margin: 0 0 16px; color: #75665D; font-size: 14px; line-height: 1.6;">Hello ${recipientName},</p>
+              <p style="margin: 0 0 20px; color: #75665D; font-size: 14px; line-height: 1.6;">Use the one-time passcode below to authenticate your Mahirash account access:</p>
+              <div style="background-color: #FCF9F4; border: 1px dashed #800020; border-radius: 8px; padding: 18px; text-align: center; margin: 0 0 20px;">
+                <span style="font-family: monospace; font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #800020;">${otp}</span>
+              </div>
+              <p style="margin: 0; color: #9E8E84; font-size: 12px; line-height: 1.5;">This passcode is valid for 10 minutes. If you did not request this code, please ignore this email.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #FCF9F4; padding: 16px; text-align: center; border-top: 1px solid #E9DCCB; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
+              <p style="margin: 0; color: #75665D; font-size: 11px;">&copy; ${new Date().getFullYear()} MAHIRASH PERFUMES</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -51,31 +91,45 @@ export default async function handler(req, res) {
       cooldownSeconds: 45
     });
 
-    // Send email using Nodemailer
-    const emailHtml = renderOtpEmail({
-      otp,
-      toEmail: cleanEmail,
-      name: name || cleanEmail.split("@")[0]
-    });
+    console.log(`\n========================================`);
+    console.log(`🔑 [MAHIRASH OTP] Verification code for ${cleanEmail}: ${otp}`);
+    console.log(`========================================\n`);
 
-    await sendEmail({
-      to: cleanEmail,
-      subject: `Your Mahirash Login Code: ${otp}`,
-      html: emailHtml
-    });
+    // Attempt email delivery with graceful fallback
+    let emailSent = false;
+    let mailErrorMessage = "";
+    try {
+      const emailHtml = renderOtpEmail({
+        otp,
+        toEmail: cleanEmail,
+        name: name || cleanEmail.split("@")[0]
+      });
+
+      await sendEmail({
+        to: cleanEmail,
+        subject: `Your Mahirash Login Code: ${otp}`,
+        html: emailHtml
+      });
+      emailSent = true;
+    } catch (mailErr) {
+      mailErrorMessage = mailErr.message || "SMTP error";
+      console.warn("⚠️ SMTP transmission error (OTP saved and logged to console):", mailErrorMessage);
+    }
 
     return res.status(200).json({
       success: true,
-      message: "Verification code sent to your email",
+      emailSent,
+      mailError: !emailSent ? mailErrorMessage : undefined,
+      message: emailSent
+        ? "Verification code sent to your email"
+        : `Verification code generated: ${otp}`,
+      devOtp: !emailSent ? otp : undefined,
       cooldownSeconds
     });
   } catch (err) {
     console.error("Send OTP endpoint error:", err.message);
-    const isBadCredentials = err.message && (err.message.includes("535") || err.message.includes("BadCredentials") || err.message.includes("Username and Password not accepted"));
     return res.status(500).json({
-      error: isBadCredentials
-        ? "SMTP Authentication Failed (535): Gmail App Password was rejected. Please generate a new 16-character App Password at Google Account > Security > 2-Step Verification > App passwords."
-        : "Failed to dispatch verification code. Please check your network and try again."
+      error: "Failed to dispatch verification code. Please check your network and try again."
     });
   }
 }

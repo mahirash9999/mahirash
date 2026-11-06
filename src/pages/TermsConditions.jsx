@@ -83,8 +83,8 @@ const TermsConditions = () => {
             </ul>
             <ul className="text-[14px] md:text-sm text-zinc-600 leading-relaxed space-y-2">
               <li>• <strong className="text-zinc-900">Mobile Wallets:</strong> Paytm, PhonePe, Mobikwik, Amazon Pay</li>
-              <li>• <strong className="text-zinc-900">Cash on Delivery (COD):</strong> Available on eligible pincodes</li>
-              <li>• <strong className="text-zinc-900">Security:</strong> All online transactions processed via Razorpay 256-bit SSL</li>
+              <li>• <strong className="text-zinc-900">Online Prepayment Only:</strong> We exclusively support 100% verified online payments for rapid dispatch and hygiene assurance.</li>
+              <li>• <strong className="text-zinc-900">Security:</strong> All online transactions processed via Razorpay 256-bit SSL encryption.</li>
             </ul>
           </div>
         </section>

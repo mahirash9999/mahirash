@@ -1,5 +1,6 @@
 import { verifyPaymentSignature, fetchRazorpayPayment } from "../_lib/razorpayClient.js";
 import { getFirestoreDb } from "../_lib/firestoreClient.js";
+import { sendOrderEmails } from "../_lib/email.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -43,12 +44,12 @@ export default async function handler(req, res) {
     const paymentMethod = paymentDetails?.method || "online";
     const paymentStatus = paymentDetails?.status === "captured" ? "captured" : (paymentDetails?.status || "authorized");
 
-    // 3. If internal orderId is provided, update Firestore document directly
+    // 3. If internal orderId is provided, update Firestore document directly and trigger confirmation emails
     if (orderId) {
       try {
         const db = await getFirestoreDb();
         if (db) {
-          const { doc, updateDoc, serverTimestamp } = await import("firebase/firestore");
+          const { doc, getDoc, updateDoc, serverTimestamp } = await import("firebase/firestore");
           const orderRef = doc(db, "orders", orderId);
           await updateDoc(orderRef, {
             razorpayOrderId: razorpay_order_id,
@@ -60,6 +61,20 @@ export default async function handler(req, res) {
             verifiedAmount: verifiedAmount,
             updatedAt: serverTimestamp()
           });
+
+          // Trigger luxury branded order confirmation email
+          const snap = await getDoc(orderRef);
+          if (snap.exists()) {
+            const savedOrder = { id: snap.id, ...snap.data() };
+            sendOrderEmails({
+              order: savedOrder,
+              items: savedOrder.items || [],
+              total: savedOrder.total || verifiedAmount || 0,
+              customerName: savedOrder.shipping?.name || savedOrder.customerName || "Patron",
+              email: savedOrder.userEmail || savedOrder.customerEmail || savedOrder.shipping?.email,
+              shippingAddress: savedOrder.shipping || savedOrder.shippingAddress
+            }).catch(mErr => console.warn("[razorpay-verify-payment] Email dispatch notice:", mErr.message));
+          }
         }
       } catch (dbErr) {
         console.warn("[api/razorpay-verify-payment] Notice updating Firestore order:", dbErr.message);

@@ -90,7 +90,7 @@ const CURATED_PERFUMES = [
 const FAQS = [
   {
     q: "How does Mahirash ship orders & what is the delivery timeline?",
-    a: "All orders are hand-inspected, bottled, securely packaged with custom foam padding, and shipped via Shiprocket premium air couriers (Delhivery, Blue Dart, DTDC). Metro deliveries arrive within 2–3 business days; other locations within 3–5 business days."
+    a: "All orders are hand-inspected, bottled, securely packaged with custom foam padding, and shipped via official Delhivery Express priority air logistics. Metro deliveries arrive within 2–3 business days; other locations within 3–5 business days."
   },
   {
     q: "How should I store my artisanal Extrait de Parfum?",
@@ -2593,8 +2593,8 @@ const Account = () => {
                 <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-800">Shipment Activity Log</h4>
                 {loadingTrackingModal ? (
                   <div className="py-8 text-center text-zinc-400 space-y-2">
-                    <RefreshCw size={20} className="animate-spin mx-auto text-[#b8860b]" />
-                    <p className="text-[11px] uppercase tracking-wider">Syncing Shiprocket tracking logs...</p>
+                    <RefreshCw size={20} className="animate-spin mx-auto text-[#800020]" />
+                    <p className="text-[11px] uppercase tracking-wider text-[#75665D]">Syncing Delhivery Express tracking logs...</p>
                   </div>
                 ) : trackingModalData?.scans && trackingModalData.scans.length > 0 ? (
                   <div className="relative border-l-2 border-zinc-200 ml-3 pl-4 space-y-4 py-2">

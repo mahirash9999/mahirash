@@ -42,11 +42,17 @@ const vercelApiPlugin = (mode = 'development') => ({
                 res.end(data);
               };
 
-              // Check if master index.js dispatcher exists
+              // Check direct handler in api/_handlers or master index.js dispatcher
+              const cleanApiPath = apiPath.replace(/\.js$/, '').trim();
+              const directHandlerPath = path.resolve(process.cwd(), 'api', '_handlers', `${cleanApiPath}.js`);
               const indexPath = path.resolve(process.cwd(), 'api', 'index.js');
               const modulePath = path.resolve(process.cwd(), 'api', `${apiPath}.js`);
 
-              if (fs.existsSync(indexPath)) {
+              if (fs.existsSync(directHandlerPath)) {
+                const apiModule = await import(`file://${directHandlerPath}?t=${Date.now()}`);
+                const handler = apiModule.default || apiModule;
+                await handler(req, res);
+              } else if (fs.existsSync(indexPath)) {
                 const apiModule = await import(`file://${indexPath}?t=${Date.now()}`);
                 const handler = apiModule.default || apiModule;
                 await handler(req, res);

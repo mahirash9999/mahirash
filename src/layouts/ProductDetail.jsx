@@ -175,10 +175,9 @@ const ProductDetail = () => {
           courier: "Delhivery Express",
           deliveryDate: data.estimatedDeliveryDate,
           tat: data.tat,
-          cod: data.cod,
-          prepaid: data.prepaid,
+          prepaid: true,
           city: data.city,
-          msg: `Express Delivery by ${data.estimatedDeliveryDate} via Delhivery Express. ${data.cod ? 'Cash on Delivery (COD) Available.' : 'Prepaid Only.'}`
+          msg: `Express Delivery by ${data.estimatedDeliveryDate} via Delhivery Express. 100% Insured Fast Shipping.`
         });
       } else {
         setPincodeStatus({
@@ -191,7 +190,7 @@ const ProductDetail = () => {
         success: true,
         courier: "Delhivery Express",
         deliveryDate: "In 2–4 Business Days",
-        cod: true,
+        prepaid: true,
         msg: `Delivery available to ${cleanPin}. Estimated in 2–4 business days via Delhivery Express.`
       });
     } finally {
@@ -589,7 +588,7 @@ const ProductDetail = () => {
                       {pincodeStatus.success && (
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-zinc-600 pt-0.5 text-[12px] md:text-[13px]">
                           <span>Courier: <strong className="text-zinc-900">Delhivery Express</strong></span>
-                          <span>Payment: <strong className="text-emerald-700">{pincodeStatus.cod ? "Cash on Delivery Available" : "Prepaid Available"}</strong></span>
+                          <span>Payment: <strong className="text-emerald-700">100% Secure Online Payment (UPI / Cards)</strong></span>
                         </div>
                       )}
                     </div>
@@ -990,7 +989,7 @@ const ProductDetail = () => {
                           </li>
                           <li className="flex items-center gap-2">
                             <ShieldCheck size={13} className="text-zinc-800 shrink-0" />
-                            <span>Cash on Delivery (COD) available nationwide.</span>
+                            <span>100% Secure Online Payment via UPI, Cards &amp; NetBanking.</span>
                           </li>
                         </ul>
                       </div>

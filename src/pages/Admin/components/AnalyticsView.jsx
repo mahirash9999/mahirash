@@ -191,17 +191,17 @@ const AnalyticsView = () => {
       color: "bg-[#800020]"
     },
     {
-      channel: "Razorpay / Cards",
+      channel: "Cards & NetBanking (Razorpay)",
       percentage: cardsPercent,
       revenue: `₹${Math.round(cardsTotal).toLocaleString('en-IN')}`,
       color: "bg-[#B88D46]"
     },
-    {
-      channel: "Cash on Delivery (COD)",
+    ...(codTotal > 0 ? [{
+      channel: "Historical COD Orders",
       percentage: codPercent,
       revenue: `₹${Math.round(codTotal).toLocaleString('en-IN')}`,
       color: "bg-[#75665D]"
-    },
+    }] : [])
   ];
 
   return (

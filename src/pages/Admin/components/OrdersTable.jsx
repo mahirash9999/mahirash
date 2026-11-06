@@ -195,135 +195,167 @@ const OrdersTable = ({ onRefresh }) => {
     }
   };
 
-  // Shiprocket Actions
-  const handleCreateShipment = async () => {
+  // ── Delhivery One Logistics Actions ──
+  const handleCreateDelhiveryShipment = async () => {
     if (!selectedOrder) return;
     setActionLoading(true);
     try {
-      const res = await fetch("/api/shipping/create-shipment", {
+      const res = await fetch("/api/delhivery/create-shipment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           orderId: selectedOrder.id,
-          orderDate: selectedOrder.createdAt?.toDate
-            ? selectedOrder.createdAt.toDate().toISOString().replace('T', ' ').substring(0, 16)
-            : new Date().toISOString().replace('T', ' ').substring(0, 16),
-          customerName: selectedOrder.shipping?.name || selectedOrder.customerName || "Customer",
-          email: selectedOrder.userEmail || selectedOrder.customerEmail || "care@mahirash.com",
-          phone: selectedOrder.shipping?.phone || selectedOrder.customerPhone || "9876543210",
-          address: selectedOrder.shipping?.address || "Delivery Address",
-          city: selectedOrder.shipping?.city || "Indore",
-          state: selectedOrder.shipping?.state || "Madhya Pradesh",
-          pincode: selectedOrder.shipping?.pincode || "452001",
-          paymentMethod: selectedOrder.paymentMethod === "COD" ? "COD" : "Prepaid",
-          totalAmount: selectedOrder.total || 0,
-          items: selectedOrder.items || [],
           packageInfo: packageDimensions
         })
       });
 
       const data = await res.json();
       if (!data.success) {
-        throw new Error(data.error || "Shipment creation failed");
+        throw new Error(data.error || "Delhivery shipment creation failed");
       }
 
       const updated = {
         ...selectedOrder,
-        shipmentId: data.shipmentId,
-        awbCode: data.awbCode || selectedOrder.awbCode,
-        courierName: data.courierName || "Delhivery",
-        shipmentStatus: data.awbCode ? "AWB Generated" : "Shipment Created",
-        fulfilmentStatus: "Ready to Ship"
+        shipmentId: data.waybill || data.awbCode,
+        awbCode: data.waybill || data.awbCode,
+        trackingNumber: data.waybill || data.awbCode,
+        courierName: "Delhivery Express",
+        shippingCarrier: "Delhivery Express",
+        trackingUrl: data.trackingUrl || `https://www.delhivery.com/track/package/${data.waybill || data.awbCode}`,
+        shipmentStatus: "Shipment Created",
+        internalStatus: "Dispatched",
+        fulfilmentStatus: "Manifested"
       };
       setSelectedOrder(updated);
       setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, ...updated } : o));
-      showFeedback(`Shiprocket order created! Shipment ID: ${data.shipmentId}`);
+      showFeedback(`Delhivery shipment manifested! AWB: ${data.waybill || data.awbCode}`);
     } catch (err) {
-      showFeedback("Error creating Shiprocket shipment: " + err.message, true);
+      showFeedback("Delhivery error: " + err.message, true);
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleAssignCourierAWB = async () => {
+  const handlePrintDelhiveryLabel = async () => {
+    if (!selectedOrder) return;
+    const awb = selectedOrder.awbCode || selectedOrder.trackingNumber;
+    if (!awb) {
+      showFeedback("Please create Delhivery shipment first to generate an AWB.", true);
+      return;
+    }
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/delhivery/label?waybill=${encodeURIComponent(awb)}`);
+      const data = await res.json();
+      const targetUrl = data.downloadUrl || data.fallbackUrl || `https://track.delhivery.com/api/p/packing_slip?wbns=${encodeURIComponent(awb)}&pdf=true`;
+      window.open(targetUrl, "_blank");
+      showFeedback("Opened Delhivery shipping label packing slip.");
+    } catch (err) {
+      showFeedback("Could not open Delhivery label: " + err.message, true);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRequestDelhiveryPickup = async () => {
     if (!selectedOrder) return;
     setActionLoading(true);
     try {
-      const res = await fetch("/api/shipping/assign-courier", {
+      const res = await fetch("/api/delhivery/pickup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           orderId: selectedOrder.id,
-          shipmentId: selectedOrder.shipmentId
+          expected_package_count: 1
         })
       });
 
       const data = await res.json();
-      if (!data.success) throw new Error(data.error || "Courier assignment failed");
+      if (!data.success) throw new Error(data.error || "Pickup scheduling failed");
 
       const updated = {
         ...selectedOrder,
-        awbCode: data.awbCode,
-        courierName: data.courierName || selectedOrder.courierName || "Delhivery",
-        shipmentStatus: "AWB Generated",
-        fulfilmentStatus: "Ready to Ship"
+        pickupId: data.pickupId,
+        shipmentStatus: "Pickup Scheduled"
       };
       setSelectedOrder(updated);
       setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, ...updated } : o));
-      showFeedback(`Assigned Courier! AWB: ${data.awbCode}`);
+      showFeedback(`Delhivery pickup scheduled! PUR ID: ${data.pickupId}`);
     } catch (err) {
-      showFeedback("Failed to assign courier: " + err.message, true);
+      showFeedback("Pickup note: " + err.message, true);
     } finally {
       setActionLoading(false);
     }
   };
 
-  const handleRequestPickup = async () => {
-    if (!selectedOrder) return;
-    setActionLoading(true);
-    try {
-      const res = await fetch("/api/shipping/request-pickup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderId: selectedOrder.id,
-          shipmentId: selectedOrder.shipmentId
-        })
-      });
-
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error || "Pickup request failed");
-
-      const updated = {
-        ...selectedOrder,
-        shipmentStatus: "Pickup Scheduled",
-        fulfilmentStatus: "Ready to Ship"
-      };
-      setSelectedOrder(updated);
-      setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, ...updated } : o));
-      showFeedback("Courier pickup scheduled successfully!");
-    } catch (err) {
-      showFeedback("Failed to schedule pickup: " + err.message, true);
-    } finally {
-      setActionLoading(false);
+  const handleTrackDelhiveryAWB = async (awbCode) => {
+    const targetAwb = awbCode || selectedOrder?.awbCode || selectedOrder?.trackingNumber;
+    if (!targetAwb) {
+      showFeedback("No AWB available to track.", true);
+      return;
     }
-  };
 
-  const handleTrackAWB = async (awbCode) => {
-    setActiveTrackingAwb(awbCode);
+    setActiveTrackingAwb(targetAwb);
     setLoadingTracking(true);
     setTrackingError("");
     setTrackingData(null);
 
     try {
-      const res = await fetch(`/api/shipping/track?awb=${encodeURIComponent(awbCode)}`);
+      const res = await fetch(`/api/delhivery/track?waybill=${encodeURIComponent(targetAwb)}&orderId=${selectedOrder?.id || ""}`);
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
+      if (!data.success && data.error) throw new Error(data.error);
       setTrackingData(data);
+      if (data.mappedStatus && selectedOrder) {
+        setSelectedOrder(p => ({ ...p, shipmentStatus: data.mappedStatus }));
+        setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, shipmentStatus: data.mappedStatus } : o));
+      }
     } catch (err) {
-      setTrackingError("Could not retrieve tracking details: " + err.message);
+      setTrackingError("Could not retrieve Delhivery tracking: " + err.message);
     } finally {
       setLoadingTracking(false);
+    }
+  };
+
+  const handleTrackAWB = handleTrackDelhiveryAWB;
+
+  const handleCancelDelhiveryShipment = async () => {
+    if (!selectedOrder) return;
+    const awb = selectedOrder.awbCode || selectedOrder.trackingNumber;
+    if (!awb) {
+      showFeedback("No active Delhivery AWB to cancel.", true);
+      return;
+    }
+
+    const confirmCancel = window.confirm(`Are you sure you want to cancel Delhivery AWB #${awb}?`);
+    if (!confirmCancel) return;
+
+    setActionLoading(true);
+    try {
+      const res = await fetch("/api/delhivery/cancel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: selectedOrder.id,
+          waybill: awb,
+          reason: "Cancelled by Administrator via Admin Portal"
+        })
+      });
+
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || "Failed to cancel shipment");
+
+      const updated = {
+        ...selectedOrder,
+        shipmentStatus: "Shipment Cancelled",
+        internalStatus: "Cancelled"
+      };
+      setSelectedOrder(updated);
+      setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { ...o, ...updated } : o));
+      showFeedback(`Delhivery AWB #${awb} cancelled successfully.`);
+    } catch (err) {
+      showFeedback("Cancellation error: " + err.message, true);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -610,7 +642,7 @@ const OrdersTable = ({ onRefresh }) => {
                 { id: "summary", label: "1. Order & Payment" },
                 { id: "address", label: "2. Customer & Address" },
                 { id: "fulfilment", label: "3. Packing & Fulfilment" },
-                { id: "shipment", label: "4. Shiprocket Shipping" },
+                { id: "shipment", label: "4. Delhivery Logistics" },
                 { id: "returns", label: "5. Returns & Refunds" },
                 { id: "audit", label: "6. Activity Log" }
               ].map((tab) => (
@@ -633,23 +665,89 @@ const OrdersTable = ({ onRefresh }) => {
               {/* TAB 1: SUMMARY */}
               {activeModalTab === "summary" && (
                 <div className="space-y-6">
-                  {/* Status strip */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3 bg-zinc-50 border border-zinc-200 rounded-xs">
-                    <div>
-                      <span className="text-[10px] uppercase text-zinc-400 font-bold block">Order Status</span>
-                      <span className="font-bold text-zinc-900 uppercase">{selectedOrder.orderStatus || selectedOrder.status || "Placed"}</span>
+                  {/* Status Strip & Dual Control Management */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-4 bg-[#FCF9F4] border border-[#E9DCCB] rounded-xl shadow-xs">
+                    {/* 1. Internal Order Status */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase text-[#75665D] font-bold block">Internal Order Status</label>
+                      <select
+                        value={selectedOrder.orderStatus || selectedOrder.status || "Order Placed"}
+                        onChange={(e) => handleUpdateOrderStatus("orderStatus", e.target.value)}
+                        disabled={actionLoading}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#E9DCCB] rounded-lg text-xs font-bold text-[#800020] uppercase outline-none focus:border-[#800020] cursor-pointer shadow-2xs"
+                      >
+                        <option value="Order Placed">Order Placed</option>
+                        <option value="Payment Confirmed">Payment Confirmed</option>
+                        <option value="Order Received">Order Received</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Packing">Packing</option>
+                        <option value="Ready to Dispatch">Ready to Dispatch</option>
+                        <option value="Dispatched">Dispatched</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Return Requested">Return Requested</option>
+                        <option value="Returned">Returned</option>
+                        <option value="Refunded">Refunded</option>
+                      </select>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-zinc-400 font-bold block">Fulfilment</span>
-                      <span className="font-bold text-zinc-900 uppercase">{selectedOrder.fulfilmentStatus || "Unfulfilled"}</span>
+
+                    {/* 2. Logistics / Shipment Status */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase text-[#75665D] font-bold block">Logistics / Delhivery Status</label>
+                      <select
+                        value={selectedOrder.shipmentStatus || "Not Created"}
+                        onChange={(e) => handleUpdateOrderStatus("shipmentStatus", e.target.value)}
+                        disabled={actionLoading}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#E9DCCB] rounded-lg text-xs font-bold text-[#30231F] uppercase outline-none focus:border-[#800020] cursor-pointer shadow-2xs"
+                      >
+                        <option value="Not Created">Not Created</option>
+                        <option value="Shipment Created">Shipment Created</option>
+                        <option value="Pickup Scheduled">Pickup Scheduled</option>
+                        <option value="Picked Up">Picked Up</option>
+                        <option value="In Transit">In Transit</option>
+                        <option value="Out for Delivery">Out for Delivery</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Delivery Attempted">Delivery Attempted</option>
+                        <option value="Undelivered">Undelivered</option>
+                        <option value="RTO Initiated">RTO Initiated</option>
+                        <option value="RTO Delivered">RTO Delivered</option>
+                        <option value="Shipment Cancelled">Shipment Cancelled</option>
+                      </select>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-zinc-400 font-bold block">Shipment Status</span>
-                      <span className="font-bold text-zinc-900 uppercase">{selectedOrder.shipmentStatus || "Not Created"}</span>
+
+                    {/* 3. Fulfilment Status */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase text-[#75665D] font-bold block">Fulfilment Workflow</label>
+                      <select
+                        value={selectedOrder.fulfilmentStatus || "Unfulfilled"}
+                        onChange={(e) => handleUpdateOrderStatus("fulfilmentStatus", e.target.value)}
+                        disabled={actionLoading}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#E9DCCB] rounded-lg text-xs font-semibold text-[#30231F] uppercase outline-none focus:border-[#800020] cursor-pointer shadow-2xs"
+                      >
+                        <option value="Unfulfilled">Unfulfilled</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Packed">Packed</option>
+                        <option value="Ready to Ship">Ready to Ship</option>
+                        <option value="Fulfilled">Fulfilled</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
                     </div>
-                    <div>
-                      <span className="text-[10px] uppercase text-zinc-400 font-bold block">Payment</span>
-                      <span className="font-bold text-emerald-800 uppercase">{selectedOrder.paymentStatus || "Paid"}</span>
+
+                    {/* 4. Payment Status */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] uppercase text-[#75665D] font-bold block">Payment Status</label>
+                      <select
+                        value={selectedOrder.paymentStatus || "Paid"}
+                        onChange={(e) => handleUpdateOrderStatus("paymentStatus", e.target.value)}
+                        disabled={actionLoading}
+                        className="w-full px-2.5 py-1.5 bg-white border border-[#E9DCCB] rounded-lg text-xs font-bold text-emerald-800 uppercase outline-none focus:border-[#800020] cursor-pointer shadow-2xs"
+                      >
+                        <option value="Paid">Paid (Verified)</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Failed">Failed</option>
+                        <option value="Refund Initiated">Refund Initiated</option>
+                        <option value="Refunded">Refunded</option>
+                      </select>
                     </div>
                   </div>
 
@@ -814,82 +912,132 @@ const OrdersTable = ({ onRefresh }) => {
                 </div>
               )}
 
-              {/* TAB 4: SHIPROCKET SHIPPING */}
+              {/* TAB 4: DELHIVERY LOGISTICS */}
               {activeModalTab === "shipment" && (
                 <div className="space-y-6">
                   {/* Current Shipping State */}
-                  <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xs grid md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl grid md:grid-cols-4 gap-4">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-zinc-400 block">Shiprocket Shipment ID</span>
-                      <span className="font-mono font-bold text-zinc-900 text-xs mt-0.5 block">
-                        {selectedOrder.shipmentId || "Not Created"}
+                      <span className="text-[10px] uppercase font-bold text-zinc-400 block">Delhivery Waybill / AWB</span>
+                      <span className="font-mono font-bold text-[#800020] text-sm mt-0.5 block">
+                        {selectedOrder.awbCode || selectedOrder.trackingNumber || "Pending Generation"}
                       </span>
                     </div>
                     <div>
                       <span className="text-[10px] uppercase font-bold text-zinc-400 block">Courier Partner</span>
                       <span className="font-semibold text-zinc-900 text-xs mt-0.5 block">
-                        {selectedOrder.courierName || "Unassigned"}
+                        {selectedOrder.courierName || "Delhivery Express"}
                       </span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-zinc-400 block">AWB Tracking Code</span>
-                      <span className="font-mono font-bold text-indigo-700 text-xs mt-0.5 block">
-                        {selectedOrder.awbCode || "Pending"}
+                      <span className="text-[10px] uppercase font-bold text-zinc-400 block">Shipment Status</span>
+                      <span className="font-bold text-indigo-700 text-xs mt-0.5 block uppercase">
+                        {selectedOrder.shipmentStatus || "Not Created"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-zinc-400 block">Pickup Facility</span>
+                      <span className="font-semibold text-zinc-800 text-xs mt-0.5 block">
+                        Indore Central Hub (452001)
                       </span>
                     </div>
                   </div>
 
                   {/* Operational Step Buttons */}
-                  <div className="p-5 border border-zinc-200 bg-[#faf8f5] rounded-xs space-y-4">
-                    <span className="text-xs font-bold uppercase tracking-wider text-zinc-800 block">
-                      Automated Shiprocket Logistics Workflow
-                    </span>
+                  <div className="p-5 border border-zinc-200 bg-[#FCF9F4] rounded-xl space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#800020] block">
+                        Official Delhivery Express B2C Actions
+                      </span>
+                      {selectedOrder.awbCode && (
+                        <a
+                          href={`https://www.delhivery.com/track/package/${selectedOrder.awbCode}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-xs text-[#800020] hover:underline flex items-center gap-1 font-semibold"
+                        >
+                          <ExternalLink size={12} />
+                          <span>Track on Delhivery.com</span>
+                        </a>
+                      )}
+                    </div>
 
                     <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
-                      {/* Step 1: Create Shipment */}
+                      {/* Step 1: Create Delhivery Shipment */}
                       <button
-                        onClick={handleCreateShipment}
-                        disabled={actionLoading || Boolean(selectedOrder.shipmentId)}
-                        className="p-3 bg-white border border-zinc-200 hover:border-black rounded-xs text-left transition-all disabled:opacity-40"
+                        type="button"
+                        onClick={handleCreateDelhiveryShipment}
+                        disabled={actionLoading || Boolean(selectedOrder.awbCode)}
+                        className={`p-3.5 bg-white border rounded-xl text-left transition-all ${
+                          selectedOrder.awbCode
+                            ? "border-emerald-200 bg-emerald-50/50 opacity-80 cursor-default"
+                            : "border-[#E9DCCB] hover:border-[#800020] shadow-xs cursor-pointer hover:bg-white"
+                        }`}
                       >
-                        <span className="text-[10px] font-bold uppercase text-[#b8860b] block">Step 1</span>
-                        <span className="font-bold text-zinc-900 block mt-0.5">Push Order</span>
-                        <span className="text-[10px] text-zinc-500 block">Create adhoc shipment</span>
+                        <span className="text-[10px] font-bold uppercase text-[#800020] block">Step 1</span>
+                        <span className="font-bold text-zinc-900 block mt-0.5">
+                          {selectedOrder.awbCode ? "✓ Manifested" : "Create Delhivery Shipment"}
+                        </span>
+                        <span className="text-[10px] text-zinc-500 block">Generate official AWB</span>
                       </button>
 
-                      {/* Step 2: Assign Courier / AWB */}
+                      {/* Step 2: Download / Print Shipping Label */}
                       <button
-                        onClick={handleAssignCourierAWB}
-                        disabled={actionLoading || !selectedOrder.shipmentId || Boolean(selectedOrder.awbCode)}
-                        className="p-3 bg-white border border-zinc-200 hover:border-black rounded-xs text-left transition-all disabled:opacity-40"
+                        type="button"
+                        onClick={handlePrintDelhiveryLabel}
+                        disabled={actionLoading || !selectedOrder.awbCode}
+                        className="p-3.5 bg-white border border-[#E9DCCB] hover:border-[#800020] rounded-xl text-left transition-all disabled:opacity-40 shadow-xs cursor-pointer hover:bg-white"
                       >
-                        <span className="text-[10px] font-bold uppercase text-[#b8860b] block">Step 2</span>
-                        <span className="font-bold text-zinc-900 block mt-0.5">Generate AWB</span>
-                        <span className="text-[10px] text-zinc-500 block">Assign courier partner</span>
+                        <span className="text-[10px] font-bold uppercase text-[#800020] block">Step 2</span>
+                        <span className="font-bold text-zinc-900 block mt-0.5 flex items-center gap-1">
+                          <Printer size={13} /> Packing Slip / Label
+                        </span>
+                        <span className="text-[10px] text-zinc-500 block">Print barcoded sticker</span>
                       </button>
 
-                      {/* Step 3: Schedule Pickup */}
+                      {/* Step 3: Request Pickup */}
                       <button
-                        onClick={handleRequestPickup}
+                        type="button"
+                        onClick={handleRequestDelhiveryPickup}
                         disabled={actionLoading || !selectedOrder.awbCode || selectedOrder.shipmentStatus === "Pickup Scheduled"}
-                        className="p-3 bg-white border border-zinc-200 hover:border-black rounded-xs text-left transition-all disabled:opacity-40"
+                        className="p-3.5 bg-white border border-[#E9DCCB] hover:border-[#800020] rounded-xl text-left transition-all disabled:opacity-40 shadow-xs cursor-pointer hover:bg-white"
                       >
-                        <span className="text-[10px] font-bold uppercase text-[#b8860b] block">Step 3</span>
-                        <span className="font-bold text-zinc-900 block mt-0.5">Request Pickup</span>
-                        <span className="text-[10px] text-zinc-500 block">Courier pickup handover</span>
+                        <span className="text-[10px] font-bold uppercase text-[#800020] block">Step 3</span>
+                        <span className="font-bold text-zinc-900 block mt-0.5">
+                          {selectedOrder.shipmentStatus === "Pickup Scheduled" ? "✓ Pickup Requested" : "Request Pickup"}
+                        </span>
+                        <span className="text-[10px] text-zinc-500 block">Notify Indore warehouse</span>
                       </button>
 
-                      {/* Step 4: Sync Tracking */}
+                      {/* Step 4: Live Sync Tracking */}
                       <button
-                        onClick={() => handleTrackAWB(selectedOrder.awbCode || selectedOrder.id)}
-                        disabled={actionLoading}
-                        className="p-3 bg-white border border-zinc-200 hover:border-black rounded-xs text-left transition-all disabled:opacity-40"
+                        type="button"
+                        onClick={() => handleTrackDelhiveryAWB(selectedOrder.awbCode || selectedOrder.id)}
+                        disabled={actionLoading || !selectedOrder.awbCode}
+                        className="p-3.5 bg-white border border-[#E9DCCB] hover:border-[#800020] rounded-xl text-left transition-all disabled:opacity-40 shadow-xs cursor-pointer hover:bg-white"
                       >
-                        <span className="text-[10px] font-bold uppercase text-[#b8860b] block">Step 4</span>
-                        <span className="font-bold text-zinc-900 block mt-0.5">Live Tracking</span>
-                        <span className="text-[10px] text-zinc-500 block">Query Shiprocket scans</span>
+                        <span className="text-[10px] font-bold uppercase text-[#800020] block">Step 4</span>
+                        <span className="font-bold text-zinc-900 block mt-0.5 flex items-center gap-1">
+                          <RefreshCw size={13} /> Live Tracking
+                        </span>
+                        <span className="text-[10px] text-zinc-500 block">Query Delhivery scans</span>
                       </button>
                     </div>
+
+                    {/* Cancel Shipment Option */}
+                    {selectedOrder.awbCode && selectedOrder.shipmentStatus !== "Shipment Cancelled" && (
+                      <div className="pt-3 border-t border-[#E9DCCB]/60 flex items-center justify-between">
+                        <span className="text-[11px] text-[#75665D]">Need to cancel this courier consignment?</span>
+                        <button
+                          type="button"
+                          onClick={handleCancelDelhiveryShipment}
+                          disabled={actionLoading}
+                          className="px-3 py-1.5 text-xs text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-lg font-semibold transition-colors cursor-pointer"
+                        >
+                          Cancel Delhivery AWB
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -995,7 +1143,7 @@ const OrdersTable = ({ onRefresh }) => {
             >
               <div className="px-6 py-4 border-b border-zinc-200 flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Shiprocket Live Info</span>
+                  <span className="text-[10px] text-[#800020] font-bold uppercase tracking-widest">Delhivery Express Live Tracking</span>
                   <h3 className="text-xs font-bold text-zinc-900 font-mono mt-0.5">AWB: {activeTrackingAwb}</h3>
                 </div>
                 <button
@@ -1009,8 +1157,8 @@ const OrdersTable = ({ onRefresh }) => {
               <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
                 {loadingTracking ? (
                   <div className="flex flex-col items-center justify-center py-20 space-y-3">
-                    <RefreshCw size={24} className="animate-spin text-zinc-800" />
-                    <p className="text-xs text-zinc-500 uppercase tracking-widest font-light">Querying Shiprocket logs...</p>
+                    <RefreshCw size={24} className="animate-spin text-[#800020]" />
+                    <p className="text-xs text-[#75665D] uppercase tracking-widest font-light">Querying Delhivery Express scans...</p>
                   </div>
                 ) : trackingError ? (
                   <div className="bg-red-50 border border-red-200 text-red-800 rounded-xs p-4 text-xs space-y-1">

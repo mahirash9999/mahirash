@@ -1,5 +1,6 @@
 import { getFirestoreDb } from "../_lib/firestoreClient.js";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { sendShipmentDispatchedEmail, sendOrderDeliveredEmail, sendOrderCancelledEmail } from "../_lib/email.js";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -11,6 +12,7 @@ export default async function handler(req, res) {
     actor = "Admin",
     reason = "",
     orderStatus,
+    internalStatus,
     fulfilmentStatus,
     shipmentStatus,
     paymentStatus,
@@ -41,6 +43,11 @@ export default async function handler(req, res) {
       updates.orderStatus = orderStatus;
       updates.status = orderStatus.toLowerCase();
       changes.push(`Order status: ${currentData.orderStatus || currentData.status} -> ${orderStatus}`);
+    }
+
+    if (internalStatus && internalStatus !== currentData.internalStatus) {
+      updates.internalStatus = internalStatus;
+      changes.push(`Internal status: ${currentData.internalStatus || "Payment Confirmed"} -> ${internalStatus}`);
     }
 
     if (fulfilmentStatus && fulfilmentStatus !== currentData.fulfilmentStatus) {
@@ -78,6 +85,32 @@ export default async function handler(req, res) {
     updates.activityLog = activityLog;
 
     await updateDoc(orderRef, updates);
+
+    // Trigger transactional emails asynchronously based on new status
+    const mergedOrder = { id: orderId, ...currentData, ...updates };
+    try {
+      if (
+        (shipmentStatus === "Delivered" || orderStatus === "Completed" || orderStatus === "Delivered") &&
+        currentData.shipmentStatus !== "Delivered" &&
+        currentData.orderStatus !== "Completed"
+      ) {
+        sendOrderDeliveredEmail({ order: mergedOrder }).catch(e => console.warn("[admin-order-status] Delivered email err:", e.message));
+      } else if (
+        (orderStatus === "Cancelled" || shipmentStatus === "Shipment Cancelled") &&
+        currentData.orderStatus !== "Cancelled" &&
+        currentData.shipmentStatus !== "Shipment Cancelled"
+      ) {
+        sendOrderCancelledEmail({ order: mergedOrder, reason }).catch(e => console.warn("[admin-order-status] Cancelled email err:", e.message));
+      } else if (
+        (orderStatus === "Dispatched" || shipmentStatus === "In Transit" || shipmentStatus === "Picked Up") &&
+        currentData.orderStatus !== "Dispatched" &&
+        mergedOrder.awbCode
+      ) {
+        sendShipmentDispatchedEmail({ order: mergedOrder }).catch(e => console.warn("[admin-order-status] Dispatched email err:", e.message));
+      }
+    } catch (mailErr) {
+      console.warn("[admin-order-status] Email notification error:", mailErr.message);
+    }
 
     return res.status(200).json({
       success: true,

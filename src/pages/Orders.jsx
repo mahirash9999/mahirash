@@ -223,7 +223,7 @@ const Orders = () => {
                 <h3>Order Information</h3>
                 Order Reference: #${order.id.slice(0, 14).toUpperCase()}<br />
                 Payment Method: ${(order.paymentMethod || 'Online').toUpperCase()}<br />
-                Payment ID: ${order.paymentId || 'COD'}<br />
+                Payment ID: ${order.paymentId || order.razorpayPaymentId || 'Verified Online Prepayment'}<br />
                 Fulfillment: <strong>${(order.status || 'Confirmed').toUpperCase()}</strong>
 
               </div>
@@ -524,12 +524,19 @@ const Orders = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                      {order.awbCode && (
+                      {order.awbCode ? (
                         <Link
                           to={`/track?awb=${order.awbCode}`}
-                          className="px-3 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100/80 text-[12px] uppercase font-bold tracking-wider flex items-center gap-1.5 transition"
+                          className="px-3.5 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 text-[12px] uppercase font-bold tracking-wider flex items-center gap-1.5 transition rounded-sm shadow-2xs"
                         >
-                          <Truck size={12} className="animate-pulse" /> Track Shipment Live
+                          <Truck size={12} className="text-[#800020]" /> Track Delhivery
+                        </Link>
+                      ) : (
+                        <Link
+                          to={`/track?orderId=${order.id}`}
+                          className="px-3.5 py-1.5 bg-[#FCF9F4] border border-[#E9DCCB] text-[#800020] hover:bg-[#800020] hover:text-white text-[12px] uppercase font-bold tracking-wider flex items-center gap-1.5 transition rounded-sm shadow-2xs"
+                        >
+                          <Truck size={12} /> Track Order
                         </Link>
                       )}
                       <div className="flex items-center gap-2">
@@ -621,7 +628,7 @@ const Orders = () => {
                     <CreditCard size={12} /> Payment Info
                   </div>
                   <p className="text-zinc-700">Method: <strong className="text-zinc-900 uppercase">{selectedOrder.paymentMethod || 'Online'}</strong></p>
-                  <p className="text-zinc-500 font-mono text-[12px]">Transaction ID: {selectedOrder.paymentId || 'COD'}</p>
+                  <p className="text-zinc-500 font-mono text-[12px]">Transaction ID: {selectedOrder.paymentId || selectedOrder.razorpayPaymentId || 'Verified Online Prepayment'}</p>
                   <p className="text-zinc-700">Status: <strong className="text-emerald-700 uppercase">PAID / CONFIRMED</strong></p>
                 </div>
               </div>

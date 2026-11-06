@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import MiniLoader from "../components/MiniLoader";
 import { db } from "../components/Firebase";
 import {
   collection, getDocs, addDoc, serverTimestamp,
-  doc, deleteDoc, getDoc, updateDoc, query, where, setDoc
+  doc, deleteDoc, getDoc, updateDoc, query, where, setDoc, limit
 } from "firebase/firestore";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import { useStore } from "../components/StoreProvider";
 import {
   MapPin, User, Phone, Mail, CheckCircle, X,
   ShieldCheck, ChevronRight, Plus, Check, Lock, Tag,
-  ArrowRight, Package, Truck, Home, Printer, Download
+  ArrowRight, Package, Truck, Home, Printer, Download, Edit3
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SEOHead from "../components/SEOHead";
@@ -67,14 +67,14 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
   const finalDetails = orderDetails || {
     id: fallbackId,
     total: 0,
-    shipping: { name: "", phone: "", alternatePhone: "", flat: "", street: "", landmark: "", address: "", city: "", state: "", pincode: "", type: "Home", paymentMethod: "COD" },
+    shipping: { name: "", phone: "", alternatePhone: "", flat: "", street: "", landmark: "", address: "", city: "", state: "", pincode: "", type: "Home", paymentMethod: "online" },
     items: [],
     appliedCoupon: null,
     couponDiscount: 0,
     tempPassword: ""
   };
 
-  const isCOD = finalDetails.shipping?.paymentMethod !== "online" && finalDetails.paymentMethod !== "online";
+  const isCOD = false;
 
   const handleDownloadInvoice = (order) => {
     const invoiceWindow = window.open("", "_blank", "width=850,height=950");
@@ -445,6 +445,10 @@ const Checkout = () => {
   const [loading, setLoading] = useState(true);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [addressMode, setAddressMode] = useState("saved"); // "saved" or "new"
+  const [isEditingAddress, setIsEditingAddress] = useState(false);
+  const [saveAddressForFuture, setSaveAddressForFuture] = useState(true);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -461,9 +465,158 @@ const Checkout = () => {
     paymentMethod: "online",
   });
 
-  // Prefill email, name, and phone from authenticated customer or Firebase user
+  // 1. Load locally remembered checkout profile on initial mount
+  useEffect(() => {
+    try {
+      const localStr = localStorage.getItem("mahirash_saved_checkout_profile");
+      if (localStr) {
+        const local = JSON.parse(localStr);
+        if (local && (local.address || local.flat || local.street || local.city)) {
+          const localAddr = {
+            id: "local_saved_addr",
+            name: local.name || "",
+            email: local.email || "",
+            phone: local.phone || "",
+            alternatePhone: local.alternatePhone || "",
+            flat: local.flat || "",
+            street: local.street || local.address || "",
+            landmark: local.landmark || "",
+            address: local.address || "",
+            city: local.city || "",
+            state: local.state || "",
+            pincode: local.pincode || "",
+            type: local.type || "Home",
+            isDefault: true
+          };
+          setSavedAddresses([localAddr]);
+          setSelectedAddressId(localAddr.id);
+          setAddressMode("saved");
+          setFormData(prev => ({
+            ...prev,
+            name: localAddr.name || prev.name,
+            email: prev.email || localAddr.email || "",
+            phone: localAddr.phone || prev.phone,
+            alternatePhone: localAddr.alternatePhone || "",
+            flat: localAddr.flat || "",
+            street: localAddr.street || "",
+            landmark: localAddr.landmark || "",
+            address: localAddr.address || "",
+            city: localAddr.city || prev.city,
+            state: localAddr.state || prev.state,
+            pincode: localAddr.pincode || prev.pincode,
+            type: localAddr.type || "Home"
+          }));
+        }
+      }
+    } catch (_) {}
+  }, []);
+
+  // 2. Helper to load saved addresses for any given email address from Firestore
+  const loadAddressesForEmail = useCallback(async (targetEmail) => {
+    if (!targetEmail || typeof targetEmail !== "string") return;
+    const cleanEmail = targetEmail.toLowerCase().trim();
+    if (!cleanEmail.includes("@") || cleanEmail.length < 5) return;
+
+    try {
+      const customerDocId = cleanEmail.replace(/[^a-z0-9]/g, "_");
+      const addrs = [];
+
+      // A. Query addresses subcollection
+      try {
+        const addrSnap = await getDocs(collection(db, "customers", customerDocId, "addresses"));
+        addrSnap.docs.forEach(d => addrs.push({ id: d.id, ...d.data() }));
+      } catch (_) {}
+
+      // B. Query customer root document
+      try {
+        const cSnap = await getDoc(doc(db, "customers", customerDocId));
+        if (cSnap.exists()) {
+          const cData = cSnap.data();
+          if (cData.address || cData.flat || cData.street || cData.city) {
+            const alreadyExists = addrs.some(a => (a.street || a.address) === (cData.street || cData.address) && a.pincode === cData.pincode);
+            if (!alreadyExists) {
+              addrs.unshift({
+                id: "primary_customer_addr",
+                name: cData.name || "",
+                phone: cData.phone || "",
+                alternatePhone: cData.alternatePhone || "",
+                flat: cData.flat || "",
+                street: cData.street || cData.address || "",
+                landmark: cData.landmark || "",
+                address: cData.address || "",
+                city: cData.city || "",
+                state: cData.state || "",
+                pincode: cData.pincode || "",
+                type: cData.type || "Home",
+                isDefault: true
+              });
+            }
+          }
+        }
+      } catch (_) {}
+
+      // C. Fallback: check recent verified order for this email
+      if (addrs.length === 0) {
+        try {
+          const qOrder = query(collection(db, "orders"), where("customerEmail", "==", cleanEmail), limit(1));
+          const orderSnap = await getDocs(qOrder);
+          if (!orderSnap.empty) {
+            const oData = orderSnap.docs[0].data();
+            const ship = oData.shipping || oData.shippingAddress;
+            if (ship && (ship.address || ship.street || ship.city)) {
+              addrs.push({
+                id: "recent_order_addr",
+                name: ship.name || oData.customerName || "",
+                phone: ship.phone || oData.customerPhone || "",
+                alternatePhone: ship.alternatePhone || "",
+                flat: ship.flat || "",
+                street: ship.street || ship.address || "",
+                landmark: ship.landmark || "",
+                address: ship.address || "",
+                city: ship.city || "",
+                state: ship.state || "",
+                pincode: ship.pincode || "",
+                type: ship.type || "Home",
+                isDefault: true
+              });
+            }
+          }
+        } catch (_) {}
+      }
+
+      if (addrs.length > 0) {
+        setSavedAddresses(addrs);
+        const def = addrs.find(a => a.isDefault) || addrs[0];
+        setSelectedAddressId(def.id);
+        setAddressMode("saved");
+        setIsEditingAddress(false);
+        setFormData(prev => ({
+          ...prev,
+          email: cleanEmail,
+          name: def.name || prev.name,
+          phone: def.phone || prev.phone,
+          alternatePhone: def.alternatePhone || prev.alternatePhone || "",
+          flat: def.flat || "",
+          street: def.street || def.address || "",
+          landmark: def.landmark || "",
+          address: def.address || "",
+          city: def.city || prev.city,
+          state: def.state || prev.state,
+          pincode: def.pincode || prev.pincode,
+          type: def.type || "Home"
+        }));
+      }
+    } catch (err) {
+      console.warn("Could not fetch saved addresses in checkout:", err);
+    }
+  }, []);
+
+  // 3. Prefill email, name, and phone from authenticated customer or Firebase user
   useEffect(() => {
     const activeEmail = customer?.email || user?.email;
+    if (activeEmail) {
+      loadAddressesForEmail(activeEmail);
+    }
     if (activeEmail || customer?.name || user?.displayName) {
       setFormData(prev => ({
         ...prev,
@@ -472,67 +625,7 @@ const Checkout = () => {
         phone: prev.phone || customer?.phone || ""
       }));
     }
-  }, [user, customer]);
-
-  // Load saved shipping addresses from customer profile in Firestore
-  useEffect(() => {
-    const activeEmail = customer?.email || user?.email;
-    if (!activeEmail) return;
-
-    const fetchCustomerAddresses = async () => {
-      try {
-        const customerDocId = activeEmail.toLowerCase().replace(/[^a-z0-9]/g, "_");
-        const addrSnap = await getDocs(collection(db, "customers", customerDocId, "addresses"));
-        const addrs = addrSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-        const cSnap = await getDoc(doc(db, "customers", customerDocId));
-        if (cSnap.exists()) {
-          const cData = cSnap.data();
-          if (addrs.length === 0 && (cData.address || cData.flat || cData.street)) {
-            addrs.push({
-              id: "root-address",
-              name: cData.name || customer?.name || user?.displayName || "",
-              phone: cData.phone || customer?.phone || "",
-              alternatePhone: cData.alternatePhone || "",
-              flat: cData.flat || "",
-              street: cData.street || cData.address || "",
-              landmark: cData.landmark || "",
-              address: cData.address || "",
-              city: cData.city || "",
-              state: cData.state || "",
-              pincode: cData.pincode || "",
-              type: cData.type || "Home",
-              isDefault: true
-            });
-          }
-        }
-
-        if (addrs.length > 0) {
-          setSavedAddresses(addrs);
-          const defaultAddr = addrs.find(a => a.isDefault) || addrs[0];
-          setSelectedAddressId(defaultAddr.id);
-          setFormData(prev => ({
-            ...prev,
-            name: defaultAddr.name || prev.name,
-            phone: defaultAddr.phone || prev.phone,
-            alternatePhone: defaultAddr.alternatePhone || prev.alternatePhone || "",
-            flat: defaultAddr.flat || "",
-            street: defaultAddr.street || defaultAddr.address || "",
-            landmark: defaultAddr.landmark || "",
-            address: defaultAddr.address || "",
-            city: defaultAddr.city || prev.city,
-            state: defaultAddr.state || prev.state,
-            pincode: defaultAddr.pincode || prev.pincode,
-            type: defaultAddr.type || "Home"
-          }));
-        }
-      } catch (err) {
-        console.warn("Could not fetch saved addresses in checkout:", err);
-      }
-    };
-
-    fetchCustomerAddresses();
-  }, [customer?.email, user?.email]);
+  }, [user, customer, loadAddressesForEmail]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [orderStatus, setOrderStatus] = useState(null);
   const [toast, setToast] = useState(null);
@@ -557,6 +650,7 @@ const Checkout = () => {
   };
 
   const total = items.reduce((sum, i) => sum + ((Number(i.price) || 0) * (i.quantity || 1)), 0);
+  const finalPayable = Math.max(0, total - couponDiscount);
 
   const handleCityChange = async (val) => {
     setFormData(prev => ({ ...prev, city: val }));
@@ -826,7 +920,7 @@ const Checkout = () => {
     } catch (_) { }
   };
 
-  const saveOrder = async (paymentId = "COD", status = "confirmed", paymentStatus = "captured", tempPassword = "", extraPaymentData = {}) => {
+  const saveOrder = async (paymentId = "ONLINE", status = "confirmed", paymentStatus = "paid", tempPassword = "", extraPaymentData = {}) => {
     try {
       const finalEmail = (formData.email || customer?.email || user?.email || "").toLowerCase().trim();
       const activeUid = user?.uid || customer?.uid || customer?.id || (customer ? "usr_" + finalEmail.replace(/[^a-z0-9]/g, "_") : null);
@@ -836,73 +930,7 @@ const Checkout = () => {
 
       const orderRef = doc(collection(db, "orders"));
 
-      // Call Shiprocket Before saving order to Firestore (Bypass update requirement)
       let shiprocketData = null;
-      if (status === "confirmed") {
-        try {
-          // Dynamic Package Weight & Dimensions Calculation
-          let totalWeight = 0;
-          for (const item of items) {
-            const itemWeight = item.shipping?.weight || 0.4;
-            totalWeight += Number(itemWeight) * (Number(item.quantity) || 1);
-          }
-
-          let packageLength = 30;
-          let packageBreadth = 20;
-          let packageHeight = 5;
-
-          if (totalWeight <= 0.5) {
-            packageLength = 25; packageBreadth = 20; packageHeight = 5;
-          } else if (totalWeight <= 1.0) {
-            packageLength = 35; packageBreadth = 25; packageHeight = 8;
-          } else {
-            packageLength = 40; packageBreadth = 30; packageHeight = 12;
-          }
-
-          const synthesizedAddress = [
-            formData.flat,
-            formData.street,
-            formData.landmark ? `Near ${formData.landmark}` : null
-          ].filter(Boolean).join(", ") || formData.address;
-
-          const res = await fetch("/api/shiprocket", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderId: orderRef.id,
-              orderDate: new Date().toISOString().replace('T', ' ').substring(0, 16),
-              customerName: formData.name,
-              email: finalEmail,
-              phone: formData.phone,
-              address: synthesizedAddress,
-              address_2: formData.landmark ? `Landmark: ${formData.landmark}` : (formData.street || ""),
-              city: formData.city,
-              state: formData.state,
-              pincode: formData.pincode,
-              paymentMethod: formData.paymentMethod === "online" ? "Prepaid" : "COD",
-              totalAmount: Math.max(0, total - couponDiscount),
-              items: items.map(item => ({
-                name: item.name,
-                sku: item.sku || item.id || "SKU-PRODUCT",
-                units: item.quantity || 1,
-                price: item.price
-              })),
-              packageInfo: {
-                weight: totalWeight,
-                length: packageLength,
-                breadth: packageBreadth,
-                height: packageHeight
-              }
-            })
-          });
-          if (res.ok) {
-            shiprocketData = await res.json();
-            console.log("Shiprocket sync data:", shiprocketData);
-          }
-        } catch (shipErr) {
-          console.error("Error creating Shiprocket order:", shipErr);
-        }
-      }
 
       const synthesizedAddress = [
         formData.flat,
@@ -931,16 +959,21 @@ const Checkout = () => {
         shipping: fullShippingData,
         shippingCost: 0,
         discount: couponDiscount,
-        paymentMethod: formData.paymentMethod,
-        paymentProvider: formData.paymentMethod === "online" ? "Razorpay" : "Cash on Delivery",
+        paymentMethod: "online",
+        paymentProvider: "Razorpay",
         paymentId,
         razorpayOrderId: extraPaymentData.razorpayOrderId || "",
         razorpaySignature: extraPaymentData.razorpaySignature || "",
-        paymentMode: extraPaymentData.paymentMode || (formData.paymentMethod === "online" ? "Online" : "COD"),
+        paymentMode: extraPaymentData.paymentMode || "ONLINE",
         verifiedAmount: extraPaymentData.verifiedAmount || Math.max(0, total - couponDiscount),
         status,
         orderStatus: status,
-        paymentStatus,
+        internalStatus: "Payment Confirmed",
+        shipmentStatus: "Not Created",
+        courierName: "Delhivery Express",
+        awbCode: "",
+        trackingNumber: "",
+        paymentStatus: "paid",
         appliedCoupon: appliedCoupon ? appliedCoupon.code : null,
         couponDiscount,
         shippingAddress: {
@@ -956,17 +989,20 @@ const Checkout = () => {
           pincode: formData.pincode,
           type: formData.type || "Home"
         },
+        activityLog: [
+          {
+            actor: "Customer / Razorpay",
+            action: "Order Placed & Payment Verified",
+            timestamp: new Date().toISOString(),
+            details: `Razorpay Payment ID: ${paymentId}`
+          }
+        ],
         emailStatus: {
           customer: "pending",
           admin: "pending"
         },
         createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-        // Insert shiprocket properties securely from the start
-        shipmentId: shiprocketData?.shipment_id || "",
-        awbCode: shiprocketData?.awb_code || "",
-        courierName: shiprocketData?.courier_name || "",
-        trackingUrl: shiprocketData?.tracking_url || (shiprocketData?.awb_code ? `https://shiprocket.co/tracking/${shiprocketData.awb_code}` : "")
+        updatedAt: serverTimestamp()
       });
 
       // ── Save / Update customer profile in 'customers' collection ────────────
@@ -990,6 +1026,32 @@ const Checkout = () => {
             type: formData.type || "Home",
             updatedAt: serverTimestamp(),
           }, { merge: true });  // merge: true preserves older fields like createdAt on first write
+
+          // Remember address in localStorage for fast 1-click return visits
+          try {
+            localStorage.setItem("mahirash_saved_checkout_profile", JSON.stringify(fullShippingData));
+          } catch (_) {}
+
+          // Also save in customer addresses subcollection
+          try {
+            const addrDocId = `addr_${formData.pincode || "ind"}_${Date.now().toString(36)}`;
+            await setDoc(doc(db, "customers", customerDocId, "addresses", addrDocId), {
+              id: addrDocId,
+              name: formData.name || "",
+              phone: formData.phone || "",
+              alternatePhone: formData.alternatePhone || "",
+              flat: formData.flat || "",
+              street: formData.street || "",
+              landmark: formData.landmark || "",
+              address: synthesizedAddress,
+              city: formData.city || "",
+              state: formData.state || "",
+              pincode: formData.pincode || "",
+              type: formData.type || "Home",
+              isDefault: true,
+              updatedAt: serverTimestamp()
+            }, { merge: true });
+          } catch (_) {}
 
           // Save order to customer's orders subcollection
           try {
@@ -1158,10 +1220,10 @@ const Checkout = () => {
                 subtotal: total,
                 total: Math.max(0, total - couponDiscount),
                 discount: couponDiscount,
-                paymentMethod: formData.paymentMethod,
-                paymentStatus,
+                paymentMethod: "online",
+                paymentStatus: "paid",
                 paymentId,
-                paymentMode: extraPaymentData.paymentMode || (formData.paymentMethod === "online" ? "Online" : "COD"),
+                paymentMode: extraPaymentData.paymentMode || "ONLINE",
                 shipping: formData,
                 isGuest
               }
@@ -1185,9 +1247,48 @@ const Checkout = () => {
           localStorage.setItem("pasoja_customer_session", JSON.stringify(customerSession));
         } catch (_) { }
 
-        setOrderStatus("success");
+        // ── Device Signature for Thank You Page Security ──
+        try {
+          sessionStorage.setItem("mahirash_purchased_sig_" + orderNumber.toUpperCase(), "active");
+          sessionStorage.setItem("mahirash_purchased_sig_" + orderRef.id.toUpperCase(), "active");
+        } catch (_) { }
+
+        const completedOrderData = {
+          id: orderRef.id,
+          orderId: orderRef.id,
+          orderNumber,
+          customerEmail: finalEmail,
+          customerName: formData.name || "",
+          customerPhone: formData.phone || "",
+          items,
+          subtotal: total,
+          total: Math.max(0, total - couponDiscount),
+          discount: couponDiscount,
+          shipping: fullShippingData,
+          shippingAddress: fullShippingData,
+          paymentId,
+          paymentMode: extraPaymentData.paymentMode || "ONLINE",
+          paymentStatus: "paid",
+          orderStatus: "confirmed",
+          status: "confirmed"
+        };
+
+        navigate(`/order-success?orderId=${orderRef.id}&orderNumber=${encodeURIComponent(orderNumber)}`, {
+          state: {
+            orderId: orderRef.id,
+            orderNumber,
+            order: completedOrderData
+          }
+        });
+        return;
       } else {
-        setOrderStatus("failed");
+        navigate("/order-failed", {
+          state: {
+            error: "Payment could not be verified by the banking network.",
+            orderNumber
+          }
+        });
+        return;
       }
     } catch (e) {
       console.error(e);
@@ -1278,7 +1379,7 @@ const Checkout = () => {
 
     let tempPassword = "";
 
-    if (formData.paymentMethod === "online") {
+    try {
       const payableAmount = Math.max(0, total - couponDiscount);
       const generatedOrderNumber = "MHR-" + Math.floor(100000 + Math.random() * 900000);
 
@@ -1372,7 +1473,7 @@ const Checkout = () => {
         },
         modal: {
           ondismiss: () => {
-            showToast("Payment was cancelled. You can retry placing your order anytime.", "info");
+            showToast("Payment window closed. Your items remain in your bag.", "info");
             setIsProcessing(false);
           }
         }
@@ -1381,12 +1482,18 @@ const Checkout = () => {
       const rzp = new window.Razorpay(options);
       rzp.on("payment.failed", (response) => {
         console.error("Razorpay payment failed:", response.error);
-        showToast(response.error?.description || "Payment failed. Please try another card or UPI.", "error");
         setIsProcessing(false);
+        navigate("/order-failed", {
+          state: {
+            error: response.error?.description || "Payment was declined by your bank or card issuer.",
+            orderNumber: response.error?.metadata?.order_id || null
+          }
+        });
       });
       rzp.open();
-    } else {
-      await saveOrder("COD", "confirmed", "pending", tempPassword, { paymentMode: "COD" });
+    } catch (err) {
+      console.error("[Checkout] Order processing error:", err);
+      showToast(err.message || "Payment service temporarily unavailable. Please retry.", "error");
       setIsProcessing(false);
     }
   };
@@ -1466,287 +1573,391 @@ const Checkout = () => {
                 </div>
 
                 <div className="px-5 py-5 space-y-4">
-                  {/* Saved addresses */}
+                  {/* ── Saved Delivery Address Choice Bar ── */}
                   {savedAddresses.length > 0 && (
-                    <div className="space-y-2">
-                      <p className="text-[14px] font-semibold uppercase tracking-wider text-zinc-500">Saved Delivery Addresses</p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        {savedAddresses.map((addr) => {
-                          const sel = selectedAddressId === addr.id;
-                          return (
-                            <div
-                              key={addr.id}
-                              onClick={() => {
-                                setSelectedAddressId(addr.id);
-                                setFormData(p => ({
-                                  ...p,
-                                  name: addr.name || p.name,
-                                  phone: addr.phone || p.phone,
-                                  alternatePhone: addr.alternatePhone || "",
-                                  flat: addr.flat || "",
-                                  street: addr.street || addr.address || "",
-                                  landmark: addr.landmark || "",
-                                  address: addr.address || "",
-                                  city: addr.city || "",
-                                  state: addr.state || "",
-                                  pincode: addr.pincode || "",
-                                  type: addr.type || "Home"
-                                }));
-                              }}
-                              className={`p-3.5 border-2 rounded-xl cursor-pointer transition-all relative ${sel ? "border-zinc-900 bg-zinc-50" : "border-zinc-200 bg-white hover:border-zinc-400"}`}
+                    <div className="space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-[#FCF9F4] border border-[#E9DCCB] rounded-xl">
+                        <div>
+                          <p className="text-xs font-bold text-[#800020] uppercase tracking-wider flex items-center gap-1.5">
+                            <ShieldCheck size={14} className="text-[#800020]" />
+                            Saved Delivery Profile Found
+                          </p>
+                          <p className="text-xs text-[#75665D] mt-0.5">
+                            Would you like to deliver with your saved address or enter a new address?
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAddressMode("saved");
+                              setIsEditingAddress(false);
+                            }}
+                            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${
+                              addressMode === "saved" && !isEditingAddress
+                                ? "bg-[#800020] text-white border-[#800020] shadow-xs"
+                                : "bg-white text-[#30231F] border-[#E9DCCB] hover:border-[#800020]"
+                            }`}
+                          >
+                            Use Saved Address
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAddressMode("new");
+                              setIsEditingAddress(false);
+                              setFormData(p => ({
+                                ...p,
+                                flat: "",
+                                street: "",
+                                landmark: "",
+                                address: "",
+                                city: "",
+                                state: "",
+                                pincode: "",
+                                alternatePhone: ""
+                              }));
+                            }}
+                            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${
+                              addressMode === "new"
+                                ? "bg-[#800020] text-white border-[#800020] shadow-xs"
+                                : "bg-white text-[#30231F] border-[#E9DCCB] hover:border-[#800020]"
+                            }`}
+                          >
+                            + Enter New Address
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Primary Saved Address Cards */}
+                      {addressMode === "saved" && !isEditingAddress && (
+                        <div className="grid grid-cols-1 gap-3">
+                          {savedAddresses.map((addr) => {
+                            const sel = selectedAddressId === addr.id || (!selectedAddressId && addr.isDefault);
+                            return (
+                              <div
+                                key={addr.id}
+                                onClick={() => {
+                                  setSelectedAddressId(addr.id);
+                                  setFormData(p => ({
+                                    ...p,
+                                    name: addr.name || p.name,
+                                    email: addr.email || p.email,
+                                    phone: addr.phone || p.phone,
+                                    alternatePhone: addr.alternatePhone || "",
+                                    flat: addr.flat || "",
+                                    street: addr.street || addr.address || "",
+                                    landmark: addr.landmark || "",
+                                    address: addr.address || "",
+                                    city: addr.city || "",
+                                    state: addr.state || "",
+                                    pincode: addr.pincode || "",
+                                    type: addr.type || "Home"
+                                  }));
+                                }}
+                                className={`p-4 rounded-xl border-2 transition-all cursor-pointer relative ${
+                                  sel
+                                    ? "border-[#800020] bg-[#FCF9F4] shadow-xs"
+                                    : "border-zinc-200 bg-white hover:border-zinc-400"
+                                }`}
+                              >
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="flex items-start gap-3">
+                                    <div className={`w-5 h-5 rounded-full border-2 mt-0.5 flex items-center justify-center shrink-0 ${
+                                      sel ? "border-[#800020] bg-[#800020]" : "border-zinc-300"
+                                    }`}>
+                                      {sel && <div className="w-2 h-2 rounded-full bg-white" />}
+                                    </div>
+                                    <div className="space-y-1 text-left">
+                                      <div className="flex items-center gap-2">
+                                        <span className="font-bold text-sm text-[#30231F] uppercase">{addr.name || formData.name}</span>
+                                        <span className="text-[10px] font-bold uppercase tracking-wider bg-white text-[#800020] border border-[#800020]/30 px-2 py-0.5 rounded">
+                                          {addr.type || "Home"}
+                                        </span>
+                                        {addr.isDefault && (
+                                          <span className="text-[10px] font-bold uppercase tracking-wider bg-[#800020] text-white px-1.5 py-0.5 rounded">
+                                            Default
+                                          </span>
+                                        )}
+                                      </div>
+                                      <p className="text-xs text-[#75665D] leading-relaxed">
+                                        {addr.flat ? `${addr.flat}, ` : ""}{addr.street || addr.address}
+                                        {addr.landmark ? `, Near ${addr.landmark}` : ""}
+                                      </p>
+                                      <p className="text-xs text-[#75665D]">
+                                        {addr.city}, {addr.state} - <span className="font-mono font-bold text-[#30231F]">{addr.pincode}</span>
+                                      </p>
+                                      <p className="text-xs text-[#75665D] font-mono pt-0.5">
+                                        Phone: <strong className="text-[#30231F]">{addr.phone || formData.phone}</strong>
+                                        {addr.alternatePhone ? ` · Alt: ${addr.alternatePhone}` : ""}
+                                        <span className="text-[#75665D] font-sans ml-3">Email: {addr.email || formData.email}</span>
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex items-center gap-2 shrink-0">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsEditingAddress(true);
+                                      }}
+                                      className="text-xs font-bold text-[#800020] hover:underline flex items-center gap-1 cursor-pointer p-1"
+                                      title="Edit this address"
+                                    >
+                                      <Edit3 size={13} /> Edit
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* ── Address Input Form (shown if New Address, Editing, or No Saved Address) ── */}
+                  {(savedAddresses.length === 0 || addressMode === "new" || isEditingAddress) && (
+                    <div className="space-y-4 pt-1 text-left">
+                      {savedAddresses.length > 0 && (
+                        <div className="flex items-center justify-between pb-2 border-b border-zinc-100">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAddressMode("saved");
+                              setIsEditingAddress(false);
+                            }}
+                            className="text-xs font-bold text-[#800020] hover:underline flex items-center gap-1 cursor-pointer"
+                          >
+                            ← Back to saved delivery address
+                          </button>
+                          {isEditingAddress && (
+                            <button
+                              type="button"
+                              onClick={() => setIsEditingAddress(false)}
+                              className="px-3 py-1 bg-zinc-900 text-white text-[11px] font-bold uppercase tracking-wider rounded-md hover:bg-zinc-800 transition-colors"
                             >
-                              <div className="flex items-center gap-1.5 absolute top-2 right-2">
-                                <span className="text-[12px] font-bold uppercase tracking-wider bg-zinc-100 text-zinc-700 px-1.5 py-0.5 rounded border border-zinc-200">
-                                  {addr.type || "Home"}
-                                </span>
-                                {addr.isDefault && <span className="text-[12px] font-bold uppercase tracking-wider bg-zinc-900 text-white px-1.5 py-0.5 rounded">Default</span>}
-                              </div>
-                              <div className="flex items-start gap-2">
-                                <div className={`w-4 h-4 rounded-full border-2 mt-0.5 flex items-center justify-center shrink-0 ${sel ? "border-zinc-900 bg-zinc-900" : "border-zinc-300"}`}>
-                                  {sel && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                                </div>
-                                <div className="text-[14px] space-y-0.5 pr-14">
-                                  <p className="font-semibold text-zinc-900">{addr.name}</p>
-                                  {addr.flat && <p className="text-zinc-700 text-xs">{addr.flat}</p>}
-                                  <p className="text-zinc-500 leading-relaxed text-xs">{addr.street || addr.address}</p>
-                                  {addr.landmark && <p className="text-zinc-400 text-[12px]">Landmark: {addr.landmark}</p>}
-                                  <p className="text-zinc-500 text-xs">{addr.city}, {addr.state} – {addr.pincode}</p>
-                                  <p className="text-zinc-700 font-medium text-xs mt-1">Phone: {addr.phone}</p>
-                                </div>
-                              </div>
+                              Done Editing
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Address Type Selector */}
+                      <div>
+                        <label className="text-[12px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Address Type</label>
+                        <div className="flex items-center gap-2">
+                          {["Home", "Office", "Other"].map((t) => (
+                            <button
+                              key={t}
+                              type="button"
+                              onClick={() => setFormData(p => ({ ...p, type: t }))}
+                              className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${formData.type === t
+                                ? "bg-[#800020] text-[#ffffff] border-[#800020] shadow-xs"
+                                : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
+                                }`}
+                            >
+                              {t}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Full Name & Email */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Full Name *</label>
+                          <div className="relative">
+                            <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                            <input
+                              type="text"
+                              name="name"
+                              required
+                              maxLength={60}
+                              value={formData.name}
+                              onChange={handleInput}
+                              className={`${inputCls} pl-10`}
+                              placeholder="Your full name"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Email Address *</label>
+                          <div className="relative">
+                            <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                            <input
+                              type="email"
+                              name="email"
+                              required
+                              maxLength={100}
+                              value={formData.email}
+                              onChange={handleInput}
+                              onBlur={(e) => {
+                                const val = e.target.value.trim().toLowerCase();
+                                if (val && val.includes("@")) {
+                                  loadAddressesForEmail(val);
+                                }
+                              }}
+                              className={`${inputCls} pl-10`}
+                              placeholder="email@example.com"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Primary Phone & Alternate Phone */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Phone Number (10 digits) *</label>
+                          <div className="relative">
+                            <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                            <input
+                              type="tel"
+                              name="phone"
+                              required
+                              maxLength={10}
+                              inputMode="numeric"
+                              value={formData.phone}
+                              onChange={handleInput}
+                              className={`${inputCls} pl-10 font-mono`}
+                              placeholder="10-digit mobile number"
+                            />
+                          </div>
+                          <span className="text-[11px] text-zinc-400 mt-1 block">Indian 10-digit mobile (e.g. 9876543210)</span>
+                        </div>
+                        <div>
+                          <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Alternate Phone (Optional)</label>
+                          <div className="relative">
+                            <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
+                            <input
+                              type="tel"
+                              name="alternatePhone"
+                              maxLength={10}
+                              inputMode="numeric"
+                              value={formData.alternatePhone || ""}
+                              onChange={handleInput}
+                              className={`${inputCls} pl-10 font-mono`}
+                              placeholder="Secondary 10-digit mobile"
+                            />
+                          </div>
+                          <span className="text-[11px] text-zinc-400 mt-1 block">Optional courier backup number</span>
+                        </div>
+                      </div>
+
+                      {/* Flat / House No / Building & Area / Street / Locality */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Flat, House No., Building, Apartment *</label>
+                          <input
+                            type="text"
+                            name="flat"
+                            required
+                            maxLength={150}
+                            value={formData.flat || ""}
+                            onChange={handleInput}
+                            className={inputCls}
+                            placeholder="e.g. Flat 402, Royal Residency, Tower B"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Area, Street, Sector, Locality *</label>
+                          <input
+                            type="text"
+                            name="street"
+                            required
+                            maxLength={150}
+                            value={formData.street || ""}
+                            onChange={handleInput}
+                            className={inputCls}
+                            placeholder="e.g. MG Road, Scheme 54, Vijay Nagar"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Landmark */}
+                      <div>
+                        <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Landmark (Optional)</label>
+                        <input
+                          type="text"
+                          name="landmark"
+                          maxLength={150}
+                          value={formData.landmark || ""}
+                          onChange={handleInput}
+                          className={inputCls}
+                          placeholder="e.g. Near Apollo Hospital / Opp. City Center Mall"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div className="relative">
+                          <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">City *</label>
+                          <input
+                            type="text"
+                            name="city"
+                            required
+                            maxLength={80}
+                            value={formData.city}
+                            onChange={(e) => handleCityChange(e.target.value)}
+                            onFocus={() => { if (citySearchSuggestions.length > 0) setShowCitySuggestions(true); }}
+                            className={inputCls}
+                            placeholder="e.g. Indore"
+                            autoComplete="off"
+                          />
+                          {searchLoading && (
+                            <div className="absolute right-3 top-[41px] flex items-center justify-center">
+                              <div className="w-3.5 h-3.5 border-2 border-zinc-200 border-t-black rounded-full animate-spin" />
                             </div>
-                          );
-                        })}
-                        <div
-                          onClick={() => {
-                            setSelectedAddressId("custom");
-                            setFormData(p => ({
-                              ...p,
-                              flat: "",
-                              street: "",
-                              landmark: "",
-                              address: "",
-                              city: "",
-                              state: "",
-                              pincode: "",
-                              alternatePhone: ""
-                            }));
-                          }}
-                          className={`p-3.5 border-2 rounded-xl cursor-pointer flex items-center justify-center gap-2 transition-all ${selectedAddressId === "custom" ? "border-zinc-900 bg-zinc-50" : "border-dashed border-zinc-300 hover:border-zinc-500"}`}
-                        >
-                          <Plus size={14} className="text-zinc-500" />
-                          <span className="text-[14px] font-semibold text-zinc-600">Enter New Address</span>
+                          )}
+
+                          {/* Suggestion Dropdown */}
+                          {showCitySuggestions && citySearchSuggestions.length > 0 && (
+                            <div className="absolute left-0 md:-left-4 right-0 md:w-[360px] top-full mt-1.5 bg-white border border-zinc-200 shadow-2xl rounded-xl max-h-56 overflow-y-auto divide-y divide-zinc-100" style={{ zIndex: 999999 }}>
+                              {citySearchSuggestions.slice(0, 15).map((office, idx) => (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={() => selectCitySuggestion(office)}
+                                  className="w-full text-left px-4 py-3 hover:bg-zinc-50 transition-colors text-[14px] space-y-0.5 block cursor-pointer"
+                                >
+                                  <div className="font-bold text-zinc-950 truncate">{office.Name || office.District}, {office.District}</div>
+                                  <div className="text-zinc-500 font-medium font-mono text-[12px]">{office.State} – Pin: {office.Pincode}</div>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">State *</label>
+                          <input
+                            type="text"
+                            name="state"
+                            required
+                            maxLength={80}
+                            value={formData.state}
+                            onChange={handleInput}
+                            className={inputCls}
+                            placeholder="e.g. Madhya Pradesh"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Pincode (6 digits) *</label>
+                          <input
+                            type="text"
+                            name="pincode"
+                            required
+                            maxLength={6}
+                            inputMode="numeric"
+                            value={formData.pincode}
+                            onChange={handleInput}
+                            className={`${inputCls} font-mono`}
+                            placeholder="e.g. 452001"
+                          />
                         </div>
                       </div>
                     </div>
                   )}
-
-                  {/* Address Type Selector */}
-                  <div>
-                    <label className="text-[12px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Address Type</label>
-                    <div className="flex items-center gap-2">
-                      {["Home", "Office", "Other"].map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setFormData(p => ({ ...p, type: t }))}
-                          className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${formData.type === t
-                            ? "bg-[#800020] text-[#ffffff] border-[#800020] shadow-xs"
-                            : "bg-white text-zinc-600 border-zinc-200 hover:border-zinc-400"
-                            }`}
-                        >
-                          {t}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Full Name & Email */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Full Name *</label>
-                      <div className="relative">
-                        <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                        <input
-                          type="text"
-                          name="name"
-                          required
-                          maxLength={60}
-                          value={formData.name}
-                          onChange={handleInput}
-                          className={`${inputCls} pl-10`}
-                          placeholder="Your full name"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Email Address *</label>
-                      <div className="relative">
-                        <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                        <input
-                          type="email"
-                          name="email"
-                          required
-                          maxLength={100}
-                          value={formData.email}
-                          onChange={handleInput}
-                          className={`${inputCls} pl-10`}
-                          placeholder="email@example.com"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Primary Phone & Alternate Phone */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Phone Number (10 digits) *</label>
-                      <div className="relative">
-                        <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                        <input
-                          type="tel"
-                          name="phone"
-                          required
-                          maxLength={10}
-                          inputMode="numeric"
-                          value={formData.phone}
-                          onChange={handleInput}
-                          className={`${inputCls} pl-10 font-mono`}
-                          placeholder="10-digit mobile number"
-                        />
-                      </div>
-                      <span className="text-[11px] text-zinc-400 mt-1 block">Indian 10-digit mobile (e.g. 9876543210)</span>
-                    </div>
-                    <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Alternate Phone (Optional)</label>
-                      <div className="relative">
-                        <Phone size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-                        <input
-                          type="tel"
-                          name="alternatePhone"
-                          maxLength={10}
-                          inputMode="numeric"
-                          value={formData.alternatePhone || ""}
-                          onChange={handleInput}
-                          className={`${inputCls} pl-10 font-mono`}
-                          placeholder="Secondary 10-digit mobile"
-                        />
-                      </div>
-                      <span className="text-[11px] text-zinc-400 mt-1 block">Optional courier backup number</span>
-                    </div>
-                  </div>
-
-                  {/* Flat / House No / Building & Area / Street / Locality */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Flat, House No., Building, Apartment *</label>
-                      <input
-                        type="text"
-                        name="flat"
-                        required
-                        maxLength={150}
-                        value={formData.flat || ""}
-                        onChange={handleInput}
-                        className={inputCls}
-                        placeholder="e.g. Flat 402, Royal Residency, Tower B"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Area, Street, Sector, Locality *</label>
-                      <input
-                        type="text"
-                        name="street"
-                        required
-                        maxLength={150}
-                        value={formData.street || ""}
-                        onChange={handleInput}
-                        className={inputCls}
-                        placeholder="e.g. MG Road, Scheme 54, Vijay Nagar"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Landmark */}
-                  <div>
-                    <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Landmark (Optional)</label>
-                    <input
-                      type="text"
-                      name="landmark"
-                      maxLength={150}
-                      value={formData.landmark || ""}
-                      onChange={handleInput}
-                      className={inputCls}
-                      placeholder="e.g. Near Apollo Hospital / Opp. City Center Mall"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="relative">
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">City *</label>
-                      <input
-                        type="text"
-                        name="city"
-                        required
-                        maxLength={80}
-                        value={formData.city}
-                        onChange={(e) => handleCityChange(e.target.value)}
-                        onFocus={() => { if (citySearchSuggestions.length > 0) setShowCitySuggestions(true); }}
-                        className={inputCls}
-                        placeholder="e.g. Indore"
-                        autoComplete="off"
-                      />
-                      {searchLoading && (
-                        <div className="absolute right-3 top-[41px] flex items-center justify-center">
-                          <div className="w-3.5 h-3.5 border-2 border-zinc-200 border-t-black rounded-full animate-spin" />
-                        </div>
-                      )}
-
-                      {/* Suggestion Dropdown */}
-                      {showCitySuggestions && citySearchSuggestions.length > 0 && (
-                        <div className="absolute left-0 md:-left-4 right-0 md:w-[360px] top-full mt-1.5 bg-white border border-zinc-200 shadow-2xl rounded-xl max-h-56 overflow-y-auto divide-y divide-zinc-100" style={{ zIndex: 999999 }}>
-                          {citySearchSuggestions.slice(0, 15).map((office, idx) => (
-                            <button
-                              key={idx}
-                              type="button"
-                              onClick={() => selectCitySuggestion(office)}
-                              className="w-full text-left px-4 py-3 hover:bg-zinc-50 transition-colors text-[14px] space-y-0.5 block cursor-pointer"
-                            >
-                              <div className="font-bold text-zinc-950 truncate">{office.Name || office.District}, {office.District}</div>
-                              <div className="text-zinc-500 font-medium font-mono text-[12px]">{office.State} – Pin: {office.Pincode}</div>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">State *</label>
-                      <input
-                        type="text"
-                        name="state"
-                        required
-                        maxLength={80}
-                        value={formData.state}
-                        onChange={handleInput}
-                        className={inputCls}
-                        placeholder="e.g. Madhya Pradesh"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[14px] font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">Pincode (6 digits) *</label>
-                      <input
-                        type="text"
-                        name="pincode"
-                        required
-                        maxLength={6}
-                        inputMode="numeric"
-                        value={formData.pincode}
-                        onChange={handleInput}
-                        className={`${inputCls} font-mono`}
-                        placeholder="e.g. 452001"
-                      />
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -1814,23 +2025,14 @@ const Checkout = () => {
                     )}
                   </button>
 
-                  {/* COD option */}
-                  <button
-                    type="button"
-                    onClick={() => setFormData(p => ({ ...p, paymentMethod: "cod" }))}
-                    className={`w-full p-4 border-2 rounded-xl text-left transition-all ${formData.paymentMethod === "cod" ? "border-zinc-900 bg-zinc-50" : "border-zinc-200 bg-white hover:border-zinc-400"}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${formData.paymentMethod === "cod" ? "border-zinc-900 bg-zinc-900" : "border-zinc-300"}`}>
-                        {formData.paymentMethod === "cod" && <div className="w-2 h-2 rounded-full bg-white" />}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-zinc-900">Cash on Delivery</p>
-                        <p className="text-[14px] text-zinc-500 mt-0.5">Pay when your order arrives</p>
-                      </div>
-                      <span className="ml-auto text-[12px] font-bold uppercase tracking-wide bg-amber-100 text-amber-700 px-2 py-1 rounded-full">COD</span>
+                  {/* Assured Prepaid Benefit Card */}
+                  <div className="p-4 bg-[#FCF9F4] border border-[#E9DCCB] rounded-xl flex items-start gap-3">
+                    <ShieldCheck size={20} className="text-[#800020] shrink-0 mt-0.5" />
+                    <div className="text-xs text-[#75665D] leading-relaxed">
+                      <span className="font-bold text-[#30231F] block mb-0.5">100% Insured Priority Dispatch:</span>
+                      All online prepaid orders are prioritized for same-day inspection and handed over to Delhivery Express with complimentary transit insurance. Cash on Delivery is discontinued to guarantee untouched luxury seal integrity.
                     </div>
-                  </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1954,7 +2156,7 @@ const Checkout = () => {
                 ) : invalidCartError ? (
                   "Cannot Checkout — Check Bag"
                 ) : (
-                  <>{formData.paymentMethod === "cod" ? "Place Order" : "Pay Now"} <ArrowRight size={15} /></>
+                  <>Pay ₹{finalPayable.toLocaleString()} Securely <ArrowRight size={15} /></>
                 )}
               </button>
 

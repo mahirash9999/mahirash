@@ -116,10 +116,10 @@ const ReturnPolicy = () => {
               <div className="space-y-4">
                 <h3 className="text-[12px] font-black uppercase tracking-[0.15em] text-[#800020]">Payment Method Refunds</h3>
                 <ul className="space-y-3 text-[14px] md:text-sm text-zinc-600">
-                  <li>• <strong>UPI / Cards / Net Banking:</strong> Refund credited back to original source account.</li>
-                  <li>• <strong>Wallets (Paytm, PhonePe, GPay):</strong> Refund to wallet within 24–48 hours.</li>
-                  <li>• <strong>Cash on Delivery (COD):</strong> Refund processed via UPI or store credit (your choice).</li>
-                  <li>• <strong>Shipping Charges:</strong> Original shipping fees are non-refundable unless product was defective or wrong item delivered.</li>
+                  <li>• <strong>UPI / Cards / Net Banking:</strong> Refund credited directly back to the original source bank/card account within 3–5 business days.</li>
+                  <li>• <strong>Wallets (Paytm, PhonePe, GPay):</strong> Refund directly credited to your wallet/UPI linked account within 24–48 hours.</li>
+                  <li>• <strong>Prepaid Security:</strong> All transactions are 100% verified and encrypted via Razorpay.</li>
+                  <li>• <strong>Shipping Charges:</strong> Standard shipping is complimentary on all prepaid orders.</li>
                 </ul>
               </div>
             </div>
@@ -132,14 +132,13 @@ const ReturnPolicy = () => {
             <span className="w-8 h-8 bg-black text-white text-[12px] font-black flex items-center justify-center">4</span>
             <h2 className="text-xl font-light uppercase tracking-widest text-zinc-900">Payment Methods We Accept</h2>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
             {[
               { label: 'UPI', desc: 'GPay, PhonePe, Paytm' },
               { label: 'Debit Cards', desc: 'Visa, RuPay, Mastercard' },
               { label: 'Credit Cards', desc: 'All major issuers' },
               { label: 'Net Banking', desc: 'All Indian banks' },
               { label: 'Wallets', desc: 'Paytm, PhonePe, Mobikwik' },
-              { label: 'Cash on Delivery', desc: 'Selected pincodes' },
             ].map((m) => (
               <div key={m.label} className="bg-white border border-zinc-200 p-4 flex flex-col items-center text-center hover:border-black/30 transition-colors">
                 <ShieldCheck size={18} className="text-[#800020] mb-2" />

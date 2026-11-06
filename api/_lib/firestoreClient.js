@@ -1,17 +1,19 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const APP_NAME = "mahirash-server-api";
 
-const firebaseConfig = {
-  apiKey: process.env.VITE_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY,
-  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || process.env.FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VITE_FIREBASE_APP_ID || process.env.FIREBASE_APP_ID
-};
+const cleanEnvVal = (val) => (typeof val === "string" ? val.replace(/^["']|["']$/g, "").trim() : val);
+
+const getFirebaseConfig = () => ({
+  apiKey: cleanEnvVal(process.env.VITE_FIREBASE_API_KEY || process.env.FIREBASE_API_KEY),
+  authDomain: cleanEnvVal(process.env.VITE_FIREBASE_AUTH_DOMAIN || process.env.FIREBASE_AUTH_DOMAIN),
+  projectId: cleanEnvVal(process.env.VITE_FIREBASE_PROJECT_ID || process.env.FIREBASE_PROJECT_ID),
+  storageBucket: cleanEnvVal(process.env.VITE_FIREBASE_STORAGE_BUCKET || process.env.FIREBASE_STORAGE_BUCKET),
+  messagingSenderId: cleanEnvVal(process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || process.env.FIREBASE_MESSAGING_SENDER_ID),
+  appId: cleanEnvVal(process.env.VITE_FIREBASE_APP_ID || process.env.FIREBASE_APP_ID)
+});
 
 let dbInstance = null;
 let authReady = false;
@@ -27,7 +29,7 @@ export async function getFirestoreDb() {
     if (namedApp) {
       app = namedApp;
     } else {
-      app = initializeApp(firebaseConfig, APP_NAME);
+      app = initializeApp(getFirebaseConfig(), APP_NAME);
     }
 
     if (!dbInstance) {

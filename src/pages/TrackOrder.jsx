@@ -98,7 +98,7 @@ const TrackOrder = () => {
                 const docSnap = await getDoc(docRef);
 
                 if (!docSnap.exists()) {
-                    setError("No order found with code #" + cleanKey + ". Please check details.");
+                    setError("No order found with code #" + cleanKey + ". Please verify details.");
                     setLoading(false);
                     return;
                 }
@@ -106,56 +106,69 @@ const TrackOrder = () => {
                 const order = { id: docSnap.id, ...docSnap.data() };
                 setOrderData(order);
 
-                // If the order has an AWB tracking code, grab it!
-                if (order.awbCode) {
-                    await fetchShiprocketTracking(order.awbCode);
+                // If the order has an AWB tracking code, grab live Delhivery tracking!
+                const awb = order.awbCode || order.trackingNumber;
+                if (awb) {
+                    await fetchDelhiveryTracking(awb, order.id);
                 } else {
-                    // Handled: confirmed, but not shipped
-                    const displayStatus = order.fulfillmentStatus || (order.status === "confirmed" ? "Under Packaging" : "Order Recieved");
+                    // Handled: confirmed, but logistics shipment not yet dispatched
+                    const displayStatus = order.shipmentStatus || order.fulfilmentStatus || (order.paymentStatus === "Paid" || order.status === "confirmed" ? "Processing & Packing" : "Order Placed");
 
-                    let activityLabel = "Order received in our system. Processing payment clearance.";
-                    if (order.fulfillmentStatus && order.fulfillmentStatus !== "Unfulfilled") {
-                        activityLabel = `Order status updated to: ${order.fulfillmentStatus}. Pending carrier handover.`;
-                    } else if (order.status === "confirmed") {
-                        activityLabel = "Order details verified. Your package is currently being tailored & packed.";
+                    let activityLabel = "Order received in our atelier. Payment confirmed via Razorpay.";
+                    if (order.fulfilmentStatus && order.fulfilmentStatus !== "Unfulfilled") {
+                        activityLabel = `Order status: ${order.fulfilmentStatus}. Fragrance formulation is being prepared for dispatch.`;
+                    } else if (order.status === "confirmed" || order.paymentStatus === "Paid") {
+                        activityLabel = "Order verified. Fragrance bottle seal & batch number undergoing quality assurance.";
                     }
 
                     setTrackingData({
+                        awb: "Pending Delhivery AWB",
                         currentStatus: displayStatus,
-                        provider: "Pending Handover",
-                        estimatedDelivery: "Will be updated",
+                        mappedStatus: displayStatus,
+                        provider: "Delhivery Express",
+                        estimatedDelivery: "3-5 Business Days (Air Express)",
                         scans: [
                             {
-                                date: order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString("en-IN") : "Just now",
+                                date: order.createdAt?.toDate ? order.createdAt.toDate().toLocaleString("en-IN") : "Recent",
                                 activity: activityLabel,
-                                location: "Mahirash Central Hub",
-                                status: order.fulfillmentStatus || "Pending Handover"
+                                location: "Mahirash Central Hub (Indore)",
+                                status: displayStatus
                             }
                         ]
                     });
                 }
             } else {
                 // Direct AWB search
-                await fetchShiprocketTracking(cleanKey);
+                await fetchDelhiveryTracking(cleanKey);
             }
         } catch (err) {
             console.error(err);
-            setError("Unable to retrieve tracking logs at this time. Verify values or try later.");
+            setError("Unable to retrieve Delhivery tracking logs at this time. Verify values or try later.");
         } finally {
             setLoading(false);
         }
     };
 
-    const fetchShiprocketTracking = async (awbCode) => {
-        const res = await fetch(`/api/track?awb=${encodeURIComponent(awbCode)}`);
+    const fetchDelhiveryTracking = async (awbCode, orderId = "") => {
+        const queryParams = new URLSearchParams({ waybill: awbCode });
+        if (orderId) queryParams.set("orderId", orderId);
+
+        const res = await fetch(`/api/delhivery/track?${queryParams.toString()}`);
         if (!res.ok) {
-            throw new Error("Shiprocket fetch error");
+            throw new Error("Delhivery tracking service temporary communication error");
         }
         const data = await res.json();
-        if (data.error) {
+        if (data.error && !data.success) {
             throw new Error(data.error);
         }
-        setTrackingData(data);
+        setTrackingData({
+            ...data,
+            awb: data.waybill || awbCode,
+            currentStatus: data.currentStatus || data.mappedStatus || "In Transit",
+            provider: data.courier || data.provider || "Delhivery Express",
+            estimatedDelivery: data.expectedDelivery || data.estimatedDelivery || "Standard Air Express",
+            scans: data.scans || []
+        });
     };
 
     // Status mapping to color code
@@ -171,7 +184,7 @@ const TrackOrder = () => {
         <div className="min-h-screen bg-[#faf9f6] text-zinc-900 font-sans">
             <SEOHead
                 title="Track Live Order | Mahirash Luxury Perfumes"
-                description="Verify and track your shipment details with real-time Shiprocket updates."
+                description="Verify and track your shipment details with real-time Delhivery Express updates."
                 url="https://mahirash.com/track"
             />
             <PageHeader
@@ -280,9 +293,9 @@ const TrackOrder = () => {
                                     exit={{ opacity: 0 }}
                                     className="bg-white border border-zinc-200 rounded-xl p-16 text-center shadow-sm flex flex-col items-center justify-center space-y-4"
                                 >
-                                    <RefreshCw size={36} className="animate-spin text-zinc-900" />
-                                    <p className="text-sm font-light text-zinc-400 uppercase tracking-widest">
-                                        Retrieving Live Shiprocket Checkpoints…
+                                    <RefreshCw size={36} className="animate-spin text-[#800020]" />
+                                    <p className="text-sm font-light text-zinc-500 uppercase tracking-widest">
+                                        Retrieving Live Delhivery Express Checkpoints…
                                     </p>
                                 </motion.div>
                             )}
@@ -303,17 +316,17 @@ const TrackOrder = () => {
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className="bg-white border border-zinc-200 rounded-xl p-12 md:p-20 text-center shadow-sm space-y-6"
+                                    className="bg-white border border-[#E9DCCB] rounded-2xl p-12 md:p-20 text-center shadow-xs space-y-6"
                                 >
-                                    <div className="w-16 h-16 rounded-full border border-zinc-100 bg-zinc-50 flex items-center justify-center mx-auto">
-                                        <Truck size={24} className="text-zinc-400" />
+                                    <div className="w-16 h-16 rounded-full border border-[#E9DCCB] bg-[#FCF9F4] flex items-center justify-center mx-auto">
+                                        <Truck size={24} className="text-[#800020]" />
                                     </div>
                                     <div className="max-w-md mx-auto space-y-2">
-                                        <h3 className="text-lg font-light uppercase tracking-widest font-serif text-zinc-950">
-                                            Looking For Your Courier?
+                                        <h3 className="text-lg font-light uppercase tracking-widest font-serif text-[#30231F]">
+                                            Track Your Delhivery Express Consignment
                                         </h3>
-                                        <p className="text-zinc-500 font-light text-[14px] leading-relaxed">
-                                            Enter your order reference code or the AWB tracking key in the form, or select an item from your profile list to check dynamic logistics history.
+                                        <p className="text-[#75665D] font-light text-[14px] leading-relaxed">
+                                            Enter your order reference code or Delhivery AWB number in the form, or select an item from your order history to check live logistics scans.
                                         </p>
                                     </div>
                                 </motion.div>
@@ -325,37 +338,107 @@ const TrackOrder = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     className="space-y-6"
                                 >
-                                    {/* Live Status Overview */}
-                                    <div className="bg-white border border-zinc-200 rounded-xl p-6 md:p-8 shadow-sm text-left">
-                                        <div className="flex flex-wrap items-start justify-between gap-4 pb-6 border-b border-zinc-150">
+                                    {/* Live Status Overview Card */}
+                                    <div className="bg-white border border-[#E9DCCB] rounded-2xl p-6 md:p-8 shadow-xs text-left space-y-6">
+                                        <div className="flex flex-wrap items-start justify-between gap-4 pb-6 border-b border-[#E9DCCB]/60">
                                             <div>
-                                                <span className="text-[12px] font-black uppercase tracking-[0.15em] text-[#800020]">
-                                                    Tracking Number : {trackingData.awb || trackingKey}
-                                                </span>
-                                                <h2 className="text-xl font-light uppercase tracking-wider font-serif text-zinc-950 mt-1">
-                                                    Carrier status: {trackingData.currentStatus}
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-[#800020] bg-[#800020]/10 px-2.5 py-0.5 rounded-full">
+                                                        Delhivery AWB : {trackingData.awb || trackingKey}
+                                                    </span>
+                                                    {trackingData.awb && !trackingData.awb.includes("Pending") && (
+                                                        <a
+                                                            href={`https://www.delhivery.com/track/package/${trackingData.awb}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="text-xs text-[#800020] hover:underline font-semibold flex items-center gap-1"
+                                                        >
+                                                            <span>Track on Delhivery.com</span>
+                                                            <ArrowRight size={11} />
+                                                        </a>
+                                                    )}
+                                                </div>
+                                                <h2 className="text-xl font-bold uppercase tracking-wider font-serif text-[#30231F] mt-2">
+                                                    Status: {trackingData.currentStatus}
                                                 </h2>
                                             </div>
-                                            <span className={`px-4 py-1.5 text-[12px] font-bold uppercase tracking-widest border rounded-full ${getStatusColor(trackingData.currentStatus)}`}>
+                                            <span className={`px-4 py-1.5 text-[11px] font-bold uppercase tracking-widest border rounded-full ${getStatusColor(trackingData.currentStatus)}`}>
                                                 {trackingData.currentStatus}
                                             </span>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 text-[14px] text-left">
+                                        {/* Visual 5-Step Logistics Progression Bar */}
+                                        <div className="py-2">
+                                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#75665D] block mb-3">
+                                                Logistics Progression
+                                            </span>
+                                            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                                                {[
+                                                    { step: 1, name: "Order Placed", key: "placed" },
+                                                    { step: 2, name: "Packed & Sealed", key: "pack" },
+                                                    { step: 3, name: "Handed to Courier", key: "dispatch" },
+                                                    { step: 4, name: "In Transit", key: "transit" },
+                                                    { step: 5, name: "Delivered", key: "deliver" }
+                                                ].map((st, i) => {
+                                                    const s = (trackingData.currentStatus || "").toLowerCase();
+                                                    const isDelivered = s.includes("deliver") && !s.includes("out");
+                                                    const isInTransit = isDelivered || s.includes("transit") || s.includes("out for delivery");
+                                                    const isDispatched = isInTransit || s.includes("dispatch") || s.includes("manifest") || s.includes("pickup") || Boolean(trackingData.awb && !trackingData.awb.includes("Pending"));
+                                                    const isPacked = isDispatched || s.includes("pack") || s.includes("ready");
+                                                    const isPlaced = true;
+
+                                                    const activeMap = [isPlaced, isPacked, isDispatched, isInTransit, isDelivered];
+                                                    const isActive = activeMap[i];
+
+                                                    return (
+                                                        <div
+                                                            key={st.step}
+                                                            className={`p-3 rounded-xl border text-center transition-all ${
+                                                                isActive
+                                                                    ? "bg-[#800020]/5 border-[#800020] text-[#800020]"
+                                                                    : "bg-[#FCF9F4] border-[#E9DCCB] text-[#75665D]/60"
+                                                            }`}
+                                                        >
+                                                            <div className={`w-5 h-5 rounded-full mx-auto mb-1 flex items-center justify-center text-[10px] font-bold ${
+                                                                isActive ? "bg-[#800020] text-white" : "bg-[#E9DCCB] text-[#75665D]"
+                                                            }`}>
+                                                                {st.step}
+                                                            </div>
+                                                            <span className="text-[11px] font-bold block">{st.name}</span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-[#E9DCCB]/60 text-[14px] text-left">
                                             {orderData && (
                                                 <div>
-                                                    <span className="text-zinc-400 uppercase tracking-widest text-[12px] block">Customer Name</span>
-                                                    <span className="text-zinc-900 font-bold block mt-1 font-serif text-sm">{orderData.shipping?.name}</span>
+                                                    <span className="text-[#75665D] uppercase tracking-widest text-[11px] font-bold block">Delivery Recipient</span>
+                                                    <span className="text-[#30231F] font-bold block mt-1 font-serif text-sm">
+                                                        {orderData.shipping?.name || orderData.customerName}
+                                                    </span>
+                                                    <span className="text-xs text-[#75665D] block">
+                                                        {orderData.shipping?.city}, {orderData.shipping?.state} ({orderData.shipping?.pincode})
+                                                    </span>
                                                 </div>
                                             )}
                                             <div>
-                                                <span className="text-zinc-400 uppercase tracking-widest text-[12px] block">Courier Partner</span>
-                                                <span className="text-zinc-900 font-bold block mt-1 text-sm">{trackingData.provider || "Delhivery"}</span>
+                                                <span className="text-[#75665D] uppercase tracking-widest text-[11px] font-bold block">Courier Partner</span>
+                                                <span className="text-[#30231F] font-bold block mt-1 text-sm font-sans">
+                                                    {trackingData.provider || "Delhivery Express"}
+                                                </span>
+                                                <span className="text-xs text-emerald-800 font-bold block mt-0.5">
+                                                    ✓ 100% Insured Air Express
+                                                </span>
                                             </div>
                                             <div>
-                                                <span className="text-zinc-400 uppercase tracking-widest text-[12px] block">Est. Delivery</span>
-                                                <span className="text-zinc-900 font-bold block mt-1 text-sm text-emerald-700">
+                                                <span className="text-[#75665D] uppercase tracking-widest text-[11px] font-bold block">Est. Delivery</span>
+                                                <span className="text-[#30231F] font-bold block mt-1 text-sm text-emerald-800 font-mono">
                                                     {trackingData.estimatedDelivery}
+                                                </span>
+                                                <span className="text-xs text-[#75665D] block mt-0.5">
+                                                    From Indore Central Hub (452001)
                                                 </span>
                                             </div>
                                         </div>
