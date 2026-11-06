@@ -612,7 +612,7 @@ const Account = () => {
         </div>
 
         <div class="footer">
-          <p>Thank you for shopping with Mahirash Luxury Perfumes.</p>
+          <p>Thank you for shopping with Luxury Perfumes.</p>
           <p>For customer support queries, write to care@mahirash.com or WhatsApp +91 9584826112.</p>
         </div>
       </body>

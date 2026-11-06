@@ -323,7 +323,7 @@ const ProductDetail = () => {
           imageAlt={`${product.name} - Luxury Extrait de Parfum by ${product.brand || 'Mahirash'}`}
           url={`https://mahirash.com/product/${id}`}
           canonical={`https://mahirash.com/product/${id}`}
-          author={product.brand || "Mahirash Luxury Perfumes"}
+          author={product.brand || "Luxury Perfumes"}
           type="product"
           product={product}
         />
@@ -574,9 +574,8 @@ const ProductDetail = () => {
 
               {/* Delhivery Result Feedback */}
               {pincodeStatus && (
-                <div className={`p-3 rounded-none border text-[12px] md:text-[14px] ${
-                  pincodeStatus.success ? "bg-emerald-50/80 border-emerald-200 text-emerald-900" : "bg-red-50 border-red-200 text-red-800"
-                }`}>
+                <div className={`p-3 rounded-none border text-[12px] md:text-[14px] ${pincodeStatus.success ? "bg-emerald-50/80 border-emerald-200 text-emerald-900" : "bg-red-50 border-red-200 text-red-800"
+                  }`}>
                   <div className="flex items-start gap-2">
                     {pincodeStatus.success ? (
                       <CheckCircle2 size={16} className="text-emerald-700 shrink-0 mt-0.5" />
@@ -777,7 +776,7 @@ const ProductDetail = () => {
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.2, ease: 'easeInOut' }}
                       className="overflow-hidden"
-                     >
+                    >
                       <div className="pb-5 space-y-4 text-[14px] text-zinc-700 font-normal leading-relaxed">
 
                         {/* Dynamic TinyMCE Rich HTML Description */}

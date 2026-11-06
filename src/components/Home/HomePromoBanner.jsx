@@ -112,8 +112,8 @@ const HomePromoBanner = ({ slotKey, defaultData }) => {
     bannerData.textAlignment === 'left'
       ? 'items-start text-left'
       : bannerData.textAlignment === 'right'
-      ? 'items-end text-right'
-      : 'items-center text-center';
+        ? 'items-end text-right'
+        : 'items-center text-center';
 
   return (
     <section className="relative w-full overflow-hidden bg-[#0a0d14] my-10 sm:my-14 md:my-16 font-sans">
@@ -138,7 +138,7 @@ const HomePromoBanner = ({ slotKey, defaultData }) => {
             <img
               key={activeMediaUrl}
               src={activeMediaUrl}
-              alt={bannerData.title || 'Mahirash Luxury Perfumes'}
+              alt={bannerData.title || 'Luxury Perfumes'}
               className="w-full h-full object-cover opacity-85 scale-105 transition-transform duration-700"
             />
           )}

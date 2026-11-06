@@ -24,7 +24,7 @@ export function getDelhiveryConfig() {
   const pickupPincode = process.env.DELHIVERY_PICKUP_PINCODE || "452001"; // Indore, MP origin
   const pickupCity = process.env.DELHIVERY_PICKUP_CITY || "Indore";
   const pickupState = process.env.DELHIVERY_PICKUP_STATE || "Madhya Pradesh";
-  const pickupAddress = process.env.DELHIVERY_PICKUP_ADDRESS || "Mahirash Luxury Perfumes Central Facility, Indore, MP 452001";
+  const pickupAddress = process.env.DELHIVERY_PICKUP_ADDRESS || "Luxury Perfumes Central Facility, Indore, MP 452001";
   const pickupPhone = process.env.DELHIVERY_PICKUP_PHONE || "9876543210";
 
   return {
@@ -246,7 +246,7 @@ export async function createDelhiveryShipment({
         length: lengthCm,
         breadth: breadthCm,
         height: heightCm,
-        seller_name: "Mahirash Luxury Perfumes",
+        seller_name: "Luxury Perfumes",
         seller_add: config.pickupAddress,
         seller_inv: orderNumber,
         consignee: consigneeName,

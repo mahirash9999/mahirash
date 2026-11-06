@@ -6,7 +6,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-zinc-900">
       <SEOHead
-        title="Privacy Policy | Mahirash Luxury Perfumes"
+        title="Privacy Policy | Luxury Perfumes"
         description="Learn how Mahirash protects your personal information and data privacy."
         url="https://mahirash.com/privacy"
       />

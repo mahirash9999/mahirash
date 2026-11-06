@@ -106,8 +106,8 @@ const Signup = () => {
   return (
     <div className="min-h-screen bg-[#fafafa] flex flex-col justify-center items-center relative overflow-hidden px-4 py-12 md:py-20 font-['Inter',sans-serif]">
       <SEOHead
-        title="Create Account | Mahirash Luxury Perfumes"
-        description="Join Mahirash Luxury Perfumes to enjoy fast checkout and track your orders."
+        title="Create Account | Luxury Perfumes"
+        description="Join Luxury Perfumes to enjoy fast checkout and track your orders."
         robots="noindex, follow"
         url="https://mahirash.com/signup"
       />
@@ -150,7 +150,7 @@ const Signup = () => {
           </div>
 
           <div className="relative z-10 pt-6">
-            <span className="text-[12px] md:text-[13px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY PERFUMES</span>
+            <span className="text-[12px] md:text-[13px] text-zinc-500 uppercase tracking-[0.3em] font-medium">Luxury Perfumes</span>
           </div>
         </div>
 

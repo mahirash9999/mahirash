@@ -183,7 +183,7 @@ const TrackOrder = () => {
     return (
         <div className="min-h-screen bg-[#faf9f6] text-zinc-900 font-sans">
             <SEOHead
-                title="Track Live Order | Mahirash Luxury Perfumes"
+                title="Track Live Order | Luxury Perfumes"
                 description="Verify and track your shipment details with real-time Delhivery Express updates."
                 url="https://mahirash.com/track"
             />
@@ -393,15 +393,13 @@ const TrackOrder = () => {
                                                     return (
                                                         <div
                                                             key={st.step}
-                                                            className={`p-3 rounded-xl border text-center transition-all ${
-                                                                isActive
+                                                            className={`p-3 rounded-xl border text-center transition-all ${isActive
                                                                     ? "bg-[#800020]/5 border-[#800020] text-[#800020]"
                                                                     : "bg-[#FCF9F4] border-[#E9DCCB] text-[#75665D]/60"
-                                                            }`}
+                                                                }`}
                                                         >
-                                                            <div className={`w-5 h-5 rounded-full mx-auto mb-1 flex items-center justify-center text-[10px] font-bold ${
-                                                                isActive ? "bg-[#800020] text-white" : "bg-[#E9DCCB] text-[#75665D]"
-                                                            }`}>
+                                                            <div className={`w-5 h-5 rounded-full mx-auto mb-1 flex items-center justify-center text-[10px] font-bold ${isActive ? "bg-[#800020] text-white" : "bg-[#E9DCCB] text-[#75665D]"
+                                                                }`}>
                                                                 {st.step}
                                                             </div>
                                                             <span className="text-[11px] font-bold block">{st.name}</span>

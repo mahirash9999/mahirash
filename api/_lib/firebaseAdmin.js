@@ -1,4 +1,6 @@
 import crypto from "crypto";
+import { getFirestoreDb } from "./firestoreClient.js";
+import { doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
 // Server-side salt for OTP hashing (never exposed to client)
 const OTP_SALT = process.env.OTP_SALT || "Mahirash_Perfume_Secure_Salt_2026_Key";
@@ -41,7 +43,7 @@ function cleanupExpiredOtps() {
 }
 
 /**
- * Stores an OTP verification record securely.
+ * Stores an OTP verification record securely in-memory and in Firestore.
  */
 export async function saveOtpRecord({ email, otp, durationMinutes = 10, cooldownSeconds = 45 }) {
   cleanupExpiredOtps();
@@ -50,6 +52,7 @@ export async function saveOtpRecord({ email, otp, durationMinutes = 10, cooldown
   const now = Date.now();
   const expiresAt = now + durationMinutes * 60 * 1000;
   const cooldownUntil = now + cooldownSeconds * 1000;
+  const docId = cleanEmail.replace(/[^a-z0-9]/g, "_");
 
   const record = {
     email: cleanEmail,
@@ -63,20 +66,49 @@ export async function saveOtpRecord({ email, otp, durationMinutes = 10, cooldown
 
   inMemoryOtpStore.set(cleanEmail, record);
 
-  inMemoryOtpStore.set(cleanEmail, record);
+  try {
+    const db = await getFirestoreDb();
+    if (db) {
+      await setDoc(doc(db, "_otp_verifications", docId), record);
+    }
+  } catch (err) {
+    console.warn("[saveOtpRecord] Firestore persistence notice:", err.message);
+  }
+
   return { expiresAt, cooldownSeconds };
 }
 
 /**
  * Verifies an OTP against stored records with brute-force protection.
+ * Checks local in-memory cache and falls back to Firestore across serverless instances.
  */
 export async function verifyOtpRecord({ email, otp }) {
   cleanupExpiredOtps();
   const cleanEmail = normalizeEmail(email);
   const cleanOtp = String(otp || "").trim();
   const now = Date.now();
+  const docId = cleanEmail.replace(/[^a-z0-9]/g, "_");
 
-  const record = inMemoryOtpStore.get(cleanEmail);
+  let record = inMemoryOtpStore.get(cleanEmail);
+  let db = null;
+
+  try {
+    db = await getFirestoreDb();
+  } catch (err) {
+    console.warn("[verifyOtpRecord] Firestore init notice:", err.message);
+  }
+
+  // Cross-instance serverless fallback: fetch persistent record from Firestore if missing from local memory
+  if (!record && db) {
+    try {
+      const snap = await getDoc(doc(db, "_otp_verifications", docId));
+      if (snap.exists()) {
+        record = snap.data();
+      }
+    } catch (dbErr) {
+      console.warn("[verifyOtpRecord] Firestore lookup notice:", dbErr.message);
+    }
+  }
 
   if (!record) {
     return {
@@ -88,6 +120,11 @@ export async function verifyOtpRecord({ email, otp }) {
   // Check Expiry
   if (now > record.expiresAt) {
     inMemoryOtpStore.delete(cleanEmail);
+    if (db) {
+      try {
+        await deleteDoc(doc(db, "_otp_verifications", docId));
+      } catch (_) {}
+    }
     return {
       valid: false,
       reason: "Verification code has expired. Please request a new code."
@@ -97,6 +134,11 @@ export async function verifyOtpRecord({ email, otp }) {
   // Check Rate Limits / Max Attempts
   if (record.attempts >= record.maxAttempts) {
     inMemoryOtpStore.delete(cleanEmail);
+    if (db) {
+      try {
+        await deleteDoc(doc(db, "_otp_verifications", docId));
+      } catch (_) {}
+    }
     return {
       valid: false,
       reason: "Maximum verification attempts exceeded. Please request a new code."
@@ -118,8 +160,16 @@ export async function verifyOtpRecord({ email, otp }) {
   }
 
   if (!isMatch) {
-    record.attempts += 1;
+    record.attempts = (record.attempts || 0) + 1;
     inMemoryOtpStore.set(cleanEmail, record);
+
+    if (db) {
+      try {
+        await updateDoc(doc(db, "_otp_verifications", docId), {
+          attempts: record.attempts
+        });
+      } catch (_) {}
+    }
 
     const remaining = record.maxAttempts - record.attempts;
     return {
@@ -130,19 +180,39 @@ export async function verifyOtpRecord({ email, otp }) {
     };
   }
 
-  // Success: Invalidate OTP immediately to prevent replay attacks
+  // Success: Invalidate OTP immediately across all layers to prevent replay attacks
   inMemoryOtpStore.delete(cleanEmail);
+  if (db) {
+    try {
+      await deleteDoc(doc(db, "_otp_verifications", docId));
+    } catch (_) {}
+  }
   return { valid: true };
 }
 
 /**
- * Checks if resend cooldown is active for an email.
+ * Checks if resend cooldown is active for an email (checks memory and Firestore).
  */
-export function getCooldownRemaining(email) {
+export async function getCooldownRemaining(email) {
   const cleanEmail = normalizeEmail(email);
-  const record = inMemoryOtpStore.get(cleanEmail);
+  const now = Date.now();
+  let record = inMemoryOtpStore.get(cleanEmail);
+
+  if (!record) {
+    try {
+      const db = await getFirestoreDb();
+      if (db) {
+        const docId = cleanEmail.replace(/[^a-z0-9]/g, "_");
+        const snap = await getDoc(doc(db, "_otp_verifications", docId));
+        if (snap.exists()) {
+          record = snap.data();
+        }
+      }
+    } catch (_) {}
+  }
+
   if (!record || !record.cooldownUntil) return 0;
-  const remainingMs = record.cooldownUntil - Date.now();
+  const remainingMs = record.cooldownUntil - now;
   return remainingMs > 0 ? Math.ceil(remainingMs / 1000) : 0;
 }
 

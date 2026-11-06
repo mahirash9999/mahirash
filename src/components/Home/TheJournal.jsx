@@ -42,7 +42,7 @@ const TheJournal = () => {
               return (
                 <div
                   key={post.id || index}
-                  onClick={() => window.open(post.url || "https://www.instagram.com/mahirashparfumerie/", "_blank")}
+                  onClick={() => window.open(post.url || "https://www.instagram.com/mahirash_perfumes/", "_blank")}
                   className="group bg-white rounded-xl border border-[#E9E0D6] overflow-hidden shadow-sm hover:border-[#800020] hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col"
                 >
                   {/* Media Container (Video / Image) with generous aspect ratio */}
@@ -96,7 +96,7 @@ const TheJournal = () => {
         {/* Centered Maroon Pill CTA: FOLLOW OUR JOURNEY → */}
         <div className="mt-8 sm:mt-10 flex justify-center">
           <a
-            href="https://www.instagram.com/mahirashparfumerie/"
+            href="https://www.instagram.com/mahirash_perfumes/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 px-8 py-3 rounded-full bg-[#800020] hover:bg-[#650018] text-white text-[11px] sm:text-[12px] font-semibold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-xl cursor-pointer active:scale-95 group"

@@ -8,7 +8,7 @@ const ReturnPolicy = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-zinc-900">
       <SEOHead
-        title="Return, Refund & Cancellation Policy | Mahirash Luxury Perfumes"
+        title="Return, Refund & Cancellation Policy | Luxury Perfumes"
         description="Read Mahirash's return and refund policy for luxury fragrances. 7–10 day easy returns for sealed perfume bottles."
         url="https://mahirash.com/return-policy"
       />

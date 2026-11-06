@@ -270,7 +270,7 @@ const SiteSettingsManager = () => {
                                 name="instagram_url"
                                 value={settings.instagram_url}
                                 onChange={handleChange}
-                                placeholder="https://www.instagram.com/mahirashparfumerie/"
+                                placeholder="https://www.instagram.com/mahirash_perfumes/"
                                 className="w-full px-3 py-2 rounded-lg border border-[#E9DCCB] focus:border-[#800020] outline-none text-xs"
                             />
                         </div>

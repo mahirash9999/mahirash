@@ -266,7 +266,7 @@ const Orders = () => {
             </div>
 
             <div class="footer">
-              <p>Thank you for choosing MAHIRASH LUXURY PERFUMES. For support or returns, contact mahirash.help@gmail.com</p>
+              <p>Thank you for choosing Luxury Perfumes. For support or returns, contact mahirash.help@gmail.com</p>
             </div>
           </div>
         </body>
@@ -300,7 +300,7 @@ const Orders = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-zinc-900">
       <SEOHead
-        title="My Orders & Tracking | Mahirash Luxury Perfumes"
+        title="My Orders & Tracking | Luxury Perfumes"
         description="Track your order history, shipment status, and download invoices on Mahirash."
         robots="noindex, follow"
         url="https://mahirash.com/orders"

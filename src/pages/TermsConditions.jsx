@@ -6,8 +6,8 @@ const TermsConditions = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5] text-zinc-900">
       <SEOHead
-        title="Terms & Conditions | Mahirash Luxury Perfumes"
-        description="Read the official terms and conditions for using Mahirash Luxury Perfumes online store and placing orders."
+        title="Terms & Conditions | Luxury Perfumes"
+        description="Read the official terms and conditions for using Luxury Perfumes online store and placing orders."
         url="https://mahirash.com/terms"
       />
       <PageHeader
@@ -33,7 +33,7 @@ const TermsConditions = () => {
             2. Intellectual Property Rights
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
-            All content published on this site—including but not limited to brand typography, trademarks, imagery, lookbooks, product designs, graphics, and software—is the exclusive intellectual property of MAHIRASH LUXURY PERFUMES and is protected by international copyright and trademark laws. Unauthorized reproduction or redistribution is strictly prohibited.
+            All content published on this site—including but not limited to brand typography, trademarks, imagery, lookbooks, product designs, graphics, and software—is the exclusive intellectual property of Luxury Perfumes and is protected by international copyright and trademark laws. Unauthorized reproduction or redistribution is strictly prohibited.
           </p>
         </section>
 
@@ -63,10 +63,13 @@ const TermsConditions = () => {
         {/* Authenticity Guarantee & Quality Commitment */}
         <section className="space-y-4 border-t border-zinc-200 pt-8">
           <h2 className="text-xl font-light uppercase tracking-wider text-[#800020]">
-            5. Authenticity Guarantee & Quality Commitment
+            5. At Mahirash, authenticity is our promise and quality is our commitment.
           </h2>
           <p className="text-[14px] md:text-sm text-zinc-600 leading-relaxed">
-            All Mahirash creations are 100% authentic, handcrafted extraits de parfum created with precious botanical ingredients and royal Cambodian ouds. Due to personal hygiene and the nature of luxury perfumes, we do not accept product returns once opened. In the rare event that a package arrives damaged in transit, our customer support team will immediately assist with verification and replacement.
+            We understand the importance of owning genuine luxury products. That's why we are committed to offering authentic products sourced through trusted suppliers and reliable channels.
+            Every product is carefully selected to meet our quality standards. We strive to ensure that our customers receive genuine products in excellent condition, with complete transparency and confidence in every purchase.
+            Your trust matters to us, and we believe that luxury is not just about the product you buy, but also about the experience and confidence that come with it.
+            With Mahirash, shop with confidence. Authenticity is our priority.
           </p>
         </section>
 

@@ -71,7 +71,7 @@ export default async function handler(req, res) {
   }
 
   // Check rate-limiting / resend cooldown
-  const remainingCooldown = getCooldownRemaining(cleanEmail);
+  const remainingCooldown = await getCooldownRemaining(cleanEmail);
   if (remainingCooldown > 0) {
     return res.status(429).json({
       error: `Please wait ${remainingCooldown}s before requesting another verification code.`,
@@ -120,10 +120,7 @@ export default async function handler(req, res) {
       success: true,
       emailSent,
       mailError: !emailSent ? mailErrorMessage : undefined,
-      message: emailSent
-        ? "Verification code sent to your email"
-        : `Verification code generated: ${otp}`,
-      devOtp: !emailSent ? otp : undefined,
+      message: "Verification code sent to your email",
       cooldownSeconds
     });
   } catch (err) {

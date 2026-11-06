@@ -65,7 +65,7 @@ const NewsManager = ({ isDarkMode = false }) => {
     setFormData({
       title: "",
       video: "",
-      url: "https://www.instagram.com/mahirashparfumerie/",
+      url: "https://www.instagram.com/mahirash_perfumes/",
       tag: "Luxury Edit",
       duration: "0:30",
     });

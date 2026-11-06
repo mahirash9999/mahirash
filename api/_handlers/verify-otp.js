@@ -1,5 +1,6 @@
 import { normalizeEmail, verifyOtpRecord, createFirebaseAuthBridge } from "../_lib/firebaseAdmin.js";
 import { getFirestoreDb } from "../_lib/firestoreClient.js";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -36,8 +37,6 @@ export default async function handler(req, res) {
     try {
       const db = await getFirestoreDb();
       if (db) {
-        const { doc, getDoc, collection, query, where, getDocs } = await import("firebase/firestore");
-
         // Check customers collection
         const customerDocId = cleanEmail.replace(/[^a-z0-9]/g, "_");
         const customerSnap = await getDoc(doc(db, "customers", customerDocId));

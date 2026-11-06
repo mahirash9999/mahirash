@@ -24,7 +24,7 @@ const Home = () => {
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "OnlineStore",
-          "name": "Mahirash Luxury Perfumes",
+          "name": "Luxury Perfumes",
           "url": "https://mahirash.com/",
           "logo": "/logom.webp",
           "email": "help@mahirash.com",

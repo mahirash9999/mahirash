@@ -50,7 +50,7 @@ export function getFromEmail() {
     return cleanVal(process.env.SMTP_FROM);
   }
   const user = cleanVal(process.env.SMTP_USER || process.env.GMAIL_USER || process.env.VITE_GMAIL_USER) || "care@mahirash.com";
-  return `"Mahirash Luxury Perfumes" <${user}>`;
+  return `"Luxury Perfumes" <${user}>`;
 }
 
 export function getAdminEmail() {
@@ -531,7 +531,7 @@ export async function sendOrderEmails({ order }) {
       const html = renderOrderConfirmationEmail({ order });
       await sendEmail({
         to: customerEmail,
-        subject: `Order Confirmed: #${orderNumber} - Mahirash Luxury Perfumes`,
+        subject: `Order Confirmed: #${orderNumber} - Luxury Perfumes`,
         html
       });
       results.customer = true;
@@ -609,7 +609,7 @@ export async function sendOrderCancelledEmail({ order, reason }) {
     const html = renderOrderCancelledEmail({ order, reason });
     await sendEmail({
       to: customerEmail,
-      subject: `Order Cancelled: #${orderNumber} - Mahirash Luxury Perfumes`,
+      subject: `Order Cancelled: #${orderNumber} - Luxury Perfumes`,
       html
     });
     return true;

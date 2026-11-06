@@ -117,7 +117,7 @@ const Footer = () => {
           </div>
           <div className="flex items-center gap-3">
             {[
-              { icon: Instagram, url: siteSettings?.instagram_url || 'https://www.instagram.com/mahirashparfumerie/', label: 'Instagram' },
+              { icon: Instagram, url: siteSettings?.instagram_url || 'https://www.instagram.com/mahirash_perfumes/', label: 'Instagram' },
               { icon: Facebook, url: siteSettings?.facebook_url || 'https://www.facebook.com/mahirashparfumerie/', label: 'Facebook' },
               { icon: Youtube, url: siteSettings?.youtube_url || 'https://www.youtube.com/@mahirashparfumerie', label: 'YouTube' },
               { icon: Twitter, url: siteSettings?.twitter_url || 'https://x.com/MahirashParfum', label: 'Twitter' }
@@ -281,7 +281,7 @@ const Footer = () => {
         {/* ── BOTTOM BAR & LEGAL ── */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-4">
           <p className="text-zinc-400 text-[14px] tracking-wider text-center md:text-left font-light">
-            © {currentYear} MAHIRASH LUXURY PERFUMES. ALL RIGHTS RESERVED.
+            © {currentYear} Luxury Perfumes. ALL RIGHTS RESERVED.
           </p>
 
           <div className="flex flex-wrap justify-center items-center gap-5 text-[14px] font-light tracking-wider">
@@ -292,10 +292,10 @@ const Footer = () => {
             <Link to="/terms" className="text-zinc-400 hover:text-white transition-colors">
               Terms of Service
             </Link>
-            <span className="text-zinc-700">•</span>
+            {/* <span className="text-zinc-700">•</span>
             <Link to="/return-policy" className="text-zinc-400 hover:text-white transition-colors">
               Return & Refund
-            </Link>
+            </Link> */}
             <span className="text-zinc-700">•</span>
             <a
               href="https://www.letskillify.com"

@@ -1,5 +1,5 @@
 /**
- * Centralized Validation & Sanitization Utilities for Mahirash Luxury Perfumes
+ * Centralized Validation & Sanitization Utilities for Luxury Perfumes
  * Protects client forms against malformed inputs, oversized payloads, and injection attempts.
  */
 

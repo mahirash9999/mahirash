@@ -64,6 +64,7 @@ const Login = () => {
   const handleRequestOtp = async (e) => {
     e.preventDefault();
     setError("");
+    setOtp("");
     const cleanEmail = email.toLowerCase().trim();
 
     if (!cleanEmail || !isValidEmail(cleanEmail)) {
@@ -75,9 +76,7 @@ const Login = () => {
     try {
       const res = await sendOTPEmail(cleanEmail);
       setCooldown(res.cooldownSeconds || 45);
-      if (res.devOtp) {
-        setOtp(String(res.devOtp));
-      }
+      setOtp("");
       setStep(STEP.OTP_VERIFY);
     } catch (err) {
       setError(err.message || "Failed to send verification code. Please try again.");
@@ -90,13 +89,12 @@ const Login = () => {
   const handleResendOtp = async () => {
     if (cooldown > 0) return;
     setError("");
+    setOtp("");
     setLoading(true);
     try {
       const res = await sendOTPEmail(email.toLowerCase().trim());
       setCooldown(res.cooldownSeconds || 45);
-      if (res.devOtp) {
-        setOtp(String(res.devOtp));
-      }
+      setOtp("");
     } catch (err) {
       setError(err.message || "Could not resend verification code.");
     } finally {
@@ -286,7 +284,7 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-[#fafafa] flex flex-col justify-center items-center relative overflow-hidden px-4 py-12 md:py-20 font-sans">
       <SEOHead
-        title="Sign In | Mahirash Luxury Perfumes"
+        title="Sign In | Luxury Perfumes"
         description="Access your exclusive Mahirash account with secure Email OTP or Password authentication."
         robots="noindex, follow"
         url="https://mahirash.com/login"
@@ -332,7 +330,7 @@ const Login = () => {
           </div>
 
           <div className="relative z-10 pt-6">
-            <span className="text-[12px] md:text-[13px] text-zinc-500 uppercase tracking-[0.3em] font-medium">MAHIRASH LUXURY PERFUMES</span>
+            <span className="text-[12px] md:text-[13px] text-zinc-500 uppercase tracking-[0.3em] font-medium">Luxury Perfumes</span>
           </div>
         </div>
 
@@ -492,7 +490,7 @@ const Login = () => {
                 <div className="flex items-center justify-between pt-2 text-[12px]">
                   <button
                     type="button"
-                    onClick={() => { setError(""); setStep(STEP.OTP_REQUEST); }}
+                    onClick={() => { setError(""); setOtp(""); setStep(STEP.OTP_REQUEST); }}
                     className="text-zinc-500 hover:text-black underline cursor-pointer"
                   >
                     ← Change Email
@@ -578,7 +576,7 @@ const Login = () => {
                 <div className="pt-2 text-center">
                   <button
                     type="button"
-                    onClick={() => { setError(""); setStep(STEP.OTP_REQUEST); }}
+                    onClick={() => { setError(""); setOtp(""); setStep(STEP.OTP_REQUEST); }}
                     className="text-[12px] text-zinc-600 hover:text-black underline font-medium cursor-pointer"
                   >
                     ← Login with Email OTP instead

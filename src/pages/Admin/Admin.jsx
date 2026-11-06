@@ -292,7 +292,7 @@ const GenericCRUDManager = ({ collectionName, title, fields, defaultItem }) => {
         type: "image",
         format: file.name.split('.').pop()?.toLowerCase() || "jpg",
         createdAt: serverTimestamp()
-      }).catch(() => {});
+      }).catch(() => { });
     } catch (err) {
       alert("Upload failed: " + err.message);
     } finally {
@@ -2056,7 +2056,7 @@ const Admin = () => {
             <div className="space-y-3">
               <div className="space-y-1">
                 <label className="text-[#75665D] uppercase tracking-wider text-[11px] font-bold block">Primary Parameter</label>
-                <input type="text" defaultValue="Mahirash Luxury Perfumes" className="w-full px-3.5 py-2.5 bg-white border border-[#E9DCCB] rounded-xl text-[#30231F] outline-none focus:border-[#800020]" />
+                <input type="text" defaultValue="Luxury Perfumes" className="w-full px-3.5 py-2.5 bg-white border border-[#E9DCCB] rounded-xl text-[#30231F] outline-none focus:border-[#800020]" />
               </div>
               <div className="space-y-1">
                 <label className="text-[#75665D] uppercase tracking-wider text-[11px] font-bold block">Fallback Mode</label>

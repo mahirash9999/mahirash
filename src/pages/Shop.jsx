@@ -618,7 +618,7 @@ const Shop = () => {
         title={filters.category !== "All" ? `Shop ${filters.category} Collection | Mahirash` : "Shop All Luxury Perfumes & Scents | Mahirash"}
         description="Browse Mahirash's complete collection of artisanal extraits, eau de parfum, royal oud reserves, and discovery vaults. Filter by fragrance family, volume, and fragrance notes."
         url="https://mahirash.com/shop"
-        keywords="Mahirash luxury perfumes, Mahirash fragrance collection, royal oud extrait, buy luxury perfume India, mahirash.com shop"
+        keywords="Luxury Perfumes, Mahirash fragrance collection, royal oud extrait, buy luxury perfume India, mahirash.com shop"
       />
       <PageHeader
         title="Shop Collection"

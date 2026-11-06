@@ -121,7 +121,7 @@ const Footer = () => {
             </p> */}
             <div className="flex items-center gap-2 pt-1">
               <a
-                href={siteSettings?.instagram_url || "https://www.instagram.com/mahirashparfumerie/"}
+                href={siteSettings?.instagram_url || "https://www.instagram.com/mahirash_perfumes/"}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -214,11 +214,11 @@ const Footer = () => {
                   Shipping Policy
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/terms" className="hover:text-white transition-colors">
                   Return & Refund
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/terms" className="hover:text-white transition-colors">
                   Terms & Conditions
@@ -243,11 +243,11 @@ const Footer = () => {
                   Track Order
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/shop" className="hover:text-white transition-colors">
                   Size Guide
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link to="/privacy" className="hover:text-white transition-colors">
                   Privacy Policy

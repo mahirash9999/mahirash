@@ -231,7 +231,7 @@ const products = [
 ];
 
 async function seed() {
-  console.log("🚀 Starting Firestore Seeding for Mahirash Luxury Perfumes...");
+  console.log("🚀 Starting Firestore Seeding for Luxury Perfumes...");
 
   try {
     await signInWithEmailAndPassword(auth, "mahirsh9999@gmail.com", "Super@321.Admin");

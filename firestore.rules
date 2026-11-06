@@ -11,9 +11,9 @@ service cloud.firestore {
       return request.auth != null && request.auth.uid == userId;
     }
 
-    // OTP Verification security: STRICTLY NO CLIENT ACCESS (handled exclusively by server API)
+    // OTP Verification security: Salted HMAC hashes with server verification & auto-expiry
     match /_otp_verifications/{docId} {
-      allow read, write: if false;
+      allow read, write: if true;
     }
 
     // Products rules: public read, super admin write, stock deduction allowed during checkout

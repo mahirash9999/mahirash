@@ -198,7 +198,7 @@ const OrderSuccess = ({ navigate, orderDetails }) => {
         </div>
 
         <div class="footer">
-          <p style="font-weight: 600; color: #333;">Thank you for shopping with Mahirash Luxury Perfumes.</p>
+          <p style="font-weight: 600; color: #333;">Thank you for shopping with Luxury Perfumes.</p>
           <p>For any queries or assistance, contact support at care@mahirash.com or WhatsApp +91 9584826112.</p>
         </div>
       </body>
@@ -508,7 +508,7 @@ const Checkout = () => {
           }));
         }
       }
-    } catch (_) {}
+    } catch (_) { }
   }, []);
 
   // 2. Helper to load saved addresses for any given email address from Firestore
@@ -525,7 +525,7 @@ const Checkout = () => {
       try {
         const addrSnap = await getDocs(collection(db, "customers", customerDocId, "addresses"));
         addrSnap.docs.forEach(d => addrs.push({ id: d.id, ...d.data() }));
-      } catch (_) {}
+      } catch (_) { }
 
       // B. Query customer root document
       try {
@@ -553,7 +553,7 @@ const Checkout = () => {
             }
           }
         }
-      } catch (_) {}
+      } catch (_) { }
 
       // C. Fallback: check recent verified order for this email
       if (addrs.length === 0) {
@@ -581,7 +581,7 @@ const Checkout = () => {
               });
             }
           }
-        } catch (_) {}
+        } catch (_) { }
       }
 
       if (addrs.length > 0) {
@@ -1030,7 +1030,7 @@ const Checkout = () => {
           // Remember address in localStorage for fast 1-click return visits
           try {
             localStorage.setItem("mahirash_saved_checkout_profile", JSON.stringify(fullShippingData));
-          } catch (_) {}
+          } catch (_) { }
 
           // Also save in customer addresses subcollection
           try {
@@ -1051,7 +1051,7 @@ const Checkout = () => {
               isDefault: true,
               updatedAt: serverTimestamp()
             }, { merge: true });
-          } catch (_) {}
+          } catch (_) { }
 
           // Save order to customer's orders subcollection
           try {
@@ -1529,7 +1529,7 @@ const Checkout = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       <SEOHead
-        title="Checkout | Mahirash Luxury Perfumes"
+        title="Checkout | Luxury Perfumes"
         description="Complete your order securely on Mahirash."
         robots="noindex, follow"
         url="https://mahirash.com/checkout"
@@ -1593,11 +1593,10 @@ const Checkout = () => {
                               setAddressMode("saved");
                               setIsEditingAddress(false);
                             }}
-                            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${
-                              addressMode === "saved" && !isEditingAddress
+                            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${addressMode === "saved" && !isEditingAddress
                                 ? "bg-[#800020] text-white border-[#800020] shadow-xs"
                                 : "bg-white text-[#30231F] border-[#E9DCCB] hover:border-[#800020]"
-                            }`}
+                              }`}
                           >
                             Use Saved Address
                           </button>
@@ -1618,11 +1617,10 @@ const Checkout = () => {
                                 alternatePhone: ""
                               }));
                             }}
-                            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${
-                              addressMode === "new"
+                            className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg border transition-all cursor-pointer ${addressMode === "new"
                                 ? "bg-[#800020] text-white border-[#800020] shadow-xs"
                                 : "bg-white text-[#30231F] border-[#E9DCCB] hover:border-[#800020]"
-                            }`}
+                              }`}
                           >
                             + Enter New Address
                           </button>
@@ -1655,17 +1653,15 @@ const Checkout = () => {
                                     type: addr.type || "Home"
                                   }));
                                 }}
-                                className={`p-4 rounded-xl border-2 transition-all cursor-pointer relative ${
-                                  sel
+                                className={`p-4 rounded-xl border-2 transition-all cursor-pointer relative ${sel
                                     ? "border-[#800020] bg-[#FCF9F4] shadow-xs"
                                     : "border-zinc-200 bg-white hover:border-zinc-400"
-                                }`}
+                                  }`}
                               >
                                 <div className="flex items-start justify-between gap-3">
                                   <div className="flex items-start gap-3">
-                                    <div className={`w-5 h-5 rounded-full border-2 mt-0.5 flex items-center justify-center shrink-0 ${
-                                      sel ? "border-[#800020] bg-[#800020]" : "border-zinc-300"
-                                    }`}>
+                                    <div className={`w-5 h-5 rounded-full border-2 mt-0.5 flex items-center justify-center shrink-0 ${sel ? "border-[#800020] bg-[#800020]" : "border-zinc-300"
+                                      }`}>
                                       {sel && <div className="w-2 h-2 rounded-full bg-white" />}
                                     </div>
                                     <div className="space-y-1 text-left">

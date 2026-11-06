@@ -820,7 +820,7 @@ const Header = () => {
                 {/* Mobile Drawer Social Links */}
                 <div className="flex items-center justify-center gap-4 pt-4 border-t border-[#E9DCCB]">
                   <a
-                    href={siteSettings?.instagram_url || "https://www.instagram.com/mahirashparfumerie/"}
+                    href={siteSettings?.instagram_url || "https://www.instagram.com/mahirash_perfumes/"}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-9 h-9 rounded-full bg-white border border-[#E9DCCB] flex items-center justify-center text-[#30231F] hover:text-[#800020] hover:border-[#800020] transition-colors shadow-xs"

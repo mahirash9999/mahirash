@@ -26,7 +26,7 @@ export const StoreProvider = ({ children }) => {
     logo_url: "",
     site_icon_url: "",
     gemini_api_key: "",
-    instagram_url: "https://www.instagram.com/mahirashparfumerie/",
+    instagram_url: "https://www.instagram.com/mahirash_perfumes/",
     facebook_url: "https://www.facebook.com/mahirashparfumerie/",
     twitter_url: "https://x.com/MahirashParfum",
     youtube_url: "https://www.youtube.com/@mahirashparfumerie"

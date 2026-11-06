@@ -55,7 +55,7 @@ export async function createRazorpayOrder({ amount, currency = "INR", receipt, n
     currency: currency.toUpperCase(),
     receipt: cleanReceipt,
     notes: {
-      platform: "Mahirash Luxury Perfumes",
+      platform: "Luxury Perfumes",
       ...notes
     }
   };

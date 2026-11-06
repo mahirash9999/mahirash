@@ -123,7 +123,7 @@ const Cart = () => {
     return (
       <div className="min-h-screen bg-[#f5f5f5]">
         <SEOHead
-          title="Shopping Bag | Mahirash Luxury Perfumes"
+          title="Shopping Bag | Luxury Perfumes"
           description="View items in your Mahirash shopping bag and proceed to checkout."
           robots="noindex, follow"
           url="https://mahirash.com/cart"
@@ -162,7 +162,7 @@ const Cart = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
       <SEOHead
-        title="Shopping Bag | Mahirash Luxury Perfumes"
+        title="Shopping Bag | Luxury Perfumes"
         description="View items in your Mahirash shopping bag and proceed to checkout."
         robots="noindex, follow"
         url="https://mahirash.com/cart"
