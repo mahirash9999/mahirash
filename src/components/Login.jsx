@@ -44,7 +44,6 @@ const Login = () => {
   const [error, setError] = useState("");
   const [cooldown, setCooldown] = useState(0);
   const [verifiedTokenData, setVerifiedTokenData] = useState(null);
-  const [devOtpInfo, setDevOtpInfo] = useState(null);
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -77,10 +76,7 @@ const Login = () => {
       const res = await sendOTPEmail(cleanEmail);
       setCooldown(res.cooldownSeconds || 45);
       if (res.devOtp) {
-        setDevOtpInfo(res.devOtp);
         setOtp(String(res.devOtp));
-      } else {
-        setDevOtpInfo(null);
       }
       setStep(STEP.OTP_VERIFY);
     } catch (err) {
@@ -99,10 +95,7 @@ const Login = () => {
       const res = await sendOTPEmail(email.toLowerCase().trim());
       setCooldown(res.cooldownSeconds || 45);
       if (res.devOtp) {
-        setDevOtpInfo(res.devOtp);
         setOtp(String(res.devOtp));
-      } else {
-        setDevOtpInfo(null);
       }
     } catch (err) {
       setError(err.message || "Could not resend verification code.");
@@ -458,20 +451,6 @@ const Login = () => {
             {/* ── VIEW 2: VERIFY OTP ────────────────────────────────────────── */}
             {step === STEP.OTP_VERIFY && (
               <form onSubmit={handleVerifyOtp} className="space-y-5">
-                {devOtpInfo && (
-                  <div className="p-3 bg-amber-50 border border-amber-200/90 text-amber-900 text-[12px] rounded mb-3 text-left">
-                    <p className="font-bold flex items-center gap-1.5 text-[#800020] mb-0.5">
-                      <span>⚠️ Gmail SMTP Delivery Notice</span>
-                    </p>
-                    <p className="text-zinc-600 leading-relaxed">
-                      Google SMTP ne <strong>.env</strong> ke Gmail password ko reject kiya (BadCredentials). Jab tak aap valid 16-character App Password nahi daalte, aap testing ke liye niche auto-filled OTP use kar sakte hain.
-                    </p>
-                    <p className="mt-1.5 font-medium text-zinc-800">
-                      Verification code: <strong className="font-mono text-sm text-[#800020] font-bold select-all bg-white px-2 py-0.5 rounded border border-amber-200">{devOtpInfo}</strong>
-                    </p>
-                  </div>
-                )}
-
                 <div className="space-y-2">
                   <label className="text-[12px] uppercase tracking-[0.3em] font-semibold text-zinc-500">
                     6-Digit Verification Code
